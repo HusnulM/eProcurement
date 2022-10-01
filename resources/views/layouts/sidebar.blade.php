@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-6">
     <a href="/" class="brand-link">
-      <span class="brand-text font-weight-light">Doc. Management System</span>
+      <span class="brand-text font-weight-light">e-Procurement</span>
     </a>
 
     <div class="sidebar">

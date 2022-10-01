@@ -29,7 +29,7 @@
 <div class="login-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <a href="#" class="h5"><b>Document Management System</b></a>
+      <a href="#" class="h5"><b>e-Procurement Application</b></a>
     </div>
     <div class="card-body">
       <p class="login-box-msg">Sign in to start your session</p>

@@ -6,6 +6,16 @@ Route::get('/coba', function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
+    Route::group(['prefix' => '/master/item'], function () {
+        Route::get('/',             'Master\ItemMasterController@index')->middleware('checkAuth:master/item');
+        Route::get('/create',       'Master\ItemMasterController@create')->middleware('checkAuth:master/item');
+        Route::post('/save',        'Master\ItemMasterController@save')->middleware('checkAuth:master/item');
+        Route::post('/update',      'Master\ItemMasterController@update')->middleware('checkAuth:master/item');
+        Route::get('/delete/{id}',  'Master\ItemMasterController@delete')->middleware('checkAuth:master/item');  
+        Route::get('/itemlist',     'Master\ItemMasterController@itemLists')->middleware('checkAuth:master/item');  
+        
+    });
+
     Route::group(['prefix' => '/master/doctype'], function () {
         Route::get('/',           'Master\DoctypeController@index')->middleware('checkAuth:master/doctype');
         Route::post('/save',      'Master\DoctypeController@save')->middleware('checkAuth:master/doctype');
