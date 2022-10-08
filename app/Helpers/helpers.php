@@ -15,7 +15,7 @@ function userMenu(){
 
 function userSubMenu(){
     $mnGroups = DB::table('v_usermenus')
-                ->select('menugroup', 'route', 'menu_desc','menu_idx')
+                ->select('menugroup', 'route', 'menu_desc','menu_idx', 'icon')
                 ->distinct()
                 ->where('userid', Auth::user()->id)
                 ->orderBy('menu_idx','ASC')
@@ -67,9 +67,9 @@ function generateDcnNumber($doctype){
             $lastnum = ($getdata->current_number*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = 'DCN-'. $doctype . '-' . substr($getdata->year,2) .'-'. $lastnum; 
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $lastnum; 
             }else{
-                $dcnNumber = 'DCN-'. $doctype . '-' . substr($getdata->year,2) .'-'. $leadingZero . $lastnum; 
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $leadingZero . $lastnum; 
             }
 
             DB::table('dcn_nriv')->where('year',$getdata->year)->where('object',$doctype)->update([
@@ -83,7 +83,7 @@ function generateDcnNumber($doctype){
             return null;
         }
     }else{
-        $dcnNumber = 'DCN-' . $doctype . '-' .substr(date('Y'),2).'-000001';
+        $dcnNumber = $doctype . '-' .substr(date('Y'),2).'-000001';
         DB::beginTransaction();
         try{
             DB::table('dcn_nriv')->insert([

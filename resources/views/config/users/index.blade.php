@@ -25,18 +25,20 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="tbl-users" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                        <thead>
-                            <th>No</th>
-                            <th>User Name</th>
-                            <th>Email</th>
-                            <th>Name</th>
-                            <th style="text-align:center;"></th>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
+                    <div class="dataTables_wrapper dt-bootstrap4">
+                        <table id="tbl-users" class="table table-bordered table-hover table-striped table-sm dataTable dtr-inline" style="width:100%;">
+                            <thead>
+                                <th>No</th>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th style="text-align:center;"></th>
+                            </thead>
+                            <tbody>
+    
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,6 +59,7 @@
                     }
                 }
             },
+            responsive: true,
             buttons: false,
             searching: true,
             scrollY: 500,
@@ -72,10 +75,12 @@
                 {data: "email", className: 'fname'},
                 {data: "name", className: 'uname'},
                 {"defaultContent": 
-                    `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button> 
+                    `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button>
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
                     <button class='btn btn-success btn-sm button-object-auth'> <i class='fa fa-find'></i> OBJECT AUTH</button>
-                    `
+                    `,
+                    "className": "text-center",
+                    "width": "20%"
                 }
             ]  
         });

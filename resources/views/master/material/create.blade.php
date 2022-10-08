@@ -25,7 +25,7 @@
                 <div class="card-body">
                     <form action="{{ url('/master/item/save') }}" method="post" enctype="multipart/form-data">
                         @csrf
-                        <div class="col-lg-6 col-sm-12">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
@@ -42,7 +42,11 @@
                                 <div class="col-lg-12 col-md-12">
                                     <div class="form-group">
                                         <label for="itemtype">Item Type</label>
-                                        <input type="text" name="itemtype" id="itemtype" class="form-control" autocomplete="off" required>
+                                        <!-- <input type="text" name="itemtype" id="itemtype" class="form-control" autocomplete="off" required> -->
+                                        <select name="itemtype" id="itemtype" class="form-control">
+                                            <option value="">Pilih Item Type</option>
+                                            <option value=""></option>
+                                        </select>
                                     </div>
                                 </div>  
                                 <div class="col-lg-12 col-md-12">

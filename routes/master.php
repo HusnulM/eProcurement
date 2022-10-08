@@ -13,6 +13,30 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update',      'Master\ItemMasterController@update')->middleware('checkAuth:master/item');
         Route::get('/delete/{id}',  'Master\ItemMasterController@delete')->middleware('checkAuth:master/item');  
         Route::get('/itemlist',     'Master\ItemMasterController@itemLists')->middleware('checkAuth:master/item');  
+        Route::get('/itemcatlist',  'Master\ItemMasterController@itemCategoryLists')->middleware('checkAuth:master/item');  
+        Route::get('/uomlists',     'Master\ItemMasterController@uomLists')->middleware('checkAuth:master/item');  
+       
+        Route::post('/saveitemcategory', 'Master\ItemMasterController@saveitemcategory')->middleware('checkAuth:master/item');
+        Route::post('/saveuom',          'Master\ItemMasterController@saveuom')->middleware('checkAuth:master/item');
+    });
+
+    Route::group(['prefix' => '/master/vendor'], function () {
+        Route::get('/',             'Master\VendorMasterController@index')->middleware('checkAuth:master/item');
+        Route::get('/create',       'Master\VendorMasterController@create')->middleware('checkAuth:master/item');
+        Route::post('/save',        'Master\VendorMasterController@save')->middleware('checkAuth:master/item');
+        Route::post('/update',      'Master\VendorMasterController@update')->middleware('checkAuth:master/item');
+        Route::get('/delete/{id}',  'Master\VendorMasterController@delete')->middleware('checkAuth:master/item');  
+        Route::get('/vendorlists',  'Master\VendorMasterController@vendorLists')->middleware('checkAuth:master/item');  
+        
+    });
+
+    Route::group(['prefix' => '/master/department'], function () {
+        Route::get('/',             'Master\DepartmentMasterController@index')->middleware('checkAuth:master/department');
+        Route::get('/create',       'Master\DepartmentMasterController@create')->middleware('checkAuth:master/department');
+        Route::post('/save',        'Master\DepartmentMasterController@save')->middleware('checkAuth:master/department');
+        Route::post('/update',      'Master\DepartmentMasterController@update')->middleware('checkAuth:master/department');
+        Route::get('/delete/{id}',  'Master\DepartmentMasterController@delete')->middleware('checkAuth:master/department');  
+        Route::get('/deptlists',    'Master\DepartmentMasterController@departmentLists')->middleware('checkAuth:master/department');  
         
     });
 

@@ -44,9 +44,8 @@
   </script>
 
 </head>
-<!-- <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed"> -->
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <!-- <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed"> -->
-<body class="hold-transition layout-top-nav layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
   <!-- Preloader -->
@@ -57,18 +56,16 @@
   @yield('loader')
 
   <!-- Navbar -->
-  <!-- <nav class="main-header navbar navbar-expand navbar-light"> -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">    
+  <nav class="main-header navbar navbar-expand navbar-dark">
+  <!-- <nav class="main-header navbar navbar-expand navbar-white navbar-light">     -->
     <!-- Left navbar links -->
     <ul class="navbar-nav">
-      <!-- <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-      </li> -->
       <li class="nav-item">
-        <a class="nav-link" href="{{ url('/') }}" role="button">
-          <b>e-Procurement</b>
-        </a>
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+      <!-- <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button">Document Management System</a>
+      </li> -->
     </ul>
 
     <!-- Right navbar links -->
@@ -101,15 +98,16 @@
         </div>
       </li> -->
       <li class="nav-item">
-        <a class="nav-link" href="#" id="btn-change-pass" title="Change Password" role="button">
-          <i class="fas fa-key"></i>
+        <a class="nav-link" href="#" id="btn-change-pass" role="button">
+          <i class="fas fa-key"></i> Change Password
         </a>
       </li>
       <li class="nav-item">
         <form id="logout-form" method="post" action="{{ url('logout') }}">
           @csrf
-          <a href="javascript:{}" class="nav-link" onclick="document.getElementById('logout-form').submit();" title="Logout">
-            <i class="fa fa-solid fa-power-off"></i> 
+          <a href="javascript:{}" class="nav-link" onclick="document.getElementById('logout-form').submit();">
+          <i class="fa fa-solid fa-power-off"></i> 
+          Sign Out
           </a>
         </form>
       </li>
@@ -119,7 +117,7 @@
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  
+  @include('layouts.sidebar')
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -145,10 +143,10 @@
 
   <!-- Main Footer -->
   <footer class="main-footer">
-    <strong>Copyright &copy; <?= date('Y'); ?> e-Procurement App <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 1.0
+      <b>Version</b> 3.2.0-rc
     </div>
   </footer>
 </div>

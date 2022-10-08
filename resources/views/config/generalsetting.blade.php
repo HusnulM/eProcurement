@@ -13,9 +13,9 @@
                 <div class="card-header">
                     <h3 class="card-title">General Setting</h3>
                     <div class="card-tools">
-                        <a href="{{ url('/config/roles') }}" class="btn btn-default btn-sm">
+                        <!-- <a href="{{ url('/') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
-                        </a>
+                        </a> -->
                     </div>
                 </div>
                 <div class="card-body">
@@ -51,22 +51,6 @@
                                                 @else
                                                     <!-- <img src="/main/public/{{ $complogo->setting_value ?? '/assets/dist/img/no-image.png' }}" alt="Company-Logo" class="img-thumbnail" style="width:200px; height:200px;"> -->
                                                 @endif
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <form action="{{ url('/general/setting/saveipdapid') }}" method="post" enctype="multipart/form-data">
-                                                    @csrf
-                                                    <div class="input-group mb-3">
-                                                        <input type="text" class="form-control" name="ipdapi" value="{{ $ipdapi->setting_value ?? '' }}">
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-primary btn-sm" type="submit">
-                                                                <i class="fa fa-save"></i> SAVE IPD MODEL API
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>                                        
                                             </div>
                                         </div>
                                     </div>
