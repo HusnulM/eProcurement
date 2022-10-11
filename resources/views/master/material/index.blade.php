@@ -217,7 +217,7 @@
                 },
                 {data: "material", className: 'uid'},
                 {data: "matdesc", className: 'fname'},
-                {data: "mattype", className: 'uname'},
+                {data: "mattypedesc", className: 'uname'},
                 {data: "matunit", className: 'uname'},
                 {"defaultContent": 
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button> 
@@ -239,7 +239,8 @@
             var table = $('#tbl-item-master').DataTable();
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
-            window.location = base_url+"/master/item/edit/"+selected_data.materialid;
+            console.log(selected_data)
+            window.location = base_url+"/master/item/edit/"+selected_data.matuniqid;
         });
 
 

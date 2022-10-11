@@ -9,6 +9,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => '/master/item'], function () {
         Route::get('/',             'Master\ItemMasterController@index')->middleware('checkAuth:master/item');
         Route::get('/create',       'Master\ItemMasterController@create')->middleware('checkAuth:master/item');
+        Route::get('/edit/{p1}',    'Master\ItemMasterController@edit')->middleware('checkAuth:master/item');
         Route::post('/save',        'Master\ItemMasterController@save')->middleware('checkAuth:master/item');
         Route::post('/update',      'Master\ItemMasterController@update')->middleware('checkAuth:master/item');
         Route::get('/delete/{id}',  'Master\ItemMasterController@delete')->middleware('checkAuth:master/item');  

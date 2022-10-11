@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
 
@@ -15,13 +16,25 @@ class ItemMasterController extends Controller
     }
 
     public function create(){
-        return view('master.material.create');
+        $matcat = DB::table('t_materialtype')->get();
+        $matuom = DB::table('t_uom')->get();
+        return view('master.material.create', ['matcat' => $matcat, 'matuom' => $matuom]);
+    }
+
+    public function edit($id){
+        $matcat = DB::table('t_materialtype')->get();
+        $matuom = DB::table('t_uom')->get();
+        $materialdata = DB::table('v_material')->where('matuniqid', $id)->first();
+        // dd($id);
+        $materialuom  = DB::table('t_material2')->where('material', $materialdata->material)->get();
+        // dd($materialuom);
+        return view('master.material.edit', ['matcat' => $matcat, 'matuom' => $matuom, 'materialdata' => $materialdata, 'materialuom' => $materialuom]);
     }
 
     public function itemLists(Request $request){
         $params = $request->params;        
         $whereClause = $params['sac'];
-        $query = DB::table('t_material')->orderBy('material');
+        $query = DB::table('v_material')->orderBy('material');
         return DataTables::queryBuilder($query)->toJson();
     }
 
@@ -37,6 +50,117 @@ class ItemMasterController extends Controller
         $whereClause = $params['sac'];
         $query = DB::table('t_uom')->select('uom','uomdesc','createdby', 'createdon')->orderBy('uom');
         return DataTables::queryBuilder($query)->toJson();
+    }
+
+    public function save(Request $req){
+        DB::beginTransaction();
+        try{
+            $current_timestamp = Carbon::now()->timestamp;
+        
+            DB::table('t_material')->insert([
+                'material'   => $req['itemcode'],
+                'matdesc'    => $req['itemname'],
+                'mattype'    => $req['itemtype'],
+                'partname'   => $req['partname'],
+                'partnumber' => $req['partnumber'],
+                'matunit'    => $req['itemunit'],
+                'matuniqid'  => $current_timestamp,
+                'createdon'  => date('Y-m-d H:m:s'),
+                'createdby'  => Auth::user()->email ?? Auth::user()->username
+            ]);            
+
+            $insertAltUom = array();
+            $altUom = array(
+                'material'  => $req['itemcode'],
+                'altuom'    => $req['itemunit'],
+                'convalt'   => '1',
+                'baseuom'   => $req['itemunit'],
+                'convbase'  => '1',
+                'createdon' => date('Y-m-d H:m:s'),
+                'createdby' => Auth::user()->email ?? Auth::user()->username
+            );
+            array_push($insertAltUom, $altUom);
+
+            if(isset($req['convuom'])){
+                $convuom    = $req['convuom'];
+                $convalue   = $req['convalue'];
+                $baseuom    = $req['baseuom'];
+                $baseuomval = $req['baseuomval'];
+                for($i = 0; $i < sizeof($convuom); $i++){
+                    $altUom = array(
+                        'material'  => $req['itemcode'],
+                        'altuom'    => $convuom[$i],
+                        'convalt'   => $convalue[$i],
+                        'baseuom'   => $baseuom[$i],
+                        'convbase'  => $baseuomval[$i],
+                        'createdon' => date('Y-m-d H:m:s'),
+                        'createdby' => Auth::user()->email ?? Auth::user()->username
+                    );
+                    array_push($insertAltUom, $altUom);
+                }
+            }
+            insertOrUpdate($insertAltUom,'t_material2');
+            DB::commit();
+            return Redirect::to("/master/item")->withSuccess('New Item Master Created');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/item")->withError($e->getMessage());
+        }
+    }
+
+    public function update(Request $req){
+        DB::beginTransaction();
+        try{
+            $current_timestamp = Carbon::now()->timestamp;
+        
+            DB::table('t_material')->where('material', $req['itemcode'])->update([
+                // 'material'   => $req['itemcode'],
+                'matdesc'    => $req['itemname'],
+                'mattype'    => $req['itemtype'],
+                'partname'   => $req['partname'],
+                'partnumber' => $req['partnumber'],
+                'matunit'    => $req['itemunit']
+            ]);         
+            
+            DB::table('t_material2')->where('material', $req['itemcode'])->delete();
+
+            $insertAltUom = array();
+            $altUom = array(
+                'material'  => $req['itemcode'],
+                'altuom'    => $req['itemunit'],
+                'convalt'   => '1',
+                'baseuom'   => $req['itemunit'],
+                'convbase'  => '1',
+                'createdon' => date('Y-m-d H:m:s'),
+                'createdby' => Auth::user()->email ?? Auth::user()->username
+            );
+            array_push($insertAltUom, $altUom);
+
+            if(isset($req['convuom'])){
+                $convuom    = $req['convuom'];
+                $convalue   = $req['convalue'];
+                $baseuom    = $req['baseuom'];
+                $baseuomval = $req['baseuomval'];
+                for($i = 0; $i < sizeof($convuom); $i++){
+                    $altUom = array(
+                        'material'  => $req['itemcode'],
+                        'altuom'    => $convuom[$i],
+                        'convalt'   => $convalue[$i],
+                        'baseuom'   => $baseuom[$i],
+                        'convbase'  => $baseuomval[$i],
+                        'createdon' => date('Y-m-d H:m:s'),
+                        'createdby' => Auth::user()->email ?? Auth::user()->username
+                    );
+                    array_push($insertAltUom, $altUom);
+                }
+            }
+            insertOrUpdate($insertAltUom,'t_material2');
+            DB::commit();
+            return Redirect::to("/master/item")->withSuccess('Item Master Updated');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/item")->withError($e->getMessage());
+        }
     }
 
     public function saveitemcategory(Request $req){

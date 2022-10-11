@@ -8,11 +8,19 @@
     {
         text-decoration: none;
     }
+    .content-wrapper
+    {
+        background-image: url({{ asset('/assets/img/bg2.jpg') }});
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
 </style>
 @endsection
 
 @section('content')
-<div class="container-fluid">
+<div class="container">
     @foreach(userMenu() as $headMenu)
         @if($headMenu->menugroup == null)
             @foreach(userSubMenu() as $detailMenu)
@@ -39,16 +47,16 @@
                     <div class="row">
                         @foreach(userSubMenu() as $detailMenu)
                             @if($headMenu->menugroup === $detailMenu->menugroup)
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12 mb-2">
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
                                 <a href="{{ url($detailMenu->route) }}">
                                     <div class="card-body bg-info" style="border-top-right-radius: 10px; border-top-left-radius: 10px;">
                                         <!-- <div class="inner" style="margin-left:10px;">
                                         </div> -->
                                         <div class="icon" style="text-align:center;">
                                             @if($detailMenu->icon)
-                                            <img src="/assets/img/icon/{{ $detailMenu->icon}}" class="img-fluid center-block" alt="Icons" style="width: 150px; height: 150px;">
+                                            <img src="/assets/img/icon/{{ $detailMenu->icon}}" class="img-fluid center-block" alt="Icons" style="width: 60px; height: 60px;">
                                             @else
-                                            <img src="/assets/img/icon/Report.png" class="img-fluid center-block" alt="Icons" style="width: 150px; height: 150px;">
+                                            <img src="/assets/img/icon/Report.png" class="img-fluid center-block" alt="Icons" style="width: 60px; height: 60px;">
                                             @endif
                                         </div>
                                     </div>
