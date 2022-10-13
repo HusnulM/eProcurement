@@ -26,17 +26,27 @@ class MenusController extends Controller
             $menuname   = $req['menunames'];
             $menuroute  = $req['menuroutes'];
             $menugroup  = $req['menugroups'];
+            $menuicons  = $req['icons'];
 
             $insertData = array();
             for($i = 0; $i < sizeof($menuname); $i++){
+                $filename = null;
+                if(isset($req['icons'])){
+                    $efile    = $menuicons[$i];
+                    $filename = $efile->getClientOriginalName();
+                }
+
                 $menus = array(
                     'name'          => $menuname[$i],
                     'route'         => $menuroute[$i],
                     'menugroup'     => $menugroup[$i],
+                    'icon'          => $filename,
                     'created_at'    => date('Y-m-d H:m:s'),
                     'createdby'     => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertData, $menus);
+
+                $efile->move('assets/img/icon/', $filename);  
             }
             insertOrUpdate($insertData,'menus');
             DB::commit();

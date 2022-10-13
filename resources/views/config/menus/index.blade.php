@@ -106,7 +106,7 @@
 
 @section('additional-modal')
 <div class="modal fade" id="modal-add-user">
-    <form action="{{ url('config/menus/savemenu') }}" method="post">
+    <form action="{{ url('config/menus/savemenu') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -124,6 +124,7 @@
                                 <th>Name</th>
                                 <th>Route</th>
                                 <th>Menu Group</th>
+                                <th>Icon</th>
                                 <th style="width:50px; text-align:center;">
                                     <button type="button" class="btn btn-success btn-sm btn-add-new-menu">
                                         <i class="fa fa-plus"></i>
@@ -155,7 +156,7 @@
 </div>
 
 <div class="modal fade" id="modal-edit-menu">
-    <form action="{{ url('config/menus/updatemenu') }}" method="post">
+    <form action="{{ url('config/menus/updatemenu') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -184,6 +185,10 @@
                                 <option value="{{ $row->id }}"> {{ $row->menugroup }} </option>
                             @endforeach
                         </select>
+                    </div> 
+                    <div class="col-lg-6 col-md-12">
+                        <label for="menuicon">Menu Icon</label>
+                        <input type="file" name="menuicon" id="menuicon" class="form-control">
                     </div> 
                 </div>
             </div>
@@ -325,6 +330,9 @@
                                 <option value="{{ $row->id }}">{{ $row->menugroup }}</option>
                             @endforeach
                         </select>
+                    </td>
+                    <td>
+                        <input type="file" name="icons[]" class="form-control">
                     </td>
                     <td style="text-align:center;">
                         <button type="button" class="btn btn-danger btn-sm btnRemove">

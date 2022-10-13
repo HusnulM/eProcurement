@@ -23,21 +23,7 @@
 <div class="container">
     @foreach(userMenu() as $headMenu)
         @if($headMenu->menugroup == null)
-            @foreach(userSubMenu() as $detailMenu)
-                @if($headMenu->menugroup === $detailMenu->menugroup)
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <a href="{{ url($detailMenu->route) }}" style="text-decoration: none;">
-                        <div class="info-box">
-                            <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
-
-                            <div class="info-box-content">
-                                <span class="info-box-text">{{ $detailMenu->menu_desc }}</span>
-                            </div>
-                        </div>
-                        </a>
-                    </div>
-                @endif
-            @endforeach
+            
         @else
             <div class="card">
                 <div class="card-header">
@@ -47,11 +33,9 @@
                     <div class="row">
                         @foreach(userSubMenu() as $detailMenu)
                             @if($headMenu->menugroup === $detailMenu->menugroup)
-                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2">
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-3">
                                 <a href="{{ url($detailMenu->route) }}">
                                     <div class="card-body bg-info" style="border-top-right-radius: 10px; border-top-left-radius: 10px;">
-                                        <!-- <div class="inner" style="margin-left:10px;">
-                                        </div> -->
                                         <div class="icon" style="text-align:center;">
                                             @if($detailMenu->icon)
                                             <img src="/assets/img/icon/{{ $detailMenu->icon}}" class="img-fluid center-block" alt="Icons" style="width: 60px; height: 60px;">

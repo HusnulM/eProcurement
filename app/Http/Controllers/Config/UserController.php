@@ -14,7 +14,9 @@ class UserController extends Controller
     }
 
     public function create(){
-        return view('config.users.create');
+        $jabatan = DB::table('t_jabatan')->get();
+        $departm = DB::table('t_department')->get();
+        return view('config.users.create', ['jabatan' => $jabatan, 'department' => $departm]);
     }
 
     public function objectauth($userid){

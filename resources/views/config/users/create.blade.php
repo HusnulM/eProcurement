@@ -25,48 +25,76 @@
                 <div class="card-body">
                     <form action="{{ url('/config/users/save') }}" method="post" enctype="multipart/form-data">
                         @csrf
-                        <div class="col-lg-6">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="name">Name of User</label>
-                                        <input type="text" name="name" id="name" class="form-control" required>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="name">Name of User</label>
+                                            <input type="text" name="name" id="name" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="username">User ID</label>
+                                            <input type="text" name="username" id="username" class="form-control" autocomplete="off" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input type="email" name="email" id="email" class="form-control" autocomplete="off" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="password">Password</label>
+                                            <input type="password" name="password" id="password" class="form-control" autocomplete="new-password" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="esignfile">e-signature</label>
+                                            <input type="file" name="esignfile" id="esignfile" class="form-control">
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <a href="{{ url('/config/users') }}" class="btn btn-default btn-sm">
+                                            <i class="fa fa-arrow-left"></i> Back
+                                        </a>
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-save"></i> SAVE
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="form-group">
-                                        <label for="username">User ID</label>
-                                        <input type="text" name="username" id="username" class="form-control" autocomplete="off" required>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" name="email" id="email" class="form-control" autocomplete="off" required>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="form-group">
-                                        <label for="password">Password</label>
-                                        <input type="password" name="password" id="password" class="form-control" autocomplete="new-password" required>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="form-group">
-                                        <label for="esignfile">e-signature</label>
-                                        <input type="file" name="esignfile" id="esignfile" class="form-control">
-                                    </div>
-                                </div>
-                                
                             </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12">
-                                    <a href="{{ url('/config/users') }}" class="btn btn-default btn-sm">
-                                        <i class="fa fa-arrow-left"></i> Back
-                                    </a>
-                                    <button type="submit" class="btn btn-primary btn-sm">
-                                        <i class="fa fa-save"></i> SAVE
-                                    </button>
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="name">Jabatan</label>
+                                            <select name="jabatan" id="jabatan" class="form-control">
+                                                <option value="">Pilih Jabatan</option>
+                                                @foreach($jabatan as $key => $d)
+                                                    <option value="{{ $d->id }}">{{ $d->jabatan }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="department">Department</label>
+                                            <select name="department" id="department" class="form-control">
+                                                <option value="">Pilih Department</option>
+                                                @foreach($department as $key => $d)
+                                                    <option value="{{ $d->deptid }}">{{ $d->department }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

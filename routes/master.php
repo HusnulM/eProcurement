@@ -41,6 +41,16 @@ Route::group(['middleware' => 'auth'], function () {
         
     });
 
+    Route::group(['prefix' => '/master/jabatan'], function () {
+        Route::get('/',             'Master\JabatanMasterController@index')->middleware('checkAuth:master/jabatan');
+        Route::get('/create',       'Master\JabatanMasterController@create')->middleware('checkAuth:master/jabatan');
+        Route::post('/save',        'Master\JabatanMasterController@save')->middleware('checkAuth:master/jabatan');
+        Route::post('/update',      'Master\JabatanMasterController@update')->middleware('checkAuth:master/jabatan');
+        Route::get('/delete/{id}',  'Master\JabatanMasterController@delete')->middleware('checkAuth:master/jabatan');  
+        Route::get('/jabatanlist',  'Master\JabatanMasterController@jabatanLists')->middleware('checkAuth:master/jabatan');  
+        
+    });
+
     Route::group(['prefix' => '/master/doctype'], function () {
         Route::get('/',           'Master\DoctypeController@index')->middleware('checkAuth:master/doctype');
         Route::post('/save',      'Master\DoctypeController@save')->middleware('checkAuth:master/doctype');
