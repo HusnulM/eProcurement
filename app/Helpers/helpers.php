@@ -248,3 +248,92 @@ function apiIpdApp(){
     $ipdapi    = DB::table('general_setting')->where('setting_name', 'IPD_MODEL_API')->first();
     return $ipdapi->setting_value;
 }
+
+function getAppTheme(){
+    $ipdapi    = DB::table('general_setting')->where('setting_name', 'APP_THEME')->first();
+    return $ipdapi->setting_value;
+}
+
+function getAppBgImage(){
+    $ipdapi    = DB::table('general_setting')->where('setting_name', 'APP_BGIMAGE')->first();
+    return $ipdapi->setting_value;
+}
+
+function getUserDepartment(){
+    $userDept = DB::table('t_department')->where('deptid', Auth::user()->deptid)->first();
+    return $userDept->department;
+}
+
+function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
+    $dcnNumber = 'PTA-'.$deptname.'/'.$tahun.$bulan.$tgl;
+
+    $getdata = DB::table('t_nriv_budget')
+               ->where('tahun',  $tahun)
+               ->where('object', 'BUDGET')
+               ->where('bulan',  $bulan)
+               ->where('tanggal',  $tgl)
+               ->where('deptid', $dept)
+               ->first();
+    if($getdata){
+        DB::beginTransaction();
+        try{
+            $leadingZero = '';
+            if(strlen($getdata->current_number) == 5){
+                $leadingZero = '0';
+            }elseif(strlen($getdata->current_number) == 4){
+                $leadingZero = '00';
+            }elseif(strlen($getdata->current_number) == 3){
+                $leadingZero = '000';
+            }elseif(strlen($getdata->current_number) == 2){
+                $leadingZero = '0000';
+            }elseif(strlen($getdata->current_number) == 1){
+                $leadingZero = '00000';
+            }
+
+            $lastnum = ($getdata->lastnumber*1) + 1;
+
+            if($leadingZero == ''){
+                $dcnNumber = $dcnNumber. $lastnum; 
+            }else{
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+            }
+
+            DB::table('t_nriv_budget')
+            ->where('tahun',  $tahun)
+            ->where('object', 'BUDGET')
+            ->where('bulan',  $bulan)
+            ->where('tanggal',  $tgl)
+            ->where('deptid', $dept)
+            ->update([
+                'lastnumber' => $lastnum
+            ]);
+
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            return null;
+        }
+    }else{
+        $dcnNumber = $dcnNumber.'000001';
+        DB::beginTransaction();
+        try{
+            DB::table('t_nriv_budget')->insert([
+                'object'          => 'BUDGET',
+                'tahun'           => $tahun,
+                'bulan'           => $bulan,
+                'tanggal'         => $tgl,
+                'deptid'          => $dept,
+                'lastnumber'      => '1',
+                'createdon'       => date('Y-m-d H:m:s'),
+                'createdby'       => Auth::user()->email ?? Auth::user()->username
+            ]);
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            return null;
+        }
+    }
+    
+}

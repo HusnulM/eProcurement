@@ -28,7 +28,19 @@ class UserController extends Controller
 
     public function edit($id){
         $data = DB::table('users')->where('id', $id)->first();
-        return view('config.users.edit', ['datauser' => $data]);
+        $jabatan = DB::table('t_jabatan')->get();
+        $departm = DB::table('t_department')->get();
+        $ujabatan = DB::table('t_jabatan')->where('id', $data->jabatanid)->first();
+        $udepartm = DB::table('t_department')->where('deptid',$data->deptid)->first();
+        // dd($udepartm);
+        return view('config.users.edit', 
+            [
+                'datauser'    => $data, 
+                'jabatan'     => $jabatan, 
+                'department'  => $departm,
+                'ujabatan'    => $ujabatan, 
+                'udepartm'    => $udepartm
+            ]);
     }
 
     public function save(Request $request){
@@ -63,6 +75,8 @@ class UserController extends Controller
                 'username'    => $request['username'],
                 'password'    => $password,
                 's_signfile'  => $esignpath ?? null,
+                'deptid'      => $request['department'],
+                'jabatanid'   => $request['jabatan'],
                 'created_at'  => date('Y-m-d H:m:s'),
                 'createdby'   => Auth::user()->email ?? Auth::user()->username
             ]);
@@ -101,13 +115,17 @@ class UserController extends Controller
                     'name'        => $request['name'],
                     'email'       => $request['email'],
                     'username'    => $request['username'],
-                    'password'    => $password
+                    'password'    => $password,
+                    'deptid'      => $request['department'],
+                    'jabatanid'   => $request['jabatan']
                 ]);
             }else{
                 DB::table('users')->where('id',$request['iduser'])->update([
                     'name'        => $request['name'],
                     'email'       => $request['email'],
-                    'username'    => $request['username']
+                    'username'    => $request['username'],
+                    'deptid'      => $request['department'],
+                    'jabatanid'   => $request['jabatan']
                 ]);
             }
 
@@ -164,9 +182,13 @@ class UserController extends Controller
     public function delete($id){
         DB::beginTransaction();
         try{
-            DB::table('users')->where('id', $id)->delete();
-
-            DB::commit();
+            $checkSysAdm = DB::table('users')->where('id', $id)->first();
+            if($checkSysAdm->username === "sys-admin"){
+                return Redirect::to("/config/users")->withError('User sys-admin Tidak bisa dihapus!');
+            }else{
+                DB::table('users')->where('id', $id)->delete();    
+                DB::commit();
+            }
             return Redirect::to("/config/users")->withSuccess('User deleted');
         }catch(\Exception $e){
             DB::rollBack();
@@ -193,7 +215,7 @@ class UserController extends Controller
     public function userlist(Request $request){
         $params = $request->params;        
         $whereClause = $params['sac'];
-        $query = DB::table('users')->orderBy('id');
+        $query = DB::table('v_users')->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }
 }

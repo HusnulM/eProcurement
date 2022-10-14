@@ -10,9 +10,10 @@ use Validator,Redirect,Response;
 class GeneralSettingController extends Controller
 {
     public function index(){
-        $data   = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
-        $ipdapi = DB::table('general_setting')->where('setting_name', 'IPD_MODEL_API')->first();
-        return view('config.generalsetting', ['complogo' => $data, 'ipdapi' => $ipdapi]);
+        $data    = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
+        $theme   = DB::table('general_setting')->where('setting_name', 'APP_THEME')->first();
+        $bgimage = DB::table('general_setting')->where('setting_name', 'APP_BGIMAGE')->first();
+        return view('config.generalsetting', ['complogo' => $data, 'theme' => $theme, 'bgimage' => $bgimage]);
     }
 
     public function save(Request $request){
@@ -38,6 +39,59 @@ class GeneralSettingController extends Controller
             }
             DB::commit();
             return Redirect::to("/general/setting")->withSuccess('Company Logo Saved!');
+        }catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/general/setting")->withError($e->getMessage());
+        }
+    }
+
+    public function saveBgImage(Request $request){
+        DB::beginTransaction();
+        try{
+            $companyLogo = $request->file('bgimage');
+            $filename    = $companyLogo->getClientOriginalName();
+            $filepath    = 'assets/img/'. $filename;  
+            $companyLogo->move('assets/img/', $filename);  
+
+            $check = DB::table('general_setting')->where('setting_name', 'APP_BGIMAGE')->first();
+            if($check){
+                DB::table('general_setting')->where('setting_name', 'APP_BGIMAGE')->update([
+                    'setting_value' => $filepath
+                ]);
+            }else{
+                DB::table('general_setting')->insert([
+                    'setting_name'  => 'APP_BGIMAGE',
+                    'setting_value' => $filepath,
+                    'createdby'     => Auth::user()->username,
+                    'createdon'     => getLocalDatabaseDateTime()
+                ]);
+            }
+            DB::commit();
+            return Redirect::to("/general/setting")->withSuccess('Application background image updated!');
+        }catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/general/setting")->withError($e->getMessage());
+        }
+    }
+
+    public function saveAppTheme(Request $request){
+        DB::beginTransaction();
+        try{
+            $check = DB::table('general_setting')->where('setting_name', 'APP_THEME')->first();
+            if($check){
+                DB::table('general_setting')->where('setting_name', 'APP_THEME')->update([
+                    'setting_value' => $request['apptheme']
+                ]);
+            }else{
+                DB::table('general_setting')->insert([
+                    'setting_name'  => 'APP_THEME',
+                    'setting_value' => $request['apptheme'],
+                    'createdby'     => Auth::user()->username,
+                    'createdon'     => getLocalDatabaseDateTime()
+                ]);
+            }
+            DB::commit();
+            return Redirect::to("/general/setting")->withSuccess('Application Theme updated!');
         }catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/general/setting")->withError($e->getMessage());

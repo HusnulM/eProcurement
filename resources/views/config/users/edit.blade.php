@@ -72,12 +72,33 @@
                                 </div>
                             </div>
                             <div class="col-lg-6">
-                                <div class="col-lg-12 col-md-12 text-center">
-                                    @if(checkIsLocalhost() == 1)
-                                    <!-- <img src="{{ $datauser->s_signfile ?? '/assets/dist/img/no-image.png' }}" class="img-thumbnail" alt="E-sign" style="width:200px; height:200px;"> -->
-                                    @else
-                                    @endif
-                                    <img src="{{ asset($datauser->s_signfile ?? '/assets/dist/img/no-image.png') }}" class="img-thumbnail" alt="E-sign" style="width:200px; height:200px;">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="name">Jabatan</label>
+                                            <select name="jabatan" id="jabatan" class="form-control">
+                                                <option value="{{ $ujabatan->id ?? '' }}">{{ $ujabatan->jabatan ?? 'Pilih Jabatan' }}</option>
+                                                @foreach($jabatan as $key => $d)
+                                                    <option value="{{ $d->id }}">{{ $d->jabatan }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="department">Department</label>
+                                            <select name="department" id="department" class="form-control">
+                                                <option value="{{ $udepartm->deptid ?? '' }}">{{ $udepartm->department ?? 'Pilih Department' }}</option>
+                                                @foreach($department as $key => $d)
+                                                    <option value="{{ $d->deptid }}">{{ $d->department }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 text-center">
+                                        <p><b>e-Signature</b></p>
+                                        <img src="{{ asset($datauser->s_signfile ?? '/assets/dist/img/no-image.png') }}" class="img-thumbnail" alt="E-sign" style="width:200px; height:200px;">
+                                    </div>
                                 </div>
                             </div>
                         </div>

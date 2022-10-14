@@ -10,7 +10,7 @@
     }
     .content-wrapper
     {
-        background-image: url({{ asset('/assets/img/bg2.jpg') }});
+        background-image: url({{ asset(getAppBgImage() ?? '') }});
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -21,6 +21,7 @@
 
 @section('content')
 <div class="container">
+@if(getAppTheme() === 'TILE')
     @foreach(userMenu() as $headMenu)
         @if($headMenu->menugroup == null)
             
@@ -58,6 +59,7 @@
                 </div>
             </div>            
         @endif
-    @endforeach
+    @endforeach    
+@endif
 </div>
 @endsection

@@ -98,16 +98,15 @@
         </div>
       </li> -->
       <li class="nav-item">
-        <a class="nav-link" href="#" id="btn-change-pass" role="button">
-          <i class="fas fa-key"></i> Change Password
+        <a class="nav-link" href="#" id="btn-change-pass" title="Change Password" role="button">
+          <i class="fas fa-key"></i>
         </a>
       </li>
       <li class="nav-item">
         <form id="logout-form" method="post" action="{{ url('logout') }}">
           @csrf
-          <a href="javascript:{}" class="nav-link" onclick="document.getElementById('logout-form').submit();">
-          <i class="fa fa-solid fa-power-off"></i> 
-          Sign Out
+          <a href="javascript:{}" class="nav-link" onclick="document.getElementById('logout-form').submit();" title="Logout">
+            <i class="fa fa-solid fa-power-off"></i> 
           </a>
         </form>
       </li>

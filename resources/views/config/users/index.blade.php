@@ -32,6 +32,8 @@
                                 <th>User Name</th>
                                 <th>Email</th>
                                 <th>Name</th>
+                                <th>Department</th>
+                                <th>Jabatan</th>
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
@@ -74,6 +76,8 @@
                 {data: "username", className: 'uid'},
                 {data: "email", className: 'fname'},
                 {data: "name", className: 'uname'},
+                {data: "department", className: 'fname'},
+                {data: "jabatan", className: 'uname'},
                 {"defaultContent": 
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button>
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
