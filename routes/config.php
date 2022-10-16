@@ -65,8 +65,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/deletegroup/{id}',       'Config\MenusController@deleteGroup')->middleware('checkAuth:config/menus');
     });
 
+    // Route::group(['prefix' => '/config/workflow/budget'], function () {
+
+    // });
+
     Route::group(['prefix' => '/config/workflow'], function () {
         Route::get('/',                   'Config\WorkflowController@index')->middleware('checkAuth:config/workflow');
+        Route::post('/savebudgetwf',      'Config\WorkflowController@saveBudgetApproval')->middleware('checkAuth:config/workflow');
+        Route::get('/deletebudgetwf/{id}','Config\WorkflowController@deleteBudgetwf')->middleware('checkAuth:config/workflow');
+
+
         Route::post('/savecategories',    'Config\WorkflowController@saveCategories')->middleware('checkAuth:config/workflow');
         Route::post('/updatecategories',  'Config\WorkflowController@updateCategories')->middleware('checkAuth:config/workflow');
         Route::get('/deletecategories/{id}',   'Config\WorkflowController@deleteCategories')->middleware('checkAuth:config/workflow');

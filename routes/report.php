@@ -10,4 +10,9 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::post('/documentlist/export', 'Reports\DocumentReportController@exportdata');
     });
+
+    Route::group(['prefix' => '/report'], function () {
+        Route::get('/budgetrequest',            'Reports\ReportsController@requestbudget')->middleware('checkAuth:report/budgetrequest');
+        Route::get('/budgetrequestlist',        'Reports\ReportsController@budgetRequestlist')->middleware('checkAuth:approve/budget');
+    });
 });

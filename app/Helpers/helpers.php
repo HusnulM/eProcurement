@@ -274,19 +274,20 @@ function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
                ->where('tanggal',  $tgl)
                ->where('deptid', $dept)
                ->first();
+    
     if($getdata){
         DB::beginTransaction();
         try{
             $leadingZero = '';
-            if(strlen($getdata->current_number) == 5){
+            if(strlen($getdata->lastnumber) == 5){
                 $leadingZero = '0';
-            }elseif(strlen($getdata->current_number) == 4){
+            }elseif(strlen($getdata->lastnumber) == 4){
                 $leadingZero = '00';
-            }elseif(strlen($getdata->current_number) == 3){
+            }elseif(strlen($getdata->lastnumber) == 3){
                 $leadingZero = '000';
-            }elseif(strlen($getdata->current_number) == 2){
+            }elseif(strlen($getdata->lastnumber) == 2){
                 $leadingZero = '0000';
-            }elseif(strlen($getdata->current_number) == 1){
+            }elseif(strlen($getdata->lastnumber) == 1){
                 $leadingZero = '00000';
             }
 
@@ -297,6 +298,8 @@ function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
             }else{
                 $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
             }
+
+            // dd($leadingZero);
 
             DB::table('t_nriv_budget')
             ->where('tahun',  $tahun)

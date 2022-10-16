@@ -22,13 +22,19 @@
             <!-- <h4 class="mt-5 ">Custom Content Above</h4> -->
             <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="custom-content-categories-tab" data-toggle="pill" href="#custom-content-categories" role="tab" aria-controls="custom-content-categories" aria-selected="true">Workflow Approval Categories</a>
+                    <a class="nav-link active" id="custom-content-categories-tab" data-toggle="pill" href="#custom-content-categories" role="tab" aria-controls="custom-content-categories" aria-selected="true">Approval Budget</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Workflow Approval Group</a>
+                    <a class="nav-link" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Approval PBJ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Workflow Approval Group Assignment</a>
+                    <a class="nav-link" id="custom-content-above-spk-tab" data-toggle="pill" href="#custom-content-above-spk" role="tab" aria-controls="custom-content-above-spk" aria-selected="true">Approval SPK</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Approval PR</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-po-tab" data-toggle="pill" href="#custom-content-above-po" role="tab" aria-controls="custom-content-above-po" aria-selected="false">Approval PO</a>
                 </li>
             </ul>
             <!-- <div class="tab-custom-content">
@@ -41,7 +47,7 @@
                             <div class="card-header">
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-primary btn-sm btn-add-categories">
-                                        <i class="fas fa-plus"></i> Add Workflow Approval Categories
+                                        <i class="fas fa-plus"></i> Tambah Approval Budget
                                     </button>
                                 </div>
                             </div>
@@ -49,17 +55,20 @@
                                 <table id="tbl-categories" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                     <thead>
                                         <th>No</th>
-                                        <th>Workflow Approval Categories</th>
+                                        <th>Budget Requestor</th>
+                                        <th>Approver</th>
+                                        <th>Approval Level</th>
                                         <th></th>
                                     </thead>
                                     <tbody>
-                                        @foreach($ctgrs as $key => $row)
+                                        @foreach($budgetwf as $key => $row)
                                         <tr>
                                             <td>{{ $key+1 }}</td>
-                                            <td>{{ $row->workflow_category }}</td>
+                                            <td>{{ $row->requester_name }}</td>
+                                            <td>{{ $row->approver_name }}</td>
+                                            <td>{{ $row->approver_level }}</td>
                                             <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deletecategories/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</a> 
-                                                <button class='btn btn-primary btn-sm btn-edit-workflow-categories' data-workflow_categoryid="{{$row->id}}" data-workflow_category="{{$row->workflow_category}}"> <i class='fa fa-edit'></i> EDIT</button>
+                                                <a href="{{ url('config/workflow/deletebudgetwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</a> 
                                             </td>
                                         </tr>
                                         @endforeach
@@ -125,21 +134,7 @@
                                         <th></th>
                                     </thead>
                                     <tbody>
-                                        @foreach($wfassignments as $key => $row)
-                                        <tr>
-                                            <td>{{ $key+1 }}</td>
-                                            <td>{{ $row->wf_groupname }}</td>
-                                            <td>{{ $row->approval_level }}</td>
-                                            <td>{{ $row->wf_categoryname }}</td>
-                                            <td>{{ $row->creator }}</td>
-                                            <td>{{ $row->approver }}</td>
-                                            <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deleteassignment/') }}/{{$row->workflow_group}}/{{$row->approval_level}}/{{$row->workflow_categories}}/{{$row->creatorid}}/{{$row->approverid}}" class='btn btn-danger btn-sm button-delete'> 
-                                                    <i class='fa fa-trash'></i> DELETE ASSIGNMENT
-                                                </a> 
-                                            </td>
-                                        </tr>
-                                        @endforeach
+                                        
                                     </tbody>
                                 </table>                                                    
                             </div>
@@ -154,12 +149,12 @@
 
 @section('additional-modal')
 <div class="modal fade" id="modal-add-categories">
-    <form action="{{ url('config/workflow/savecategories') }}" method="post">
+    <form action="{{ url('config/workflow/savebudgetwf') }}" method="post">
         @csrf
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Add New Approval Categories</h4>
+              <h4 class="modal-title">Tambah Approval Budget</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -169,7 +164,9 @@
                     <div class="col-lg-12">
                         <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                             <thead>
-                                <th>Approval Categories</th>
+                                <th>Budget Requester</th>
+                                <th>Budget Approver</th>
+                                <th>Approval Level</th>
                                 <th style="width:50px; text-align:center;">
                                     <button type="button" class="btn btn-success btn-sm btn-add-new-categories">
                                         <i class="fa fa-plus"></i>
@@ -456,7 +453,21 @@
             $('#tbl-new-categories-body').append(`
                 <tr>
                     <td>
-                        <input type="text" name="approvalcategories[]" class="form-control"/>
+                        <select name="requester[]" class="form-control requester">
+                            @foreach($users as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="approver[]" class="form-control approver">
+                            @foreach($users as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="applevel[]" class="form-control"/>
                     </td>
                     <td style="text-align:center;">
                         <button type="button" class="btn btn-danger btn-sm btnRemove">
@@ -465,6 +476,8 @@
                     </td>
                 </tr>
             `);
+
+            $(".requester, .approver").select2();
 
             $('.btnRemove').on('click', function(e){
                 e.preventDefault();

@@ -33,6 +33,7 @@ class BudgetingController extends Controller
         })
         ->toJson();
     }
+    
 
     public function save(Request $req){
         // return $req;
@@ -43,6 +44,9 @@ class BudgetingController extends Controller
             $tahun = substr($req['tglaju'], 0, 4);
             // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
             $ptaNumber = generateBudgetDcnNumber($tahun, $bulan, $tgl, Auth::user()->deptid, getUserDepartment());
+
+            // return $ptaNumber;
+
             $amount = $req['nominal'];
             $amount = str_replace(',','',$amount);
             DB::table('t_budget')->insert([
@@ -59,6 +63,29 @@ class BudgetingController extends Controller
                 'createdon'     => date('Y-m-d H:m:s'),
                 'createdby'     => Auth::user()->email ?? Auth::user()->username
             ]);
+
+            //Set Approval
+            $approval = DB::table('v_workflow_budget')->where('requester', Auth::user()->id)->get();
+            if(sizeof($approval) > 0){
+                $insertApproval = array();
+                foreach($approval as $row){
+                    $is_active = 'N';
+                    if($row->approver_level == 1){
+                        $is_active = 'Y';
+                    }
+                    $approvals = array(
+                        'ptanumber'         => $ptaNumber,
+                        'approver_level'    => $row->approver_level,
+                        'approver'          => $row->approver,
+                        'requester'         => Auth::user()->id,
+                        'is_active'         => $is_active,
+                        'createdon'         => getLocalDatabaseDateTime()
+                    );
+                    array_push($insertApproval, $approvals);
+                }
+                insertOrUpdate($insertApproval,'t_budget_approval');
+            }
+
             DB::commit();
             return Redirect::to("/transaction/budgeting")->withSuccess('Pengajuan Budget Berhasil dibuat dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
