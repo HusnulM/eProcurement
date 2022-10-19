@@ -65,7 +65,7 @@ class BudgetingController extends Controller
             ]);
 
             //Set Approval
-            $approval = DB::table('v_workflow_budget')->where('requester', Auth::user()->id)->get();
+            $approval = DB::table('v_workflow_budget')->where('object','BUDGET')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){
                 $insertApproval = array();
                 foreach($approval as $row){

@@ -23,4 +23,40 @@ class VendorMasterController extends Controller
         $query = DB::table('t_vendor')->orderBy('vendor_code');
         return DataTables::queryBuilder($query)->toJson();
     }
+
+    public function findVendor(Request $request){
+        // $url    = parse_url($_SERVER['REQUEST_URI']);
+        // $search = $url['query'];
+        // $search = str_replace("searchName=","",$search);
+
+        $query['data'] = DB::table('t_vendor')->where('vendor_name', 'like', '%'. $request->search . '%')->get();
+
+        // return \Response::json($query);
+        return $query;
+        // return $this->successResponse('OK', $query);
+    }
+
+    public function save(Request $req){
+        DB::beginTransaction();
+        try{
+            $insertData = array();
+            $data = array(
+                'vendor_code'    => $req['vendorcode'],
+                'vendor_name'    => $req['vendorname'],
+                'vendor_address' => $req['address'],
+                'vendor_telp'    => $req['telp'],
+                'vendor_email'   => $req['email'],
+                'contact_person' => $req['contactperson'],
+                'createdon'      => date('Y-m-d H:m:s'),
+                'createdby'      => Auth::user()->email ?? Auth::user()->username
+            );
+            array_push($insertData, $data);
+            insertOrUpdate($insertData,'t_vendor');
+            DB::commit();
+            return Redirect::to("/master/vendor")->withSuccess('Vendor Berhasil dibuat');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/vendor")->withError($e->getMessage());
+        }
+    }
 }

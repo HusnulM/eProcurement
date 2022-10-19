@@ -83,8 +83,8 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="card-tools">
-                                    <button type="button" class="btn btn-primary btn-sm btn-add-user">
-                                        <i class="fas fa-plus"></i> Add Workflow Approval Group
+                                    <button type="button" class="btn btn-primary btn-sm btn-add-pbj-approval">
+                                        <i class="fas fa-plus"></i> Tambah Approval PBJ
                                     </button>
                                 </div>
                             </div>
@@ -92,17 +92,22 @@
                                 <table id="tbl-menu" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                     <thead>
                                         <th>No</th>
-                                        <th>Workflow Approval Group</th>
+                                        <th>PBJ Requestor</th>
+                                        <th>Approver</th>
+                                        <th>Approval Level</th>
                                         <th></th>
                                     </thead>
                                     <tbody>
-                                        @foreach($groups as $key => $row)
+                                        @foreach($pbjwf as $key => $row)
                                         <tr>
                                             <td>{{ $key+1 }}</td>
-                                            <td>{{ $row->workflow_group }}</td>
+                                            <td>{{ $row->requester_name }}</td>
+                                            <td>{{ $row->approver_name }}</td>
+                                            <td>{{ $row->approver_level }}</td>
                                             <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deletegroup/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</a> 
-                                                <button class='btn btn-primary btn-sm btn-edit-group' data-workflow_groupid="{{$row->id}}" data-workflow_group="{{$row->workflow_group}}"> <i class='fa fa-edit'></i> EDIT</button>
+                                                <a href="{{ url('config/workflow/deletepbjwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
+                                                    <i class='fa fa-trash'></i> DELETE
+                                                </a> 
                                             </td>
                                         </tr>
                                         @endforeach
@@ -197,13 +202,13 @@
     </form>
 </div>
 
-<div class="modal fade" id="modal-add-user">
-    <form action="{{ url('config/workflow/savegroup') }}" method="post">
+<div class="modal fade" id="modal-approval-pbj">
+    <form action="{{ url('config/workflow/savepbjwf') }}" method="post">
         @csrf
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Add New Approval Group</h4>
+              <h4 class="modal-title">Tambah Approval PBJ</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -213,14 +218,16 @@
                     <div class="col-lg-12">
                         <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                             <thead>
-                                <th>Workflow Group</th>
+                                <th>PBJ Creator</th>
+                                <th>PBJ Approver</th>
+                                <th>Approval Level</th>
                                 <th style="width:50px; text-align:center;">
-                                    <button type="button" class="btn btn-success btn-sm btn-add-new-menu">
+                                    <button type="button" class="btn btn-success btn-sm btn-add-new-pbj-wf">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </th>
                             </thead>
-                            <tbody id="tbl-new-menu-body">
+                            <tbody id="tbl-pbj-wf-body">
 
                             </tbody>
                             <tfoot>
@@ -232,35 +239,6 @@
                                 </tr>
                             </tfoot>
                         </table>  
-                    </div> 
-                </div>
-            </div>
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-          </div>
-        </div>
-    </form>
-</div>
-
-<div class="modal fade" id="modal-edit-group">
-    <form action="{{ url('config/workflow/updategroup') }}" method="post">
-        @csrf
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Edit Workflow Approval Group</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12">
-                        <label for="wfgroupname">Workflow Approval Group</label>
-                        <input type="text" name="wfgroupname" id="wfgroupname" class="form-control" required>
-                        <input type="hidden" name="wfgroupid" id="wfgroupid" class="form-control" required>
                     </div> 
                 </div>
             </div>
@@ -365,8 +343,8 @@
             $('#modal-add-categories').modal('show');
         });
 
-        $('.btn-add-user').on('click', function(e){
-            $('#modal-add-user').modal('show');
+        $('.btn-add-pbj-approval').on('click', function(e){
+            $('#modal-approval-pbj').modal('show');
         });
 
         $('.btn-add-assignment').on('click', function(e){
@@ -432,6 +410,42 @@
                                 <option value="{{ $row->id }}">{{ $row->name }}</option>
                             @endforeach
                         </select>
+                    </td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-danger btn-sm btnRemove">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            $(".wfgroups, .wfctegrs, .wfapprov, .wfcreator").select2();
+
+            $('.btnRemove').on('click', function(e){
+                e.preventDefault();
+                $(this).closest("tr").remove();
+            });
+        });
+
+        $('.btn-add-new-pbj-wf').on('click', function(){
+            $('#tbl-pbj-wf-body').append(`
+                <tr>
+                    <td>
+                        <select name="requester[]" class="form-control requester">
+                            @foreach($users as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="approver[]" class="form-control approver">
+                            @foreach($users as $key => $row)
+                                <option value="{{ $row->id }}">{{ $row->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="applevel[]" class="form-control"/>
                     </td>
                     <td style="text-align:center;">
                         <button type="button" class="btn btn-danger btn-sm btnRemove">

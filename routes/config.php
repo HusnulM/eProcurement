@@ -74,6 +74,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/savebudgetwf',      'Config\WorkflowController@saveBudgetApproval')->middleware('checkAuth:config/workflow');
         Route::get('/deletebudgetwf/{id}','Config\WorkflowController@deleteBudgetwf')->middleware('checkAuth:config/workflow');
 
+        Route::post('/savepbjwf',         'Config\WorkflowController@savePbjApproval')->middleware('checkAuth:config/workflow');
 
         Route::post('/savecategories',    'Config\WorkflowController@saveCategories')->middleware('checkAuth:config/workflow');
         Route::post('/updatecategories',  'Config\WorkflowController@updateCategories')->middleware('checkAuth:config/workflow');

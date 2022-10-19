@@ -52,6 +52,18 @@ class ItemMasterController extends Controller
         return DataTables::queryBuilder($query)->toJson();
     }
 
+    public function findPartnumber(Request $request){
+        // $url    = parse_url($_SERVER['REQUEST_URI']);
+        // $search = $url['query'];
+        // $search = str_replace("searchName=","",$search);
+
+        $query['data'] = DB::table('v_material')->where('partnumber', 'like', '%'. $request->search . '%')->get();
+
+        // return \Response::json($query);
+        return $query;
+        // return $this->successResponse('OK', $query);
+    }
+
     public function save(Request $req){
         DB::beginTransaction();
         try{

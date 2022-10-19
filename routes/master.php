@@ -19,6 +19,8 @@ Route::group(['middleware' => 'auth'], function () {
        
         Route::post('/saveitemcategory', 'Master\ItemMasterController@saveitemcategory')->middleware('checkAuth:master/item');
         Route::post('/saveuom',          'Master\ItemMasterController@saveuom')->middleware('checkAuth:master/item');
+
+        Route::post('/findpartnumber', 'Master\ItemMasterController@findPartnumber');
     });
 
     Route::group(['prefix' => '/master/vendor'], function () {
@@ -28,7 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update',      'Master\VendorMasterController@update')->middleware('checkAuth:master/item');
         Route::get('/delete/{id}',  'Master\VendorMasterController@delete')->middleware('checkAuth:master/item');  
         Route::get('/vendorlists',  'Master\VendorMasterController@vendorLists')->middleware('checkAuth:master/item');  
-        
+        Route::post('/findvendor',  'Master\VendorMasterController@findVendor');
     });
 
     Route::group(['prefix' => '/master/department'], function () {

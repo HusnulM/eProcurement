@@ -15,9 +15,14 @@ class WorkflowController extends Controller
         $groups = DB::table('workflow_groups')->orderBy('id', 'ASC')->get();
         $wfassignments = DB::table('v_workflow_assignments')->get();
 
-        $budgetwf = DB::table('v_workflow_budget')->get();
+        $budgetwf = DB::table('v_workflow_budget')->where('object', 'BUDGET')->get();
+        $pbjwf    = DB::table('v_workflow_budget')->where('object', 'PBJ')->get();
 
-        return view('config.approval.index', ['ctgrs' => $ctgrs, 'groups' => $groups, 'users' => $users, 'budgetwf' => $budgetwf]);
+        return view('config.approval.index', 
+            [ 'ctgrs' => $ctgrs, 'groups' => $groups, 
+              'users' => $users, 'budgetwf' => $budgetwf,
+              'pbjwf' => $pbjwf
+            ]);
     }
 
     public function saveBudgetApproval(Request $req){
@@ -30,6 +35,7 @@ class WorkflowController extends Controller
             $insertData = array();
             for($i = 0; $i < sizeof($requester); $i++){
                 $data = array(
+                    'object'          => 'BUDGET',
                     'requester'       => $requester[$i],
                     'approver'        => $approver[$i],
                     'approver_level'  => $applevel[$i],
@@ -41,6 +47,34 @@ class WorkflowController extends Controller
             insertOrUpdate($insertData,'workflow_budget');
             DB::commit();
             return Redirect::to("/config/workflow")->withSuccess('Approval Budget Berhasil dibuat');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
+    public function savePbjApproval(Request $req){
+        DB::beginTransaction();
+        try{
+            $requester = $req['requester'];
+            $approver  = $req['approver'];
+            $applevel  = $req['applevel'];
+
+            $insertData = array();
+            for($i = 0; $i < sizeof($requester); $i++){
+                $data = array(
+                    'object'          => 'PBJ',
+                    'requester'       => $requester[$i],
+                    'approver'        => $approver[$i],
+                    'approver_level'  => $applevel[$i],
+                    'createdon'       => date('Y-m-d H:m:s'),
+                    'createdby'       => Auth::user()->email ?? Auth::user()->username
+                );
+                array_push($insertData, $data);
+            }
+            insertOrUpdate($insertData,'workflow_budget');
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval PBJ Berhasil dibuat');
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/config/workflow")->withError($e->getMessage());
