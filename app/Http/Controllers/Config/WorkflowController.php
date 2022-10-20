@@ -17,11 +17,15 @@ class WorkflowController extends Controller
 
         $budgetwf = DB::table('v_workflow_budget')->where('object', 'BUDGET')->get();
         $pbjwf    = DB::table('v_workflow_budget')->where('object', 'PBJ')->get();
+        $spkwf    = DB::table('v_workflow_budget')->where('object', 'SPK')->get();
+        $prwf     = DB::table('v_workflow_budget')->where('object', 'PR')->get();
+        $powf     = DB::table('v_workflow_budget')->where('object', 'PO')->get();
 
         return view('config.approval.index', 
-            [ 'ctgrs' => $ctgrs, 'groups' => $groups, 
+            [ 'ctgrs' => $ctgrs, 'groups'   => $groups, 
               'users' => $users, 'budgetwf' => $budgetwf,
-              'pbjwf' => $pbjwf
+              'pbjwf' => $pbjwf, 'spkwf'    => $spkwf,
+              'prwf'  => $prwf,  'powf'     => $powf
             ]);
     }
 
@@ -75,6 +79,90 @@ class WorkflowController extends Controller
             insertOrUpdate($insertData,'workflow_budget');
             DB::commit();
             return Redirect::to("/config/workflow")->withSuccess('Approval PBJ Berhasil dibuat');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
+    public function savePRApproval(Request $req){
+        DB::beginTransaction();
+        try{
+            $requester = $req['requester'];
+            $approver  = $req['approver'];
+            $applevel  = $req['applevel'];
+
+            $insertData = array();
+            for($i = 0; $i < sizeof($requester); $i++){
+                $data = array(
+                    'object'          => 'PR',
+                    'requester'       => $requester[$i],
+                    'approver'        => $approver[$i],
+                    'approver_level'  => $applevel[$i],
+                    'createdon'       => date('Y-m-d H:m:s'),
+                    'createdby'       => Auth::user()->email ?? Auth::user()->username
+                );
+                array_push($insertData, $data);
+            }
+            insertOrUpdate($insertData,'workflow_budget');
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval PR Berhasil dibuat');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
+    public function savePOApproval(Request $req){
+        DB::beginTransaction();
+        try{
+            $requester = $req['requester'];
+            $approver  = $req['approver'];
+            $applevel  = $req['applevel'];
+
+            $insertData = array();
+            for($i = 0; $i < sizeof($requester); $i++){
+                $data = array(
+                    'object'          => 'PO',
+                    'requester'       => $requester[$i],
+                    'approver'        => $approver[$i],
+                    'approver_level'  => $applevel[$i],
+                    'createdon'       => date('Y-m-d H:m:s'),
+                    'createdby'       => Auth::user()->email ?? Auth::user()->username
+                );
+                array_push($insertData, $data);
+            }
+            insertOrUpdate($insertData,'workflow_budget');
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval PO Berhasil dibuat');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
+    public function saveSPKApproval(Request $req){
+        DB::beginTransaction();
+        try{
+            $requester = $req['requester'];
+            $approver  = $req['approver'];
+            $applevel  = $req['applevel'];
+
+            $insertData = array();
+            for($i = 0; $i < sizeof($requester); $i++){
+                $data = array(
+                    'object'          => 'SPK',
+                    'requester'       => $requester[$i],
+                    'approver'        => $approver[$i],
+                    'approver_level'  => $applevel[$i],
+                    'createdon'       => date('Y-m-d H:m:s'),
+                    'createdby'       => Auth::user()->email ?? Auth::user()->username
+                );
+                array_push($insertData, $data);
+            }
+            insertOrUpdate($insertData,'workflow_budget');
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval SPK Berhasil dibuat');
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/config/workflow")->withError($e->getMessage());

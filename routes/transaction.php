@@ -39,6 +39,13 @@ Route::group(['middleware' => 'auth'], function () {
         
     });
 
+    Route::group(['prefix' => '/approve/pr'], function () {
+        Route::get('/',                         'Transaksi\ApprovePurchaseRequestController@index')->middleware('checkAuth:approve/pr');
+        Route::post('/save',                    'Transaksi\ApprovePurchaseRequestController@save')->middleware('checkAuth:approve/pr');
+        Route::get('/approvelist',              'Transaksi\ApprovePurchaseRequestController@ApprovalList')->middleware('checkAuth:approve/pr');
+        Route::get('/detail/{p1}',              'Transaksi\ApprovePurchaseRequestController@approveDetail')->middleware('checkAuth:approve/pr');
+    });
+
     Route::group(['prefix' => '/proc/po'], function () {
         Route::get('/',             'Transaksi\PurchaseOrderController@index')->middleware('checkAuth:proc/po');
         Route::post('/save',        'Transaksi\PurchaseOrderController@save')->middleware('checkAuth:proc/po');

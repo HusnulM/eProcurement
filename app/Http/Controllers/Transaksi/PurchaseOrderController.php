@@ -69,26 +69,29 @@ class PurchaseOrderController extends Controller
             insertOrUpdate($insertData,'t_po02');
 
             //Set Approval
-            // $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
-            // if(sizeof($approval) > 0){
-            //     $insertApproval = array();
-            //     foreach($approval as $row){
-            //         $is_active = 'N';
-            //         if($row->approver_level == 1){
-            //             $is_active = 'Y';
-            //         }
-            //         $approvals = array(
-            //             'pbjnumber'         => $ptaNumber,
-            //             'approver_level'    => $row->approver_level,
-            //             'approver'          => $row->approver,
-            //             'requester'         => Auth::user()->id,
-            //             'is_active'         => $is_active,
-            //             'createdon'         => getLocalDatabaseDateTime()
-            //         );
-            //         array_push($insertApproval, $approvals);
-            //     }
-            //     insertOrUpdate($insertApproval,'t_pbj_approval');
-            // }
+            $approval = DB::table('v_workflow_budget')->where('object', 'PO')->where('requester', Auth::user()->id)->get();
+            if(sizeof($approval) > 0){
+                $insertApproval = array();
+                foreach($approval as $row){
+                    $is_active = 'N';
+                    if($row->approver_level == 1){
+                        $is_active = 'Y';
+                    }
+                    $approvals = array(
+                        'ponum'             => $ptaNumber,
+                        'approver_level'    => $row->approver_level,
+                        'approver'          => $row->approver,
+                        'requester'         => Auth::user()->id,
+                        'is_active'         => $is_active,
+                        'createdon'         => getLocalDatabaseDateTime()
+                    );
+                    array_push($insertApproval, $approvals);
+                }
+                insertOrUpdate($insertApproval,'t_po_approval');
+            }else{
+                DB::rollBack();
+                return Redirect::to("/proc/po")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
+            }
 
             DB::commit();
             return Redirect::to("/proc/po")->withSuccess('PO Berhasil dibuat dengan Nomor : '. $ptaNumber);
