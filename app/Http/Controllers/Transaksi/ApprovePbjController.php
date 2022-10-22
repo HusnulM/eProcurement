@@ -61,7 +61,7 @@ class ApprovePbjController extends Controller
                     ->first();
 
         $nextApproval = DB::table('t_pbj_approval')
-                        ->where('ptanumber', $dcnNum)
+                        ->where('pbjnumber', $dcnNum)
                         ->where('approver_level', '>', $userLevel->approver_level)
                         ->orderBy('approver_level', 'ASC')
                         ->first();
@@ -77,37 +77,38 @@ class ApprovePbjController extends Controller
     public function save(Request $req){
         DB::beginTransaction();
         try{
-            $ptaNumber = $req['ptanumber'];
+            $ptaNumber = $req['pbjNumber'];
 
             // return $ptaNumber;
 
-            $amount = $req['amount2'];
-            $amount = str_replace(',','',$amount);
-            DB::table('t_budget')->where('ptanumber', $ptaNumber)->update([
-                'approved_amount' => $amount,
-            ]);
+            // $amount = $req['amount2'];
+            // $amount = str_replace(',','',$amount);
+            // DB::table('t_budget')->where('ptanumber', $ptaNumber)->update([
+            //     'approved_amount' => $amount,
+            // ]);
 
-            $userAppLevel = DB::table('t_budget_approval')
+            $userAppLevel = DB::table('t_pbj_approval')
                             ->select('approver_level')
-                            ->where('ptanumber', $ptaNumber)
+                            ->where('pbjnumber', $ptaNumber)
                             ->where('approver', Auth::user()->id)
                             ->first();
 
             //Set Approval
-            DB::table('t_budget_approval')
-            ->where('ptanumber', $ptaNumber)
+            DB::table('t_pbj_approval')
+            ->where('pbjnumber', $ptaNumber)
             // ->where('approver_id', Auth::user()->id)
             ->where('approver_level',$userAppLevel->approver_level)
             ->update([
                 'approval_status' => 'A',
+                'approval_remark' => $req['approvernote'],
                 'approved_by'     => Auth::user()->username,
                 'approval_date'   => getLocalDatabaseDateTime()
             ]);
 
             $nextApprover = $this->getNextApproval($ptaNumber);
             if($nextApprover  != null){
-                DB::table('t_budget_approval')
-                ->where('ptanumber', $ptaNumber)
+                DB::table('t_pbj_approval')
+                ->where('pbjnumber', $ptaNumber)
                 ->where('approver_level', $nextApprover)
                 ->update([
                     'is_active' => 'Y'
@@ -115,25 +116,32 @@ class ApprovePbjController extends Controller
             }
 
 
-            $checkIsFullApprove = DB::table('t_budget_approval')
-                                      ->where('ptanumber', $ptaNumber)
+            $checkIsFullApprove = DB::table('t_pbj_approval')
+                                      ->where('pbjnumber', $ptaNumber)
                                       ->where('approval_status', '!=', 'A')
                                       ->get();
             if(sizeof($checkIsFullApprove) > 0){
                 // go to next approver    
             }else{
                 //Full Approve
-                DB::table('t_budget')->where('ptanumber', $ptaNumber)->update([
-                    'approved_amount' => $amount,
-                    'budget_status'   => 'A'
+                DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->update([
+                    'pbj_status'   => 'A'
                 ]);
             }
 
             DB::commit();
-            return Redirect::to("/approve/budget")->withSuccess('Pengajuan Budget dengan Nomor : '. $ptaNumber . ' berhasil di approve');
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'PBJ dengan Nomor : '. $ptaNumber . ' berhasil di approve'
+            );
+            return $result;
         } catch(\Exception $e){
             DB::rollBack();
-            return Redirect::to("/approve/budget")->withError($e->getMessage());
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            // return Redirect::to("/approve/budget")->withError($e->getMessage());
         }
     }
 }

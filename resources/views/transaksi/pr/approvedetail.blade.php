@@ -86,7 +86,7 @@
                                 <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <table class="table table-bordered table-stripped table-sm">
+                                            <table id="tbl-pr-data" class="table table-bordered table-hover table-striped table-sm">
                                                 <thead>
                                                     <th>No</th>
                                                     <th>PR Item</th>
@@ -168,19 +168,21 @@
                                         @if($isApprovedbyUser->approval_status <> "A")
                                         <div class="row">
                                             <div class="col-lg-12">
-                                                <form action="">
-                                                    <div class="form-group">
-                                                        <textarea name="approver_note" id="approver_note" class="form-control" cols="30" rows="3" placeholder="Approver Note"></textarea>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <button type="button" class="btn btn-success pull-right ml-1" id="btn-approve">
-                                                            <i class="fa fa-check"></i> APPROVE
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger pull-right" id="btn-reject">
-                                                            <i class="fa fa-xmark"></i> REJECT
-                                                        </button>
-                                                    </div>
-                                                </form>
+                                                <!-- <form action="{{ url('approve/pr/save') }}" method="post">
+                                                    @csrf
+                                                </form> -->
+                                                <div class="form-group">
+                                                    <textarea name="approver_note" id="approver_note" class="form-control" cols="30" rows="3" placeholder="Approver Note"></textarea>
+                                                    <input type="hidden" name="prnum" value="{{ $prhdr->prnum }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-success pull-right ml-1" id="btn-approve">
+                                                        <i class="fa fa-check"></i> APPROVE
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger pull-right" id="btn-reject">
+                                                        <i class="fa fa-xmark"></i> REJECT
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                         @endif
@@ -261,7 +263,7 @@
     }
 
     $(document).ready(function () { 
-        $('#tbl-doc-area').DataTable();
+        $('#tbl-pr-data').DataTable();
 
         $('#btn-approve').on('click', function(){
             $('#btn-approve').prop('disabled', true);
@@ -278,26 +280,25 @@
         function approveDocument(_action){
             let _token   = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
-                url: base_url+'/transaction/docapproval/approve',
+                url: base_url+'/approve/pr/save',
                 type:"POST",
                 data:{
-                    dcnNumber: $('#dcnNumber').val(),
+                    prnum: "{{ $prhdr->prnum }}",
                     action:_action,
                     approvernote:$('#approver_note').val(),
                     _token: _token
                 },
                 success:function(response){
                     console.log(response);
-                    if(response){
+                    if(response.msgtype === "200"){
                         if(_action === "A"){
-                            toastr.success('Document Approved')
+                            toastr.success(response.message)
                         }else if(_action === "R"){
-                            toastr.success('Document Rejected')
+                            toastr.success(response.message)
                         }                        
 
                         setTimeout(function(){ 
-                            // location.reload();
-                            window.location.href = base_url+'/transaction/docapproval';
+                            window.location.href = base_url+'/approve/pr';
                         }, 2000);
                     }
                 },
@@ -309,6 +310,8 @@
                         location.reload();
                     }, 2000);
                 }
+            }).done(function(response){
+                console.log(response);
             });
         }
     });

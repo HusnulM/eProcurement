@@ -32,9 +32,11 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => '/proc/pr'], function () {
-        Route::get('/',             'Transaksi\PurchaseRequestController@index')->middleware('checkAuth:proc/pr');
-        Route::post('/save',        'Transaksi\PurchaseRequestController@save')->middleware('checkAuth:proc/pr');
-        Route::get('/list',         'Transaksi\PurchaseRequestController@list')->middleware('checkAuth:proc/pr');  
+        Route::get('/',                'Transaksi\PurchaseRequestController@index')->middleware('checkAuth:proc/pr');
+        Route::post('/save',           'Transaksi\PurchaseRequestController@save')->middleware('checkAuth:proc/pr');
+        Route::get('/list',            'Transaksi\PurchaseRequestController@listApprovedPbj')->middleware('checkAuth:proc/pr');  
+
+        Route::get('/listapprovedpbj', 'Transaksi\PurchaseRequestController@listApprovedPbj')->middleware('checkAuth:proc/pr');
         // Route::get('/budgetlist',   'Transaksi\PurchaseRequestController@budgetLists')->middleware('checkAuth:proc/pr');  
         
     });

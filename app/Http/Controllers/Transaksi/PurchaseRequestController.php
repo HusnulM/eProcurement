@@ -14,7 +14,19 @@ class PurchaseRequestController extends Controller
         return view('transaksi.pr.index');
     }
 
+    public function listApprovedPbj(Request $request){
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('v_pbj02')
+                 ->where('pbj_status', 'A')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)->toJson();
+    }
+
     public function save(Request $req){
+        // return $req;
         DB::beginTransaction();
         try{
             $tgl   = substr($req['tglreq'], 8, 2);
@@ -41,10 +53,11 @@ class PurchaseRequestController extends Controller
             $partdsc  = $req['partdesc'];
             $quantity = $req['quantity'];
             $uom      = $req['uoms'];
+            $pbjnum   = $req['pbjnum'];
+            $pbjitm   = $req['pbjitm'];
 
             $insertData = array();
-            $count = 0;
-            
+            $count = 0;            
 
             for($i = 0; $i < sizeof($parts); $i++){
                 $qty    = $quantity[$i];
@@ -52,16 +65,23 @@ class PurchaseRequestController extends Controller
 
                 $count = $count + 1;
                 $data = array(
-                    'prnum'     => $ptaNumber,
-                    'pritem'    => $count,
-                    'material'  => $parts[$i],
-                    'matdesc'   => $partdsc[$i],
+                    'prnum'        => $ptaNumber,
+                    'pritem'       => $count,
+                    'material'     => $parts[$i],
+                    'matdesc'      => $partdsc[$i],
                     'quantity'     => $qty,
                     'unit'         => $uom[$i],
+                    'pbjnumber'    => $pbjnum[$i] ?? null,
+                    'pbjitem'      => $pbjitm[$i] ?? null,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertData, $data);
+
+                DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
+                ->update([
+                    'prcreated' => 'Y'
+                ]);
             }
             insertOrUpdate($insertData,'t_pr02');
 
@@ -95,6 +115,7 @@ class PurchaseRequestController extends Controller
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/proc/pr")->withError($e->getMessage());
+            // dd($e->getMessage());
         }
     }
 }

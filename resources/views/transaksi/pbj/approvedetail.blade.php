@@ -78,7 +78,7 @@
                                 <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <table class="table table-bordered table-stripped table-sm">
+                                            <table id="tbl-pbj" class="table table-bordered table-hover table-striped table-sm">
                                                 <thead>
                                                     <th>No</th>
                                                     <th>PBJ Item</th>
@@ -261,7 +261,7 @@
     }
 
     $(document).ready(function () { 
-        $('#tbl-doc-area').DataTable();
+        $('#tbl-pbj').DataTable();
 
         $('#btn-approve').on('click', function(){
             $('#btn-approve').prop('disabled', true);
@@ -278,26 +278,25 @@
         function approveDocument(_action){
             let _token   = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
-                url: base_url+'/transaction/docapproval/approve',
+                url: base_url+'/approve/pbj/save',
                 type:"POST",
                 data:{
-                    dcnNumber: $('#dcnNumber').val(),
+                    pbjNumber: "{{ $pbjhdr->pbjnumber }}",
                     action:_action,
                     approvernote:$('#approver_note').val(),
                     _token: _token
                 },
                 success:function(response){
                     console.log(response);
-                    if(response){
+                    if(response.msgtype === "200"){
                         if(_action === "A"){
-                            toastr.success('Document Approved')
+                            toastr.success(response.message)
                         }else if(_action === "R"){
-                            toastr.success('Document Rejected')
+                            toastr.success(response.message)
                         }                        
 
                         setTimeout(function(){ 
-                            // location.reload();
-                            window.location.href = base_url+'/transaction/docapproval';
+                            window.location.href = base_url+'/approve/pbj';
                         }, 2000);
                     }
                 },

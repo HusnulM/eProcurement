@@ -64,12 +64,12 @@ class ApprovePurchaseRequestController extends Controller
     }
 
     public function getNextApproval($dcnNum){
-        $userLevel = DB::table('t_pbj_approval')
+        $userLevel = DB::table('t_pr_approval')
                     ->where('approver', Auth::user()->id)
                     ->first();
 
-        $nextApproval = DB::table('t_pbj_approval')
-                        ->where('ptanumber', $dcnNum)
+        $nextApproval = DB::table('t_pr_approval')
+                        ->where('prnum', $dcnNum)
                         ->where('approver_level', '>', $userLevel->approver_level)
                         ->orderBy('approver_level', 'ASC')
                         ->first();
@@ -85,37 +85,38 @@ class ApprovePurchaseRequestController extends Controller
     public function save(Request $req){
         DB::beginTransaction();
         try{
-            $ptaNumber = $req['ptanumber'];
+            $ptaNumber = $req['prnum'];
 
             // return $ptaNumber;
 
-            $amount = $req['amount2'];
-            $amount = str_replace(',','',$amount);
-            DB::table('t_budget')->where('ptanumber', $ptaNumber)->update([
-                'approved_amount' => $amount,
-            ]);
+            // $amount = $req['amount2'];
+            // $amount = str_replace(',','',$amount);
+            // DB::table('t_budget')->where('ptanumber', $ptaNumber)->update([
+            //     'approved_amount' => $amount,
+            // ]);
 
-            $userAppLevel = DB::table('t_budget_approval')
+            $userAppLevel = DB::table('t_pr_approval')
                             ->select('approver_level')
-                            ->where('ptanumber', $ptaNumber)
+                            ->where('prnum', $ptaNumber)
                             ->where('approver', Auth::user()->id)
                             ->first();
 
             //Set Approval
-            DB::table('t_budget_approval')
-            ->where('ptanumber', $ptaNumber)
+            DB::table('t_pr_approval')
+            ->where('prnum', $ptaNumber)
             // ->where('approver_id', Auth::user()->id)
             ->where('approver_level',$userAppLevel->approver_level)
             ->update([
                 'approval_status' => 'A',
+                'approval_remark' => $req['approvernote'],
                 'approved_by'     => Auth::user()->username,
                 'approval_date'   => getLocalDatabaseDateTime()
             ]);
 
             $nextApprover = $this->getNextApproval($ptaNumber);
             if($nextApprover  != null){
-                DB::table('t_budget_approval')
-                ->where('ptanumber', $ptaNumber)
+                DB::table('t_pr_approval')
+                ->where('prnum', $ptaNumber)
                 ->where('approver_level', $nextApprover)
                 ->update([
                     'is_active' => 'Y'
@@ -123,25 +124,36 @@ class ApprovePurchaseRequestController extends Controller
             }
 
 
-            $checkIsFullApprove = DB::table('t_budget_approval')
-                                      ->where('ptanumber', $ptaNumber)
+            $checkIsFullApprove = DB::table('t_pr_approval')
+                                      ->where('prnum', $ptaNumber)
                                       ->where('approval_status', '!=', 'A')
                                       ->get();
             if(sizeof($checkIsFullApprove) > 0){
                 // go to next approver    
             }else{
                 //Full Approve
-                DB::table('t_budget')->where('ptanumber', $ptaNumber)->update([
-                    'approved_amount' => $amount,
-                    'budget_status'   => 'A'
+                DB::table('t_pr01')->where('prnum', $ptaNumber)->update([
+                    // 'approved_amount' => $amount,
+                    'approvestat'   => 'A'
                 ]);
             }
 
             DB::commit();
-            return Redirect::to("/approve/budget")->withSuccess('Pengajuan Budget dengan Nomor : '. $ptaNumber . ' berhasil di approve');
+
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'PR dengan Nomor : '. $ptaNumber . ' berhasil di approve'
+            );
+            // return Redirect::to("/approve/pr")->withSuccess('PR dengan Nomor : '. $ptaNumber . ' berhasil di approve');
+            return $result;
         } catch(\Exception $e){
             DB::rollBack();
-            return Redirect::to("/approve/budget")->withError($e->getMessage());
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+            // return Redirect::to("/approve/pr")->withError($e->getMessage());
         }
     }
 }
