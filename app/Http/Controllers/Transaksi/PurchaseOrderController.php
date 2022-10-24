@@ -14,6 +14,18 @@ class PurchaseOrderController extends Controller
         return view('transaksi.po.index');
     }
 
+    public function getApprovedPR(Request $request){
+        // v_approved_pr
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('v_approved_pr')
+                 ->where('pocreated', 'N')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)->toJson();
+    }
+
     public function save(Request $req){
         // return $req;
         DB::beginTransaction();
@@ -40,6 +52,8 @@ class PurchaseOrderController extends Controller
             $quantity = $req['quantity'];
             $uom      = $req['uoms'];
             $price    = $req['unitprice'];
+            $prnum    = $req['prnum'];
+            $pritem   = $req['pritem'];
 
             $insertData = array();
             $count = 0;
@@ -61,10 +75,17 @@ class PurchaseOrderController extends Controller
                     'quantity'     => $qty,
                     'unit'         => $uom[$i],
                     'price'        => $uprice,
+                    'prnum'        => $prnum[$i] ?? null,
+                    'pritem'       => $pritem[$i] ?? null,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertData, $data);
+
+                DB::table('t_pr02')->where('prnum', $prnum[$i])->where('pritem', $pritem[$i])
+                ->update([
+                    'pocreated' => 'Y'
+                ]);
             }
             insertOrUpdate($insertData,'t_po02');
 
