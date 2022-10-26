@@ -361,7 +361,7 @@
                     <tr>
                         <td>
                             <select name="parts[]" class="form-control" readonly>
-                                <option value="`+selected_data.material+`">`+selected_data.partnumber+`</option>
+                                <option value="`+selected_data.partnumber+`">`+selected_data.partnumber+`</option>
                             </select>
                             <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
                         </td>

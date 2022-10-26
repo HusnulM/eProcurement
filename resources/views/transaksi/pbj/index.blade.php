@@ -43,7 +43,7 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="requestto">Tujuan Permintaan</label>
-                                            <input type="text" name="requestto" class="form-control">
+                                            <input type="text" name="requestto" class="form-control" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">

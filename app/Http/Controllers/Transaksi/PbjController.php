@@ -78,13 +78,16 @@ class PbjController extends Controller
             $insertData = array();
             $count = 0;
             for($i = 0; $i < sizeof($parts); $i++){
+                $qty    = $quantity[$i];
+                $qty    = str_replace(',','',$qty);
+
                 $count = $count + 1;
                 $data = array(
                     'pbjnumber'    => $ptaNumber,
                     'pbjitem'      => $count,
                     'partnumber'   => $parts[$i],
                     'description'  => $partdsc[$i],
-                    'quantity'     => $quantity[$i],
+                    'quantity'     => $qty,
                     'unit'         => $uom[$i],
                     'figure'       => $figure[$i],
                     'remark'       => $remark[$i],
