@@ -52,6 +52,15 @@
                                             <input type="text" name="requestor" class="form-control" value="{{ Auth::user()->name }}">
                                         </div>
                                     </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="currency">Currency</label>                                            
+                                            <select name="currency" id="currency" class="form-control">
+                                                <option value="IDR">IDR - Indonesian Rupiah</option>
+                                                <option value="USD">USD - US Dollar</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <!-- <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="department">Department</label>

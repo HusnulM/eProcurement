@@ -42,7 +42,7 @@ class PurchaseOrderController extends Controller
                 'podat'             => $req['tglreq'],
                 'vendor'            => $req['vendor'],
                 'note'              => $req['remark'],
-                'currency'          => 'IDR',
+                'currency'          => $req['currency'],
                 'createdon'         => date('Y-m-d H:m:s'),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);

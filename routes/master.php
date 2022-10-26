@@ -53,6 +53,16 @@ Route::group(['middleware' => 'auth'], function () {
         
     });
 
+    Route::group(['prefix' => '/master/warehouse'], function () {
+        Route::get('/',             'Master\WarehouseController@index')->middleware('checkAuth:master/warehouse');
+        Route::get('/create',       'Master\WarehouseController@create')->middleware('checkAuth:master/warehouse');
+        Route::post('/save',        'Master\WarehouseController@save')->middleware('checkAuth:master/warehouse');
+        Route::post('/update',      'Master\WarehouseController@update')->middleware('checkAuth:master/warehouse');
+        Route::get('/delete/{id}',  'Master\WarehouseController@delete')->middleware('checkAuth:master/warehouse');  
+        Route::get('/warehouselist','Master\WarehouseController@warehouseLists')->middleware('checkAuth:master/warehouse');   
+        Route::post('/findwhs',     'Master\WarehouseController@findWhs');
+    });
+
     Route::group(['prefix' => '/master/doctype'], function () {
         Route::get('/',           'Master\DoctypeController@index')->middleware('checkAuth:master/doctype');
         Route::post('/save',      'Master\DoctypeController@save')->middleware('checkAuth:master/doctype');
