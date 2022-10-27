@@ -645,3 +645,81 @@ function generateGRPONumber($tahun, $bulan){
         }
     }   
 }
+
+function generateWONumber($tahun, $bulan){
+    $dcnNumber = 'WO/'.$tahun.$bulan;
+    // dd($dcnNumber);
+    $getdata = DB::table('t_nriv_budget')
+               ->where('tahun',  $tahun)
+               ->where('object', 'WO')
+               ->where('bulan',  $bulan)
+            //    ->where('tanggal',  $tgl)
+            //    ->where('deptid', $dept)
+               ->first();
+    
+    if($getdata){
+        DB::beginTransaction();
+        try{
+            $leadingZero = '';
+            if(strlen($getdata->lastnumber) == 5){
+                $leadingZero = '0';
+            }elseif(strlen($getdata->lastnumber) == 4){
+                $leadingZero = '00';
+            }elseif(strlen($getdata->lastnumber) == 3){
+                $leadingZero = '000';
+            }elseif(strlen($getdata->lastnumber) == 2){
+                $leadingZero = '0000';
+            }elseif(strlen($getdata->lastnumber) == 1){
+                $leadingZero = '00000';
+            }
+
+            $lastnum = ($getdata->lastnumber*1) + 1;
+
+            if($leadingZero == ''){
+                $dcnNumber = $dcnNumber. $lastnum; 
+            }else{
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+            }
+
+            // dd($leadingZero);
+
+            DB::table('t_nriv_budget')
+            ->where('tahun',  $tahun)
+            ->where('object', 'WO')
+            ->where('bulan',  $bulan)
+            // ->where('tanggal',  $tgl)
+            // ->where('deptid', $dept)
+            ->update([
+                'lastnumber' => $lastnum
+            ]);
+
+            DB::commit();
+            // dd($dcnNumber);
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            return null;
+        }
+    }else{
+        $dcnNumber = $dcnNumber.'000001';
+        DB::beginTransaction();
+        try{
+            DB::table('t_nriv_budget')->insert([
+                'object'          => 'WO',
+                'tahun'           => $tahun,
+                'bulan'           => $bulan,
+                'tanggal'         => '01',
+                // 'deptid'          => $dept,
+                'lastnumber'      => '1',
+                'createdon'       => date('Y-m-d H:m:s'),
+                'createdby'       => Auth::user()->email ?? Auth::user()->username
+            ]);
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            // dd($e->getMessage());
+            return null;
+        }
+    } 
+}

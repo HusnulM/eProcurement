@@ -63,6 +63,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/findwhs',     'Master\WarehouseController@findWhs');
     });
 
+    Route::group(['prefix' => '/master/mekanik'], function () {
+        Route::get('/',             'Master\MekanikController@index')->middleware('checkAuth:master/mekanik');
+        Route::get('/create',       'Master\MekanikController@create')->middleware('checkAuth:master/mekanik');
+        Route::post('/save',        'Master\MekanikController@save')->middleware('checkAuth:master/mekanik');
+        Route::post('/update',      'Master\MekanikController@update')->middleware('checkAuth:master/mekanik');
+        Route::get('/delete/{id}',  'Master\MekanikController@delete')->middleware('checkAuth:master/mekanik');  
+        Route::get('/mekaniklist',  'Master\MekanikController@mekanikLists')->middleware('checkAuth:master/mekanik');   
+        Route::post('/findmekanik', 'Master\MekanikController@findMekanik');
+    });
+
     Route::group(['prefix' => '/master/doctype'], function () {
         Route::get('/',           'Master\DoctypeController@index')->middleware('checkAuth:master/doctype');
         Route::post('/save',      'Master\DoctypeController@save')->middleware('checkAuth:master/doctype');

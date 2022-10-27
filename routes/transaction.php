@@ -71,5 +71,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/terimapo/save',           'Transaksi\ReceiptPoController@save')->middleware('checkAuth:logistic/terimapo');
         Route::get('terimapo/listapprovedpo',   'Transaksi\ReceiptPoController@getApprovedPO')->middleware('checkAuth:logistic/terimapo');
     });
+
+    Route::group(['prefix' => '/logistic/wo'], function () {
+        Route::get('/',                'Transaksi\SpkController@index')->middleware('checkAuth:logistic/wo');
+        Route::post('/save',           'Transaksi\SpkController@save')->middleware('checkAuth:logistic/wo');
+    });
     // logistic/terimapo
 });
