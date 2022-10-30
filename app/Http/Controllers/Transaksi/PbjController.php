@@ -10,7 +10,9 @@ use Validator,Redirect,Response;
 class PbjController extends Controller
 {
     public function index(){
-        return view('transaksi.pbj.index');
+        $mekanik    = DB::table('t_mekanik')->get();
+        $department = DB::table('t_department')->get();
+        return view('transaksi.pbj.index', ['mekanik' => $mekanik, 'department' => $department]);
     }
 
     public function list(){

@@ -38,7 +38,7 @@
                         <div class="row">
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    <!-- <div class="col-lg-12">
                                         <div class="form-group">
                                             <label for="itemcode">Item Code</label>
                                             <input type="text" name="itemcode" id="itemcode" class="form-control" required>
@@ -49,17 +49,17 @@
                                             <label for="itemname">Item Name</label>
                                             <input type="text" name="itemname" id="itemname" class="form-control" autocomplete="off" required>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
+                                    </div> -->
+                                    <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="partnumber">Part Number</label>
-                                            <input type="text" name="partnumber" id="partnumber" class="form-control" autocomplete="off">
+                                            <input type="text" name="partnumber" id="partnumber" class="form-control" autocomplete="off" required>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 col-md-12">
+                                    <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="partname">Part Name</label>
-                                            <input type="text" name="partname" id="partname" class="form-control" autocomplete="off">
+                                            <input type="text" name="partname" id="partname" class="form-control" autocomplete="off" required>
                                         </div>
                                     </div>  
                                     <div class="col-lg-6 col-md-12">

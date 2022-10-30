@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Master Mekanik')
+@section('title', 'Master Kendaraan')
 
 @section('additional-css')
 @endsection
@@ -14,7 +14,7 @@
                     <h3 class="card-title"></h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-success btn-sm btn-add-dept">
-                            <i class="fas fa-plus"></i> Tambah Mekanik
+                            <i class="fas fa-plus"></i> Tambah Kendaraan
                         </button>
                         <!-- <a href="{{ url('/master/department/create') }}" class="btn btn-success btn-sm">
                             <i class="fas fa-plus"></i> Create Department
@@ -26,7 +26,13 @@
                         <table id="tbl-dept-master" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                             <thead>
                                 <th>No</th>
-                                <th>Nama Mekanik</th>
+                                <th>No Kendaraan</th>
+                                <th>Type/Model Kendaraan</th>
+                                <th>Engine S/N</th>
+                                <th>Chassis S/N</th>
+                                <th>Engine Model</th>
+                                <th>Last KM</th>
+                                <th>Last HM</th>
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
@@ -43,12 +49,12 @@
 
 @section('additional-modal')
 <div class="modal fade" id="modal-add-department">
-    <form action="{{ url('master/mekanik/save') }}" method="post">
+    <form action="{{ url('master/kendaraan/save') }}" method="post">
         @csrf
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Tambah Mekanik</h4>
+              <h4 class="modal-title">Tambah Kendaraan</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -56,19 +62,34 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                            <thead>
-                                <th>Nama Mekanik</th>
-                                <th style="width:50px; text-align:center;">
-                                    <button type="button" class="btn btn-success btn-sm btn-add-new-dept">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </th>
-                            </thead>
-                            <tbody id="tbl-new-dept-body">
-
-                            </tbody>
-                        </table>  
+                        <div class="form-group">
+                            <label for="nokend">No. Kendaraan</label>
+                            <input type="text" name="nokend" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="model_kendaraan">Type/Model Kendaraan</label>
+                            <input type="text" name="model_kendaraan" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="engine_sn">Engine S/N</label>
+                            <input type="text" name="engine_sn" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="chassis_sn">Chassis S/N</label>
+                            <input type="text" name="chassis_sn" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="engine_model">Engine Model</label>
+                            <input type="text" name="engine_model" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_km">Last KM</label>
+                            <input type="text" name="last_km" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_hm">Last HM</label>
+                            <input type="text" name="last_hm" class="form-control" required>
+                        </div>
                     </div> 
                 </div>
             </div>
@@ -82,12 +103,12 @@
 </div>
 
 <div class="modal fade" id="modal-edit-department">
-    <form action="{{ url('master/mekanik/update') }}" method="post">
+    <form action="{{ url('master/kendaraan/update') }}" method="post">
         @csrf
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Edit Data Mekanik</h4>
+              <h4 class="modal-title">Edit Data Kendaraan</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -95,19 +116,34 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                            <thead>
-                                <th>Nama Mekanik</th>
-                            </thead>
-                            <tbody id="tbl-edit-dept-body">
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control" name="nama" id="mknana">
-                                        <input type="hidden" class="form-control" name="mkid" id="mkid">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>  
+                        <div class="form-group">
+                            <label for="nokend">No. Kendaraan</label>
+                            <input type="text" name="nokend" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="model_kendaraan">Type/Model Kendaraan</label>
+                            <input type="text" name="model_kendaraan" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="engine_sn">Engine S/N</label>
+                            <input type="text" name="engine_sn" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="chassis_sn">Chassis S/N</label>
+                            <input type="text" name="chassis_sn" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="engine_model">Engine Model</label>
+                            <input type="text" name="engine_model" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_km">Last KM</label>
+                            <input type="text" name="last_km" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_hm">Last HM</label>
+                            <input type="text" name="last_hm" class="form-control" required>
+                        </div>
                     </div> 
                 </div>
             </div>
@@ -127,7 +163,7 @@
         $("#tbl-dept-master").DataTable({
             serverSide: true,
             ajax: {
-                url: base_url+'/master/mekanik/mekaniklist',
+                url: base_url+'/master/kendaraan/kendaraanlist',
                 data: function (data) {
                     data.params = {
                         sac: "sac"
@@ -145,7 +181,13 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }  
                 },
-                {data: "nama", className: 'uid'},
+                {data: "no_kendaraan", className: 'uid'},
+                {data: "model_kendaraan", className: 'uid'},
+                {data: "engine_sn", className: 'uid'},
+                {data: "chassis_sn", className: 'uid'},
+                {data: "engine_model", className: 'uid'},
+                {data: "last_km", className: 'uid'},
+                {data: "last_hm", className: 'uid'},
                 {"defaultContent": 
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button> 
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
@@ -160,7 +202,7 @@
             var table = $('#tbl-dept-master').DataTable();
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
-            window.location = base_url+"/master/mekanik/delete/"+selected_data.id;
+            window.location = base_url+"/master/kendaraan/delete/"+selected_data.id;
         });
         $('#tbl-dept-master tbody').on( 'click', '.button-edit', function () {
             var table = $('#tbl-dept-master').DataTable();

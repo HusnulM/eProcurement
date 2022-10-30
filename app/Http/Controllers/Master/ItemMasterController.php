@@ -70,8 +70,8 @@ class ItemMasterController extends Controller
             $current_timestamp = Carbon::now()->timestamp;
         
             DB::table('t_material')->insert([
-                'material'   => $req['itemcode'],
-                'matdesc'    => $req['itemname'],
+                'material'   => $req['partnumber'],
+                'matdesc'    => $req['partname'],
                 'mattype'    => $req['itemtype'],
                 'partname'   => $req['partname'],
                 'partnumber' => $req['partnumber'],
@@ -83,7 +83,7 @@ class ItemMasterController extends Controller
 
             $insertAltUom = array();
             $altUom = array(
-                'material'  => $req['itemcode'],
+                'material'  => $req['partnumber'],
                 'altuom'    => $req['itemunit'],
                 'convalt'   => '1',
                 'baseuom'   => $req['itemunit'],
@@ -125,20 +125,20 @@ class ItemMasterController extends Controller
         try{
             $current_timestamp = Carbon::now()->timestamp;
         
-            DB::table('t_material')->where('material', $req['itemcode'])->update([
+            DB::table('t_material')->where('material', $req['partnumber'])->update([
                 // 'material'   => $req['itemcode'],
-                'matdesc'    => $req['itemname'],
+                'matdesc'    => $req['partname'],
                 'mattype'    => $req['itemtype'],
                 'partname'   => $req['partname'],
                 'partnumber' => $req['partnumber'],
                 'matunit'    => $req['itemunit']
             ]);         
             
-            DB::table('t_material2')->where('material', $req['itemcode'])->delete();
+            DB::table('t_material2')->where('material', $req['partnumber'])->delete();
 
             $insertAltUom = array();
             $altUom = array(
-                'material'  => $req['itemcode'],
+                'material'  => $req['partnumber'],
                 'altuom'    => $req['itemunit'],
                 'convalt'   => '1',
                 'baseuom'   => $req['itemunit'],

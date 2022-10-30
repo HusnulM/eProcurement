@@ -49,7 +49,13 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="kepada">Kepada</label>
-                                            <input type="text" name="kepada" class="form-control">
+                                            <!-- <input type="text" name="kepada" class="form-control"> -->
+                                            <select name="kepada" id="kepada" class="form-control" required>
+                                                <option value="">Pilih Department</option>
+                                                @foreach($department as $key => $row)
+                                                    <option value="{{ $row->department }}">{{ $row->department }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -79,7 +85,7 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="requestor">Requestor</label>
-                                            <input type="text" name="requestor" class="form-control">
+                                            <input type="text" name="requestor" class="form-control" value="{{ Auth::user()->name }}">
                                         </div>
                                     </div>                                    
                                     <div class="col-lg-6 col-md-12">
@@ -91,7 +97,13 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="user">User</label>
-                                            <input type="text" name="user" class="form-control">
+                                            <!-- <input type="text" name="user" class="form-control"> -->
+                                            <select name="user" id="user" class="form-control" required>
+                                                <option value="">Pilih Mekanik</option>
+                                                @foreach($mekanik as $key => $row)
+                                                    <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>        
                                     <div class="col-lg-6 col-md-12">
@@ -191,7 +203,7 @@
                         <select name="parts[]" id="find-part`+fCount+`" class="form-control"></select>
                     </td>
                     <td>
-                        <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control">
+                        <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" readonly>
                     </td>
                     <td>
                         <input type="text" name="quantity[]" class="form-control" onkeypress="`+validate(event)+`">
@@ -254,7 +266,7 @@
                         return {
                             results: $.map(data.data, function (item) {
                                 return {
-                                    text: item.partnumber,
+                                    text: item.material + ' - ' +item.matdesc,
                                     slug: item.partnumber,
                                     id: item.material,
                                     ...item
