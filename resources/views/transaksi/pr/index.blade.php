@@ -344,7 +344,8 @@
                         "className": "text-center",
                         "width": "10%"
                     }
-                ]  
+                ] ,
+                bDestroy: true,
             });
 
             $('#tbl-pbj-list tbody').on( 'click', '.button-add-pbj-to-pritem', function () {

@@ -71,8 +71,8 @@ class PurchaseRequestController extends Controller
                     'matdesc'      => $partdsc[$i],
                     'quantity'     => $qty,
                     'unit'         => $uom[$i],
-                    'pbjnumber'    => $pbjnum[$i] ?? null,
-                    'pbjitem'      => $pbjitm[$i] ?? null,
+                    'pbjnumber'    => $pbjnum[$i] ?? 0,
+                    'pbjitem'      => $pbjitm[$i] ?? 0,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );

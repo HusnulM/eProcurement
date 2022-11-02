@@ -11,17 +11,20 @@ use Validator,Redirect,Response;
 class PurchaseOrderController extends Controller
 {
     public function index(){
-        return view('transaksi.po.index');
+        $department = DB::table('t_department')->get();
+        return view('transaksi.po.index', ['department' => $department]);
     }
 
     public function getApprovedPR(Request $request){
         // v_approved_pr
+        $params = $request->params;        
         if(isset($request->params)){
-            $params = $request->params;        
             $whereClause = $params['sac'];
         }
+        $deptid= $params['deptid'];
         $query = DB::table('v_approved_pr')
                  ->where('pocreated', 'N')
+                 ->where('deptid', $deptid)
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }
@@ -39,6 +42,7 @@ class PurchaseOrderController extends Controller
             DB::table('t_po01')->insert([
                 'ponum'             => $ptaNumber,
                 'ext_ponum'         => $ptaNumber,
+                'deptid'            => $req['department'],
                 'podat'             => $req['tglreq'],
                 'vendor'            => $req['vendor'],
                 'note'              => $req['remark'],
@@ -75,8 +79,8 @@ class PurchaseOrderController extends Controller
                     'quantity'     => $qty,
                     'unit'         => $uom[$i],
                     'price'        => $uprice,
-                    'prnum'        => $prnum[$i] ?? null,
-                    'pritem'       => $pritem[$i] ?? null,
+                    'prnum'        => $prnum[$i] ?? 0,
+                    'pritem'       => $pritem[$i] ?? 0,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );

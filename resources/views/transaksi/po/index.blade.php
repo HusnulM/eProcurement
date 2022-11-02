@@ -48,6 +48,17 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
+                                            <label for="kepada">Department</label>
+                                            <select name="department" id="department" class="form-control" required>
+                                                <option value="">Pilih Department</option>
+                                                @foreach($department as $key => $row)
+                                                    <option value="{{ $row->deptid }}">{{ $row->department }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
                                             <label for="requestor">Creator</label>
                                             <input type="text" name="requestor" class="form-control" value="{{ Auth::user()->name }}">
                                         </div>
@@ -159,7 +170,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <!-- <button type="submit" class="btn btn-primary">Save</button> -->
             </div>
         </div>
     </div>
@@ -386,14 +397,16 @@
                     url: base_url+'/proc/po/listapprovedpr',
                     data: function (data) {
                         data.params = {
-                            sac: "sac"
+                            sac: "sac",
+                            deptid: $('#department').val()
                         }
                     }
                 },
                 buttons: false,
                 searching: true,
-                scrollY: 500,
-                scrollX: true,
+                // scrollY: 500,
+                // scrollX: true,
+                bDestroy: true,
                 scrollCollapse: true,
                 columns: [
                     { "data": null,"sortable": false, "searchable": false,
