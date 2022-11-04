@@ -89,7 +89,7 @@
                             <div class="col-lg-10 col-md-12">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <table class="table table-sm">
+                                        <table id="tbl-po-item" class="table table-sm">
                                             <thead>
                                                 <th>Part No. / Type</th>
                                                 <th>Description</th>
@@ -223,6 +223,8 @@
                     </td>
                 </tr>
             `);
+
+            
 
             $('.btnRemove').on('click', function(e){
                 e.preventDefault();
@@ -476,6 +478,8 @@
                     </tr>
                 `);
 
+                checkTabledata();
+                
                 $('.btnRemove').on('click', function(e){
                     e.preventDefault();
                     $(this).closest("tr").remove();
@@ -526,6 +530,28 @@
 
         }
 
+        function checkTabledata(){
+            var oTable = document.getElementById('tbl-po-item');
+
+            //gets rows of table
+            var rowLength = oTable.rows.length;
+
+            //loops through rows    
+            for (i = 0; i < rowLength; i++){
+                //gets cells of current row
+                var oCells = oTable.rows.item(i).cells;
+                console.log(oCells)
+                //gets amount of cells of current row
+                var cellLength = oCells.length;
+
+                //loops through each cell in current row
+                for(var j = 0; j < cellLength; j++){
+                    /* get your cell info here */
+                    /* var cellVal = oCells.item(j).innerHTML; */
+                    console.log(oCells.item(j))
+                }
+            }
+        }
     });
 </script>
 @endsection

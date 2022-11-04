@@ -66,10 +66,16 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
 
-    Route::group(['prefix' => '/logistic'], function () {
-        Route::get('/terimapo',                 'Transaksi\ReceiptPoController@index')->middleware('checkAuth:logistic/terimapo');
-        Route::post('/terimapo/save',           'Transaksi\ReceiptPoController@save')->middleware('checkAuth:logistic/terimapo');
-        Route::get('terimapo/listapprovedpo',   'Transaksi\ReceiptPoController@getApprovedPO')->middleware('checkAuth:logistic/terimapo');
+    Route::group(['prefix' => '/logistic/terimapo'], function () {
+        Route::get('/',                 'Transaksi\ReceiptPoController@index')->middleware('checkAuth:logistic/terimapo');
+        Route::post('/save',            'Transaksi\ReceiptPoController@save')->middleware('checkAuth:logistic/terimapo');
+        Route::get('/listapprovedpo',   'Transaksi\ReceiptPoController@getApprovedPO')->middleware('checkAuth:logistic/terimapo');
+    });
+
+    Route::group(['prefix' => '/logistic/pengeluaran'], function () {
+        Route::get('/',                 'Transaksi\IssueMaterialController@index')->middleware('checkAuth:logistic/pengeluaran');
+        Route::post('/save',            'Transaksi\IssueMaterialController@save')->middleware('checkAuth:logistic/pengeluaran');
+        Route::get('/listapprovedpo',   'Transaksi\IssueMaterialController@getApprovedPO')->middleware('checkAuth:logistic/pengeluaran');
     });
 
     Route::group(['prefix' => '/logistic/wo'], function () {
