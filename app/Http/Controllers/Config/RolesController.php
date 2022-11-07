@@ -51,7 +51,7 @@ class RolesController extends Controller
         $menuid = DB::table('menuroles')->where('roleid', $roleid)->pluck('menuid');
         $params = $request->params;        
         $whereClause = $params['sac'] ?? '';
-        $query = DB::table('menus')->whereNotIn('id', $menuid)->orderBy('menugroup', 'ASC')->orderBy('id', 'ASC');
+        $query = DB::table('v_menus')->whereNotIn('id', $menuid)->orderBy('menugroup', 'ASC')->orderBy('id', 'ASC');
         return DataTables::queryBuilder($query)->toJson();
     }
 

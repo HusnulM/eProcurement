@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Laporan Pengajuan Budget')
+@section('title', 'Laporan PBJ')
 
 @section('additional-css')
 @endsection
@@ -72,11 +72,11 @@
                             <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                 <thead>
                                     <th>No</th>
-                                    <th>Nomor PTA</th>
-                                    <th>Tanggal Pengajuan</th>
-                                    <th>Nominal di Ajukan</th>
-                                    <th>Nominal di Setujui</th>
-                                    <th>Di Ajukan Oleh</th>
+                                    <th>Nomor PBJ</th>
+                                    <th>Tanggal PBJ</th>
+                                    <th>Quantity</th>
+                                    <th>Issued Qty</th>
+                                    <th>Tujuan Permintaan</th>
                                     <th>Department</th>
                                     <th>Status</th>
                                     <th>Remark</th>
@@ -132,7 +132,7 @@
             $("#tbl-budget-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/report/budgetrequestlist'+_params,
+                    url: base_url+'/report/pbjlist'+_params,
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -151,28 +151,30 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }  
                     },
-                    {data: "ptanumber", className: 'uid'},
-                    {data: "tgl_aju", className: 'uid'},
-                    {data: "amount", "sortable": false,
+                    {data: "pbjnumber", className: 'uid'},
+                    {data: "tgl_pbj", className: 'uid'},
+                    {data: "quantity", "sortable": false,
                         render: function (data, type, row){
-                            return ``+ row.amount.amount1 + ``;
+                            return ``+ row.quantity.qty1 + ``;
                         },
                         "className": "text-right",
                     },
-                    {data: "approved_amount",  "sortable": false,
+                    {data: "issued_qty",  "sortable": false,
                         render: function (data, type, row){
-                            return ``+ row.approved_amount.amount2 + ``;
+                            return ``+ row.issued_qty.qty2 + ``;
                         },
                         "className": "text-right",
                     },
-                    {data: "requester_name"},
+                    {data: "tujuan_permintaan"},
                     {data: "deptname"},
-                    {data: "budget_status", 
+                    {data: "pbj_status", 
                         render: function (data, type, row){
-                            if(row.budget_status == "O"){
+                            if(row.pbj_status == "O"){
                                 return `Open`;
-                            }else if(row.budget_status == "A"){
+                            }else if(row.pbj_status == "A"){
                                 return `Approved`;
+                            }else if(row.pbj_status == "R"){
+                                return `Rejected`;
                             }
                         }
                     },                
@@ -180,8 +182,6 @@
                 ]  
             });
         }
-
-
         
 
         $('.inputNumber').on('change', function(){

@@ -169,6 +169,7 @@
                         <thead>
                             <th>No</th>
                             <th>Application Menu</th>
+                            <th>Menu Group</th>
                             <th></th>
                         </thead>
                         <tbody></tbody>
@@ -296,6 +297,7 @@
                         }  
                     },
                     {data: "name", className: 'uid'},
+                    {data: "groupname", className: 'uid'},
                     {"defaultContent": 
                         "<button type='button' class='btn btn-primary btn-sm button-add-menu-role'> <i class='fa fa-plus'></i> Add</button>"
                     }

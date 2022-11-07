@@ -60,6 +60,7 @@ class BudgetingController extends Controller
                 'currency'      => 'IDR',
                 'budget_status' => 'O',
                 'remark'        => $req['remark'],
+                'requester'     => Auth::user()->id,
                 'createdon'     => date('Y-m-d H:m:s'),
                 'createdby'     => Auth::user()->email ?? Auth::user()->username
             ]);

@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Laporan Pengajuan Budget')
+@section('title', 'Laporan Penerimaan PO')
 
 @section('additional-css')
 @endsection
@@ -28,32 +28,14 @@
                                 @csrf
                                 <div class="row">
                                     <div class="col-lg-2">
-                                        <label for="">Tanggal Pengajuan</label>
+                                        <label for="">Tanggal Penerimaan</label>
                                         <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
                                     </div>
                                     <div class="col-lg-2">
                                         <label for="">-</label>
                                         <input type="date" class="form-control" name="dateto" id="dateto" value="{{ $_GET['dateto'] ?? '' }}">
                                     </div>
-                                    <div class="col-lg-2">
-                                        <label for="">Approval Status</label>
-                                        <select name="approvalStatus" id="approvalStatus" class="form-control">
-                                            <option value="All">All</option>
-                                            <option value="O">Open</option>
-                                            <option value="A">Approved</option>
-                                            <option value="R">Rejected</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <label for="">Department</label>
-                                        <select name="department" id="department" class="form-control">
-                                            <option value="All">All</option>
-                                            @foreach($department as $key => $row)
-                                                <option value="{{ $row->deptid }}">{{ $row->department }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3" style="text-align:center;">
+                                    <div class="col-lg-8" style="text-align:right;">
                                         <br>
                                         <button type="button" class="btn btn-default mt-2 btn-search"> 
                                             <i class="fa fa-search"></i> Filter
@@ -72,15 +54,16 @@
                             <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                 <thead>
                                     <th>No</th>
-                                    <th>Nomor PTA</th>
-                                    <th>Tanggal Pengajuan</th>
-                                    <th>Nominal di Ajukan</th>
-                                    <th>Nominal di Setujui</th>
-                                    <th>Di Ajukan Oleh</th>
-                                    <th>Department</th>
-                                    <th>Status</th>
+                                    <th>Nomor Pengeluaran</th>
+                                    <th>Tanggal Pengeluaran</th>
                                     <th>Remark</th>
-                                    <!-- <th></th> -->
+                                    <th>Di Keluarkan Oleh</th>
+                                    <th>Partnumber</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Nomor PBJ</th>
+                                    <th>Warehouse</th>
                                 </thead>
                                 <tbody>
         
@@ -122,7 +105,7 @@
     $(document).ready(function(){
 
         $('.btn-search').on('click', function(){
-            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&department='+$('#department').val()+'&approvalstat='+$('#approvalStatus').val();
+            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val();
             loadDocument(param);
         });
 
@@ -132,7 +115,7 @@
             $("#tbl-budget-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/report/budgetrequestlist'+_params,
+                    url: base_url+'/report/issuelist'+_params,
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -151,37 +134,28 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }  
                     },
-                    {data: "ptanumber", className: 'uid'},
-                    {data: "tgl_aju", className: 'uid'},
-                    {data: "amount", "sortable": false,
+                    {data: "docnum", className: 'uid'},
+                    {data: "docdate", className: 'uid',
                         render: function (data, type, row){
-                            return ``+ row.amount.amount1 + ``;
-                        },
-                        "className": "text-right",
-                    },
-                    {data: "approved_amount",  "sortable": false,
-                        render: function (data, type, row){
-                            return ``+ row.approved_amount.amount2 + ``;
-                        },
-                        "className": "text-right",
-                    },
-                    {data: "requester_name"},
-                    {data: "deptname"},
-                    {data: "budget_status", 
-                        render: function (data, type, row){
-                            if(row.budget_status == "O"){
-                                return `Open`;
-                            }else if(row.budget_status == "A"){
-                                return `Approved`;
-                            }
+                            return ``+ row.docdate.docdate1 + ``;
                         }
-                    },                
-                    {data: "remark" }
+                    },
+                    {data: "remark", className: 'uid'},
+                    {data: "received_by", className: 'uid'},
+                    {data: "material", className: 'uid'},
+                    {data: "matdesc", className: 'uid'},
+                    {data: "quantity", "sortable": false,
+                        render: function (data, type, row){
+                            return ``+ row.quantity.qty1 + ``;
+                        },
+                        "className": "text-right",
+                    },
+                    {data: "unit"},
+                    {data: "pbjnumber"},
+                    {data: "whsname"}
                 ]  
             });
         }
-
-
         
 
         $('.inputNumber').on('change', function(){

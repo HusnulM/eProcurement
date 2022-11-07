@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Laporan Pengajuan Budget')
+@section('title', 'Laporan PO')
 
 @section('additional-css')
 @endsection
@@ -28,7 +28,7 @@
                                 @csrf
                                 <div class="row">
                                     <div class="col-lg-2">
-                                        <label for="">Tanggal Pengajuan</label>
+                                        <label for="">Tanggal PO</label>
                                         <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
                                     </div>
                                     <div class="col-lg-2">
@@ -72,15 +72,19 @@
                             <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                 <thead>
                                     <th>No</th>
-                                    <th>Nomor PTA</th>
-                                    <th>Tanggal Pengajuan</th>
-                                    <th>Nominal di Ajukan</th>
-                                    <th>Nominal di Setujui</th>
-                                    <th>Di Ajukan Oleh</th>
+                                    <th>Nomor PO</th>
+                                    <th>Tanggal PO</th>
+                                    <th>Vendor</th>
+                                    <th>Partnumber</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Received Qty</th>
+                                    <th>Open Qty</th>
+                                    <th>Unit</th>
+                                    <th>Unit Price</th>
                                     <th>Department</th>
                                     <th>Status</th>
                                     <th>Remark</th>
-                                    <!-- <th></th> -->
                                 </thead>
                                 <tbody>
         
@@ -132,7 +136,7 @@
             $("#tbl-budget-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/report/budgetrequestlist'+_params,
+                    url: base_url+'/report/polist'+_params,
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -151,37 +155,58 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }  
                     },
-                    {data: "ptanumber", className: 'uid'},
-                    {data: "tgl_aju", className: 'uid'},
-                    {data: "amount", "sortable": false,
+                    {data: "ponum", className: 'uid'},
+                    {data: "podat", className: 'uid',
                         render: function (data, type, row){
-                            return ``+ row.amount.amount1 + ``;
+                            return ``+ row.podat.podat1 + ``;
+                        }
+                    },
+                    {data: "vendor_name", className: 'uid'},
+                    {data: "material", className: 'uid'},
+                    {data: "matdesc", className: 'uid'},
+                    {data: "quantity", "sortable": false,
+                        render: function (data, type, row){
+                            return ``+ row.quantity.qty1 + ``;
                         },
                         "className": "text-right",
                     },
-                    {data: "approved_amount",  "sortable": false,
+                    {data: "grqty",  "sortable": false,
                         render: function (data, type, row){
-                            return ``+ row.approved_amount.amount2 + ``;
+                            return ``+ row.grqty.qty2 + ``;
                         },
                         "className": "text-right",
                     },
-                    {data: "requester_name"},
+                    {data: "openqty",  "sortable": false,
+                        render: function (data, type, row){
+                            return ``+ row.openqty.qty3 + ``;
+                        },
+                        "className": "text-right",
+                    },
+                    {data: "unit"},
+                    {data: "price",  "sortable": false,
+                        render: function (data, type, row){
+                            return ``+ row.price.price1 + ``;
+                        },
+                        "className": "text-right",
+                    },
                     {data: "deptname"},
-                    {data: "budget_status", 
+                    {data: "approvestat", 
                         render: function (data, type, row){
-                            if(row.budget_status == "O"){
+                            if(row.approvestat == "O"){
                                 return `Open`;
-                            }else if(row.budget_status == "A"){
+                            }else if(row.approvestat == "A"){
                                 return `Approved`;
+                            }else if(row.approvestat == "R"){
+                                return `Rejected`;
+                            }else{
+                                return `Open`;
                             }
                         }
                     },                
-                    {data: "remark" }
+                    {data: "note" }
                 ]  
             });
         }
-
-
         
 
         $('.inputNumber').on('change', function(){
