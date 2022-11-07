@@ -39,6 +39,7 @@ class ReceiptPoController extends Controller
             // $amount = str_replace(',','',$amount);
             DB::table('t_inv01')->insert([
                 'docnum'            => $ptaNumber,
+                'docyear'           => $tahun,
                 'docdate'           => $req['grdate'],
                 'postdate'          => $req['grdate'],
                 'received_by'       => $req['recipient'],
