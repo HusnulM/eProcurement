@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
+use PDF;
 
 class PurchaseRequestController extends Controller
 {
@@ -23,7 +24,7 @@ class PurchaseRequestController extends Controller
                  ->where('pbj_status', 'A')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
-    }
+    }    
 
     public function save(Request $req){
         // return $req;

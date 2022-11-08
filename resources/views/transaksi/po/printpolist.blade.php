@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Laporan PR')
+@section('title', 'Print PR')
 
 @section('additional-css')
 @endsection
@@ -58,9 +58,6 @@
                                         <button type="button" class="btn btn-default mt-2 btn-search"> 
                                             <i class="fa fa-search"></i> Filter
                                         </button>
-                                        <button type="submit" class="btn btn-success mt-2 btn-export"> 
-                                            <i class="fa fa-download"></i> Export Data
-                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -74,15 +71,15 @@
                                     <th>No</th>
                                     <th>Nomor PR</th>
                                     <th>Tanggal PR</th>
-                                    <th>Partnumber</th>
+                                    <!-- <th>Partnumber</th>
                                     <th>Description</th>
                                     <th>Quantity</th>
-                                    <th>Unit</th>
+                                    <th>Unit</th> -->
                                     <th>Department</th>
                                     <th>Status</th>
                                     <th>Remark</th>
-                                    <th>PBJ Number</th>
-                                    <th>PBJ Item</th>
+                                    <!-- <th>PBJ Number</th>
+                                    <th>PBJ Item</th> -->
                                     <th></th>
                                 </thead>
                                 <tbody>
@@ -135,7 +132,7 @@
             $("#tbl-budget-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/report/prlist'+_params,
+                    url: base_url+'/printdoc/po/printlist'+_params,
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -154,21 +151,21 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }  
                     },
-                    {data: "prnum", className: 'uid'},
-                    {data: "prdate", className: 'uid',
+                    {data: "ponum", className: 'uid'},
+                    {data: "podat", className: 'uid',
                         render: function (data, type, row){
-                            return ``+ row.prdate.prdate1 + ``;
+                            return ``+ row.podat.podat1 + ``;
                         }
                     },
-                    {data: "material", className: 'uid'},
-                    {data: "matdesc", className: 'uid'},
-                    {data: "quantity", "sortable": false,
-                        render: function (data, type, row){
-                            return ``+ row.quantity.qty1 + ``;
-                        },
-                        "className": "text-right",
-                    },
-                    {data: "unit"},
+                    // {data: "material", className: 'uid'},
+                    // {data: "matdesc", className: 'uid'},
+                    // {data: "quantity", "sortable": false,
+                    //     render: function (data, type, row){
+                    //         return ``+ row.quantity.qty1 + ``;
+                    //     },
+                    //     "className": "text-right",
+                    // },
+                    // {data: "unit"},
                     {data: "deptname"},
                     {data: "approvestat", 
                         render: function (data, type, row){
@@ -183,9 +180,9 @@
                             }
                         }
                     },                
-                    {data: "remark" },
-                    {data: "pbjnumber" },
-                    {data: "pbjitem" },
+                    {data: "note" },
+                    // {data: "pbjnumber" },
+                    // {data: "pbjitem" },
                     {"defaultContent": 
                         `<button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
                         `,
@@ -201,7 +198,7 @@
                 // window.location = base_url+"/proc/pr/print";
                 // if(selected_data.doctype === "Corporate Procedure"){
                     window.open(
-                        base_url+"/proc/pr/print/"+selected_data.id,
+                        base_url+"/printdoc/po/print/"+selected_data.id,
                         '_blank' // <- This is what makes it open in a new window.
                     );
                 // }

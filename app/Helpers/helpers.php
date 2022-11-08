@@ -264,6 +264,20 @@ function getUserDepartment(){
     return $userDept->department;
 }
 
+function getDepartmentByID($id){
+    $userDept = DB::table('t_department')->where('deptid', $id)->first();
+    if($userDept){
+        return $userDept->department;
+    }else{
+        return '';
+    }
+}
+
+function getUserNameByID($id){
+    $userDept = DB::table('users')->where('id', $id)->orWhere('email', $id)->first();
+    return $userDept->name;
+}
+
 function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
     $dcnNumber = 'PTA-'.$deptname.'/'.$tahun.$bulan.$tgl;
 
