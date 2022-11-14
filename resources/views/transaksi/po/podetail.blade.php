@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Pembuatan Purchase Order')
+@section('title', 'Detail Purchase Order')
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -23,13 +23,16 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Purchase Order</h3>
+                        <h3 class="card-title">Detail Purchase Order</h3>
                         <div class="card-tools">
-                            <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
+                            <!-- <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan Purchase Order
-                            </button>
-                            <a href="{{ url('/proc/po/listpo') }}" class="btn btn-success btn-sm">
-                                <i class="fa fa-list"></i> List PO
+                            </button> -->
+                            <a href="{{ url('/printdoc/po/print/') }}/{{ $pohdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
+                                <i class='fa fa-print'></i> Print
+                            </a>
+                            <a href="{{ url('/proc/po/listpo') }}" class="btn btn-default btn-sm">
+                                <i class="fa fa-arrow-left"></i> Back
                             </a>
                         </div>
                     </div>
@@ -40,23 +43,25 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="tglreq">Tanggal PO</label>
-                                            <input type="date" name="tglreq" class="form-control" required>
+                                            <input type="date" name="tglreq" class="form-control" value="{{ $pohdr->podat }}" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="vendor">Vendor</label>
-                                            <select name="vendor" id="find-vendor" class="form-control"></select>
+                                            <select name="vendor" class="form-control">
+                                                <option value="">{{ $pohdr->vendor_name }}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="kepada">Department</label>
                                             <select name="department" id="department" class="form-control" required>
-                                                <option value="">Pilih Department</option>
-                                                @foreach($department as $key => $row)
+                                                <option value="{{ $pohdr->deptname }}">{{ $pohdr->deptname }}</option>
+                                                <!-- @foreach($department as $key => $row)
                                                     <option value="{{ $row->deptid }}">{{ $row->department }}</option>
-                                                @endforeach
+                                                @endforeach -->
                                             </select>
                                         </div>
                                     </div>
@@ -84,7 +89,7 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="remark">Remark</label>
-                                            <textarea name="remark" id="remark" cols="30" rows="4" class="form-control" placeholder="Remark..."></textarea>
+                                            <textarea name="remark" id="remark" cols="30" rows="4" class="form-control" placeholder="Remark...">{{ $pohdr->note }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -100,28 +105,19 @@
                                                 <th>Unit</th>
                                                 <th>Unit Price</th>
                                                 <th>PR Reference</th>
-                                                <th style="text-align:right;">
-                                                    <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                        <i class="fa fa-plus"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-success btn-sm btn-add-po-item-based-pr">
-                                                        <i class="fa fa-list"></i> List PR
-                                                    </button>
-                                                </th>
                                             </thead>
                                             <tbody id="tbl-pbj-body">
-
-                                            </tbody>
-                                            <!-- <tfoot>
+                                            @foreach($poitem as $key => $row)
                                                 <tr>
-                                                    <td colspan="7"></td>
-                                                    <td style="text-align:right;">
-                                                        <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                            <i class="fa fa-plus"></i>
-                                                        </button>
-                                                    </td>
+                                                    <td>{{ $row->material }}</td>
+                                                    <td>{{ $row->matdesc }}</td>
+                                                    <td>{{ number_format($row->quantity, 0, ',', '.') }}</td>
+                                                    <td>{{ $row->unit }}</td>
+                                                    <td>{{ number_format($row->price, 0, ',', '.') }}</td>
+                                                    <td>{{ $row->prnum }}</td>
                                                 </tr>
-                                            </tfoot> -->
+                                            @endforeach
+                                            </tbody>
                                         </table>
                                     </div>
                                 </div>

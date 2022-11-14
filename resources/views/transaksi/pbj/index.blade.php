@@ -28,6 +28,9 @@
                             <button type="submit" class="btn btn-success btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan PBJ
                             </button>
+                            <a href="{{ url('/transaction/pbj/list') }}" class="btn btn-success btn-sm">
+                                <i class="fa fa-list"></i> List PBJ
+                            </a>
                         </div>
                     </div>
                     <div class="card-body">

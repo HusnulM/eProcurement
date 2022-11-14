@@ -15,6 +15,11 @@ class PurchaseOrderController extends Controller
         return view('transaksi.po.index', ['department' => $department]);
     }
 
+    public function listPO(){
+        $department = DB::table('t_department')->get();
+        return view('transaksi.po.printpolist', ['department' => $department]);
+    }
+
     public function getApprovedPR(Request $request){
         // v_approved_pr
         $params = $request->params;        

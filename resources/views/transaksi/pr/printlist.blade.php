@@ -19,6 +19,9 @@
                         <!-- <a href="{{ url('/master/department/create') }}" class="btn btn-success btn-sm">
                             <i class="fas fa-plus"></i> Create Department
                         </a> -->
+                        <a href="{{ url('/proc/pr') }}" class='btn btn-default btn-sm'> 
+                            <i class='fa fa-arrow-left'></i> Back
+                        </a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -184,7 +187,9 @@
                     // {data: "pbjnumber" },
                     // {data: "pbjitem" },
                     {"defaultContent": 
-                        `<button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
+                        `
+                        <button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
+                        <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> View Detail</button>
                         `,
                         "className": "text-center",
                     }
@@ -201,6 +206,19 @@
                         base_url+"/printdoc/pr/print/"+selected_data.id,
                         '_blank' // <- This is what makes it open in a new window.
                     );
+                // }
+            });
+
+            $('#tbl-budget-list tbody').on( 'click', '.button-detail', function () {                
+                var table = $('#tbl-budget-list').DataTable();
+                selected_data = [];
+                selected_data = table.row($(this).closest('tr')).data();
+                window.location = "/printdoc/pr/detail/"+selected_data.id;
+                // if(selected_data.doctype === "Corporate Procedure"){
+                    // window.open(
+                    //     base_url+"/printdoc/pr/print/"+selected_data.id,
+                    //     '_blank' // <- This is what makes it open in a new window.
+                    // );
                 // }
             });
         }

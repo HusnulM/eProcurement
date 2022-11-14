@@ -16,8 +16,16 @@ class PrintDocumentController extends Controller
         return view('transaksi.pr.printlist', ['department' => $department]);
     }   
 
+    public function prdetail($id){
+        $department = DB::table('t_department')->get();
+        $prhdr = DB::table('t_pr01')->where('id', $id)->first();
+        $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
+
+        return view('transaksi.pr.prdetail', ['department' => $department, 'prhdr' => $prhdr, 'pritem' => $prdtl]);
+    }
+
     public function printprlist(Request $req){
-        $query = DB::table('v_rpr')->select('id','prnum','prdate','approvestat','requestby','remark','deptname')->distinct();
+        $query = DB::table('v_rpr')->select('id','prnum','prdate','approvestat','requestby','remark','deptname','createdby')->distinct();
 
         if(isset($req->department)){
             if($req->department !== 'All'){
@@ -31,7 +39,7 @@ class PrintDocumentController extends Controller
             }elseif($req->approvalstat === "A"){
                 $query->where('approvestat', 'A');                
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');         
             }
         }
 
@@ -42,6 +50,8 @@ class PrintDocumentController extends Controller
         }elseif(isset($req->dateto)){
             $query->where('prdate', $req->dateto);
         }
+
+        $query->where('createdby', Auth::user()->email);
 
         $query->orderBy('id');
 
@@ -76,7 +86,7 @@ class PrintDocumentController extends Controller
     }
 
     public function printpolist(Request $req){
-        $query = DB::table('v_rpo')->select('id','ponum','podat','approvestat','vendor','note','vendor_name','deptname')->distinct();
+        $query = DB::table('v_rpo')->select('id','ponum','podat','approvestat','vendor','note','vendor_name','deptname','createdby')->distinct();
 
         if(isset($req->department)){
             if($req->department !== 'All'){
@@ -102,6 +112,8 @@ class PrintDocumentController extends Controller
             $query->where('podat', $req->dateto);
         }
 
+        $query->where('createdby', Auth::user()->email);
+
         $query->orderBy('id');
 
         return DataTables::queryBuilder($query)
@@ -111,6 +123,14 @@ class PrintDocumentController extends Controller
              ];
         })
         ->toJson();
+    }
+
+    public function podetail($id){
+        $department = DB::table('t_department')->get();
+        $pohdr = DB::table('v_rpo')->where('id', $id)->first();
+        $podtl = DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
+
+        return view('transaksi.po.podetail', ['department' => $department, 'pohdr' => $pohdr, 'poitem' => $podtl]);
     }
 
     public function printpo($id){

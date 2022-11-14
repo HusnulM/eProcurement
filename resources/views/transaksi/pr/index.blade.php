@@ -28,6 +28,9 @@
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Buat Purchase Request
                             </button>
+                            <a href="{{ url('/proc/pr/listpr') }}" class="btn btn-success btn-sm">
+                                <i class="fa fa-list"></i> List PR
+                            </a>
                         </div>
                     </div>
                     <div class="card-body">

@@ -15,6 +15,11 @@ class PurchaseRequestController extends Controller
         return view('transaksi.pr.index');
     }
 
+    public function listPR(){
+        $department = DB::table('t_department')->get();
+        return view('transaksi.pr.printlist', ['department' => $department]);
+    }
+
     public function listApprovedPbj(Request $request){
         if(isset($request->params)){
             $params = $request->params;        

@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Pembuatan Purchase Order')
+@section('title', 'Detail Purchase Request')
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -17,20 +17,23 @@
 
 @section('content')        
 <div class="container-fluid">
-    <form action="{{ url('proc/po/save') }}" method="post">
+    <form action="{{ url('proc/pr/save') }}" method="post">
         @csrf
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Purchase Order</h3>
+                        <h3 class="card-title">Purchase Request</h3>
                         <div class="card-tools">
-                            <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
-                                <i class="fas fa-save"></i> Simpan Purchase Order
-                            </button>
-                            <a href="{{ url('/proc/po/listpo') }}" class="btn btn-success btn-sm">
-                                <i class="fa fa-list"></i> List PO
+                            <a href="{{ url('/printdoc/pr/print') }}/{{ $prhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
+                                <i class='fa fa-print'></i> Print
                             </a>
+                            <a href="{{ url('/proc/pr/listpr') }}" class='btn btn-default btn-sm'> 
+                                <i class='fa fa-arrow-left'></i> Back
+                            </a>
+                            <!-- <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
+                                <i class="fas fa-save"></i> Simpan Purchase Request
+                            </button> -->
                         </div>
                     </div>
                     <div class="card-body">
@@ -39,52 +42,32 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="tglreq">Tanggal PO</label>
+                                            <label for="prnum">Nomor PR</label>
+                                            <input type="text" name="prnum" class="form-control" value="{{ $prhdr->prnum }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="tglreq">Tanggal Request</label>
                                             <input type="date" name="tglreq" class="form-control" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="vendor">Vendor</label>
-                                            <select name="vendor" id="find-vendor" class="form-control"></select>
+                                            <label for="requestor">Requestor</label>
+                                            <input type="text" name="requestor" class="form-control" value="{{ $prhdr->requestby }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
-                                        <div class="form-group">
-                                            <label for="kepada">Department</label>
-                                            <select name="department" id="department" class="form-control" required>
-                                                <option value="">Pilih Department</option>
-                                                @foreach($department as $key => $row)
-                                                    <option value="{{ $row->deptid }}">{{ $row->department }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 col-md-12">
-                                        <div class="form-group">
-                                            <label for="requestor">Creator</label>
-                                            <input type="text" name="requestor" class="form-control" value="{{ Auth::user()->name }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 col-md-12">
-                                        <div class="form-group">
-                                            <label for="currency">Currency</label>                                            
-                                            <select name="currency" id="currency" class="form-control">
-                                                <option value="IDR">IDR - Indonesian Rupiah</option>
-                                                <option value="USD">USD - US Dollar</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <!-- <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="department">Department</label>
                                             <input type="text" name="department" class="form-control" value="{{ getUserDepartment() }}" readonly>
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="remark">Remark</label>
-                                            <textarea name="remark" id="remark" cols="30" rows="4" class="form-control" placeholder="Remark..."></textarea>
+                                            <textarea type="text" name="remark" id="remark" cols="30" rows="4" class="form-control" placeholder="Remark..." style="white-space: pre-wrap;">{{ trim($prhdr->remark) }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -92,36 +75,48 @@
                             <div class="col-lg-10 col-md-12">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <table id="tbl-po-item" class="table table-sm">
+                                        <table class="table table-sm">
                                             <thead>
                                                 <th>Part No. / Type</th>
                                                 <th>Description</th>
                                                 <th>Quantity</th>
                                                 <th>Unit</th>
-                                                <th>Unit Price</th>
-                                                <th>PR Reference</th>
-                                                <th style="text-align:right;">
-                                                    <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
+                                                <th>PBJ Reference</th>
+                                                <!-- <th style="text-align:right;"> -->
+                                                    <!-- <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
                                                         <i class="fa fa-plus"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-success btn-sm btn-add-po-item-based-pr">
-                                                        <i class="fa fa-list"></i> List PR
-                                                    </button>
-                                                </th>
+                                                    <button type="button" class="btn btn-success btn-sm btn-select-pbj">
+                                                        <i class="fa fa-list"></i> List PBJ
+                                                    </button> -->
+                                                <!-- </th> -->
                                             </thead>
                                             <tbody id="tbl-pbj-body">
-
-                                            </tbody>
-                                            <!-- <tfoot>
+                                                @foreach($pritem as $key => $row)
                                                 <tr>
-                                                    <td colspan="7"></td>
+                                                    <td>
+                                                    {{ $row->material }}
+                                                        <!-- <input type="text" class="form-control" value="{{ $row->material }}"> -->
+                                                    </td>
+                                                    <td>
+                                                    {{ $row->matdesc }}
+                                                        <!-- <input type="text" class="form-control" value="{{ $row->matdesc }}"> -->
+                                                    </td>
                                                     <td style="text-align:right;">
-                                                        <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                            <i class="fa fa-plus"></i>
-                                                        </button>
+                                                    {{ number_format($row->quantity, 0, ',', '.') }}
+                                                        <!-- <input type="text" class="form-control" value="{{ $row->quantity }}" style="text-align:right;"> -->
+                                                    </td>
+                                                    <td>
+                                                    {{ $row->unit }}
+                                                        <!-- <input type="text" class="form-control" value="{{ $row->unit }}"> -->
+                                                    </td>
+                                                    <td>
+                                                    {{ $row->pbjnumber }}
+                                                        <!-- <input type="text" class="form-control" value="{{ $row->pbjnumber }}"> -->
                                                     </td>
                                                 </tr>
-                                            </tfoot> -->
+                                                @endforeach
+                                            </tbody>                                            
                                         </table>
                                     </div>
                                 </div>
@@ -136,11 +131,11 @@
 @endsection
 
 @section('additional-modal')
-<div class="modal fade" id="modal-list-pr">
+<div class="modal fade" id="modal-list-pbj">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Pilih PR</h4>
+                <h4 class="modal-title">Pilih PBJ</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -148,17 +143,16 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table id="tbl-pr-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                        <table id="tbl-pbj-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                             <thead>
                                 <th></th>
-                                <th>Nomor PR</th>
-                                <th>Tanggal PR</th>
+                                <th>Nomor PBJ</th>
+                                <th>Tanggal PBJ</th>
                                 <th>Part Number</th>
                                 <th>Part Name</th>
                                 <th>Quantity</th>
                                 <th>Unit</th>
-                                <th>Request By</th>
-                                <th>Department</th>
+                                <th>Figure</th>
                                 <th>Remark</th>
                                 <th style="width:50px; text-align:center;">
                                     
@@ -173,7 +167,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <!-- <button type="submit" class="btn btn-primary">Save</button> -->
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
@@ -188,12 +182,16 @@
 
         let _token   = $('meta[name="csrf-token"]').attr('content');
 
-        $('.btn-add-po-item-based-pr').on('click', function(){
-            loadListPR();
-            $('#modal-list-pr').modal('show');
-        });        
+        $('.btn-select-pbj').on('click', function(){
+            loadListPBJ();
+            $('#modal-list-pbj').modal('show');
+        });
 
         var fCount = 0;
+
+        // <td>
+        //                 <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control">
+        //             </td>
 
         $('.btn-add-pbj-item').on('click', function(){
             fCount = fCount + 1;
@@ -201,33 +199,28 @@
                 <tr>
                     <td>
                         <select name="parts[]" id="find-part`+fCount+`" class="form-control"></select>
+                        <label id="lbldesc`+fCount+`"></lable>
+                        <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control">
                     </td>
+                    
                     <td>
-                        <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control">
-                    </td>
-                    <td>
-                        <input type="text" name="quantity[]" class="form-control inputNumber" onkeypress="`+validate(event)+`">
+                        <input type="text" name="quantity[]" class="form-control inputNumber" required>
                     </td>
                     <td>
                         <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control">
                     </td>
                     <td>
-                        <input type="text" name="unitprice[]" class="form-control inputNumber" onkeypress="`+validate(event)+`">
+                        <input type="text" name="pbjref[]" id="pbjref`+fCount+`" class="form-control">
+                        <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control">
+                        <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control">
                     </td>
-                    <td>
-                        <input type="text" name="prref[]" id="prref`+fCount+`" class="form-control">
-                        <input type="hidden" name="prnum[]" id="prnum`+fCount+`" value="" class="form-control">
-                        <input type="hidden" name="pritem[]" id="pritem`+fCount+`" value="" class="form-control">
-                    </td>
-                    <td>
+                    <td style="text-align:center;">
                         <button type="button" class="btn btn-danger btnRemove">
                             <i class="fa fa-trash"></i>
                         </button>
                     </td>
                 </tr>
             `);
-
-            
 
             $('.btnRemove').on('click', function(e){
                 e.preventDefault();
@@ -291,6 +284,7 @@
                 // alert(data[0].material);
                 $('#partdesc'+fCount).val(data[0].partname);
                 $('#partunit'+fCount).val(data[0].matunit);
+                $('#lbldesc').html(data[0].partname);
             });
 
             function validate(evt) {
@@ -315,6 +309,10 @@
                 return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
             }
 
+            $('.inputNumber').on('keypress', function(e){
+                validate(e);
+            });
+
             $('.inputNumber').on('change', function(){
                 this.value = formatRupiah(this.value,'');
             });
@@ -336,82 +334,28 @@
             }
         });
 
-        $(document).on('select2:open', (event) => {
-            const searchField = document.querySelector(
-                `.select2-search__field`,
-            );
-            if (searchField) {
-                searchField.focus();
-            }
-        });
-        $('#find-vendor').select2({ 
-            placeholder: 'Type Vendor Name',
-            width: '100%',
-            minimumInputLength: 0,
-            ajax: {
-                url: base_url + '/master/vendor/findvendor',
-                dataType: 'json',
-                delay: 250,
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': _token
-                },
-                data: function (params) {
-                    var query = {
-                        search: params.term,
-                        // custname: $('#find-customer').val()
-                    }
-                    return query;
-                },
-                processResults: function (data) {
-                    // return {
-                    //     results: response
-                    // };
-                    console.log(data)
-                    return {
-                        results: $.map(data.data, function (item) {
-                            return {
-                                text: item.vendor_name,
-                                slug: item.vendor_name,
-                                id: item.vendor_code,
-                                ...item
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
+        // <th>Part Number</th>
+        //                         <th>Part Name</th>
+        //                         <th>Quantity</th>
+        //                         <th>Unit</th>
+        //                         <th>Figure</th>
+        //                         <th>Remark</th>
 
-        $('#find-vendor').on('change', function(){
-            // alert(this.value)
-            
-            var data = $('#find-vendor').select2('data')
-            console.log(data);
-
-            // alert(data[0].material);
-            // $('#partdesc'+fCount).val(data[0].partname);
-            // $('#partunit'+fCount).val(data[0].matunit);
-        });
-
-
-        function loadListPR(){
-            $("#tbl-pr-list").DataTable({
+        function loadListPBJ(){
+            $("#tbl-pbj-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/proc/po/listapprovedpr',
+                    url: base_url+'/proc/pr/listapprovedpbj',
                     data: function (data) {
                         data.params = {
-                            sac: "sac",
-                            deptid: $('#department').val()
+                            sac: "sac"
                         }
                     }
                 },
                 buttons: false,
                 searching: true,
-                // scrollY: 500,
-                // scrollX: true,
-                bDestroy: true,
+                scrollY: 500,
+                scrollX: true,
                 scrollCollapse: true,
                 columns: [
                     { "data": null,"sortable": false, "searchable": false,
@@ -419,14 +363,13 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }  
                     },
-                    {data: "prnum", className: 'uid'},
-                    {data: "prdate", className: 'uid'},
-                    {data: "material"},
-                    {data: "matdesc"},
+                    {data: "pbjnumber", className: 'uid'},
+                    {data: "tgl_pbj", className: 'uid'},
+                    {data: "partnumber"},
+                    {data: "description"},
                     {data: "quantity", "className": "text-right",},
                     {data: "unit"},      
-                    {data: "requestby"},
-                    {data: "department"},      
+                    {data: "figure"},
                     {data: "remark"},      
                     {"defaultContent": 
                         `
@@ -435,11 +378,12 @@
                         "className": "text-center",
                         "width": "10%"
                     }
-                ]  
+                ] ,
+                bDestroy: true,
             });
 
-            $('#tbl-pr-list tbody').on( 'click', '.button-add-pbj-to-pritem', function () {
-                var table = $('#tbl-pr-list').DataTable();
+            $('#tbl-pbj-list tbody').on( 'click', '.button-add-pbj-to-pritem', function () {
+                var table = $('#tbl-pbj-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
 
@@ -447,42 +391,35 @@
                 // <td>
                 //             <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
                 //         </td>
-                // fCount = fCount + 1;
                 fCount = fCount + 1;
                 $('#tbl-pbj-body').append(`
                     <tr>
                         <td>
-                            <select name="parts[]" id="find-part`+fCount+`" class="form-control" readonly>
-                                <option value="`+ selected_data.material +`">`+ selected_data.material +`</option>
+                            <select name="parts[]" class="form-control" readonly>
+                                <option value="`+selected_data.partnumber+`">`+selected_data.partnumber+`</option>
                             </select>
+                            <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
+                        </td>
+                        
+                        <td>
+                            <input type="text" name="quantity[]" class="form-control inputNumber" value="`+selected_data.quantity+`" required>
                         </td>
                         <td>
-                            <input type="text" name="partdesc[]" id="partdesc`+fCount+`" value="`+ selected_data.matdesc +`" class="form-control" readonly>
+                            <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control" value="`+selected_data.unit+`" readonly>
                         </td>
                         <td>
-                            <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ selected_data.quantity +`">
+                            <input type="text" name="pbjref[]" id="pbjref`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
+                            <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
+                            <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">
                         </td>
-                        <td>
-                            <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
-                        </td>
-                        <td>
-                            <input type="text" name="unitprice[]" class="form-control inputNumber">
-                        </td>
-                        <td>
-                            <input type="text" name="prref[]" id="prref`+fCount+`" value="`+ selected_data.prnum +`" class="form-control">
-                            <input type="hidden" name="prnum[]" id="prnum`+fCount+`" value="`+ selected_data.prnum +`" class="form-control">
-                            <input type="hidden" name="pritem[]" id="pritem`+fCount+`" value="`+ selected_data.pritem +`" class="form-control">
-                        </td>
-                        <td>
+                        <td style="text-align:center;">
                             <button type="button" class="btn btn-danger btnRemove">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </td>
                     </tr>
                 `);
-
-                checkTabledata();
-                
+    
                 $('.btnRemove').on('click', function(e){
                     e.preventDefault();
                     $(this).closest("tr").remove();
@@ -531,29 +468,6 @@
                 }
             });
 
-        }
-
-        function checkTabledata(){
-            var oTable = document.getElementById('tbl-po-item');
-
-            //gets rows of table
-            var rowLength = oTable.rows.length;
-
-            //loops through rows    
-            for (i = 0; i < rowLength; i++){
-                //gets cells of current row
-                var oCells = oTable.rows.item(i).cells;
-                console.log(oCells)
-                //gets amount of cells of current row
-                var cellLength = oCells.length;
-
-                //loops through each cell in current row
-                for(var j = 0; j < cellLength; j++){
-                    /* get your cell info here */
-                    /* var cellVal = oCells.item(j).innerHTML; */
-                    console.log(oCells.item(j))
-                }
-            }
         }
     });
 </script>
