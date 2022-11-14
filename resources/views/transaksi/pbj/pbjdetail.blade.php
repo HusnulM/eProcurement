@@ -55,13 +55,13 @@
             <div class="card">
                 <div class="card-header">
                     <!-- <h3 class="card-title">Approve Document</h3> -->
-                    <div class="row">
+                    <!-- <div class="row">
                         <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">PBJ Items</a>
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
                     <div class="card-tools">
                         <a href="{{ url('/printdoc/pbj/print/') }}/{{ $pbjhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
                             <i class='fa fa-print'></i> Print
@@ -74,54 +74,46 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="tab-content" id="custom-content-above-tabContent">
-                                <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <table id="tbl-pbj" class="table table-bordered table-hover table-striped table-sm">
-                                                <thead>
-                                                    <th>No</th>
-                                                    <th>PBJ Item</th>
-                                                    <th>Part Number</th>
-                                                    <th>Description</th>
-                                                    <th style="text-align:center;">Quantity</th>
-                                                    <th>Unit</th>
-                                                    <th>Figure</th>
-                                                    <th>Remark</th>
-                                                </thead>
-                                                <tbody>
-                                                @foreach($pbjitem as $key => $row)
-                                                    <tr>
-                                                        <td>{{ $key+1 }}</td>
-                                                        <td>
-                                                            {{ $row->pbjitem }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $row->partnumber }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $row->description }}
-                                                        </td>
-                                                        <td style="text-align:right;">
-                                                            {{ number_format($row->quantity,0) }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $row->unit }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $row->figure }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $row->remark }}
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>                             
-                            </div>   
+                            <table id="tbl-pbj" class="table table-bordered table-hover table-striped table-sm">
+                                <thead>
+                                    <th>No</th>
+                                    <th>PBJ Item</th>
+                                    <th>Part Number</th>
+                                    <th>Description</th>
+                                    <th style="text-align:center;">Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Figure</th>
+                                    <th>Remark</th>
+                                </thead>
+                                <tbody>
+                                @foreach($pbjitem as $key => $row)
+                                    <tr>
+                                        <td>{{ $key+1 }}</td>
+                                        <td>
+                                            {{ $row->pbjitem }}
+                                        </td>
+                                        <td>
+                                            {{ $row->partnumber }}
+                                        </td>
+                                        <td>
+                                            {{ $row->description }}
+                                        </td>
+                                        <td style="text-align:right;">
+                                            {{ number_format($row->quantity,0) }}
+                                        </td>
+                                        <td>
+                                            {{ $row->unit }}
+                                        </td>
+                                        <td>
+                                            {{ $row->figure }}
+                                        </td>
+                                        <td>
+                                            {{ $row->remark }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
