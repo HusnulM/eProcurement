@@ -66,7 +66,7 @@
                         <a href="{{ url('/printdoc/pbj/print/') }}/{{ $pbjhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
                             <i class='fa fa-print'></i> Print
                         </a>
-                        <a href="{{ url('/approve/pbj') }}" class="btn btn-default btn-sm">
+                        <a href="{{ url('/transaction/pbj') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
                         </a>
                     </div>
