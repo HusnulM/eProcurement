@@ -76,8 +76,15 @@ class PrintDocumentController extends Controller
 
     }
 
-    public function printpbj(){
-
+    public function printpbj($id){
+        $prhdr = DB::table('t_pbj01')->where('id', $id)->first();
+        $prdtl = DB::table('t_pbj02')->where('pbjnumber', $prhdr->pbjnumber)->get();
+        $logo = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
+        // $customPaper = array(0,0,567.00,283.80);
+        $pdf = PDF::loadview('transaksi.pbj.printpbj', ['hdr' => $prhdr, 'item' => $prdtl, 'logo' => $logo])->setPaper('A5','landscape');
+        // $pdf = ('P','mm','A5');
+        $pdf->render();
+        return $pdf->stream();
     }
 
     public function polist(){

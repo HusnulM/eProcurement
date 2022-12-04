@@ -120,6 +120,17 @@
             window.location = base_url+"/transaction/pbj/detail/"+selected_data.id;
         });
 
+        $('#tbl-pbj-list tbody').on( 'click', '.button-print', function () {    
+            var table = $('#tbl-pbj-list').DataTable();
+            selected_data = [];
+            selected_data = table.row($(this).closest('tr')).data();
+                window.open(
+                    base_url+"/printdoc/pbj/print/"+selected_data.id,
+                    '_blank'
+                );
+        });
+                        
+
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');
         });
