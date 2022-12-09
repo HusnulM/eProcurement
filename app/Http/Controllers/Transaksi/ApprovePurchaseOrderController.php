@@ -19,6 +19,7 @@ class ApprovePurchaseOrderController extends Controller
             $items      = DB::table('t_po02')->where('ponum', $prhdr->ponum)->get();
             $approvals  = DB::table('v_po_approval')->where('ponum', $prhdr->ponum)->get();
             $department = DB::table('v_po_approval')->where('ponum', $prhdr->ponum)->first();
+            $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $prhdr->ponum)->get();
 
             $purchases = DB::table('v_po02')
             ->where('ponum', $prhdr->ponum)
@@ -39,7 +40,8 @@ class ApprovePurchaseOrderController extends Controller
                     'approvals' => $approvals, 
                     'department'=> $department,
                     'isApprovedbyUser' => $isApprovedbyUser,
-                    'totalprice'       => $purchases
+                    'totalprice'       => $purchases,
+                    'attachments'      => $attachments
                 ]);
         }else{
             return Redirect::to("/approve/po")->withError('Dokumen PO tidak ditemukan');

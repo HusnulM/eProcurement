@@ -91,6 +91,27 @@ class PurchaseRequestController extends Controller
             }
             insertOrUpdate($insertData,'t_pr02');
 
+            //Insert Attachments | t_attachments
+            $files = $req['efile'];
+            $insertFiles = array();
+
+            foreach ($files as $efile) {
+                $filename = $efile->getClientOriginalName();
+                $upfiles = array(
+                    'doc_object' => 'PR',
+                    'doc_number' => $ptaNumber,
+                    'efile'      => $filename,
+                    'pathfile'   => '/files/PR/'. $filename,
+                    'createdon'  => getLocalDatabaseDateTime(),
+                    'createdby'  => Auth::user()->username ?? Auth::user()->email
+                );
+                array_push($insertFiles, $upfiles);
+
+                $efile->move(public_path().'/files/PR/', $filename);  
+            }
+
+            insertOrUpdate($insertFiles,'t_attachments');
+
             //Set Approval
             $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){

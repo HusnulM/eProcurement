@@ -71,10 +71,13 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="card-tools">
-                        <a href="{{ url('/approve/pbj') }}" class="btn btn-default btn-sm">
+                        <a href="{{ url('/approve/pr') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
                         </a>
                     </div>
@@ -187,7 +190,40 @@
                                         </div>
                                         @endif
                                     @endif
-                                </div>                                
+                                </div>   
+                                
+                                <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <th>No</th>
+                                                    <th>File Name</th>
+                                                    <th>Upload Date</th>
+                                                    <th></th>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($attachments as $key => $file)
+                                                    <tr>
+                                                        <td>{{ $key+1 }}</td>
+                                                        <td>
+                                                            {{ $file->efile }}
+                                                        </td>
+                                                        <td>
+                                                            <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PR/{{$file->efile}}#toolbar=0')">
+                                                                <i class="fa fa-search"></i> Preview File
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>                           
+                                        </div>
+                                    </div>
+                                </div>   
                             </div>   
                         </div>
                     </div>
@@ -220,11 +256,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal"> Close</button>
-                @if(userAllowDownloadDocument() == 1)
                 <a href="#" id="btnDownloadFile" class="btn btn-default btnDownloadFile" download="">
                     <i class="fa fa-download"></i> Download Document
                 </a>
-                @endif
             </div>
         </div>
         </form>
@@ -252,10 +286,7 @@
             var fileUri = pathfile;
             fileUri = fileUri.replace("#toolbar=0", "?force=true");
             
-            @if(userAllowDownloadDocument() == 1)
-                // document.getElementById("btnDownloadFile").href=base_url+fileUri; 
-                document.getElementById("btnDownloadFile").href=fileUri; 
-            @endif
+            document.getElementById("btnDownloadFile").href=fileUri; 
             $('#modalPreviewFile').modal('show');
         } else{
             swal("File Not Found", "", "warning");

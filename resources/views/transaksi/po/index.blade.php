@@ -17,7 +17,7 @@
 
 @section('content')        
 <div class="container-fluid">
-    <form action="{{ url('proc/po/save') }}" method="post">
+    <form action="{{ url('proc/po/save') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -85,6 +85,13 @@
                                         <div class="form-group">
                                             <label for="remark">Remark</label>
                                             <textarea name="remark" id="remark" cols="30" rows="4" class="form-control" placeholder="Remark..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="attachment">Attachment</label>
+                                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
                                         </div>
                                     </div>
                                 </div>

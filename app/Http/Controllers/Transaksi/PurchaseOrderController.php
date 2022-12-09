@@ -98,6 +98,27 @@ class PurchaseOrderController extends Controller
             }
             insertOrUpdate($insertData,'t_po02');
 
+            //Insert Attachments | t_attachments
+            $files = $req['efile'];
+            $insertFiles = array();
+
+            foreach ($files as $efile) {
+                $filename = $efile->getClientOriginalName();
+                $upfiles = array(
+                    'doc_object' => 'PO',
+                    'doc_number' => $ptaNumber,
+                    'efile'      => $filename,
+                    'pathfile'   => '/files/PO/'. $filename,
+                    'createdon'  => getLocalDatabaseDateTime(),
+                    'createdby'  => Auth::user()->username ?? Auth::user()->email
+                );
+                array_push($insertFiles, $upfiles);
+
+                $efile->move(public_path().'/files/PO/', $filename);  
+            }
+
+            insertOrUpdate($insertFiles,'t_attachments');
+
             //Set Approval
             $approval = DB::table('v_workflow_budget')->where('object', 'PO')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){

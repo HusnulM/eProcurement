@@ -16,9 +16,10 @@ class ApprovePurchaseRequestController extends Controller
     public function approveDetail($id){
         $prhdr = DB::table('t_pr01')->where('id', $id)->first();
         if($prhdr){
-            $items     = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
-            $approvals = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
-            $department = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->first();
+            $items       = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
+            $approvals   = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
+            $department  = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->first();
+            $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
 
             $isApprovedbyUser = DB::table('v_pr_approval')
                     ->where('prnum',    $prhdr->prnum)
@@ -28,10 +29,11 @@ class ApprovePurchaseRequestController extends Controller
 
             return view('transaksi.pr.approvedetail', 
                 [   
-                    'prhdr'     => $prhdr, 
-                    'pritem'    => $items, 
-                    'approvals' => $approvals, 
-                    'department'=> $department,
+                    'prhdr'            => $prhdr, 
+                    'pritem'           => $items, 
+                    'approvals'        => $approvals, 
+                    'department'       => $department,
+                    'attachments'      => $attachments,
                     'isApprovedbyUser' => $isApprovedbyUser
                 ]);
         }else{

@@ -20,8 +20,17 @@ class PrintDocumentController extends Controller
         $department = DB::table('t_department')->get();
         $prhdr = DB::table('t_pr01')->where('id', $id)->first();
         $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
-
-        return view('transaksi.pr.prdetail', ['department' => $department, 'prhdr' => $prhdr, 'pritem' => $prdtl]);
+        $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
+        $approvals   = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
+        // return $attachments;
+        return view('transaksi.pr.prdetail', 
+            [
+                'department'    => $department, 
+                'prhdr'         => $prhdr, 
+                'pritem'        => $prdtl, 
+                'attachments'   => $attachments, 
+                'approvals'     => $approvals
+            ]);
     }
 
     public function printprlist(Request $req){

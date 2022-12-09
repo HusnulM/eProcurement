@@ -17,7 +17,7 @@
 
 @section('content')        
 <div class="container-fluid">
-    <form action="{{ url('transaction/pbj/save') }}" method="post">
+    <form action="{{ url('transaction/pbj/save') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -131,6 +131,14 @@
                                         <div class="form-group">
                                             <label for="budgetcode">Budget / Cost Code</label>
                                             <input type="text" name="budgetcode" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="attachment">Attachment</label>
+                                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
                                         </div>
                                     </div>
                                 </div>

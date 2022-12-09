@@ -18,6 +18,7 @@ class ApprovePbjController extends Controller
         if($pbjhdr){
             $pbjitem = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
             $approvals = DB::table('v_pbj_approval')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
+            $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
 
             $isApprovedbyUser = DB::table('v_pbj_approval')
                     ->where('pbjnumber',  $pbjhdr->pbjnumber)
@@ -25,7 +26,10 @@ class ApprovePbjController extends Controller
                     ->where('is_active', 'Y')
                     ->first();
 
-            return view('transaksi.pbj.approvedetail', ['pbjhdr' => $pbjhdr, 'pbjitem' => $pbjitem, 'approvals' => $approvals, 'isApprovedbyUser' => $isApprovedbyUser]);
+            return view('transaksi.pbj.approvedetail', ['pbjhdr' => $pbjhdr, 'pbjitem' => $pbjitem, 
+                'approvals' => $approvals, 
+                'isApprovedbyUser' => $isApprovedbyUser,
+                'attachments'      => $attachments]);
         }else{
             return Redirect::to("/approve/pbj")->withError('Dokumen PBJ tidak ditemukan');
         }
