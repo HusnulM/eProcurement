@@ -109,8 +109,10 @@ class PurchaseRequestController extends Controller
 
                 $efile->move(public_path().'/files/PR/', $filename);  
             }
-
-            insertOrUpdate($insertFiles,'t_attachments');
+            if(sizeof($insertFiles) > 0){
+                insertOrUpdate($insertFiles,'t_attachments');
+            }
+            // insertOrUpdate($insertFiles,'t_attachments');
 
             //Set Approval
             $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();

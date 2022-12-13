@@ -97,28 +97,136 @@
                             <div class="col-lg-10 col-md-12">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <table id="tbl-po-item" class="table table-sm">
-                                            <thead>
-                                                <th>Part No. / Type</th>
-                                                <th>Description</th>
-                                                <th>Quantity</th>
-                                                <th>Unit</th>
-                                                <th>Unit Price</th>
-                                                <th>PR Reference</th>
-                                            </thead>
-                                            <tbody id="tbl-pbj-body">
-                                            @foreach($poitem as $key => $row)
-                                                <tr>
-                                                    <td>{{ $row->material }}</td>
-                                                    <td>{{ $row->matdesc }}</td>
-                                                    <td>{{ number_format($row->quantity, 0, ',', '.') }}</td>
-                                                    <td>{{ $row->unit }}</td>
-                                                    <td>{{ number_format($row->price, 0, ',', '.') }}</td>
-                                                    <td>{{ $row->prnum }}</td>
-                                                </tr>
-                                            @endforeach
-                                            </tbody>
-                                        </table>
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">PO Items</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
+                                                    </li>
+                                                </ul>
+                                            </div>                                    
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="tab-content" id="custom-content-above-tabContent">
+                                                        <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <table id="tbl-po-item" class="table table-bordered table-hover table-striped table-sm">
+                                                                        <thead>
+                                                                            <th>Part No. / Type</th>
+                                                                            <th>Description</th>
+                                                                            <th>Quantity</th>
+                                                                            <th>Unit</th>
+                                                                            <th>Unit Price</th>
+                                                                            <th>PR Reference</th>
+                                                                        </thead>
+                                                                        <tbody id="tbl-pbj-body">
+                                                                        @foreach($poitem as $key => $row)
+                                                                            <tr>
+                                                                                <td>{{ $row->material }}</td>
+                                                                                <td>{{ $row->matdesc }}</td>
+                                                                                <td>{{ number_format($row->quantity, 0, ',', '.') }}</td>
+                                                                                <td>{{ $row->unit }}</td>
+                                                                                <td>{{ number_format($row->price, 0, ',', '.') }}</td>
+                                                                                <td>{{ $row->prnum }}</td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                        </tbody>
+                                                                    </table>                              
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <table id="tbl-approval" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                                                        <thead>
+                                                                            <th>Approver Name</th>
+                                                                            <th>Approver Level</th>
+                                                                            <th>Approval Status</th>
+                                                                            <th>Approve/Reject Date</th>
+                                                                            <th>Approver Note</th>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @foreach($approvals as $key => $row)
+                                                                            <tr>
+                                                                                <td>{{ $row->approver_name }}</td>
+                                                                                <td>{{ $row->approver_level }}</td>
+                                                                                @if($row->approval_status == "A")
+                                                                                <td style="text-align:center; background-color:green; color:white;">
+                                                                                    Approved
+                                                                                </td>
+                                                                                @elseif($row->approval_status == "R")
+                                                                                <td style="text-align:center; background-color:red; color:white;">
+                                                                                    Rejected
+                                                                                </td>
+                                                                                @else
+                                                                                <td style="text-align:center; background-color:yellow; color:black;">
+                                                                                    Open
+                                                                                </td>
+                                                                                @endif
+                                                                                
+                                                                                <td>
+                                                                                    @if($row->approval_date != null)
+                                                                                        <i class="fa fa-clock"></i> {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br>
+                                                                                        ({{ formatDateTime($row->approval_date) }})
+                                                                                    @endif
+                                                                                </td>
+                                                                                <td>{!! $row->approval_remark !!}</td>
+                                                                            </tr>
+                                                                            @endforeach
+                                                                        </tbody>
+                                                                    </table>                                                    
+                                                                </div>
+                                                            </div>
+                                                        </div>   
+
+                                                        <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <table class="table table-sm">
+                                                                        <thead>
+                                                                            <th>No</th>
+                                                                            <th>File Name</th>
+                                                                            <th>Upload Date</th>
+                                                                            <th></th>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        @foreach($attachments as $key => $file)
+                                                                            <tr>
+                                                                                <td>{{ $key+1 }}</td>
+                                                                                <td>
+                                                                                    {{ $file->efile }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PO/{{$file->efile}}#toolbar=0')">
+                                                                                        <i class="fa fa-search"></i> Preview File
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                        </tbody>
+                                                                    </table>                           
+                                                                </div>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -174,11 +282,59 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalPreviewFile">
+    <div class="modal-dialog modal-xl">
+        <form class="form-horizontal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPreviewFileTitle">Preview Document</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="position-relative row form-group">
+                    <div class="col-lg-12" id="fileViewer">
+                        <!-- <div id="example1"></div> -->
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Close</button>
+                <a href="#" id="btnDownloadFile" class="btn btn-default btnDownloadFile" download="">
+                    <i class="fa fa-download"></i> Download Document
+                </a>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>   
 @endsection
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
 <script>    
+    function previewFile(files){         
+        // alert(base_url)
+        var pathfile = base_url+'/'+files;
+        if(files !== ""){
+            $('#fileViewer').html('');
+            $('#fileViewer').append(`
+                <embed src="`+ pathfile +`" frameborder="0" width="100%" height="500px">
+            
+            `);
+
+            var fileUri = pathfile;
+            fileUri = fileUri.replace("#toolbar=0", "?force=true");
+            
+            document.getElementById("btnDownloadFile").href=fileUri; 
+            $('#modalPreviewFile').modal('show');
+        } else{
+            swal("File Not Found", "", "warning");
+        }
+    }
     $(document).ready(function(){
         var count = 0;
 

@@ -145,8 +145,17 @@ class PrintDocumentController extends Controller
         $department = DB::table('t_department')->get();
         $pohdr = DB::table('v_rpo')->where('id', $id)->first();
         $podtl = DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
+        $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $pohdr->ponum)->get();
+        $approvals   = DB::table('v_po_approval')->where('ponum', $pohdr->ponum)->get();
 
-        return view('transaksi.po.podetail', ['department' => $department, 'pohdr' => $pohdr, 'poitem' => $podtl]);
+        return view('transaksi.po.podetail', 
+            [
+                'department'    => $department, 
+                'pohdr'         => $pohdr, 
+                'poitem'        => $podtl,
+                'attachments'   => $attachments, 
+                'approvals'     => $approvals
+            ]);
     }
 
     public function printpo($id){

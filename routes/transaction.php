@@ -83,6 +83,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => '/logistic/wo'], function () {
         Route::get('/',                'Transaksi\SpkController@index')->middleware('checkAuth:logistic/wo');
+        Route::get('/listwo',          'Transaksi\SpkController@listwoview')->middleware('checkAuth:logistic/wo');
+        Route::get('/listdatawo',      'Transaksi\SpkController@listdatawo')->middleware('checkAuth:logistic/wo');
+        Route::get('/detail/{p1}',     'Transaksi\SpkController@wodetail')->middleware('checkAuth:logistic/wo');   
+        Route::get('/print/{p1}',      'Transaksi\SpkController@printprlist')->middleware('checkAuth:logistic/wo');  
         Route::post('/save',           'Transaksi\SpkController@save')->middleware('checkAuth:logistic/wo');
     });
     // logistic/terimapo

@@ -25,7 +25,7 @@
                     <div class="card-header">
                         <h3 class="card-title"></h3>
                         <div class="card-tools">
-                            <button type="submit" class="btn btn-success btn-sm btn-add-dept">
+                            <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan PBJ
                             </button>
                             <a href="{{ url('/transaction/pbj/list') }}" class="btn btn-success btn-sm">
@@ -64,7 +64,8 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="unitdesc">Unit Desc / Code</label>
-                                            <input type="text" name="unitdesc" class="form-control">
+                                            <select name="unitdesc" id="find-unitdesc" class="form-control"></select>
+                                            <!-- <input type="text" name="unitdesc" class="form-control"> -->
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -299,6 +300,64 @@
                 $('#partdesc'+fCount).val(data[0].partname);
                 $('#partunit'+fCount).val(data[0].matunit);
             });
+        });
+
+        $(document).on('select2:open', (event) => {
+            const searchField = document.querySelector(
+                `.select2-search__field`,
+            );
+            if (searchField) {
+                searchField.focus();
+            }
+        });
+        $('#find-unitdesc').select2({ 
+            placeholder: 'Type Unit Desc / Code',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/master/kendaraan/findkendaraan',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.no_kendaraan + ' - ' + item.model_kendaraan,
+                                slug: item.model_kendaraan,
+                                id: item.no_kendaraan,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $('#find-unitdesc').on('change', function(){
+            // alert(this.value)
+            
+            var data = $('#find-unitdesc').select2('data')
+            console.log(data);
+
+            // alert(data[0].material);
+            // $('#partdesc'+fCount).val(data[0].partname);
+            // $('#partunit'+fCount).val(data[0].matunit);
         });
 
         function validate(evt) {

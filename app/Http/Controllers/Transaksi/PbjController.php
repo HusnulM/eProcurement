@@ -46,9 +46,18 @@ class PbjController extends Controller
     public function detailPBJ($id){
         $pbjhdr = DB::table('t_pbj01')->where('id', $id)->first();
         if($pbjhdr){
-            $pbjitem = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
-            $department = DB::table('t_department')->get();
-            return view('transaksi.pbj.pbjdetail', ['department' => $department, 'pbjhdr' => $pbjhdr, 'pbjitem' => $pbjitem]);
+            $pbjitem     = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
+            $department  = DB::table('t_department')->get();
+            $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
+            $approvals   = DB::table('v_pbj_approval')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
+            return view('transaksi.pbj.pbjdetail', 
+                [
+                    'department' => $department, 
+                    'pbjhdr' => $pbjhdr, 
+                    'pbjitem' => $pbjitem,
+                    'attachments'   => $attachments, 
+                    'approvals'     => $approvals
+                ]);
         }else{
             return Redirect::to("/transaction/pbj")->withError('Dokumen PBJ tidak ditemukan');
         }
@@ -153,8 +162,10 @@ class PbjController extends Controller
 
                 $efile->move(public_path().'/files/PBJ/', $filename);  
             }
-
-            insertOrUpdate($insertFiles,'t_attachments');
+            if(sizeof($insertFiles) > 0){
+                insertOrUpdate($insertFiles,'t_attachments');
+            }
+            // insertOrUpdate($insertFiles,'t_attachments');
 
             //Set Approval
             $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();

@@ -17,7 +17,7 @@
 
 @section('content')        
 <div class="container-fluid">
-    <form action="{{ url('logistic/wo/save') }}" method="post">
+    <form action="{{ url('logistic/wo/save') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -28,6 +28,9 @@
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan Work Order
                             </button>
+                            <a href="{{ url('/logistic/wo/listwo') }}" class="btn btn-success btn-sm">
+                                <i class="fa fa-list"></i> List Work Order
+                            </a>
                         </div>
                     </div>
                     <div class="card-body">
@@ -61,13 +64,14 @@
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="licenseNumber">License Plate Number</label>
-                                            <input type="text" name="licenseNumber" class="form-control" required>
+                                            <!-- <input type="text" name="licenseNumber" class="form-control" required> -->
+                                            <select name="licenseNumber" id="find-licenseNumber" class="form-control" required></select>
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="lastOdoMeter">Last Odo Meter</label>                                            
-                                            <input type="text" name="lastOdoMeter" class="form-control" required>
+                                            <input type="text" name="lastOdoMeter" id="lastOdoMeter" class="form-control" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-12">
@@ -80,10 +84,16 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-lg-9 col-md-12">
+                                    <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="issued">Issued</label>
                                             <input type="text" name="issued" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-12">
+                                        <div class="form-group">
+                                            <label for="attachment">Attachment</label>
+                                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
                                         </div>
                                     </div>
                                 </div>
@@ -254,7 +264,7 @@
                         return {
                             results: $.map(data.data, function (item) {
                                 return {
-                                    text: item.material,
+                                    text: item.material + ' - ' + item.matdesc,
                                     slug: item.material,
                                     id: item.material,
                                     ...item
@@ -405,6 +415,57 @@
                 cache: true
             }
         });    
+
+        $('#find-licenseNumber').select2({ 
+            placeholder: 'No Kendaraan',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/master/kendaraan/findkendaraan',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.no_kendaraan + ' - ' + item.model_kendaraan,
+                                slug: item.model_kendaraan,
+                                id: item.no_kendaraan,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $('#find-licenseNumber').on('change', function(){
+            // alert(this.value)
+            
+            var data = $('#find-licenseNumber').select2('data')
+            console.log(data);
+            $('#lastOdoMeter').val(data[0].last_hm + ' - ' + data[0].last_km);
+
+            // alert(data[0].material);
+            // $('#partdesc'+fCount).val(data[0].partname);
+            // $('#partunit'+fCount).val(data[0].matunit);
+        });
         
     });
 </script>

@@ -6,11 +6,32 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
+use PDF;
 
 class SpkController extends Controller
 {
     public function index(){
         return view('transaksi.spk.index');
+    }
+
+    public function listwoview(){
+        return view('transaksi.spk.listspk');
+    }
+
+    public function listdatawo(Request $request){
+        $query = DB::table('v_wo01');
+
+        $query->where('createdby', Auth::user()->email);
+
+        $query->orderBy('id', 'DESC');
+
+        return DataTables::queryBuilder($query)
+        ->editColumn('wodate', function ($query){
+            return [
+                'wodate1' => \Carbon\Carbon::parse($query->wodate)->format('d-m-Y')
+             ];
+        })
+        ->toJson();
     }
 
     public function save(Request $req){
@@ -66,6 +87,29 @@ class SpkController extends Controller
                 array_push($insertData, $data);
             }
             insertOrUpdate($insertData,'t_wo02');
+
+            //Insert Attachments | t_attachments
+            $files = $req['efile'];
+            $insertFiles = array();
+
+            foreach ($files as $efile) {
+                $filename = $efile->getClientOriginalName();
+                $upfiles = array(
+                    'doc_object' => 'SPK',
+                    'doc_number' => $ptaNumber,
+                    'efile'      => $filename,
+                    'pathfile'   => '/files/SPK/'. $filename,
+                    'createdon'  => getLocalDatabaseDateTime(),
+                    'createdby'  => Auth::user()->username ?? Auth::user()->email
+                );
+                array_push($insertFiles, $upfiles);
+
+                $efile->move(public_path().'/files/SPK/', $filename);  
+            }
+
+            if(sizeof($insertFiles) > 0){
+                insertOrUpdate($insertFiles,'t_attachments');
+            }
 
             //Set Approval
             $approval = DB::table('v_workflow_budget')->where('object', 'SPK')->where('requester', Auth::user()->id)->get();

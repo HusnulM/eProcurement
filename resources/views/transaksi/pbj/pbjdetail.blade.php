@@ -54,14 +54,7 @@
         <div class="col-lg-9">
             <div class="card">
                 <div class="card-header">
-                    <!-- <h3 class="card-title">Approve Document</h3> -->
-                    <!-- <div class="row">
-                        <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">PBJ Items</a>
-                            </li>
-                        </ul>
-                    </div> -->
+                    
                     <div class="card-tools">
                         <a href="{{ url('/printdoc/pbj/print/') }}/{{ $pbjhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
                             <i class='fa fa-print'></i> Print
@@ -74,46 +67,155 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <table id="tbl-pbj" class="table table-bordered table-hover table-striped table-sm">
-                                <thead>
-                                    <th>No</th>
-                                    <th>PBJ Item</th>
-                                    <th>Part Number</th>
-                                    <th>Description</th>
-                                    <th style="text-align:center;">Quantity</th>
-                                    <th>Unit</th>
-                                    <th>Figure</th>
-                                    <th>Remark</th>
-                                </thead>
-                                <tbody>
-                                @foreach($pbjitem as $key => $row)
-                                    <tr>
-                                        <td>{{ $key+1 }}</td>
-                                        <td>
-                                            {{ $row->pbjitem }}
-                                        </td>
-                                        <td>
-                                            {{ $row->partnumber }}
-                                        </td>
-                                        <td>
-                                            {{ $row->description }}
-                                        </td>
-                                        <td style="text-align:right;">
-                                            {{ number_format($row->quantity,0) }}
-                                        </td>
-                                        <td>
-                                            {{ $row->unit }}
-                                        </td>
-                                        <td>
-                                            {{ $row->figure }}
-                                        </td>
-                                        <td>
-                                            {{ $row->remark }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                            <div class="card-header">
+                                <div class="row">
+                                    <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">PBJ Items</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
+                                        </li>
+                                    </ul>
+                                </div>                                    
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="tab-content" id="custom-content-above-tabContent">
+                                            <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <table id="tbl-pbj" class="table table-bordered table-hover table-striped table-sm">
+                                                            <thead>
+                                                                <th>No</th>
+                                                                <th>PBJ Item</th>
+                                                                <th>Part Number</th>
+                                                                <th>Description</th>
+                                                                <th style="text-align:center;">Quantity</th>
+                                                                <th>Unit</th>
+                                                                <th>Figure</th>
+                                                                <th>Remark</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach($pbjitem as $key => $row)
+                                                                    <tr>
+                                                                        <td>{{ $key+1 }}</td>
+                                                                        <td>
+                                                                            {{ $row->pbjitem }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ $row->partnumber }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ $row->description }}
+                                                                        </td>
+                                                                        <td style="text-align:right;">
+                                                                            {{ number_format($row->quantity,0) }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ $row->unit }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ $row->figure }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ $row->remark }}
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>                                
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <table id="tbl-approval" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                                            <thead>
+                                                                <th>Approver Name</th>
+                                                                <th>Approver Level</th>
+                                                                <th>Approval Status</th>
+                                                                <th>Approve/Reject Date</th>
+                                                                <th>Approver Note</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach($approvals as $key => $row)
+                                                                <tr>
+                                                                    <td>{{ $row->approver_name }}</td>
+                                                                    <td>{{ $row->approver_level }}</td>
+                                                                    @if($row->approval_status == "A")
+                                                                    <td style="text-align:center; background-color:green; color:white;">
+                                                                        Approved
+                                                                    </td>
+                                                                    @elseif($row->approval_status == "R")
+                                                                    <td style="text-align:center; background-color:red; color:white;">
+                                                                        Rejected
+                                                                    </td>
+                                                                    @else
+                                                                    <td style="text-align:center; background-color:yellow; color:black;">
+                                                                        Open
+                                                                    </td>
+                                                                    @endif
+                                                                    
+                                                                    <td>
+                                                                        @if($row->approval_date != null)
+                                                                            <i class="fa fa-clock"></i> {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br>
+                                                                            ({{ formatDateTime($row->approval_date) }})
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>{!! $row->approval_remark !!}</td>
+                                                                </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>                                                    
+                                                    </div>
+                                                </div>
+                                            </div>   
+
+                                            <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <table class="table table-sm">
+                                                            <thead>
+                                                                <th>No</th>
+                                                                <th>File Name</th>
+                                                                <th>Upload Date</th>
+                                                                <th></th>
+                                                            </thead>
+                                                            <tbody>
+                                                            @foreach($attachments as $key => $file)
+                                                                <tr>
+                                                                    <td>{{ $key+1 }}</td>
+                                                                    <td>
+                                                                        {{ $file->efile }}
+                                                                    </td>
+                                                                    <td>
+                                                                        <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
+                                                                    </td>
+                                                                    <td>
+                                                                        <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PBJ/{{$file->efile}}#toolbar=0')">
+                                                                            <i class="fa fa-search"></i> Preview File
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                            </tbody>
+                                                        </table>                           
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
                         </div>
                     </div>
                 </div>
@@ -145,11 +247,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal"> Close</button>
-                @if(userAllowDownloadDocument() == 1)
                 <a href="#" id="btnDownloadFile" class="btn btn-default btnDownloadFile" download="">
                     <i class="fa fa-download"></i> Download Document
                 </a>
-                @endif
             </div>
         </div>
         </form>
@@ -177,10 +277,7 @@
             var fileUri = pathfile;
             fileUri = fileUri.replace("#toolbar=0", "?force=true");
             
-            @if(userAllowDownloadDocument() == 1)
-                // document.getElementById("btnDownloadFile").href=base_url+fileUri; 
-                document.getElementById("btnDownloadFile").href=fileUri; 
-            @endif
+            document.getElementById("btnDownloadFile").href=fileUri; 
             $('#modalPreviewFile').modal('show');
         } else{
             swal("File Not Found", "", "warning");
