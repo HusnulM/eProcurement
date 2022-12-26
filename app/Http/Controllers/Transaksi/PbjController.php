@@ -160,7 +160,8 @@ class PbjController extends Controller
                 );
                 array_push($insertFiles, $upfiles);
 
-                $efile->move(public_path().'/files/PBJ/', $filename);  
+                // $efile->move(public_path().'/files/PBJ/', $filename);  
+                $efile->move('/files/PBJ/', $filename);  
             }
             if(sizeof($insertFiles) > 0){
                 insertOrUpdate($insertFiles,'t_attachments');

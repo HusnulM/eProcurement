@@ -107,7 +107,8 @@ class PurchaseRequestController extends Controller
                 );
                 array_push($insertFiles, $upfiles);
 
-                $efile->move(public_path().'/files/PR/', $filename);  
+                $efile->move('/files/PR/', $filename);  
+                // $efile->move(public_path().'/files/PR/', $filename);  
             }
             if(sizeof($insertFiles) > 0){
                 insertOrUpdate($insertFiles,'t_attachments');
