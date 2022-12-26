@@ -115,7 +115,7 @@ class PurchaseOrderController extends Controller
                 array_push($insertFiles, $upfiles);
 
                 // $efile->move(public_path().'/files/PO/', $filename);  
-                $efile->move('/files/PO/', $filename);  
+                $efile->move('files/PO/', $filename);  
             }
             if(sizeof($insertFiles) > 0){
                 insertOrUpdate($insertFiles,'t_attachments');

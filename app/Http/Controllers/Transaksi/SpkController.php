@@ -104,7 +104,7 @@ class SpkController extends Controller
                 );
                 array_push($insertFiles, $upfiles);
 
-                $efile->move('/files/SPK/', $filename);  
+                $efile->move('files/SPK/', $filename);  
                 // $efile->move(public_path().'/files/SPK/', $filename);  
             }
 
