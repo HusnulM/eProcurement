@@ -102,6 +102,7 @@ class ApprovePurchaseOrderController extends Controller
                             ->where('approver', Auth::user()->id)
                             ->first();
 
+            $podata = DB::table('t_po01')->where('ponum', $ptaNumber)->first();
             //Set Approval
             DB::table('t_po_approval')
             ->where('ponum', $ptaNumber)
@@ -137,6 +138,23 @@ class ApprovePurchaseOrderController extends Controller
                     // 'approved_amount' => $amount,
                     'approvestat'   => 'A'
                 ]);
+
+                $totalPricePO = getTotalPricePO($ptaNumber);
+
+                DB::table('t_budget_history')->insert([
+                    'deptid'        => $podata->deptid,
+                    'budget_period' => date('M'),
+                    'amount'        => $totalPricePO,
+                    'budget_type'   => 'D',
+                    'note'          => 'Pembelian dengan PO '. $ptaNumber,
+                    'refnum'        => $ptaNumber,
+                    'refitem'       => null,
+                    'createdon'     => getLocalDatabaseDateTime(),
+                    'createdby'     => Auth::user()->email ?? Auth::user()->username
+                ]);
+                // INSERT INTO t_budget_history (deptid,budget_period,amount,budget_type,note,refnum,refitem,createdon,createdby) 
+                // VALUES(NEW.deptid,NEW.budget_period,NEW.amount,'C','Budget Allocation',NULL,NULL,NOW(),NEW.createdby)
+
             }
 
             DB::commit();

@@ -13,7 +13,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => '/report'], function () {
         Route::get('/budgetrequest',            'Reports\ReportsController@requestbudget')->middleware('checkAuth:report/budgetrequest');
-        Route::get('/budgetrequestlist',        'Reports\ReportsController@budgetRequestlist')->middleware('checkAuth:approve/budget');
+        Route::get('/budgetrequestlist',        'Reports\ReportsController@budgetRequestlist')->middleware('checkAuth:report/budgetrequest');
+
+        Route::get('/budgetsummary',            'Reports\BudgetReportController@index')->middleware('checkAuth:report/budgetsummary');
+        Route::get('/budgetsummarylist',        'Reports\BudgetReportController@getBudgetSummary')->middleware('checkAuth:report/budgetsummary');
 
         Route::get('/pbj',                      'Reports\ReportsController@pbj')->middleware('checkAuth:report/pbj');
         Route::get('/pbjlist',                  'Reports\ReportsController@pbjList')->middleware('checkAuth:report/pbj');

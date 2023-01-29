@@ -166,12 +166,41 @@ class PrintDocumentController extends Controller
         return $pdf->stream();
     }
 
-    public function wolist(){
-
+    public function wolist(Request $req){
+        return view('transaksi.spk.printlist');
     }
 
-    public function printwo(){
+    public function wodetail($id){
+        // return view('transaksi.spk.printlist');
+        $wohdr = DB::table('t_wo01')->where('id', $id)->first();
+        if($wohdr){
+            $woitem     = DB::table('t_wo02')->where('wonum', $wohdr->wonum)->get();
+            $mekanik    = DB::table('t_mekanik')->where('id', $wohdr->mekanik)->first();
+            $warehouse  = DB::table('t_warehouse')->where('id', $wohdr->whscode)->first();
+            $kendaraan  = DB::table('t_kendaraan')->where('id', $wohdr->license_number)->first();
+            $attachments = DB::table('t_attachments')->where('doc_object', 'SPK')->where('doc_number', $wohdr->wonum)->get();
+            // return $woitem;
 
+            return view('transaksi.spk.printdetail', 
+                [
+                    'spkhdr'      => $wohdr, 
+                    'spkitems'    => $woitem,
+                    'mekanik'     => $mekanik,
+                    'warehouse'   => $warehouse,
+                    'kendaraan'   => $kendaraan,
+                    'attachments' => $attachments
+                ]);
+        }else{
+            return Redirect::to("/printdoc/wo")->withError('Data SPK/Work Order tidak ditemukan');
+        }
+    }
+
+    public function printwo($id){
+        $prhdr = DB::table('t_wo01')->where('id', $id)->first();
+        $prdtl = DB::table('t_wo02')->where('wonum', $prhdr->wonum)->get();
+
+        $pdf = PDF::loadview('transaksi.spk.printspk', ['prhdr' => $prhdr, 'pritem' => $prdtl]);
+        return $pdf->stream();
     }
 
     public function grpolist(){

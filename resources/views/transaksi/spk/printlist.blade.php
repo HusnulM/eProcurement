@@ -19,9 +19,9 @@
                         <!-- <a href="{{ url('/master/department/create') }}" class="btn btn-success btn-sm">
                             <i class="fas fa-plus"></i> Create Department
                         </a> -->
-                        <a href="{{ url('/logistic/wo') }}" class="btn btn-default btn-sm">
+                        <!-- <a href="{{ url('/logistic/wo') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
-                        </a>
+                        </a> -->
                     </div>
                 </div>
                 <div class="card-body">
@@ -155,7 +155,7 @@
                 var table = $('#tbl-wo-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                window.location = "/logistic/wo/detail/"+selected_data.id;
+                window.location = "/printdoc/wo/detail/"+selected_data.id;
                 // if(selected_data.doctype === "Corporate Procedure"){
                     // window.open(
                     //     base_url+"/printdoc/pr/print/"+selected_data.id,

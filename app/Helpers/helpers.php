@@ -29,6 +29,12 @@ function getLocalDatabaseDateTime(){
     return $localDateTime[0]->lcldate;
 }
 
+function getTotalPricePO($ponum){
+    // fGetTotalPricePO
+    $totalPrice = DB::select('SELECT fGetTotalPricePO() as price');
+    return $totalPrice[0]->price;
+}
+
 function formatDate($date, $format = "d-m-Y")
 {
     if (is_null($date)) {
