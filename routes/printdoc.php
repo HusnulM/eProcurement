@@ -30,4 +30,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/printlist',    'Transaksi\PrintDocumentController@printpolist')->middleware('checkAuth:printdoc/wo');   
     });
     
+    Route::group(['prefix' => '/printdoc/grpo'], function () {
+        Route::get('/',             'Transaksi\PrintDocumentController@grpo')->middleware('checkAuth:printdoc/grpo');
+        Route::get('/print/{p1}',   'Transaksi\PrintDocumentController@printgrpo')->middleware('checkAuth:printdoc/grpo');   
+        Route::get('/detail/{p1}',  'Transaksi\PrintDocumentController@grpodetail')->middleware('checkAuth:printdoc/grpo');   
+        Route::get('/printlist',    'Transaksi\PrintDocumentController@grpolist')->middleware('checkAuth:printdoc/grpo');   
+    });
 });

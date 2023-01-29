@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'List Approve PR')
+@section('title', 'List Approve Work Order')
 
 @section('additional-css')
 @endsection
@@ -11,7 +11,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"></h3>
+                    <h3 class="card-title">List Approve Work Order</h3>
                     <div class="card-tools">
                         <!-- <a href="{{ url('transaction/budgeting') }}" class="btn btn-success btn-sm btn-add-dept">
                             <i class="fas fa-plus"></i> Buat Pengajuan Budget
@@ -26,10 +26,10 @@
                         <table id="tbl-pr-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                             <thead>
                                 <th>No</th>
-                                <th>Nomor PR</th>
-                                <th>Tanggal PR</th>
-                                <th>Requestor</th>
-                                <th>Department</th>
+                                <th>WO Number</th>
+                                <th>WO Date</th>
+                                <th>Description</th>
+                                <th>Schedule Type</th>
                                 <th></th>
                             </thead>
                             <tbody>
@@ -72,7 +72,7 @@
         $("#tbl-pr-list").DataTable({
             serverSide: true,
             ajax: {
-                url: base_url+'/approve/pr/approvelist',
+                url: base_url+'/approve/spk/approvelist',
                 data: function (data) {
                     data.params = {
                         sac: "sac"
@@ -90,10 +90,10 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }  
                 },
-                {data: "prnum", className: 'uid'},
-                {data: "prdate", className: 'uid'},
-                {data: "requestby"},
-                {data: "department"},      
+                {data: "wonum", className: 'uid'},
+                {data: "wodate", className: 'uid'},
+                {data: "description"},
+                {data: "schedule_type"},      
                 {"defaultContent": 
                     `
                     <button class='btn btn-success btn-sm button-approve-pr'> <i class='fa fa-search'></i> VIEW</button>
@@ -109,7 +109,7 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
-            window.location = base_url+"/approve/pr/detail/"+selected_data.id;
+            window.location = base_url+"/approve/spk/detail/"+selected_data.id;
         });
 
         $('.inputNumber').on('change', function(){

@@ -4,6 +4,7 @@
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('/assets/css/customstyle.css') }}">
     <style type="text/css">
         .select2-container {
             display: block
@@ -15,660 +16,327 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
-    <form id="form-spk-data" action="{{ url('logistic/wo/udpate') }}" method="post" enctype="multipart/form-data">
-        @csrf
-        <div class="row">
-            <div class="col-lg-12">
+    <div class="row">
+        <div class="col-lg-3">
+            <form action="{{ url('transaction/document/save') }}" method="post" enctype="multipart/form-data">
+                @csrf
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail Work Order</h3>
+                        <h3 class="card-title">SPK/WO <b>[ {{ $prhdr->wonum }} ]</b></h3>
                         <div class="card-tools">
-                            <!-- <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
-                                <i class="fas fa-save"></i> Simpan Work Order
-                            </button> -->
-                            <a href="{{ url('/logistic/wo/listwo') }}" class="btn btn-default btn-sm">
-                                <i class="fa fa-arrow-left"></i> Back
-                            </a>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-12 col-md-12">
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-12">
-                                        <div class="form-group">
-                                            <label for="descr">No. Work Order</label>
-                                            <input type="text" name="wonum" class="form-control" value="{{ $spkhdr->wonum }}" readonly required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="descr">Description</label>
-                                            <input type="text" name="descr" class="form-control" value="{{ $spkhdr->description }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-12">
-                                        <div class="form-group">
-                                            <label for="servicedate">Service Date</label>
-                                            <input type="date" name="servicedate" class="form-control" value="{{ $spkhdr->wodate }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="mekanik">Mekanik</label>
-                                            <select name="mekanik" id="find-mekanik" class="form-control" required>
-                                                <option value="{{ $spkhdr->mekanik }}">{{ $mekanik->nama }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="currency">Warehouse</label>                                            
-                                            <select name="whscode" id="find-whscode" class="form-control" required>
-                                                <option value="{{ $spkhdr->whscode }}">{{ $warehouse->whscode }} - {{ $warehouse->whsname }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="licenseNumber">License Plate Number</label>
-                                            <!-- <input type="text" name="licenseNumber" class="form-control" required> -->
-                                            <select name="licenseNumber" id="find-licenseNumber" class="form-control" required>
-                                                <option value="{{ $spkhdr->license_number }}">{{ $kendaraan->no_kendaraan ?? '' }} - {{ $kendaraan->model_kendaraan ?? '' }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="lastOdoMeter">Last Odo Meter</label>                                            
-                                            <input type="text" name="lastOdoMeter" id="lastOdoMeter" class="form-control" value="{{ $spkhdr->last_odo_meter }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-12">
-                                        <div class="form-group">
-                                            <label for="schedule">Status Schedule</label>                                            
-                                            <select name="schedule" id="schedule" class="form-control" required>
-                                                <option value="{{ $spkhdr->schedule_type }}">{{ $spkhdr->schedule_type }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="issued">Issued</label>
-                                            <input type="text" name="issued" class="form-control" value="{{ $spkhdr->issued }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-12">
-                                        <div class="form-group">
-                                            <label for="attachment">Attachment</label>
-                                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
+                            <div class="col-lg-12">
+                                
+                                <div class="form-group">
+                                    <label for="doctitle">WO Number</label>
+                                    <p>{{ $prhdr->wonum }}</p>
+                                    <input type="hidden" id="woNumber" value="{{ $prhdr->wonum }}">
+                                </div>  
+                                <div class="form-group">
+                                    <label>Description:</label> {{$prhdr->description}}
+                                </div>
+                                <div class="form-group">
+                                    <label>Mekanik:</label> {{$prhdr->nama_mekanik}}
+                                </div>
+                                <div class="form-group">
+                                    <label>Warehouse:</label> {{$prhdr->whsname}}
+                                </div>
+                                <div class="form-group">
+                                    <label>License Plate Number:</label> {{$prhdr->no_kendaraan}} - {{$prhdr->last_odo_meter}}
+                                </div>
+                                <div class="form-group">
+                                    <label>WO Date:</label>
+                                    <p>{!! formatDateTime($prhdr->wodate) !!}
+                                    </p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Issued</label>
+                                    <p>{!! $prhdr->issued !!}
+                                    </p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Schedule Type:</label> {{$prhdr->schedule_type}}
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-header">
+                    <!-- <h3 class="card-title">Approve Document</h3> -->
+                    <div class="row">
+                        <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">WO Items</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachments</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-tools">
+                        <a href="{{ url('/logistic/wo/listwo') }}" class="btn btn-default btn-sm">
+                            <i class="fa fa-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="tab-content" id="custom-content-above-tabContent">
+                                <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table id="tbl-pr-data" class="table table-bordered table-hover table-striped table-sm">
+                                                <thead>
+                                                    <th>No</th>
+                                                    <th>WO Item</th>
+                                                    <th>Part Number</th>
+                                                    <th>Description</th>
+                                                    <th style="text-align:center;">Quantity</th>
+                                                    <th>Unit</th>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($pritem as $key => $row)
+                                                    <tr>
+                                                        <td>{{ $key+1 }}</td>
+                                                        <td>
+                                                            {{ $row->woitem }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $row->material }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $row->matdesc }}
+                                                        </td>
+                                                        <td style="text-align:right;">
+                                                            {{ number_format($row->quantity,0) }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $row->unit }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-12 col-md-12">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <th>Part No. / Type</th>
-                                                <th>Description</th>
-                                                <th>Quantity</th>
-                                                <th>Unit</th>
-                                                <th style="text-align:right; display:none;">
-                                                    <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                        <i class="fa fa-plus"></i>
-                                                    </button>
-                                                </th>
-                                            </thead>
-                                            <tbody id="tbl-pbj-body">
 
-                                            </tbody>
-                                            <!-- <tfoot>
-                                                <tr>
-                                                    <td colspan="7"></td>
-                                                    <td style="text-align:right;">
-                                                        <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                            <i class="fa fa-plus"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </tfoot> -->
-                                        </table>
+                                <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table id="tbl-approval" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                                <thead>
+                                                    <th>Approver Name</th>
+                                                    <th>Approver Level</th>
+                                                    <th>Approval Status</th>
+                                                    <th>Approve/Reject Date</th>
+                                                    <th>Approver Note</th>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($approvals as $key => $row)
+                                                    <tr>
+                                                        <td>{{ $row->approver_name }}</td>
+                                                        <td>{{ $row->approver_level }}</td>
+                                                        @if($row->approval_status == "A")
+                                                        <td style="text-align:center; background-color:green; color:white;">
+                                                            Approved
+                                                        </td>
+                                                        @elseif($row->approval_status == "R")
+                                                        <td style="text-align:center; background-color:red; color:white;">
+                                                            Rejected
+                                                        </td>
+                                                        @else
+                                                        <td style="text-align:center; background-color:yellow; color:black;">
+                                                            Open
+                                                        </td>
+                                                        @endif
+                                                        
+                                                        <td>
+                                                            @if($row->approval_date != null)
+                                                                <i class="fa fa-clock"></i> {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br>
+                                                                ({{ formatDateTime($row->approval_date) }})
+                                                            @endif
+                                                        </td>
+                                                        <td>{!! $row->approval_remark !!}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>                                                    
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                </div>       
+                                
+                                <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <th>No</th>
+                                                    <th>File Name</th>
+                                                    <th>Upload Date</th>
+                                                    <th></th>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($attachments as $key => $file)
+                                                    <tr>
+                                                        <td>{{ $key+1 }}</td>
+                                                        <td>
+                                                            {{ $file->efile }}
+                                                        </td>
+                                                        <td>
+                                                            <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/SPK/{{$file->efile}}#toolbar=0')">
+                                                                <i class="fa fa-search"></i> Preview File
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>                           
+                                        </div>
+                                    </div>
+                                </div>   
+                            </div>   
                         </div>
                     </div>
                 </div>
             </div>
+                
         </div>
-    </form>
+    </div>
 </div>
 @endsection
 
 @section('additional-modal')
-<div class="modal fade" id="modal-list-pr">
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalPreviewFile">
     <div class="modal-dialog modal-xl">
+        <form class="form-horizontal">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Pilih PR</h4>
+                <h5 class="modal-title" id="modalPreviewFileTitle">Preview Document</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <table id="tbl-pr-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                            <thead>
-                                <th></th>
-                                <th>Nomor PR</th>
-                                <th>Tanggal PR</th>
-                                <th>Part Number</th>
-                                <th>Part Name</th>
-                                <th>Quantity</th>
-                                <th>Unit</th>
-                                <th>Request By</th>
-                                <th>Department</th>
-                                <th>Remark</th>
-                                <th style="width:50px; text-align:center;">
-                                    
-                                </th>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>  
-                    </div> 
+                <div class="position-relative row form-group">
+                    <div class="col-lg-12" id="fileViewer">
+                        <!-- <div id="example1"></div> -->
+                        
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Close</button>
+                @if(userAllowDownloadDocument() == 1)
+                <a href="#" id="btnDownloadFile" class="btn btn-default btnDownloadFile" download="">
+                    <i class="fa fa-download"></i> Download Document
+                </a>
+                @endif
             </div>
         </div>
+        </form>
     </div>
-</div>
-
-<div class="modal fade" id="modal-wo-attachment">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">WO Attachments</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <table id="tbl-pr-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                            <thead>
-                                <th></th>
-                                <th>File Name</th>
-                                <th></th>
-                            </thead>
-                            <tbody>
-                                @foreach($attachments as $key => $row)
-                                <tr>
-                                    <td>{{ $key+1 }}</td>
-                                    <td>{{ $row->efile }}</td>
-                                    <td>
-                                        <a href="{{ $row->pathfile }}" target="_blank" class="btn btn-default btn-sm">
-                                            <i class="fa fa-search"></i> View File
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>  
-                    </div> 
-                </div>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <!-- <button type="submit" class="btn btn-primary">Save</button> -->
-            </div>
-        </div>
-    </div>
-</div>
+</div>   
 @endsection
 
 @section('additional-js')
-<script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
-    $(document).ready(function(){
-        var _woItems = <?= json_encode($spkitems);?>;
-        console.log(_woItems);
-        $('#form-spk-data').on('keyup keypress', function(e) {
-            var keyCode = e.keyCode || e.which;
-            if (keyCode === 13) { 
-                e.preventDefault();
-                return false;
-            }
-        });
-        var count = 0;
+<script src="{{ asset('/assets/ckeditor/ckeditor.js') }}"></script>
+<script src="{{ asset('/assets/ckeditor/adapters/jquery.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- <script src="https://cdn.scaleflex.it/plugins/filerobot-image-editor/3/filerobot-image-editor.min.js"></script> -->
 
-        let _token   = $('meta[name="csrf-token"]').attr('content');
-
-        $('.btn-add-po-item-based-pr').on('click', function(){
-            loadListPR();
-            $('#modal-list-pr').modal('show');
-        });    
-        
-        $('.btn-view-attachment').on('click', function(){
-            $('#modal-wo-attachment').modal('show');
-        });
-
-        var fCount = 0;
-
-        loadSpkItems();
-        function loadSpkItems(){
-            for(var i = 0; i < _woItems.length; i++){
-                fCount = fCount + 1;
-                $('#tbl-pbj-body').append(`
-                    <tr>
-                        <td>
-                            <select name="parts[]" id="find-part`+fCount+`" class="form-control">
-                                <option value="`+ _woItems[i].material +`">`+ _woItems[i].material +`</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="text" name="partdesc[]" id="partdesc`+fCount+`" value="`+ _woItems[i].matdesc +`" class="form-control">
-                        </td>
-                        <td>
-                            <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ _woItems[i].quantity +`">
-                        </td>
-                        <td>
-                            <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ _woItems[i].unit +`" class="form-control">
-                        </td>
-                        <td style="display:none;">
-                            <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `);
-
-                $('#btnRemove'+fCount).on('click', function(e){
-                    e.preventDefault();
-                    $(this).closest("tr").remove();
-                });
-
-                $(document).on('select2:open', (event) => {
-                    const searchField = document.querySelector(
-                        `.select2-search__field`,
-                    );
-                    if (searchField) {
-                        searchField.focus();
-                    }
-                });
-
-                $('#find-part'+fCount).select2({ 
-                    placeholder: 'Type Part Number',
-                    width: '100%',
-                    minimumInputLength: 0,
-                    ajax: {
-                        url: base_url + '/master/item/findpartnumber',
-                        dataType: 'json',
-                        delay: 250,
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': _token
-                        },
-                        data: function (params) {
-                            var query = {
-                                search: params.term,
-                                // custname: $('#find-customer').val()
-                            }
-                            return query;
-                        },
-                        processResults: function (data) {
-                            // return {
-                            //     results: response
-                            // };
-                            console.log(data)
-                            return {
-                                results: $.map(data.data, function (item) {
-                                    return {
-                                        text: item.material + ' - ' + item.matdesc,
-                                        slug: item.material,
-                                        id: item.material,
-                                        ...item
-                                    }
-                                })
-                            };
-                        },
-                        cache: true
-                    }
-                });
-
-                $('#find-part'+fCount).on('change', function(){
-                    // alert(this.value)
-                    console.log(fCount)
-                    var data = $('#find-part'+fCount).select2('data')
-                    console.log(data);
-
-                    // alert(data[0].material);
-                    $('#partdesc'+fCount).val(data[0].partname);
-                    $('#partunit'+fCount).val(data[0].matunit);
-                });
-
-                function validate(evt) {
-                    var theEvent = evt || window.event;
-
-                    // Handle paste
-                    if (theEvent.type === 'paste') {
-                        key = event.clipboardData.getData('text/plain');
-                    } else {
-                    // Handle key press
-                        var key = theEvent.keyCode || theEvent.which;
-                        key = String.fromCharCode(key);
-                    }
-                    var regex = /[0-9]|\./;
-                    if( !regex.test(key) ) {
-                        theEvent.returnValue = false;
-                        if(theEvent.preventDefault) theEvent.preventDefault();
-                    }
-                }
-                
-                function formatNumber(num) {
-                    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-                }
-
-                $('.inputNumber').on('change', function(){
-                    this.value = formatRupiah(this.value,'');
-                });
-
-                function formatRupiah(angka, prefix){
-                    var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
-                    split   		  = number_string.split('.'),
-                    sisa     		  = split[0].length % 3,
-                    rupiah     		  = split[0].substr(0, sisa),
-                    ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-                
-                    if(ribuan){
-                        separator = sisa ? ',' : '';
-                        rupiah += separator + ribuan.join(',');
-                    }
-                
-                    rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                    return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
-                }
-            }
-        }
-
-        $('.btn-add-pbj-item').on('click', function(){
-            fCount = fCount + 1;
-            $('#tbl-pbj-body').append(`
-                <tr>
-                    <td>
-                        <select name="parts[]" id="find-part`+fCount+`" class="form-control"></select>
-                    </td>
-                    <td>
-                        <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control">
-                    </td>
-                    <td>
-                        <input type="text" name="quantity[]" class="form-control inputNumber" onkeypress="`+validate(event)+`">
-                    </td>
-                    <td>
-                        <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control">
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
+<script type="text/javascript">
+    function previewFile(files){         
+        // alert(base_url)
+        var pathfile = base_url+'/'+files;
+        if(files !== ""){
+            $('#fileViewer').html('');
+            $('#fileViewer').append(`
+                <embed src="`+ pathfile +`" frameborder="0" width="100%" height="500px">
+            
             `);
 
-            $('#btnRemove'+fCount).on('click', function(e){
-                e.preventDefault();
-                $(this).closest("tr").remove();
-            });
-
-            $(document).on('select2:open', (event) => {
-                const searchField = document.querySelector(
-                    `.select2-search__field`,
-                );
-                if (searchField) {
-                    searchField.focus();
-                }
-            });
-
-            $('#find-part'+fCount).select2({ 
-                placeholder: 'Type Part Number',
-                width: '100%',
-                minimumInputLength: 0,
-                ajax: {
-                    url: base_url + '/master/item/findpartnumber',
-                    dataType: 'json',
-                    delay: 250,
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': _token
-                    },
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            // custname: $('#find-customer').val()
-                        }
-                        return query;
-                    },
-                    processResults: function (data) {
-                        // return {
-                        //     results: response
-                        // };
-                        console.log(data)
-                        return {
-                            results: $.map(data.data, function (item) {
-                                return {
-                                    text: item.material + ' - ' + item.matdesc,
-                                    slug: item.material,
-                                    id: item.material,
-                                    ...item
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-            $('#find-part'+fCount).on('change', function(){
-                // alert(this.value)
-                console.log(fCount)
-                var data = $('#find-part'+fCount).select2('data')
-                console.log(data);
-
-                // alert(data[0].material);
-                $('#partdesc'+fCount).val(data[0].partname);
-                $('#partunit'+fCount).val(data[0].matunit);
-            });
-
-            function validate(evt) {
-                var theEvent = evt || window.event;
-
-                // Handle paste
-                if (theEvent.type === 'paste') {
-                    key = event.clipboardData.getData('text/plain');
-                } else {
-                // Handle key press
-                    var key = theEvent.keyCode || theEvent.which;
-                    key = String.fromCharCode(key);
-                }
-                var regex = /[0-9]|\./;
-                if( !regex.test(key) ) {
-                    theEvent.returnValue = false;
-                    if(theEvent.preventDefault) theEvent.preventDefault();
-                }
-            }
+            var fileUri = pathfile;
+            fileUri = fileUri.replace("#toolbar=0", "?force=true");
             
-            function formatNumber(num) {
-                return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-            }
+            @if(userAllowDownloadDocument() == 1)
+                // document.getElementById("btnDownloadFile").href=base_url+fileUri; 
+                document.getElementById("btnDownloadFile").href=fileUri; 
+            @endif
+            $('#modalPreviewFile').modal('show');
+        } else{
+            swal("File Not Found", "", "warning");
+        }
+    }
 
-            $('.inputNumber').on('change', function(){
-                this.value = formatRupiah(this.value,'');
-            });
+    $(document).ready(function () { 
+        $('#tbl-pr-data').DataTable();
 
-            function formatRupiah(angka, prefix){
-                var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
-                split   		  = number_string.split('.'),
-                sisa     		  = split[0].length % 3,
-                rupiah     		  = split[0].substr(0, sisa),
-                ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-            
-                if(ribuan){
-                    separator = sisa ? ',' : '';
-                    rupiah += separator + ribuan.join(',');
-                }
-            
-                rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
-            }
+        $('#btn-approve').on('click', function(){
+            $('#btn-approve').prop('disabled', true);
+            $('#btn-reject').prop('disabled', true);
+            approveDocument('A');
         });
 
-        $(document).on('select2:open', (event) => {
-            const searchField = document.querySelector(
-                `.select2-search__field`,
-            );
-            if (searchField) {
-                searchField.focus();
-            }
+        $('#btn-reject').on('click', function(){
+            $('#btn-approve').prop('disabled', true);
+            $('#btn-reject').prop('disabled', true);
+            approveDocument('R');
         });
-        $('#find-whscode').select2({ 
-            placeholder: 'Ketik Nama Gudang',
-            width: '100%',
-            minimumInputLength: 0,
-            ajax: {
-                url: base_url + '/master/warehouse/findwhs',
-                dataType: 'json',
-                delay: 250,
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': _token
+
+        function approveDocument(_action){
+            let _token   = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                url: base_url+'/approve/spk/save',
+                type:"POST",
+                data:{
+                    prnum: "{{ $prhdr->wonum }}",
+                    action:_action,
+                    approvernote:$('#approver_note').val(),
+                    _token: _token
                 },
-                data: function (params) {
-                    var query = {
-                        search: params.term,
-                        // custname: $('#find-customer').val()
+                success:function(response){
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        if(_action === "A"){
+                            toastr.success(response.message)
+                        }else if(_action === "R"){
+                            toastr.success(response.message)
+                        }                        
+
+                        setTimeout(function(){ 
+                            window.location.href = base_url+'/approve/spk';
+                        }, 2000);
                     }
-                    return query;
                 },
-                processResults: function (data) {
-                    // return {
-                    //     results: response
-                    // };
-                    console.log(data)
-                    return {
-                        results: $.map(data.data, function (item) {
-                            return {
-                                text: item.whsname,
-                                slug: item.whsname,
-                                id: item.whscode,
-                                ...item
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });            
+                error: function(error) {
+                    console.log(error);
+                    toastr.error(error)
 
-        $('#find-mekanik').select2({ 
-            placeholder: 'Ketik Nama Mekanik',
-            width: '100%',
-            minimumInputLength: 0,
-            ajax: {
-                url: base_url + '/master/mekanik/findmekanik',
-                dataType: 'json',
-                delay: 250,
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': _token
-                },
-                data: function (params) {
-                    var query = {
-                        search: params.term,
-                        // custname: $('#find-customer').val()
-                    }
-                    return query;
-                },
-                processResults: function (data) {
-                    // return {
-                    //     results: response
-                    // };
-                    console.log(data)
-                    return {
-                        results: $.map(data.data, function (item) {
-                            return {
-                                text: item.nama,
-                                slug: item.nama,
-                                id: item.nama,
-                                ...item
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });    
-
-        $('#find-licenseNumber').select2({ 
-            placeholder: 'No Kendaraan',
-            width: '100%',
-            minimumInputLength: 0,
-            ajax: {
-                url: base_url + '/master/kendaraan/findkendaraan',
-                dataType: 'json',
-                delay: 250,
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': _token
-                },
-                data: function (params) {
-                    var query = {
-                        search: params.term,
-                        // custname: $('#find-customer').val()
-                    }
-                    return query;
-                },
-                processResults: function (data) {
-                    // return {
-                    //     results: response
-                    // };
-                    console.log(data)
-                    return {
-                        results: $.map(data.data, function (item) {
-                            return {
-                                text: item.no_kendaraan + ' - ' + item.model_kendaraan,
-                                slug: item.model_kendaraan,
-                                id: item.no_kendaraan,
-                                ...item
-                            }
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
-
-        $('#find-licenseNumber').on('change', function(){
-            // alert(this.value)
-            
-            var data = $('#find-licenseNumber').select2('data')
-            console.log(data);
-            $('#lastOdoMeter').val(data[0].last_hm + ' - ' + data[0].last_km);
-
-            // alert(data[0].material);
-            // $('#partdesc'+fCount).val(data[0].partname);
-            // $('#partunit'+fCount).val(data[0].matunit);
-        });
-        
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
+                }
+            }).done(function(response){
+                console.log(response);
+            });
+        }
     });
 </script>
 @endsection

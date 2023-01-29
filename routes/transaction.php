@@ -69,10 +69,10 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => '/approve/spk'], function () {
-        Route::get('/',                         'Transaksi\ApprovePurchaseOrderController@index')->middleware('checkAuth:approve/po');
-        Route::post('/save',                    'Transaksi\ApprovePurchaseOrderController@save')->middleware('checkAuth:approve/po');
-        Route::get('/approvelist',              'Transaksi\ApprovePurchaseOrderController@ApprovalList')->middleware('checkAuth:approve/po');
-        Route::get('/detail/{p1}',              'Transaksi\ApprovePurchaseOrderController@approveDetail')->middleware('checkAuth:approve/po');
+        Route::get('/',                         'Transaksi\ApproveSpkController@index')->middleware('checkAuth:approve/spk');
+        Route::post('/save',                    'Transaksi\ApproveSpkController@save')->middleware('checkAuth:approve/spk');
+        Route::get('/approvelist',              'Transaksi\ApproveSpkController@ApprovalList')->middleware('checkAuth:approve/spk');
+        Route::get('/detail/{p1}',              'Transaksi\ApproveSpkController@approveDetail')->middleware('checkAuth:approve/spk');
     });
 
     Route::group(['prefix' => '/logistic/terimapo'], function () {

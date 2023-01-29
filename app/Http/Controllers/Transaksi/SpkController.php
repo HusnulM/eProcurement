@@ -19,23 +19,27 @@ class SpkController extends Controller
     }
 
     public function wodetail($id){
-        $wohdr = DB::table('t_wo01')->where('id', $id)->first();
+        $wohdr = DB::table('v_wo01')->where('id', $id)->first();
         if($wohdr){
             $mekanik    = DB::table('t_mekanik')->where('id', $wohdr->mekanik)->first();
             $warehouse  = DB::table('t_warehouse')->where('id', $wohdr->whscode)->first();
             $kendaraan  = DB::table('t_kendaraan')->where('id', $wohdr->license_number)->first();
             $woitem     = DB::table('t_wo02')->where('wonum', $wohdr->wonum)->get();
-            $attachments = DB::table('t_attachments')->where('doc_object', 'SPK')->where('doc_number', $wohdr->wonum)->get();
+            $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $wohdr->wonum)->get();
+            // $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $prhdr->wonum)->get();
+            $approvals  = DB::table('v_wo_approval')->where('wonum', $wohdr->wonum)->get();
+            // $department = DB::table('v_wo_approval')->where('wonum', $prhdr->wonum)->first();
             // return $woitem;
 
             return view('transaksi.spk.detailspk', 
                 [
-                    'spkhdr'      => $wohdr, 
-                    'spkitems'    => $woitem,
+                    'prhdr'       => $wohdr, 
+                    'pritem'      => $woitem,
                     'mekanik'     => $mekanik,
                     'warehouse'   => $warehouse,
                     'kendaraan'   => $kendaraan,
-                    'attachments' => $attachments
+                    'attachments' => $attachments,
+                    'approvals'   => $approvals, 
                 ]);
         }else{
             return Redirect::to("/logistic/wo/listwo")->withError('Data SPK/Work Order tidak ditemukan');

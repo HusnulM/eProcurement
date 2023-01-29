@@ -12,4 +12,155 @@ class ApproveSpkController extends Controller
     public function index(){
         return view('transaksi.spk.approvelist');
     }
+
+    public function approveDetail($id){
+        $prhdr = DB::table('v_wo01')->where('id', $id)->first();
+        if($prhdr){
+            $items      = DB::table('t_wo02')->where('wonum', $prhdr->wonum)->get();
+            $approvals  = DB::table('v_wo_approval')->where('wonum', $prhdr->wonum)->get();
+            // $department = DB::table('v_wo_approval')->where('wonum', $prhdr->wonum)->first();
+            $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $prhdr->wonum)->get();
+
+            // $purchases = DB::table('v_po02')
+            // ->where('ponum', $prhdr->ponum)
+            // ->sum('totalprice');
+
+            // return $purchases;
+
+            $isApprovedbyUser = DB::table('v_wo_approval')
+                    ->where('wonum',    $prhdr->wonum)
+                    ->where('approver', Auth::user()->id)
+                    ->where('is_active', 'Y')
+                    ->first();
+
+            return view('transaksi.spk.approvedetail', 
+                [   
+                    'prhdr'     => $prhdr, 
+                    'pritem'    => $items, 
+                    'approvals' => $approvals, 
+                    // 'department'=> $department,
+                    'isApprovedbyUser' => $isApprovedbyUser,
+                    // 'totalprice'       => $purchases,
+                    'attachments'      => $attachments
+                ]);
+        }else{
+            return Redirect::to("/approve/spk")->withError('Dokumen SPK/WO tidak ditemukan');
+        }
+    }
+
+    public function ApprovalList(Request $request){
+        
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('v_wo_approval')
+                 ->where('approver',Auth::user()->id)
+                 ->where('is_active','Y')
+                 ->where('approval_status','N')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)
+        // ->editColumn('amount', function ($query){
+        //     return [
+        //         'amount1' => number_format($query->amount,0)
+        //      ];
+        // })->editColumn('approved_amount', function ($query){
+        //     return [
+        //         'amount2' => number_format($query->approved_amount,0)
+        //      ];
+        // })
+        ->toJson();
+    }
+
+    public function getNextApproval($dcnNum){
+        $userLevel = DB::table('t_wo_approval')
+                    ->where('approver', Auth::user()->id)
+                    ->first();
+
+        $nextApproval = DB::table('t_wo_approval')
+                        ->where('wonum', $dcnNum)
+                        ->where('approver_level', '>', $userLevel->approver_level)
+                        ->orderBy('approver_level', 'ASC')
+                        ->first();
+
+        // return $userLevel;
+        if($nextApproval){
+            return $nextApproval->approver_level;
+        }else{
+            return null;
+        }
+    }
+
+    public function save(Request $req){
+        DB::beginTransaction();
+        try{
+            $ptaNumber = $req['wonum'];
+
+            $userAppLevel = DB::table('t_wo_approval')
+                            ->select('approver_level')
+                            ->where('wonum', $ptaNumber)
+                            ->where('approver', Auth::user()->id)
+                            ->first();
+
+            $podata = DB::table('t_wo01')->where('wonum', $ptaNumber)->first();
+            //Set Approval
+            DB::table('t_wo_approval')
+            ->where('wonum', $ptaNumber)
+            // ->where('approver_id', Auth::user()->id)
+            ->where('approver_level',$userAppLevel->approver_level)
+            ->update([
+                'approval_status' => 'A',
+                'approval_remark' => $req['approvernote'],
+                'approved_by'     => Auth::user()->username,
+                'approval_date'   => getLocalDatabaseDateTime()
+            ]);
+
+            $nextApprover = $this->getNextApproval($ptaNumber);
+            if($nextApprover  != null){
+                DB::table('t_wo_approval')
+                ->where('wonum', $ptaNumber)
+                ->where('approver_level', $nextApprover)
+                ->update([
+                    'is_active' => 'Y'
+                ]);
+            }
+
+
+            $checkIsFullApprove = DB::table('t_wo_approval')
+                                      ->where('wonum', $ptaNumber)
+                                      ->where('approval_status', '!=', 'A')
+                                      ->get();
+            if(sizeof($checkIsFullApprove) > 0){
+                // go to next approver    
+            }else{
+                //Full Approve
+                DB::table('t_wo01')->where('wonum', $ptaNumber)->update([
+                    // 'approved_amount' => $amount,
+                    'approvestat'   => 'A'
+                ]);
+
+                
+                // INSERT INTO t_budget_history (deptid,budget_period,amount,budget_type,note,refnum,refitem,createdon,createdby) 
+                // VALUES(NEW.deptid,NEW.budget_period,NEW.amount,'C','Budget Allocation',NULL,NULL,NOW(),NEW.createdby)
+
+            }
+
+            DB::commit();
+
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'WO dengan Nomor : '. $ptaNumber . ' berhasil di approve'
+            );
+            // return Redirect::to("/approve/pr")->withSuccess('PR dengan Nomor : '. $ptaNumber . ' berhasil di approve');
+            return $result;
+        } catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+            // return Redirect::to("/approve/pr")->withError($e->getMessage());
+        }
+    }
 }

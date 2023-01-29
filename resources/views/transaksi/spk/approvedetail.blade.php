@@ -24,7 +24,7 @@
                 @csrf
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Approve PR <b>[ {{ $prhdr->prnum }} ]</b></h3>
+                        <h3 class="card-title">Approve SPK/WO <b>[ {{ $prhdr->wonum }} ]</b></h3>
                         <div class="card-tools">
                         </div>
                     </div>
@@ -33,25 +33,34 @@
                             <div class="col-lg-12">
                                 
                                 <div class="form-group">
-                                    <label for="doctitle">PR Number</label>
-                                    <p>{{ $prhdr->prnum }}</p>
-                                    <input type="hidden" id="prNumber" value="{{ $prhdr->prnum }}">
+                                    <label for="doctitle">WO Number</label>
+                                    <p>{{ $prhdr->wonum }}</p>
+                                    <input type="hidden" id="woNumber" value="{{ $prhdr->wonum }}">
                                 </div>  
                                 <div class="form-group">
-                                    <label>Requestor:</label> {{$prhdr->requestby}}
+                                    <label>Description:</label> {{$prhdr->description}}
                                 </div>
                                 <div class="form-group">
-                                    <label>Department:</label> {{$department->department}}
+                                    <label>Mekanik:</label> {{$prhdr->nama_mekanik}}
                                 </div>
                                 <div class="form-group">
-                                    <label>Created Date:</label>
-                                    <p>{!! formatDateTime($prhdr->createdon) !!}
+                                    <label>Warehouse:</label> {{$prhdr->whsname}}
+                                </div>
+                                <div class="form-group">
+                                    <label>License Plate Number:</label> {{$prhdr->no_kendaraan}} - {{$prhdr->last_odo_meter}}
+                                </div>
+                                <div class="form-group">
+                                    <label>WO Date:</label>
+                                    <p>{!! formatDateTime($prhdr->wodate) !!}
                                     </p>
                                 </div>
                                 <div class="form-group">
-                                    <label>Remark</label>
-                                    <p>{!! $prhdr->remark !!}
+                                    <label>Issued</label>
+                                    <p>{!! $prhdr->issued !!}
                                     </p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Schedule Type:</label> {{$prhdr->schedule_type}}
                                 </div>
                             </div>  
                         </div>
@@ -66,15 +75,18 @@
                     <div class="row">
                         <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">PR Items</a>
+                                <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">WO Items</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachments</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="card-tools">
-                        <a href="{{ url('/approve/pbj') }}" class="btn btn-default btn-sm">
+                        <a href="{{ url('/approve/spk') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
                         </a>
                     </div>
@@ -89,7 +101,7 @@
                                             <table id="tbl-pr-data" class="table table-bordered table-hover table-striped table-sm">
                                                 <thead>
                                                     <th>No</th>
-                                                    <th>PR Item</th>
+                                                    <th>WO Item</th>
                                                     <th>Part Number</th>
                                                     <th>Description</th>
                                                     <th style="text-align:center;">Quantity</th>
@@ -100,7 +112,7 @@
                                                     <tr>
                                                         <td>{{ $key+1 }}</td>
                                                         <td>
-                                                            {{ $row->pritem }}
+                                                            {{ $row->woitem }}
                                                         </td>
                                                         <td>
                                                             {{ $row->material }}
@@ -121,6 +133,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -173,7 +186,7 @@
                                                 </form> -->
                                                 <div class="form-group">
                                                     <textarea name="approver_note" id="approver_note" class="form-control" cols="30" rows="3" placeholder="Approver Note"></textarea>
-                                                    <input type="hidden" name="prnum" value="{{ $prhdr->prnum }}">
+                                                    <input type="hidden" name="wonum" value="{{ $prhdr->wonum }}">
                                                 </div>
                                                 <div class="form-group">
                                                     <button type="button" class="btn btn-success pull-right ml-1" id="btn-approve">
@@ -187,7 +200,40 @@
                                         </div>
                                         @endif
                                     @endif
-                                </div>                                
+                                </div>       
+                                
+                                <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <th>No</th>
+                                                    <th>File Name</th>
+                                                    <th>Upload Date</th>
+                                                    <th></th>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($attachments as $key => $file)
+                                                    <tr>
+                                                        <td>{{ $key+1 }}</td>
+                                                        <td>
+                                                            {{ $file->efile }}
+                                                        </td>
+                                                        <td>
+                                                            <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/SPK/{{$file->efile}}#toolbar=0')">
+                                                                <i class="fa fa-search"></i> Preview File
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>                           
+                                        </div>
+                                    </div>
+                                </div>   
                             </div>   
                         </div>
                     </div>
@@ -280,10 +326,10 @@
         function approveDocument(_action){
             let _token   = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
-                url: base_url+'/approve/pr/save',
+                url: base_url+'/approve/spk/save',
                 type:"POST",
                 data:{
-                    prnum: "{{ $prhdr->prnum }}",
+                    prnum: "{{ $prhdr->wonum }}",
                     action:_action,
                     approvernote:$('#approver_note').val(),
                     _token: _token
@@ -298,7 +344,7 @@
                         }                        
 
                         setTimeout(function(){ 
-                            window.location.href = base_url+'/approve/pr';
+                            window.location.href = base_url+'/approve/spk';
                         }, 2000);
                     }
                 },

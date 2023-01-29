@@ -203,12 +203,46 @@ class PrintDocumentController extends Controller
         return $pdf->stream();
     }
 
-    public function grpolist(){
-
+    public function grpo(){
+        return view('transaksi.movement.grpolist');
     }
 
-    public function printgrpo(){
+    public function grpolist(){
+        $query = DB::table('v_rgrpo')->select('id','docnum','postdate','received_by','vendor_name','remark')->distinct();
 
+        if(isset($req->datefrom) && isset($req->dateto)){
+            $query->whereBetween('postdate', [$req->datefrom, $req->dateto]);
+        }elseif(isset($req->datefrom)){
+            $query->where('postdate', $req->datefrom);
+        }elseif(isset($req->dateto)){
+            $query->where('postdate', $req->dateto);
+        }
+
+        // $query->where('createdby', Auth::user()->email);
+
+        $query->orderBy('id');
+
+        return DataTables::queryBuilder($query)
+        ->editColumn('postdate', function ($query){
+            return [
+                'postdate1' => \Carbon\Carbon::parse($query->postdate)->format('d-m-Y')
+             ];
+        })
+        ->toJson();
+    }
+
+    public function printgrpo($id){
+        $pohdr = DB::table('v_rgrpo')->select('id','docnum','postdate','received_by','vendor_name','remark')->where('id', $id)->first();
+        $podtl = DB::table('v_rgrpo')->where('docnum', $pohdr->docnum)->get();
+
+        $pdf = PDF::loadview('transaksi.movement.printgrpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
+        return $pdf->stream();
+    }
+
+    public function grpodetail($id){
+        $pohdr = DB::table('v_rgrpo')->select('id','docnum','postdate','received_by','vendor_name','remark')->where('id', $id)->first();
+        $podtl = DB::table('v_rgrpo')->where('docnum', $pohdr->docnum)->get();
+        return view('transaksi.movement.grpodetail', ['pohdr' => $pohdr, 'poitem' => $podtl]);
     }
 
     public function issuedlist(){
