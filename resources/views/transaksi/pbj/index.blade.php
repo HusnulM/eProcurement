@@ -23,7 +23,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"></h3>
+                        <h3 class="card-title">Pembuatan PBJ</h3>
                         <div class="card-tools">
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan PBJ
@@ -218,16 +218,16 @@
                         <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" readonly>
                     </td>
                     <td>
-                        <input type="text" name="quantity[]" class="form-control" onkeypress="`+validate(event)+`">
+                        <input type="text" name="quantity[]" class="form-control" onkeypress="`+validate(event)+`" required>
                     </td>
                     <td>
                         <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control">
                     </td>
                     <td>
-                        <input type="text" name="figures[]" class="form-control">
+                        <input type="text" name="figures[]" class="form-control" required>
                     </td>
                     <td>
-                        <input type="text" name="remarks[]" class="form-control">
+                        <input type="text" name="remarks[]" class="form-control" required>
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger btnRemove">

@@ -18,6 +18,16 @@ class SpkController extends Controller
         return view('transaksi.spk.listspk');
     }
 
+    public function wodetail($id){
+        $wohdr = DB::table('t_wo01')->where('id', $id)->first();
+        if($wohdr){
+            $woitem     = DB::table('t_wo02')->where('wonum', $wohdr->wonum)->get();
+            return $woitem;
+        }else{
+            return Redirect::to("/logistic/wo/listwo")->withError('Data SPK/Work Order tidak ditemukan');
+        }
+    }
+
     public function listdatawo(Request $request){
         $query = DB::table('v_wo01');
 
@@ -134,7 +144,7 @@ class SpkController extends Controller
                 insertOrUpdate($insertApproval,'t_wo_approval');
             }else{
                 DB::rollBack();
-                return Redirect::to("/proc/pr")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
+                return Redirect::to("/logistic/wo")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
             }
 
             DB::commit();

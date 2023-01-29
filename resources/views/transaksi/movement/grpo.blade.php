@@ -136,7 +136,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <!-- <button type="submit" class="btn btn-primary">Save</button> -->
             </div>
         </div>
     </div>
@@ -173,6 +173,7 @@
                 scrollY: 500,
                 scrollX: true,
                 scrollCollapse: true,
+                bDestroy: true,
                 columns: [
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
@@ -198,141 +199,172 @@
                 ]  
             });
 
+            let selected_po_items = [];
+
+            function checkPOSelected(poNum, poItem) {
+                return selected_po_items.some(function(el) {
+                    if(el.ponum === poNum && el.poitem === poItem){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                }); 
+            }
+
+            function removePoItem(index){
+                selected_po_items.splice(index, 1);
+            }
+
             $('#tbl-pr-list tbody').on( 'click', '.button-add-pbj-to-pritem', function () {
                 var table = $('#tbl-pr-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
+                if(checkPOSelected(selected_data.ponum, selected_data.poitem)){
+                    console.log(selected_po_items);
+                }else{
+                    selected_po_items.push(selected_data);
+                    fCount = fCount + 1;
+                    $('#tbl-pbj-body').append(`
+                        <tr>
+                            <td>
+                            <input type="text" name="parts[]" id="parts`+fCount+`" value="`+ selected_data.material +`" class="form-control" readonly>
+                            </td>
+                            <td>
+                                <input type="text" name="partdesc[]" id="partdesc`+fCount+`" value="`+ selected_data.matdesc +`" class="form-control" readonly>
+                            </td>
+                            <td>
+                                <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ selected_data.openqty +`" id="grqty`+fCount+`" data-openqty="`+ selected_data.openqty +`">
+                            </td>
+                            <td>
+                                <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
+                            </td>
+                            <td>
+                            <select name="whscode[]" id="find-whscode`+fCount+`" class="form-control"></select>
+                            </td>
+                            <td>
+                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.price +`" readonly>
+                            </td>
+                            <td>
+                                <input type="text" name="poref[]" id="prref`+fCount+`" value="`+ selected_data.ponum +`" class="form-control">
+                                <input type="hidden" name="ponum[]" id="prnum`+fCount+`" value="`+ selected_data.ponum +`" class="form-control">
+                                <input type="hidden" name="poitem[]" id="pritem`+fCount+`" value="`+ selected_data.poitem +`" class="form-control">
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
 
-                console.log(selected_data);
-                // <td>
-                //             <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
-                //         </td>
-                // fCount = fCount + 1;
-                fCount = fCount + 1;
-                $('#tbl-pbj-body').append(`
-                    <tr>
-                        <td>
-                        <input type="text" name="parts[]" id="parts`+fCount+`" value="`+ selected_data.material +`" class="form-control" readonly>
-                        </td>
-                        <td>
-                            <input type="text" name="partdesc[]" id="partdesc`+fCount+`" value="`+ selected_data.matdesc +`" class="form-control" readonly>
-                        </td>
-                        <td>
-                            <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ selected_data.openqty +`">
-                        </td>
-                        <td>
-                            <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
-                        </td>
-                        <td>
-                        <select name="whscode[]" id="find-whscode`+fCount+`" class="form-control"></select>
-                        </td>
-                        <td>
-                            <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.price +`" readonly>
-                        </td>
-                        <td>
-                            <input type="text" name="poref[]" id="prref`+fCount+`" value="`+ selected_data.ponum +`" class="form-control">
-                            <input type="hidden" name="ponum[]" id="prnum`+fCount+`" value="`+ selected_data.ponum +`" class="form-control">
-                            <input type="hidden" name="poitem[]" id="pritem`+fCount+`" value="`+ selected_data.poitem +`" class="form-control">
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btnRemove">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `);
-
-                $('.btnRemove').on('click', function(e){
-                    e.preventDefault();
-                    $(this).closest("tr").remove();
-                });
-
-                $('.inputNumber').on('change', function(){
-                    this.value = formatRupiah(this.value,'');
-                });
-
-                $('.inputNumber').on('keypress', function(e){
-                    validate(e);
-                });
-
-                $(document).on('select2:open', (event) => {
-                    const searchField = document.querySelector(
-                        `.select2-search__field`,
-                    );
-                    if (searchField) {
-                        searchField.focus();
+                    $('#grqty'+fCount).on('change', function(){
+                        var _data = $(this).data();
+                        let openQty = _data.openqty;
+                        let inptQty = this.value;
+                        // alert(inptQty)
+                        inptQty = inptQty*1;
+                        openQty = openQty*1;
+                        if(inptQty > openQty){
+                            alert('Deficit Quantity');
+                            this.value = openQty;
+                        }
+                        console.log(_data)
+                    });
+    
+                    $('#btnRemove'+fCount).on('click', function(e){
+                        e.preventDefault();
+                        var row_index = $(this).closest("tr").index();
+                        removePoItem(row_index);
+                        $(this).closest("tr").remove();
+                    });
+    
+                    $('.inputNumber').on('change', function(){
+                        this.value = formatRupiah(this.value,'');
+                    });
+    
+                    $('.inputNumber').on('keypress', function(e){
+                        validate(e);
+                    });
+    
+                    $(document).on('select2:open', (event) => {
+                        const searchField = document.querySelector(
+                            `.select2-search__field`,
+                        );
+                        if (searchField) {
+                            searchField.focus();
+                        }
+                    });
+                    $('#find-whscode'+fCount).select2({ 
+                        placeholder: 'Ketik Nama Gudang',
+                        width: '100%',
+                        minimumInputLength: 0,
+                        ajax: {
+                            url: base_url + '/master/warehouse/findwhs',
+                            dataType: 'json',
+                            delay: 250,
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': _token
+                            },
+                            data: function (params) {
+                                var query = {
+                                    search: params.term,
+                                    // custname: $('#find-customer').val()
+                                }
+                                return query;
+                            },
+                            processResults: function (data) {
+                                // return {
+                                //     results: response
+                                // };
+                                console.log(data)
+                                return {
+                                    results: $.map(data.data, function (item) {
+                                        return {
+                                            text: item.whsname,
+                                            slug: item.whsname,
+                                            id: item.whscode,
+                                            ...item
+                                        }
+                                    })
+                                };
+                            },
+                            cache: true
+                        }
+                    });
+    
+                    function formatRupiah(angka, prefix){
+                        var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
+                        split   		  = number_string.split('.'),
+                        sisa     		  = split[0].length % 3,
+                        rupiah     		  = split[0].substr(0, sisa),
+                        ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
+                    
+                        if(ribuan){
+                            separator = sisa ? ',' : '';
+                            rupiah += separator + ribuan.join(',');
+                        }
+                    
+                        rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
+                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
                     }
-                });
-                $('#find-whscode'+fCount).select2({ 
-                    placeholder: 'Ketik Nama Gudang',
-                    width: '100%',
-                    minimumInputLength: 0,
-                    ajax: {
-                        url: base_url + '/master/warehouse/findwhs',
-                        dataType: 'json',
-                        delay: 250,
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': _token
-                        },
-                        data: function (params) {
-                            var query = {
-                                search: params.term,
-                                // custname: $('#find-customer').val()
-                            }
-                            return query;
-                        },
-                        processResults: function (data) {
-                            // return {
-                            //     results: response
-                            // };
-                            console.log(data)
-                            return {
-                                results: $.map(data.data, function (item) {
-                                    return {
-                                        text: item.whsname,
-                                        slug: item.whsname,
-                                        id: item.whscode,
-                                        ...item
-                                    }
-                                })
-                            };
-                        },
-                        cache: true
-                    }
-                });
-
-                function formatRupiah(angka, prefix){
-                    var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
-                    split   		  = number_string.split('.'),
-                    sisa     		  = split[0].length % 3,
-                    rupiah     		  = split[0].substr(0, sisa),
-                    ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-                
-                    if(ribuan){
-                        separator = sisa ? ',' : '';
-                        rupiah += separator + ribuan.join(',');
-                    }
-                
-                    rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                    return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
-                }
-
-                function validate(evt) {
-                    var theEvent = evt || window.event;
-
-                    // Handle paste
-                    if (theEvent.type === 'paste') {
-                        key = event.clipboardData.getData('text/plain');
-                    } else {
-                    // Handle key press
-                        var key = theEvent.keyCode || theEvent.which;
-                        key = String.fromCharCode(key);
-                    }
-                    var regex = /[0-9]|\./;
-                    if( !regex.test(key) ) {
-                        theEvent.returnValue = false;
-                        if(theEvent.preventDefault) theEvent.preventDefault();
+    
+                    function validate(evt) {
+                        var theEvent = evt || window.event;
+    
+                        // Handle paste
+                        if (theEvent.type === 'paste') {
+                            key = event.clipboardData.getData('text/plain');
+                        } else {
+                        // Handle key press
+                            var key = theEvent.keyCode || theEvent.which;
+                            key = String.fromCharCode(key);
+                        }
+                        var regex = /[0-9]|\./;
+                        if( !regex.test(key) ) {
+                            theEvent.returnValue = false;
+                            if(theEvent.preventDefault) theEvent.preventDefault();
+                        }
                     }
                 }
             });

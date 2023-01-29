@@ -83,115 +83,120 @@ class PbjController extends Controller
     public function save(Request $req){
         DB::beginTransaction();
         try{
-            $tgl   = substr($req['tglpbj'], 8, 2);
-            $bulan = substr($req['tglpbj'], 5, 2);
-            $tahun = substr($req['tglpbj'], 0, 4);
-            // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
-            $ptaNumber = generatePbjNumber($tahun, $bulan, $tgl);
-
-            // return $ptaNumber;
-
-            // $amount = $req['nominal'];
-            // $amount = str_replace(',','',$amount);
-            DB::table('t_pbj01')->insert([
-                'pbjnumber'         => $ptaNumber,
-                'deptid'            => Auth::user()->deptid,
-                'tgl_pbj'           => $req['tglpbj'],
-                'tujuan_permintaan' => $req['requestto'],
-                'kepada'            => $req['kepada'],
-                'unit_desc'         => $req['unitdesc'],
-                'engine_model'      => $req['engine'],
-                'chassis_sn'        => $req['chassis'],
-                'reference'         => $req['refrensi'],
-                'requestor'         => $req['requestor'],
-                'type_model'        => $req['typeModel'],
-                'user'              => $req['user'],
-                'kode_brg_jasa'     => $req['kodeJasa'],
-                'engine_sn'         => $req['nginesn'],
-                'hm_km'             => $req['hmkm'],
-                'budget_cost_code'  => $req['budgetcode'],
-                'createdon'         => date('Y-m-d H:m:s'),
-                'createdby'         => Auth::user()->email ?? Auth::user()->username
-            ]);
-
-            $parts    = $req['parts'];
-            $partdsc  = $req['partdesc'];
-            $quantity = $req['quantity'];
-            $uom      = $req['uoms'];
-            $figure   = $req['figures'];
-            $remark   = $req['remarks'];
-
-            $insertData = array();
-            $count = 0;
-            for($i = 0; $i < sizeof($parts); $i++){
-                $qty    = $quantity[$i];
-                $qty    = str_replace(',','',$qty);
-
-                $count = $count + 1;
-                $data = array(
-                    'pbjnumber'    => $ptaNumber,
-                    'pbjitem'      => $count,
-                    'partnumber'   => $parts[$i],
-                    'description'  => $partdsc[$i],
-                    'quantity'     => $qty,
-                    'unit'         => $uom[$i],
-                    'figure'       => $figure[$i],
-                    'remark'       => $remark[$i],
-                    'createdon'    => date('Y-m-d H:m:s'),
-                    'createdby'    => Auth::user()->email ?? Auth::user()->username
-                );
-                array_push($insertData, $data);
-            }
-            insertOrUpdate($insertData,'t_pbj02');
-
-            //Insert Attachments | t_attachments
-            $files = $req['efile'];
-            $insertFiles = array();
-
-            foreach ($files as $efile) {
-                $filename = $efile->getClientOriginalName();
-                $upfiles = array(
-                    'doc_object' => 'PBJ',
-                    'doc_number' => $ptaNumber,
-                    'efile'      => $filename,
-                    'pathfile'   => '/files/PBJ/'. $filename,
-                    'createdon'  => getLocalDatabaseDateTime(),
-                    'createdby'  => Auth::user()->username ?? Auth::user()->email
-                );
-                array_push($insertFiles, $upfiles);
-
-                // $efile->move(public_path().'/files/PBJ/', $filename);  
-                $efile->move('files/PBJ/', $filename);  
-            }
-            if(sizeof($insertFiles) > 0){
-                insertOrUpdate($insertFiles,'t_attachments');
-            }
-            // insertOrUpdate($insertFiles,'t_attachments');
-
-            //Set Approval
-            $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
-            if(sizeof($approval) > 0){
-                $insertApproval = array();
-                foreach($approval as $row){
-                    $is_active = 'N';
-                    if($row->approver_level == 1){
-                        $is_active = 'Y';
-                    }
-                    $approvals = array(
-                        'pbjnumber'         => $ptaNumber,
-                        'approver_level'    => $row->approver_level,
-                        'approver'          => $row->approver,
-                        'requester'         => Auth::user()->id,
-                        'is_active'         => $is_active,
-                        'createdon'         => getLocalDatabaseDateTime()
+            if(isset($req['parts'])){
+                $tgl   = substr($req['tglpbj'], 8, 2);
+                $bulan = substr($req['tglpbj'], 5, 2);
+                $tahun = substr($req['tglpbj'], 0, 4);
+                // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
+                $ptaNumber = generatePbjNumber($tahun, $bulan, $tgl);
+    
+                // return $ptaNumber;
+    
+                // $amount = $req['nominal'];
+                // $amount = str_replace(',','',$amount);
+                DB::table('t_pbj01')->insert([
+                    'pbjnumber'         => $ptaNumber,
+                    'deptid'            => Auth::user()->deptid,
+                    'tgl_pbj'           => $req['tglpbj'],
+                    'tujuan_permintaan' => $req['requestto'],
+                    'kepada'            => $req['kepada'],
+                    'unit_desc'         => $req['unitdesc'],
+                    'engine_model'      => $req['engine'],
+                    'chassis_sn'        => $req['chassis'],
+                    'reference'         => $req['refrensi'],
+                    'requestor'         => $req['requestor'],
+                    'type_model'        => $req['typeModel'],
+                    'user'              => $req['user'],
+                    'kode_brg_jasa'     => $req['kodeJasa'],
+                    'engine_sn'         => $req['nginesn'],
+                    'hm_km'             => $req['hmkm'],
+                    'budget_cost_code'  => $req['budgetcode'],
+                    'createdon'         => date('Y-m-d H:m:s'),
+                    'createdby'         => Auth::user()->email ?? Auth::user()->username
+                ]);
+    
+                $parts    = $req['parts'];
+                $partdsc  = $req['partdesc'];
+                $quantity = $req['quantity'];
+                $uom      = $req['uoms'];
+                $figure   = $req['figures'];
+                $remark   = $req['remarks'];
+    
+                $insertData = array();
+                $count = 0;
+                for($i = 0; $i < sizeof($parts); $i++){
+                    $qty    = $quantity[$i];
+                    $qty    = str_replace(',','',$qty);
+    
+                    $count = $count + 1;
+                    $data = array(
+                        'pbjnumber'    => $ptaNumber,
+                        'pbjitem'      => $count,
+                        'partnumber'   => $parts[$i],
+                        'description'  => $partdsc[$i],
+                        'quantity'     => $qty,
+                        'unit'         => $uom[$i],
+                        'figure'       => $figure[$i],
+                        'remark'       => $remark[$i],
+                        'createdon'    => date('Y-m-d H:m:s'),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
                     );
-                    array_push($insertApproval, $approvals);
+                    array_push($insertData, $data);
                 }
-                insertOrUpdate($insertApproval,'t_pbj_approval');
+                insertOrUpdate($insertData,'t_pbj02');
+    
+                //Insert Attachments | t_attachments
+                if(isset($req['efile'])){
+                    $files = $req['efile'];
+                    $insertFiles = array();
+        
+                    foreach ($files as $efile) {
+                        $filename = $efile->getClientOriginalName();
+                        $upfiles = array(
+                            'doc_object' => 'PBJ',
+                            'doc_number' => $ptaNumber,
+                            'efile'      => $filename,
+                            'pathfile'   => '/files/PBJ/'. $filename,
+                            'createdon'  => getLocalDatabaseDateTime(),
+                            'createdby'  => Auth::user()->username ?? Auth::user()->email
+                        );
+                        array_push($insertFiles, $upfiles);
+        
+                        // $efile->move(public_path().'/files/PBJ/', $filename);  
+                        $efile->move('files/PBJ/', $filename);  
+                    }
+                    if(sizeof($insertFiles) > 0){
+                        insertOrUpdate($insertFiles,'t_attachments');
+                    }
+                }
+                // insertOrUpdate($insertFiles,'t_attachments');
+    
+                //Set Approval
+                $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
+                if(sizeof($approval) > 0){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $is_active = 'N';
+                        if($row->approver_level == 1){
+                            $is_active = 'Y';
+                        }
+                        $approvals = array(
+                            'pbjnumber'         => $ptaNumber,
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $row->approver,
+                            'requester'         => Auth::user()->id,
+                            'is_active'         => $is_active,
+                            'createdon'         => getLocalDatabaseDateTime()
+                        );
+                        array_push($insertApproval, $approvals);
+                    }
+                    insertOrUpdate($insertApproval,'t_pbj_approval');
+                }    
+                DB::commit();
+                return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
+            }else{
+                return Redirect::to("/transaction/pbj")->withError('PBJ Item Belum di Pilih');
             }
-
-            DB::commit();
-            return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/transaction/pbj")->withError($e->getMessage());

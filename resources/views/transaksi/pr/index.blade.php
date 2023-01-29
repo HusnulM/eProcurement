@@ -153,6 +153,7 @@
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
 <script>    
     $(document).ready(function(){
+        let selected_pbj_items = [];
         var count = 0;
 
         let _token   = $('meta[name="csrf-token"]').attr('content');
@@ -163,10 +164,6 @@
         });
 
         var fCount = 0;
-
-        // <td>
-        //                 <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control">
-        //             </td>
 
         $('.btn-add-pbj-item').on('click', function(){
             fCount = fCount + 1;
@@ -309,13 +306,6 @@
             }
         });
 
-        // <th>Part Number</th>
-        //                         <th>Part Name</th>
-        //                         <th>Quantity</th>
-        //                         <th>Unit</th>
-        //                         <th>Figure</th>
-        //                         <th>Remark</th>
-
         function loadListPBJ(){
             $("#tbl-pbj-list").DataTable({
                 serverSide: true,
@@ -357,90 +347,112 @@
                 bDestroy: true,
             });
 
+            function checkPbjSelected(pbjNum, pbjItem) {
+                return selected_pbj_items.some(function(el) {
+                    if(el.pbjnumber === pbjNum && el.pbjitem === pbjItem){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                }); 
+            }
+
+            function removePbjItem(index){
+                selected_pbj_items.splice(index, 1);
+            }
+
             $('#tbl-pbj-list tbody').on( 'click', '.button-add-pbj-to-pritem', function () {
                 var table = $('#tbl-pbj-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
+                
 
-                console.log(selected_data);
-                // <td>
-                //             <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
-                //         </td>
-                fCount = fCount + 1;
-                $('#tbl-pbj-body').append(`
-                    <tr>
-                        <td>
-                            <select name="parts[]" class="form-control" readonly>
-                                <option value="`+selected_data.partnumber+`">`+selected_data.partnumber+`</option>
-                            </select>
-                            <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
-                        </td>
-                        
-                        <td>
-                            <input type="text" name="quantity[]" class="form-control inputNumber" value="`+selected_data.quantity+`" required>
-                        </td>
-                        <td>
-                            <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control" value="`+selected_data.unit+`" readonly>
-                        </td>
-                        <td>
-                            <input type="text" name="pbjref[]" id="pbjref`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
-                            <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
-                            <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">
-                        </td>
-                        <td style="text-align:center;">
-                            <button type="button" class="btn btn-danger btnRemove">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `);
+                if(checkPbjSelected(selected_data.pbjnumber, selected_data.pbjitem)){
+                    console.log(selected_pbj_items);
+                }else{
+                    selected_pbj_items.push(selected_data);
+                    console.log(selected_pbj_items);
+                    fCount = fCount + 1;
+                    $('#tbl-pbj-body').append(`
+                        <tr>
+                            <td>
+                                <select name="parts[]" class="form-control" readonly>
+                                    <option value="`+selected_data.partnumber+`">`+selected_data.partnumber+`</option>
+                                </select>
+                                <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
+                            </td>
+                            
+                            <td>
+                                <input type="text" name="quantity[]" class="form-control inputNumber" value="`+selected_data.quantity+`" required>
+                            </td>
+                            <td>
+                                <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control" value="`+selected_data.unit+`" readonly>
+                            </td>
+                            <td>
+                                <input type="text" name="pbjref[]" id="pbjref`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
+                                <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
+                                <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">
+                            </td>
+                            <td style="text-align:center;">
+                                <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+        
+                    $('#btnRemove'+fCount).on('click', function(e){
+                        e.preventDefault();
+                        var row_index = $(this).closest("tr").index();
+                        removePbjItem(row_index);
+                        $(this).closest("tr").remove();
+
+                        console.log(selected_pbj_items);
+                    });
     
-                $('.btnRemove').on('click', function(e){
-                    e.preventDefault();
-                    $(this).closest("tr").remove();
-                });
-
-                $('.inputNumber').on('change', function(){
-                    this.value = formatRupiah(this.value,'');
-                });
-
-                $('.inputNumber').on('keypress', function(e){
-                    validate(e);
-                });
-
-                function formatRupiah(angka, prefix){
-                    var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
-                    split   		  = number_string.split('.'),
-                    sisa     		  = split[0].length % 3,
-                    rupiah     		  = split[0].substr(0, sisa),
-                    ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-                
-                    if(ribuan){
-                        separator = sisa ? ',' : '';
-                        rupiah += separator + ribuan.join(',');
+                    $('.inputNumber').on('change', function(){
+                        this.value = formatRupiah(this.value,'');
+                    });
+    
+                    $('.inputNumber').on('keypress', function(e){
+                        validate(e);
+                    });
+    
+                    function formatRupiah(angka, prefix){
+                        var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
+                        split   		  = number_string.split('.'),
+                        sisa     		  = split[0].length % 3,
+                        rupiah     		  = split[0].substr(0, sisa),
+                        ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
+                    
+                        if(ribuan){
+                            separator = sisa ? ',' : '';
+                            rupiah += separator + ribuan.join(',');
+                        }
+                    
+                        rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
+                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
                     }
-                
-                    rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                    return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
-                }
-
-                function validate(evt) {
-                    var theEvent = evt || window.event;
-
-                    // Handle paste
-                    if (theEvent.type === 'paste') {
-                        key = event.clipboardData.getData('text/plain');
-                    } else {
-                    // Handle key press
-                        var key = theEvent.keyCode || theEvent.which;
-                        key = String.fromCharCode(key);
-                    }
-                    var regex = /[0-9]|\./;
-                    if( !regex.test(key) ) {
-                        theEvent.returnValue = false;
-                        if(theEvent.preventDefault) theEvent.preventDefault();
+    
+                    function validate(evt) {
+                        var theEvent = evt || window.event;
+    
+                        // Handle paste
+                        if (theEvent.type === 'paste') {
+                            key = event.clipboardData.getData('text/plain');
+                        } else {
+                        // Handle key press
+                            var key = theEvent.keyCode || theEvent.which;
+                            key = String.fromCharCode(key);
+                        }
+                        var regex = /[0-9]|\./;
+                        if( !regex.test(key) ) {
+                            theEvent.returnValue = false;
+                            if(theEvent.preventDefault) theEvent.preventDefault();
+                        }
                     }
                 }
+
             });
 
         }

@@ -35,6 +35,9 @@ class PurchaseRequestController extends Controller
         // return $req;
         DB::beginTransaction();
         try{
+            if(!isset($req['parts'])){
+                return Redirect::to("/proc/pr")->withError('Item PR Blum di isi');
+            }
             $tgl   = substr($req['tglreq'], 8, 2);
             $bulan = substr($req['tglreq'], 5, 2);
             $tahun = substr($req['tglreq'], 0, 4);
@@ -92,26 +95,28 @@ class PurchaseRequestController extends Controller
             insertOrUpdate($insertData,'t_pr02');
 
             //Insert Attachments | t_attachments
-            $files = $req['efile'];
-            $insertFiles = array();
-
-            foreach ($files as $efile) {
-                $filename = $efile->getClientOriginalName();
-                $upfiles = array(
-                    'doc_object' => 'PR',
-                    'doc_number' => $ptaNumber,
-                    'efile'      => $filename,
-                    'pathfile'   => '/files/PR/'. $filename,
-                    'createdon'  => getLocalDatabaseDateTime(),
-                    'createdby'  => Auth::user()->username ?? Auth::user()->email
-                );
-                array_push($insertFiles, $upfiles);
-
-                $efile->move('files/PR/', $filename);  
-                // $efile->move(public_path().'/files/PR/', $filename);  
-            }
-            if(sizeof($insertFiles) > 0){
-                insertOrUpdate($insertFiles,'t_attachments');
+            if(isset($req['efile'])){
+                $files = $req['efile'];
+                $insertFiles = array();
+    
+                foreach ($files as $efile) {
+                    $filename = $efile->getClientOriginalName();
+                    $upfiles = array(
+                        'doc_object' => 'PR',
+                        'doc_number' => $ptaNumber,
+                        'efile'      => $filename,
+                        'pathfile'   => '/files/PR/'. $filename,
+                        'createdon'  => getLocalDatabaseDateTime(),
+                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                    );
+                    array_push($insertFiles, $upfiles);
+    
+                    $efile->move('files/PR/', $filename);  
+                    // $efile->move(public_path().'/files/PR/', $filename);  
+                }
+                if(sizeof($insertFiles) > 0){
+                    insertOrUpdate($insertFiles,'t_attachments');
+                }
             }
             // insertOrUpdate($insertFiles,'t_attachments');
 

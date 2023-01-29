@@ -28,8 +28,8 @@ class PurchaseOrderController extends Controller
         }
         $deptid= $params['deptid'];
         $query = DB::table('v_approved_pr')
-                 ->where('pocreated', 'N')
-                 ->where('deptid', $deptid)
+                //  ->where('pocreated', 'N')
+                 ->where('openqty', '>', 0)
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }
@@ -38,6 +38,9 @@ class PurchaseOrderController extends Controller
         // return $req;
         DB::beginTransaction();
         try{
+            if(!isset($req['parts'])){
+                return Redirect::to("/proc/po")->withError('Item PO Blum di isi');
+            }
             $tgl   = substr($req['tglreq'], 8, 2);
             $bulan = substr($req['tglreq'], 5, 2);
             $tahun = substr($req['tglreq'], 0, 4);
@@ -99,26 +102,28 @@ class PurchaseOrderController extends Controller
             insertOrUpdate($insertData,'t_po02');
 
             //Insert Attachments | t_attachments
-            $files = $req['efile'];
-            $insertFiles = array();
-
-            foreach ($files as $efile) {
-                $filename = $efile->getClientOriginalName();
-                $upfiles = array(
-                    'doc_object' => 'PO',
-                    'doc_number' => $ptaNumber,
-                    'efile'      => $filename,
-                    'pathfile'   => '/files/PO/'. $filename,
-                    'createdon'  => getLocalDatabaseDateTime(),
-                    'createdby'  => Auth::user()->username ?? Auth::user()->email
-                );
-                array_push($insertFiles, $upfiles);
-
-                // $efile->move(public_path().'/files/PO/', $filename);  
-                $efile->move('files/PO/', $filename);  
-            }
-            if(sizeof($insertFiles) > 0){
-                insertOrUpdate($insertFiles,'t_attachments');
+            if(isset($req['efile'])){
+                $files = $req['efile'];
+                $insertFiles = array();
+    
+                foreach ($files as $efile) {
+                    $filename = $efile->getClientOriginalName();
+                    $upfiles = array(
+                        'doc_object' => 'PO',
+                        'doc_number' => $ptaNumber,
+                        'efile'      => $filename,
+                        'pathfile'   => '/files/PO/'. $filename,
+                        'createdon'  => getLocalDatabaseDateTime(),
+                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                    );
+                    array_push($insertFiles, $upfiles);
+    
+                    // $efile->move(public_path().'/files/PO/', $filename);  
+                    $efile->move('files/PO/', $filename);  
+                }
+                if(sizeof($insertFiles) > 0){
+                    insertOrUpdate($insertFiles,'t_attachments');
+                }
             }
             // insertOrUpdate($insertFiles,'t_attachments');
 
