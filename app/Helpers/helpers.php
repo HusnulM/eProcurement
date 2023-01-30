@@ -31,7 +31,7 @@ function getLocalDatabaseDateTime(){
 
 function getTotalPricePO($ponum){
     // fGetTotalPricePO
-    $totalPrice = DB::select('SELECT fGetTotalPricePO('.$ponum.') as price');
+    $totalPrice = DB::select("SELECT fGetTotalPricePO('.$ponum.') as price");
     return $totalPrice[0]->price;
 }
 
