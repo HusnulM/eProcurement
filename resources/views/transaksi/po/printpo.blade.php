@@ -138,5 +138,18 @@
             @endforeach
         </tbody>
     </table>
+
+    <br>
+    <table>
+        <tr>
+            <td>Purchasing Manager,</td>
+        </tr>
+        <tr>
+            <td><br><br><br></td>
+        </tr>
+        <tr>
+            <td>____________________</td>
+        </tr>
+    </table>
 </body>
 </html>
