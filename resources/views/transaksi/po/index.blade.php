@@ -486,7 +486,7 @@
                                 <input type="text" name="partdesc[]" id="partdesc`+fCount+`" value="`+ selected_data.matdesc +`" class="form-control" readonly>
                             </td>
                             <td>
-                                <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ selected_data.openqty +`">
+                                <input type="text" name="quantity[]" class="form-control inputNumber" id="inputQty`+fCount+`" value="`+ selected_data.openqty +`" data-openqty="`+ selected_data.openqty +`">
                             </td>
                             <td>
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
@@ -509,6 +509,20 @@
     
                     checkTabledata();
                     
+                    $('#inputQty'+fCount).on('change', function(){
+                        var _data = $(this).data();
+                        let openQty = _data.openqty;
+                        let inptQty = this.value;
+                        // alert(inptQty)
+                        inptQty = inptQty*1;
+                        openQty = openQty*1;
+                        if(inptQty > openQty){
+                            alert('Deficit Quantity');
+                            this.value = openQty;
+                        }
+                        console.log(_data)
+                    });
+
                     $('#btnRemove'+fCount).on('click', function(e){
                         e.preventDefault();
                         var row_index = $(this).closest("tr").index();
