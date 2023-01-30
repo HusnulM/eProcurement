@@ -329,7 +329,7 @@
                 url: base_url+'/approve/spk/save',
                 type:"POST",
                 data:{
-                    prnum: "{{ $prhdr->wonum }}",
+                    wonum: "{{ $prhdr->wonum }}",
                     action:_action,
                     approvernote:$('#approver_note').val(),
                     _token: _token

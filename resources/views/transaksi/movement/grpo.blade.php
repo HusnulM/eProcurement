@@ -148,7 +148,7 @@
 <script>    
     $(document).ready(function(){
         var count = 0;
-
+        let selected_po_items = [];
         let _token   = $('meta[name="csrf-token"]').attr('content');
 
         $('.btn-add-po-item-based-pr').on('click', function(){
@@ -199,7 +199,7 @@
                 ]  
             });
 
-            let selected_po_items = [];
+            
 
             function checkPOSelected(poNum, poItem) {
                 return selected_po_items.some(function(el) {

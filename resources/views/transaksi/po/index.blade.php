@@ -194,7 +194,7 @@
 <script>    
     $(document).ready(function(){
         var count = 0;
-
+        let selected_pr_items = [];
         let _token   = $('meta[name="csrf-token"]').attr('content');
 
         $('.btn-add-po-item-based-pr').on('click', function(){
@@ -449,7 +449,7 @@
                 ]  
             });
 
-            let selected_pr_items = [];
+            
 
             function checkPRSelected(prNum, prItem) {
                 return selected_pr_items.some(function(el) {
