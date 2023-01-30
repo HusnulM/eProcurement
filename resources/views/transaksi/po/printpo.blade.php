@@ -145,7 +145,9 @@
             <td>Purchasing Manager,</td>
         </tr>
         <tr>
-            <td><br><br><br></td>
+            <td>
+            <img src="{{ public_path('/assets/img/esign1.png') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+            </td>
         </tr>
         <tr>
             <td>____________________</td>
