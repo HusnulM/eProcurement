@@ -143,7 +143,7 @@ class ApprovePurchaseOrderController extends Controller
 
                 DB::table('t_budget_history')->insert([
                     'deptid'        => $podata->deptid,
-                    'budget_period' => date('M'),
+                    'budget_period' => (int)date('M'),
                     'amount'        => $totalPricePO,
                     'budget_type'   => 'D',
                     'note'          => 'Pembelian dengan PO '. $ptaNumber,
