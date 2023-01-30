@@ -82,7 +82,7 @@ class PrintDocumentController extends Controller
     }
 
     public function pbjlist(){
-
+        return view('transaksi.pbj.list');
     }
 
     public function printpbj($id){
