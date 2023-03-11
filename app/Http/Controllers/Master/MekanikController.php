@@ -55,7 +55,7 @@ class MekanikController extends Controller
     public function update(Request $req){
         DB::beginTransaction();
         try{
-            DB::table('mekanik')->where('id', $req['mkid'])->update([
+            DB::table('t_mekanik')->where('id', $req['mkid'])->update([
                 'nama' => $req['nama']
             ]);
             DB::commit();

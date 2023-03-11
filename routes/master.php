@@ -17,19 +17,25 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/itemcatlist',  'Master\ItemMasterController@itemCategoryLists')->middleware('checkAuth:master/item');  
         Route::get('/uomlists',     'Master\ItemMasterController@uomLists')->middleware('checkAuth:master/item');  
        
-        Route::post('/saveitemcategory', 'Master\ItemMasterController@saveitemcategory')->middleware('checkAuth:master/item');
+        Route::post('/saveitemcategory',   'Master\ItemMasterController@saveitemcategory')->middleware('checkAuth:master/item');
+        Route::post('/updateitemcategory', 'Master\ItemMasterController@updateitemcategory')->middleware('checkAuth:master/item');
+        Route::get('/deleteitemcat/{id}',  'Master\ItemMasterController@deleteItemCategory')->middleware('checkAuth:master/item');  
+
         Route::post('/saveuom',          'Master\ItemMasterController@saveuom')->middleware('checkAuth:master/item');
+        Route::post('/updateuom',        'Master\ItemMasterController@updateuom')->middleware('checkAuth:master/item');
+        Route::get('/deleteuom/{p1}',    'Master\ItemMasterController@deleteuom')->middleware('checkAuth:master/item');
 
         Route::post('/findpartnumber', 'Master\ItemMasterController@findPartnumber');
     });
 
     Route::group(['prefix' => '/master/vendor'], function () {
-        Route::get('/',             'Master\VendorMasterController@index')->middleware('checkAuth:master/item');
-        Route::get('/create',       'Master\VendorMasterController@create')->middleware('checkAuth:master/item');
-        Route::post('/save',        'Master\VendorMasterController@save')->middleware('checkAuth:master/item');
-        Route::post('/update',      'Master\VendorMasterController@update')->middleware('checkAuth:master/item');
-        Route::get('/delete/{id}',  'Master\VendorMasterController@delete')->middleware('checkAuth:master/item');  
-        Route::get('/vendorlists',  'Master\VendorMasterController@vendorLists')->middleware('checkAuth:master/item');  
+        Route::get('/',             'Master\VendorMasterController@index')->middleware('checkAuth:master/vendor');
+        Route::get('/create',       'Master\VendorMasterController@create')->middleware('checkAuth:master/vendor');
+        Route::get('/edit/{p1}',    'Master\VendorMasterController@edit')->middleware('checkAuth:master/vendor');
+        Route::post('/save',        'Master\VendorMasterController@save')->middleware('checkAuth:master/vendor');
+        Route::post('/update',      'Master\VendorMasterController@update')->middleware('checkAuth:master/vendor');
+        Route::get('/delete/{id}',  'Master\VendorMasterController@delete')->middleware('checkAuth:master/vendor');  
+        Route::get('/vendorlists',  'Master\VendorMasterController@vendorLists')->middleware('checkAuth:master/vendor');  
         Route::post('/findvendor',  'Master\VendorMasterController@findVendor');
     });
 

@@ -102,7 +102,7 @@
                             <tbody id="tbl-edit-dept-body">
                                 <tr>
                                     <td>
-                                        <input type="text" class="form-control" name="nama" id="mknana">
+                                        <input type="text" class="form-control" name="nama" id="mknama">
                                         <input type="hidden" class="form-control" name="mkid" id="mkid">
                                     </td>
                                 </tr>
@@ -166,9 +166,10 @@
             var table = $('#tbl-dept-master').DataTable();
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
+            console.log(selected_data)
             // window.location = base_url+"/master/department/edit/"+selected_data.deptid;
-            $('#whsname').val(selected_data.whsname);
-            $('#whsid').val(selected_data.id);
+            $('#mknama').val(selected_data.nama);
+            $('#mkid').val(selected_data.id);
             $('#modal-edit-department').modal('show');
         });
 

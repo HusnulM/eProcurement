@@ -118,31 +118,32 @@
                     <div class="col-lg-12">
                         <div class="form-group">
                             <label for="nokend">No. Kendaraan</label>
-                            <input type="text" name="nokend" class="form-control" required>
+                            <input type="text" name="nokend" id="nokend" class="form-control" required>
+                            <input type="hidden" name="idkend" id="idkend" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="model_kendaraan">Type/Model Kendaraan</label>
-                            <input type="text" name="model_kendaraan" class="form-control" required>
+                            <input type="text" name="model_kendaraan" id="model_kendaraan" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="engine_sn">Engine S/N</label>
-                            <input type="text" name="engine_sn" class="form-control" required>
+                            <input type="text" name="engine_sn" id="engine_sn" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="chassis_sn">Chassis S/N</label>
-                            <input type="text" name="chassis_sn" class="form-control" required>
+                            <input type="text" name="chassis_sn" id="chassis_sn" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="engine_model">Engine Model</label>
-                            <input type="text" name="engine_model" class="form-control" required>
+                            <input type="text" name="engine_model" id="engine_model" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="last_km">Last KM</label>
-                            <input type="text" name="last_km" class="form-control" required>
+                            <input type="text" name="last_km" id="last_km" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="last_hm">Last HM</label>
-                            <input type="text" name="last_hm" class="form-control" required>
+                            <input type="text" name="last_hm" id="last_hm" class="form-control" required>
                         </div>
                     </div> 
                 </div>
@@ -209,8 +210,14 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             // window.location = base_url+"/master/department/edit/"+selected_data.deptid;
-            $('#whsname').val(selected_data.whsname);
-            $('#whsid').val(selected_data.id);
+            $('#idkend').val(selected_data.id);
+            $('#nokend').val(selected_data.no_kendaraan);
+            $('#model_kendaraan').val(selected_data.model_kendaraan);
+            $('#engine_sn').val(selected_data.engine_sn);
+            $('#chassis_sn').val(selected_data.chassis_sn);
+            $('#engine_model').val(selected_data.engine_model);
+            $('#last_km').val(selected_data.last_km);
+            $('#last_hm').val(selected_data.last_hm);
             $('#modal-edit-department').modal('show');
         });
 

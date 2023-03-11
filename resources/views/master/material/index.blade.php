@@ -150,6 +150,35 @@
     </form>
 </div>
 
+<div class="modal fade" id="modal-edit-itemcategory">
+    <form action="{{ url('/master/item/updateitemcategory') }}" method="post">
+        @csrf
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Item Category</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label for="item-cate">Item Category</label>
+                        <input type="text" class="form-control" name="itemcate" id="edit-item-cate">
+                        <input type="hidden" class="form-control" name="itemcatid" id="edit-item-id">
+                    </div> 
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+        </div>
+    </form>
+</div>
+
 <div class="modal fade" id="modal-add-uom">
     <form action="{{ url('/master/item/saveuom') }}" method="post">
         @csrf
@@ -178,6 +207,40 @@
     
                             </tbody>
                         </table>  
+                    </div> 
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="modal-edit-uom">
+    <form action="{{ url('/master/item/updateuom') }}" method="post">
+        @csrf
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Unit of Measure</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label for="">Uom Code</label>
+                        <input type="text" class="form-control" name="uom-code" id="uom-code">
+                        <input type="hidden" class="form-control" name="uom-id" id="uom-id">
+                    </div> 
+
+                    <div class="col-lg-12">
+                        <label for="">Uom Code</label>
+                        <input type="text" class="form-control" name="uom-desc" id="uom-desc">
                     </div> 
                 </div>
             </div>
@@ -233,7 +296,7 @@
             var table = $('#tbl-item-master').DataTable();
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
-            window.location = base_url+"/master/item/delete/"+selected_data.materialid;
+            window.location = base_url+"/master/item/delete/"+selected_data.matuniqid;
         });
         $('#tbl-item-master tbody').on( 'click', '.button-edit', function () {
             var table = $('#tbl-item-master').DataTable();
@@ -276,6 +339,22 @@
             ]  
         }).columns.adjust();
 
+        $('#tbl-item-type tbody').on( 'click', '.button-itmcat-delete', function () {
+            var table = $('#tbl-item-type').DataTable();
+            selected_data = [];
+            selected_data = table.row($(this).closest('tr')).data();
+            window.location = base_url+"/master/item/deleteitemcat/"+selected_data.id;
+        });
+        $('#tbl-item-type tbody').on( 'click', '.button-itmcat-edit', function () {
+            var table = $('#tbl-item-type').DataTable();
+            selected_data = [];
+            selected_data = table.row($(this).closest('tr')).data();
+            console.log(selected_data)
+            $('#edit-item-cate').val(selected_data.mattypedesc);
+            $('#edit-item-id').val(selected_data.id);
+            $('#modal-edit-itemcategory').modal('show');
+        });
+
         $("#tbl-item-unit").DataTable({
             serverSide: true,
             ajax: {
@@ -300,8 +379,8 @@
                 {data: "uom"},
                 {data: "uomdesc"},
                 {"defaultContent": 
-                    `<button class='btn btn-danger btn-sm button-itmcat-delete'> <i class='fa fa-trash'></i> DELETE</button> 
-                    <button class='btn btn-primary btn-sm button-itmcat-edit'> <i class='fa fa-edit'></i> EDIT</button>
+                    `<button class='btn btn-danger btn-sm button-uom-delete'> <i class='fa fa-trash'></i> DELETE</button> 
+                    <button class='btn btn-primary btn-sm button-uom-edit'> <i class='fa fa-edit'></i> EDIT</button>
                     `,
                     "className": "text-center",
                     "width": "50px"
@@ -309,6 +388,22 @@
             ]  
         }).columns.adjust();
         
+        $('#tbl-item-unit tbody').on( 'click', '.button-uom-delete', function () {
+            var table = $('#tbl-item-unit').DataTable();
+            selected_data = [];
+            selected_data = table.row($(this).closest('tr')).data();
+            window.location = base_url+"/master/item/deleteuom/"+selected_data.id;
+        });
+        $('#tbl-item-unit tbody').on( 'click', '.button-uom-edit', function () {
+            var table = $('#tbl-item-unit').DataTable();
+            selected_data = [];
+            selected_data = table.row($(this).closest('tr')).data();
+            console.log(selected_data)
+            $('#uom-desc').val(selected_data.uomdesc);
+            $('#uom-code').val(selected_data.uom);
+            $('#uom-id').val(selected_data.id);
+            $('#modal-edit-uom').modal('show');
+        });
 
         $('.btn-create-itemcat').on('click', function(){
             $('#modal-add-itemcategory').modal('show');

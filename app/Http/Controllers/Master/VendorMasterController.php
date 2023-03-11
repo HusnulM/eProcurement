@@ -17,6 +17,11 @@ class VendorMasterController extends Controller
         return view('master.vendor.create');
     }
 
+    public function edit($code){
+        $vendor = DB::table('t_vendor')->where('vendor_code', $code)->first();
+        return view('master.vendor.edit', ['vendor' => $vendor]);
+    }
+
     public function vendorLists(Request $request){
         $params = $request->params;        
         $whereClause = $params['sac'];
@@ -53,7 +58,37 @@ class VendorMasterController extends Controller
             array_push($insertData, $data);
             insertOrUpdate($insertData,'t_vendor');
             DB::commit();
-            return Redirect::to("/master/vendor")->withSuccess('Vendor Berhasil dibuat');
+            return Redirect::to("/master/vendor")->withSuccess('Vendor created');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/vendor")->withError($e->getMessage());
+        }
+    }
+
+    public function update(Request $req){
+        DB::beginTransaction();
+        try{
+            DB::table('t_vendor')->where('vendor_code', $req['vendorcode'])->update([
+                'vendor_name'    => $req['vendorname'],
+                'vendor_address' => $req['address'],
+                'vendor_telp'    => $req['telp'],
+                'vendor_email'   => $req['email'],
+                'contact_person' => $req['contactperson'],
+            ]);
+            DB::commit();
+            return Redirect::to("/master/vendor")->withSuccess('Vendor updated');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/vendor")->withError($e->getMessage());
+        }
+    }
+
+    public function delete($code){
+        DB::beginTransaction();
+        try{
+            DB::table('t_vendor')->where('vendor_code', $code)->delete();
+            DB::commit();
+            return Redirect::to("/master/vendor")->withSuccess('Vendor deleted');
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/master/vendor")->withError($e->getMessage());

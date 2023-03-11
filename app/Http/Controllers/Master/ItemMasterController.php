@@ -48,7 +48,7 @@ class ItemMasterController extends Controller
     public function uomLists(Request $request){
         $params = $request->params;        
         $whereClause = $params['sac'];
-        $query = DB::table('t_uom')->select('uom','uomdesc','createdby', 'createdon')->orderBy('uom');
+        $query = DB::table('t_uom')->select('id','uom','uomdesc','createdby', 'createdon')->orderBy('uom');
         return DataTables::queryBuilder($query)->toJson();
     }
 
@@ -198,6 +198,22 @@ class ItemMasterController extends Controller
         }
     }
 
+    public function updateitemcategory(Request $req){
+        DB::beginTransaction();
+        try{
+            $itemcate   = $req['itemcate'];
+            $id         = $req['itemcatid'];
+            DB::table('t_materialtype')->where('id', $id)->update([
+                'mattypedesc'   => $itemcate
+            ]);
+            DB::commit();
+            return Redirect::to("/master/item")->withSuccess('Item Category Updated');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/item")->withError($e->getMessage());
+        }
+    }
+
     public function saveuom(Request $req){
         DB::beginTransaction();
         try{
@@ -217,6 +233,69 @@ class ItemMasterController extends Controller
             insertOrUpdate($insertData,'t_uom');
             DB::commit();
             return Redirect::to("/master/item")->withSuccess('New Unit of measure created');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/item")->withError($e->getMessage());
+        }
+    }
+
+    public function updateuom(Request $req){
+        DB::beginTransaction();
+        try{
+            $uom     = $req['uom-code'];
+            $uomdesc = $req['uom-desc'];
+            $uomid   = $req['uom-id'];
+
+            DB::table('t_uom')->where('id', $uomid)->update([
+                'uom'       => $uom,
+                'uomdesc'   => $uomdesc
+            ]);
+            
+            DB::commit();
+            return Redirect::to("/master/item")->withSuccess('Unit of measure updated');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/item")->withError($e->getMessage());
+        }
+    }
+
+    public function deleteuom($id){
+        DB::beginTransaction();
+        try{
+            DB::table('t_uom')->where('id', $id)->delete();
+            DB::commit();
+            return Redirect::to("/master/item")->withSuccess('Unit of measure deleted');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/item")->withError($e->getMessage());
+        }
+    }
+
+    public function delete($id){
+        DB::beginTransaction();
+        try{
+            $material = DB::table('t_material')->where('matuniqid', $id)->first();
+            DB::table('t_material')->where('matuniqid', $id)->delete();
+            DB::table('t_material2')->where('material', $material->material)->delete();
+            DB::commit();
+            return Redirect::to("/master/item")->withSuccess('Material deleted');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/item")->withError($e->getMessage());
+        }
+    }
+
+    public function deleteItemCategory($id){
+        DB::beginTransaction();
+        try{
+            $material = DB::table('t_material')->where('mattype', $id)->first();
+            if($material){
+                return Redirect::to("/master/item")->withSuccess('Cannot delete Item Category, Item category already use in material master');
+            }else{
+                DB::table('t_materialtype')->where('id', $id)->delete();
+                DB::commit();
+                return Redirect::to("/master/item")->withSuccess('Item Category deleted');
+            }
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/master/item")->withError($e->getMessage());

@@ -81,18 +81,18 @@
             ]  
         });
 
-        // $('#tbl-item-master tbody').on( 'click', '.button-delete', function () {
-        //     var table = $('#tbl-item-master').DataTable();
-        //     selected_data = [];
-        //     selected_data = table.row($(this).closest('tr')).data();
-        //     window.location = base_url+"/master/item/delete/"+selected_data.materialid;
-        // });
-        // $('#tbl-item-master tbody').on( 'click', '.button-edit', function () {
-        //     var table = $('#tbl-item-master').DataTable();
-        //     selected_data = [];
-        //     selected_data = table.row($(this).closest('tr')).data();
-        //     window.location = base_url+"/master/item/edit/"+selected_data.materialid;
-        // });
+        $('#tbl-item-master tbody').on( 'click', '.button-delete', function () {
+            var table = $('#tbl-item-master').DataTable();
+            selected_data = [];
+            selected_data = table.row($(this).closest('tr')).data();
+            window.location = base_url+"/master/vendor/delete/"+selected_data.vendor_code;
+        });
+        $('#tbl-item-master tbody').on( 'click', '.button-edit', function () {
+            var table = $('#tbl-item-master').DataTable();
+            selected_data = [];
+            selected_data = table.row($(this).closest('tr')).data();
+            window.location = base_url+"/master/vendor/edit/"+selected_data.vendor_code;
+        });
     });
 </script>
 @endsection
