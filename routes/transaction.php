@@ -26,6 +26,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/approvelist',   'Transaksi\ApproveBudgetController@budgetApprovalList')->middleware('checkAuth:approve/budget');
     });
 
+    // transaksi/checklistken
+    Route::group(['prefix' => '/checklistkendaraan'], function () {
+        Route::get('/',                         'Transaksi\ChecklistKendaraanController@index')->middleware('checkAuth:checklistkendaraan');
+        Route::post('/save',                    'Transaksi\ApprovePbjController@save')->middleware('checkAuth:approve/pbj');
+        Route::get('/approvelist',              'Transaksi\ApprovePbjController@pbjApprovalList')->middleware('checkAuth:approve/pbj');
+        Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
+    });
+
     Route::group(['prefix' => '/approve/pbj'], function () {
         Route::get('/',                         'Transaksi\ApprovePbjController@index')->middleware('checkAuth:approve/pbj');
         Route::post('/save',                    'Transaksi\ApprovePbjController@save')->middleware('checkAuth:approve/pbj');
