@@ -109,6 +109,67 @@ function generateDcnNumber($doctype){
     
 }
 
+function generateCheckListNumber($tahun, $bulan){
+    $dcnNumber = '';
+    $getdata = DB::table('dcn_nriv')->where('year', $tahun)->where('month', $bulan)
+              ->where('object','CKL')->first();
+    $doctype = 'CKL';
+
+    if($getdata){
+        DB::beginTransaction();
+        try{
+            $leadingZero = '';
+            if(strlen($getdata->current_number) == 5){
+                $leadingZero = '0';
+            }elseif(strlen($getdata->current_number) == 4){
+                $leadingZero = '00';
+            }elseif(strlen($getdata->current_number) == 3){
+                $leadingZero = '000';
+            }elseif(strlen($getdata->current_number) == 2){
+                $leadingZero = '0000';
+            }elseif(strlen($getdata->current_number) == 1){
+                $leadingZero = '00000';
+            }
+
+            $lastnum = ($getdata->current_number*1) + 1;
+
+            if($leadingZero == ''){
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $lastnum; 
+            }else{
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $leadingZero . $lastnum; 
+            }
+
+            DB::table('dcn_nriv')->where('year', $tahun)->where('month', $bulan)->where('object','CKL')->update([
+                'current_number' => $lastnum
+            ]);
+
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            return null;
+        }
+    }else{
+        $dcnNumber = $doctype . '-' .substr(date('Y'),2).'-000001';
+        DB::beginTransaction();
+        try{
+            DB::table('dcn_nriv')->insert([
+                'year'            => $tahun,
+                'month'           => $bulan,
+                'object'          => 'CKL',
+                'current_number'  => '1',
+                'createdon'       => date('Y-m-d H:m:s'),
+                'createdby'       => Auth::user()->email ?? Auth::user()->username
+            ]);
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            return null;
+        }
+    }
+}
+
 function getWfGroup($doctype){
 
     $wfgroup = DB::table('doctypes')->where('id', $doctype)->first();

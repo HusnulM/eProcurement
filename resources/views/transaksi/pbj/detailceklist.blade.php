@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Checklist Kendaraan')
+@section('title', 'Detail Checklist Kendaraan')
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -17,7 +17,7 @@
 
 @section('content')        
 <div class="container-fluid">
-    <form action="{{ url('checklistkendaraan/save') }}" method="post" enctype="multipart/form-data">
+    <form action="#" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -25,9 +25,9 @@
                     <div class="card-header">
                         <h3 class="card-title">Input Checklist Kendaraan</h3>
                         <div class="card-tools">
-                            <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
-                                <i class="fas fa-save"></i> Simpan Checklist Kendaraan
-                            </button>
+                            <a href="{{ url('/datachecklistkendaraan') }}" class="btn btn-default btn-sm">
+                                <i class="fa fa-arrow-left"></i> Back
+                            </a>
                         </div>
                     </div>
                     <div class="card-body">
@@ -39,13 +39,13 @@
                                             Hari / Tanggal
                                         </td>
                                         <td>
-                                            <input type="date" name="tanggal_cek" class="form-control" required>
+                                            <input type="date" name="tanggal_cek" class="form-control" value="{{ $header->tanggal_cek }}" required>
                                         </td>
                                         <td>
                                             Jenis Kendaraan
                                         </td>
                                         <td>
-                                            <input type="text" name="jenis_kendaraan" id="jenis_kendaraan" class="form-control">
+                                            <input type="text" name="jenis_kendaraan" id="jenis_kendaraan" value="{{ $header->jenis_kendaraan }}" class="form-control">
                                         </td>
                                     </tr>
 
@@ -54,13 +54,13 @@
                                             Nama Driver
                                         </td>
                                         <td>
-                                            <input type="text" name="nama_driver" class="form-control">
+                                            <input type="text" name="nama_driver" value="{{ $header->nama_driver }}" class="form-control">
                                         </td>
                                         <td>
                                             Nomor Rangka / Mesin
                                         </td>
                                         <td>
-                                            <input type="text" name="nomor_rangka" id="nomor_rangka" class="form-control">
+                                            <input type="text" name="nomor_rangka" id="nomor_rangka" value="{{ $header->nomor_rangka }}" class="form-control">
                                         </td>
                                     </tr>
 
@@ -69,14 +69,15 @@
                                             Plat Kendaraan
                                         </td>
                                         <td>
-                                            <select name="unitdesc" id="find-unitdesc" class="form-control"></select>
-                                            <!-- <input type="text" name="hari_tanggal" class="form-control"> -->
+                                            <select name="unitdesc" id="find-unitdesc" class="form-control">
+                                                <option value="{{ $header->no_plat }}">{{ $header->no_plat }}</option>
+                                            </select>
                                         </td>
                                         <td>
                                             Bahan Bakar
                                         </td>
                                         <td>
-                                            <input type="text" name="bahan_bakar" id="bahan_bakar" class="form-control">
+                                            <input type="text" name="bahan_bakar" id="bahan_bakar" value="{{ $header->bahan_bakar }}" class="form-control">
                                         </td>
                                     </tr>
 
@@ -85,13 +86,13 @@
                                             Tahun
                                         </td>
                                         <td>
-                                            <input type="text" name="tahun" id="tahun" class="form-control">
+                                            <input type="text" name="tahun" id="tahun" value="{{ $header->tahun }}" class="form-control">
                                         </td>
                                         <td>
                                             Odometer
                                         </td>
                                         <td>
-                                            <input type="text" name="odometer" id="odometer" class="form-control">
+                                            <input type="text" name="odometer" id="odometer" value="{{ $header->odometer }}" class="form-control">
                                         </td>
                                     </tr>
                                 </table>
@@ -132,15 +133,16 @@
                                                 <div class="table-responsive">
                                                     <table id="tbl-item-master" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                                         <tbody>
+                                                            @foreach($group1 as $key => $row)
                                                             <tr>
-                                                                <td>1</td>
+                                                                <td>{{ $key+1 }}</td>
                                                                 <td>
-                                                                    SIM DRIVER
-                                                                    <input type="hidden" name="ckl_grp1_name[]" value="SIM DRIVER">
+                                                                    {{ $row->ck_administrasi }}
+                                                                    <input type="hidden" name="ckl_grp1_name[]" value="{{ $row->ck_administrasi }}">
                                                                 </td>
                                                                 <td>
                                                                     <select name="status_adm[]" class="form-control">
-                                                                        <option value="">---</option>
+                                                                        <option value="{{ $row->status_adm }}">{{ $row->status_adm ?? '---' }}</option>
                                                                         <option value="ADA">ADA</option>
                                                                         <option value="TIDAK">TIDAK</option>
                                                                     </select>
@@ -150,121 +152,21 @@
                                                                         <div class="input-group-prepend">
                                                                             <span class="input-group-text" id="basic-addon3">Masa Berlaku</span>
                                                                         </div>
-                                                                        <input type="date" name="masa_berlaku[]" class="form-control">
+                                                                        <input type="date" name="masa_berlaku[]" value="{{ $row->masa_berlaku }}" class="form-control">
                                                                     </div>
                                                                 </td>
                                                                 <td>
+                                                                    @if($row->jenis_sim)
                                                                     <select name="jenis_sim[]" class="form-control">
-                                                                        <option value="">---</option>
+                                                                        <option value="{{ $row->jenis_sim }}">{{ $row->jenis_sim }}</option>
                                                                         <option value="B1 Umum">B1 Umum</option>
                                                                         <option value="B2 Umum">B2 Umum</option>
                                                                     </select>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
-                                                            <!-- STNK -->
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td>
-                                                                    STNK
-                                                                    <input type="hidden" name="ckl_grp1_name[]" value="STNK">
-                                                                </td>
-                                                                <td>
-                                                                    <select name="status_adm[]" class="form-control">
-                                                                        <option value="">---</option>
-                                                                        <option value="ADA">ADA</option>
-                                                                        <option value="TIDAK">TIDAK</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text" id="basic-addon3">Masa Berlaku</span>
-                                                                        </div>
-                                                                        <input type="date" name="masa_berlaku[]" class="form-control">
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    
-                                                                </td>
-                                                            </tr>
-                                                            <!-- PAJAK STNK -->
-                                                            <tr>
-                                                                <td>3</td>
-                                                                <td>
-                                                                    PAJAK STNK
-                                                                    <input type="hidden" name="ckl_grp1_name[]" value="PAJAK STNK">
-                                                                </td>
-                                                                <td>
-                                                                    <select name="status_adm[]" class="form-control">
-                                                                        <option value="">---</option>
-                                                                        <option value="ADA">ADA</option>
-                                                                        <option value="TIDAK">TIDAK</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text" id="basic-addon3">Masa Berlaku</span>
-                                                                        </div>
-                                                                        <input type="date" name="masa_berlaku[]" class="form-control">
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    
-                                                                </td>
-                                                            </tr>
-                                                            <!-- BUKU KIR -->
-                                                            <tr>
-                                                                <td>4</td>
-                                                                <td>
-                                                                    BUKU KIR
-                                                                    <input type="hidden" name="ckl_grp1_name[]" value="BUKU KIR">
-                                                                </td>
-                                                                <td>
-                                                                    <select name="status_adm[]" class="form-control">
-                                                                        <option value="">---</option>
-                                                                        <option value="ADA">ADA</option>
-                                                                        <option value="TIDAK">TIDAK</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text" id="basic-addon3">Masa Berlaku</span>
-                                                                        </div>
-                                                                        <input type="date" name="masa_berlaku[]" class="form-control">
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    
-                                                                </td>
-                                                            </tr>
-                                                            <!-- UIN USAHA -->
-                                                            <tr>
-                                                                <td>5</td>
-                                                                <td>
-                                                                    UIN USAHA
-                                                                    <input type="hidden" name="ckl_grp1_name[]" value="UIN USAHA">
-                                                                </td>
-                                                                <td>
-                                                                    <select name="status_adm[]" class="form-control">
-                                                                        <option value="">---</option>
-                                                                        <option value="ADA">ADA</option>
-                                                                        <option value="TIDAK">TIDAK</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text" id="basic-addon3">Masa Berlaku</span>
-                                                                        </div>
-                                                                        <input type="date" name="masa_berlaku[]" class="form-control">
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    
-                                                                </td>
-                                                            </tr>
+                                                            @endforeach
+                                                            
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -298,22 +200,22 @@
                                                             <tr>
                                                                 <td>{{ $key+1 }}</td>
                                                                 <td>
-                                                                    {{ $row->checklist_name }}
-                                                                    <input type="hidden" name="ckl_grp2_name[]" value="{{ $row->checklist_name }}">
+                                                                    {{ $row->nama_kelengkapan }}
+                                                                    <input type="hidden" name="ckl_grp2_name[]" value="{{ $row->nama_kelengkapan }}">
                                                                 </td>
                                                                 <td>
                                                                     <select name="grp2_ada_tidak[]" class="form-control">
-                                                                        <option value="">---</option>
+                                                                        <option value="{{ $row->status_kelengkapan }}">{{ $row->status_kelengkapan }}</option>
                                                                         <option value="ADA">ADA</option>
                                                                         <option value="TIDAK">TIDAK</option>
                                                                     </select>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" name="quantity[]" class="form-control inputNumber">
+                                                                    <input type="text" name="quantity[]" value="{{ $row->jumlah }}" class="form-control inputNumber">
                                                                 </td>
                                                                 <td>
                                                                     <select name="grp2_baik_rusak[]" class="form-control">
-                                                                        <option value="">---</option>
+                                                                        <option value="{{ $row->kondisi_kelengkapan }}">{{ $row->kondisi_kelengkapan }}</option>
                                                                         <option value="BAIK">BAIK</option>
                                                                         <option value="RUSAK">RUSAK</option>
                                                                     </select>
@@ -352,19 +254,19 @@
                                                             <tr>
                                                                 <td>{{ $key+1 }}</td>
                                                                 <td>
-                                                                    {{ $row->checklist_name }}
-                                                                    <input type="hidden" name="ckl_grp3_name[]" value="{{ $row->checklist_name }}">
+                                                                    {{ $row->kondisi_cek }}
+                                                                    <input type="hidden" name="ckl_grp3_name[]" value="{{ $row->kondisi_cek }}">
                                                                 </td>
                                                                 <td>
                                                                     <select name="grp3_ada_tidak[]" class="form-control">
-                                                                        <option value="">---</option>
+                                                                        <option value="{{ $row->status_kondisi }}">{{ $row->status_kondisi ?? '---' }}</option>
                                                                         <option value="CUKUP">CUKUP</option>
                                                                         <option value="KURANG">KURANG</option>
                                                                     </select>
                                                                 </td>
                                                                 <td>
                                                                     <select name="grp3_baik_rusak[]" class="form-control">
-                                                                        <option value="">---</option>
+                                                                        <option value="{{ $row->kondisi }}">{{ $row->kondisi }}</option>
                                                                         <option value="BAIK">BAIK</option>
                                                                         <option value="RUSAK">RUSAK</option>
                                                                     </select>
@@ -403,19 +305,19 @@
                                                             <tr>
                                                                 <td>{{ $key+1 }}</td>
                                                                 <td>
-                                                                    {{ $row->checklist_name }}
-                                                                    <input type="hidden" name="ckl_grp4_name[]" value="{{ $row->checklist_name }}">
+                                                                    {{ $row->nama_kondisi }}
+                                                                    <input type="hidden" name="ckl_grp4_name[]" value="{{ $row->nama_kondisi }}">
                                                                 </td>
                                                                 <td>
                                                                     <select name="grp4_ada_tidak[]" class="form-control">
-                                                                        <option value="">---</option>
+                                                                        <option value="{{ $row->status_kondisi }}">{{ $row->status_kondisi }}</option>
                                                                         <option value="ADA">ADA</option>
                                                                         <option value="TIDAK">TIDAK</option>
                                                                     </select>
                                                                 </td>
                                                                 <td>
                                                                     <select name="grp4_baik_rusak[]" class="form-control">
-                                                                        <option value="">---</option>
+                                                                        <option value="{{ $row->kondisi }}">{{ $row->kondisi }}</option>
                                                                         <option value="BAIK">BAIK</option>
                                                                         <option value="RUSAK">RUSAK</option>
                                                                     </select>
@@ -454,7 +356,7 @@
                                                                 <td>Hasil Pemeriksaan</td>
                                                                 <td>
                                                                     <select name="hasil_pemeriksaan" class="form-control" required>
-                                                                        <option value="">---</option>
+                                                                        <option value="{{ $header->hasil_pemeriksaan }}">{{ $header->hasil_pemeriksaan }}</option>
                                                                         <option value="LAYAK">LAYAK</option>
                                                                         <option value="TIDAK LAYAK">TIDAK LAYAK</option>
                                                                     </select>
@@ -527,8 +429,7 @@
                             return {
                                 text: item.no_kendaraan + ' - ' + item.model_kendaraan,
                                 slug: item.model_kendaraan,
-                                id: item.no_kendaraan + ' - ' + item.model_kendaraan
-                                // id: item.no_kendaraan,
+                                id: item.no_kendaraan,
                                 ...item
                             }
                         })

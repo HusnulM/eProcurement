@@ -29,9 +29,17 @@ Route::group(['middleware' => 'auth'], function () {
     // transaksi/checklistken
     Route::group(['prefix' => '/checklistkendaraan'], function () {
         Route::get('/',                         'Transaksi\ChecklistKendaraanController@index')->middleware('checkAuth:checklistkendaraan');
-        Route::post('/save',                    'Transaksi\ApprovePbjController@save')->middleware('checkAuth:approve/pbj');
-        Route::get('/approvelist',              'Transaksi\ApprovePbjController@pbjApprovalList')->middleware('checkAuth:approve/pbj');
-        Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
+        Route::post('/save',                    'Transaksi\ChecklistKendaraanController@save')->middleware('checkAuth:checklistkendaraan');
+        Route::get('/datachecklistkendaraan',   'Transaksi\ChecklistKendaraanController@ViewdataCekList')->middleware('checkAuth:checklistkendaraan');
+        Route::get('/datachecklist',            'Transaksi\ChecklistKendaraanController@dataCekList')->middleware('checkAuth:checklistkendaraan');
+        // Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
+    });
+
+    Route::group(['prefix' => '/datachecklistkendaraan'], function () {
+        Route::get('/',                 'Transaksi\ChecklistKendaraanController@ViewdataCekList')->middleware('checkAuth:datachecklistkendaraan');
+        Route::get('/detail/{p1}',      'Transaksi\ChecklistKendaraanController@detailCekList')->middleware('checkAuth:datachecklistkendaraan');
+        Route::get('/datachecklist',    'Transaksi\ChecklistKendaraanController@dataCekList')->middleware('checkAuth:datachecklistkendaraan');
+        // Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
     });
 
     Route::group(['prefix' => '/approve/pbj'], function () {
