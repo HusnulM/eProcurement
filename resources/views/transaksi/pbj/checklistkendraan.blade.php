@@ -527,7 +527,7 @@
                             return {
                                 text: item.no_kendaraan + ' - ' + item.model_kendaraan,
                                 slug: item.model_kendaraan,
-                                id: item.no_kendaraan + ' - ' + item.model_kendaraan
+                                id: item.no_kendaraan + ' - ' + item.model_kendaraan,
                                 // id: item.no_kendaraan,
                                 ...item
                             }
