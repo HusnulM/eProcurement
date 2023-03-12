@@ -102,8 +102,7 @@ class ChecklistKendaraanController extends Controller
                         'createdby'       => Auth::user()->email ?? Auth::user()->username
                     ]);
                 }else{
-                    $exdate = $ck1_expdate[$i];
-                    $data = array(
+                    DB::table('t_ck_administrasi')->insert([
                         'no_checklist'    => $ptaNumber,
                         'ck_administrasi' => $ck1_name[$i],
                         'status_adm'      => $ck1_status[$i] ?? null,
@@ -111,9 +110,19 @@ class ChecklistKendaraanController extends Controller
                         'jenis_sim'       => $ck1_jnsim[$i] ?? null,
                         'createdon'       => getLocalDatabaseDateTime(),
                         'createdby'       => Auth::user()->email ?? Auth::user()->username
-                    );
-                    array_push($insertData, $data);
-                    insertOrUpdate($insertData,'t_ck_administrasi');
+                    ]);
+                    // $exdate = $ck1_expdate[$i];
+                    // $data = array(
+                    //     'no_checklist'    => $ptaNumber,
+                    //     'ck_administrasi' => $ck1_name[$i],
+                    //     'status_adm'      => $ck1_status[$i] ?? null,
+                    //     'masa_berlaku'    => $exdate,
+                    //     'jenis_sim'       => $ck1_jnsim[$i] ?? null,
+                    //     'createdon'       => getLocalDatabaseDateTime(),
+                    //     'createdby'       => Auth::user()->email ?? Auth::user()->username
+                    // );
+                    // array_push($insertData, $data);
+                    // insertOrUpdate($insertData,'t_ck_administrasi');
                 }
             }
             // return $insertData;
