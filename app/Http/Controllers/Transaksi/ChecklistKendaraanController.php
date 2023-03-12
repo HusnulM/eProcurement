@@ -159,8 +159,8 @@ class ChecklistKendaraanController extends Controller
 
             // Cek list Kondisi Ban
             $ck4_name     = $req['ckl_grp4_name'];
-            $ck4_status   = $req['grp3_ada_tidak'];
-            $ck4_kondisi  = $req['grp3_baik_rusak'];
+            $ck4_status   = $req['grp4_ada_tidak'];
+            $ck4_kondisi  = $req['grp4_baik_rusak'];
             $insertData = array();
             for($i = 0; $i < sizeof($ck4_name); $i++){
                 $data = array(
