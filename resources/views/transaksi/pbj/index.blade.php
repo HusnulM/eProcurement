@@ -71,13 +71,13 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="engine">Engine Model</label>
-                                            <input type="text" name="engine" class="form-control">
+                                            <input type="text" name="engine" id="engine_model" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="chassis">Chassis S/N</label>
-                                            <input type="text" name="chassis" class="form-control">
+                                            <input type="text" name="chassis" id="chassis" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -95,7 +95,7 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="typeModel">Type / Model</label>
-                                            <input type="text" name="typeModel" class="form-control">
+                                            <input type="text" name="typeModel" id="typeModel" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -119,13 +119,19 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="nginesn">Engine S/N</label>
-                                            <input type="text" name="nginesn" class="form-control">
+                                            <input type="text" name="nginesn" id="nginesn" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
-                                            <label for="hmkm">HM / KM</label>
-                                            <input type="text" name="hmkm" class="form-control">
+                                            <label for="hmkm">HM</label>
+                                            <input type="text" name="hmkm" id="hmkm" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="km">KM</label>
+                                            <input type="text" name="km" id="km" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -134,6 +140,13 @@
                                             <input type="text" name="budgetcode" class="form-control">
                                         </div>
                                     </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="no_rangka">No. Rangka</label>
+                                            <input type="text" name="no_rangka" id="no_rangka" class="form-control">
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12">
@@ -354,10 +367,23 @@
             
             var data = $('#find-unitdesc').select2('data')
             console.log(data);
+            // $('#jenis_kendaraan').val(data[0].model_kendaraan);
+            // $('#no_rangka').val(data[0].no_rangka);
+            // $('#bahan_bakar').val(data[0].bahan_bakar);
+            // $('#tahun').val(data[0].tahun);
 
-            // alert(data[0].material);
-            // $('#partdesc'+fCount).val(data[0].partname);
-            // $('#partunit'+fCount).val(data[0].matunit);
+            // $('#idkend').val(selected_data.id);
+            // $('#nokend').val(selected_data.no_kendaraan);
+            $('#typeModel').val(data[0].model_kendaraan);
+            $('#engine').val(data[0].engine_sn);
+            $('#chassis').val(data[0].chassis_sn);
+            $('#engine_model').val(data[0].engine_model);
+            $('#nginesn').val(data[0].engine_sn);
+            $('#km').val(data[0].last_km);
+            $('#hmkm').val(data[0].last_hm);
+            $('#no_rangka').val(data[0].no_rangka);
+            $('#tahun').val(data[0].tahun);
+            $('#bahan_bakar').val(data[0].bahan_bakar);
         });
 
         function validate(evt) {

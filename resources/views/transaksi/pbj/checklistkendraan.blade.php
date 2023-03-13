@@ -45,7 +45,7 @@
                                             Jenis Kendaraan
                                         </td>
                                         <td>
-                                            <input type="text" name="jenis_kendaraan" id="jenis_kendaraan" class="form-control">
+                                            <input type="text" name="jenis_kendaraan" id="jenis_kendaraan" class="form-control" readonly>
                                         </td>
                                     </tr>
 
@@ -60,7 +60,7 @@
                                             Nomor Rangka / Mesin
                                         </td>
                                         <td>
-                                            <input type="text" name="nomor_rangka" id="nomor_rangka" class="form-control">
+                                            <input type="text" name="nomor_rangka" id="nomor_rangka" class="form-control" readonly>
                                         </td>
                                     </tr>
 
@@ -76,7 +76,7 @@
                                             Bahan Bakar
                                         </td>
                                         <td>
-                                            <input type="text" name="bahan_bakar" id="bahan_bakar" class="form-control">
+                                            <input type="text" name="bahan_bakar" id="bahan_bakar" class="form-control" readonly>
                                         </td>
                                     </tr>
 
@@ -85,7 +85,7 @@
                                             Tahun
                                         </td>
                                         <td>
-                                            <input type="text" name="tahun" id="tahun" class="form-control">
+                                            <input type="text" name="tahun" id="tahun" class="form-control" readonly>
                                         </td>
                                         <td>
                                             Odometer
@@ -499,7 +499,7 @@
             }
         });
         $('#find-unitdesc').select2({ 
-            placeholder: 'Type Unit Desc / Code',
+            placeholder: 'Masukkan Plat Kendaraan',
             width: '100%',
             minimumInputLength: 0,
             ajax: {
@@ -545,8 +545,10 @@
             console.log(data);
 
             // alert(data[0].material);
-            // $('#partdesc'+fCount).val(data[0].partname);
-            // $('#partunit'+fCount).val(data[0].matunit);
+            $('#jenis_kendaraan').val(data[0].model_kendaraan);
+            $('#nomor_rangka').val(data[0].no_rangka);
+            $('#bahan_bakar').val(data[0].bahan_bakar);
+            $('#tahun').val(data[0].tahun);
         });
 
         function validate(evt) {

@@ -51,7 +51,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label>WO Date:</label>
-                                    <p>{!! formatDateTime($prhdr->wodate) !!}
+                                    <p>{!! formatDate($prhdr->wodate) !!}
+                                    </p>
+                                </div>
+                                <div class="form-group">
+                                    <label>WO Created Date:</label>
+                                    <p>{!! formatDateTime($prhdr->createdon) !!}
                                     </p>
                                 </div>
                                 <div class="form-group">
@@ -166,8 +171,7 @@
                                                         
                                                         <td>
                                                             @if($row->approval_date != null)
-                                                                <i class="fa fa-clock"></i> {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br>
-                                                                ({{ formatDateTime($row->approval_date) }})
+                                                                <i class="fa fa-clock"></i> ({{ formatDateTime($row->approval_date) }})
                                                             @endif
                                                         </td>
                                                         <td>{!! $row->approval_remark !!}</td>

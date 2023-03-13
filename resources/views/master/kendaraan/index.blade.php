@@ -33,6 +33,9 @@
                                 <th>Engine Model</th>
                                 <th>Last KM</th>
                                 <th>Last HM</th>
+                                <th>Bahan Bakar</th>
+                                <th>No. Rangka</th>
+                                <th>Tahun</th>
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
@@ -70,27 +73,65 @@
                             <label for="model_kendaraan">Type/Model Kendaraan</label>
                             <input type="text" name="model_kendaraan" class="form-control" required>
                         </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label for="no_rangka">Nomor Rangka</label>
+                            <input type="text" name="no_rangka" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="engine_sn">Engine S/N</label>
                             <input type="text" name="engine_sn" class="form-control" required>
                         </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="chassis_sn">Chassis S/N</label>
                             <input type="text" name="chassis_sn" class="form-control" required>
-                        </div>
+                        </div>                        
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="engine_model">Engine Model</label>
                             <input type="text" name="engine_model" class="form-control" required>
                         </div>
+                    </div> 
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="last_km">Last KM</label>
                             <input type="text" name="last_km" class="form-control" required>
                         </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="last_hm">Last HM</label>
                             <input type="text" name="last_hm" class="form-control" required>
+                        </div>                        
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="bahan_bakar">Bahan Bakar</label>
+                            <input type="text" name="bahan_bakar" class="form-control" required>
                         </div>
-                    </div> 
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="tahun">Tahun</label>
+                            <input type="text" name="tahun" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="status_kend">Status</label>
+                            <select name="status_kend" class="form-control">
+                                <option value="">---</option>
+                                <option value="Layak">Layak</option>
+                                <option value="Tidak Layak">Tidak Layak</option>
+                            </select>
+                        </div>                        
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -125,27 +166,66 @@
                             <label for="model_kendaraan">Type/Model Kendaraan</label>
                             <input type="text" name="model_kendaraan" id="model_kendaraan" class="form-control" required>
                         </div>
+                    </div> 
+
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="form-group">
+                            <label for="no_rangka">Nomor Rangka</label>
+                            <input type="text" name="no_rangka" id="no_rangka" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="engine_sn">Engine S/N</label>
                             <input type="text" name="engine_sn" id="engine_sn" class="form-control" required>
                         </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="chassis_sn">Chassis S/N</label>
                             <input type="text" name="chassis_sn" id="chassis_sn" class="form-control" required>
-                        </div>
+                        </div>                        
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="engine_model">Engine Model</label>
                             <input type="text" name="engine_model" id="engine_model" class="form-control" required>
                         </div>
+                    </div> 
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="last_km">Last KM</label>
                             <input type="text" name="last_km" id="last_km" class="form-control" required>
                         </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
                         <div class="form-group">
                             <label for="last_hm">Last HM</label>
                             <input type="text" name="last_hm" id="last_hm" class="form-control" required>
+                        </div>                        
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="bahan_bakar">Bahan Bakar</label>
+                            <input type="text" name="bahan_bakar" id="bahan_bakar" class="form-control" required>
                         </div>
-                    </div> 
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="tahun">Tahun</label>
+                            <input type="text" name="tahun" id="tahun" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="status_kend">Status</label>
+                            <select name="status_kend" id="status_kend" class="form-control">
+                                <option value="">---</option>
+                                <option value="Layak">Layak</option>
+                                <option value="Tidak Layak">Tidak Layak</option>
+                            </select>
+                        </div>                        
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -189,12 +269,15 @@
                 {data: "engine_model", className: 'uid'},
                 {data: "last_km", className: 'uid'},
                 {data: "last_hm", className: 'uid'},
+                {data: "bahan_bakar", className: 'uid'},
+                {data: "no_rangka", className: 'uid'},
+                {data: "tahun", className: 'uid'},
                 {"defaultContent": 
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button> 
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
                     `,
                     "className": "text-center",
-                    "width": "20%"
+                    "width": "10%"
                 }
             ]  
         });
@@ -218,6 +301,17 @@
             $('#engine_model').val(selected_data.engine_model);
             $('#last_km').val(selected_data.last_km);
             $('#last_hm').val(selected_data.last_hm);
+            $('#no_rangka').val(selected_data.no_rangka);
+            $('#tahun').val(selected_data.tahun);
+            $('#bahan_bakar').val(selected_data.bahan_bakar);
+            // $('#last_hm').val(selected_data.last_hm);
+            $('#status_kend').html('');
+            $('#status_kend').append(`
+                <option value="`+ selected_data.layak_tidak +`">`+ selected_data.layak_tidak +`</option>
+                <option value="Layak">Layak</option>
+                <option value="Tidak Layak">Tidak Layak</option>
+            `);
+
             $('#modal-edit-department').modal('show');
         });
 

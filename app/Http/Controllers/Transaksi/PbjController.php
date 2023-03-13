@@ -110,8 +110,9 @@ class PbjController extends Controller
                     'kode_brg_jasa'     => $req['kodeJasa'],
                     'engine_sn'         => $req['nginesn'],
                     'hm_km'             => $req['hmkm'],
+                    'km'                => $req['km'],
                     'budget_cost_code'  => $req['budgetcode'],
-                    'createdon'         => date('Y-m-d H:m:s'),
+                    'createdon'         => getLocalDatabaseDateTime(),
                     'createdby'         => Auth::user()->email ?? Auth::user()->username
                 ]);
     
@@ -138,7 +139,7 @@ class PbjController extends Controller
                         'unit'         => $uom[$i],
                         'figure'       => $figure[$i],
                         'remark'       => $remark[$i],
-                        'createdon'    => date('Y-m-d H:m:s'),
+                        'createdon'    => getLocalDatabaseDateTime(),
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
                     );
                     array_push($insertData, $data);

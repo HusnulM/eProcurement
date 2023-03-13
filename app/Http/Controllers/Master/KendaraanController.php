@@ -46,8 +46,12 @@ class KendaraanController extends Controller
                 'engine_model'    => $req['engine_model'],
                 'last_km'         => $req['last_km'],
                 'last_hm'         => $req['last_hm'],
+                'tahun'           => $req['tahun'],
+                'no_rangka'       => $req['no_rangka'],
+                'bahan_bakar'     => $req['bahan_bakar'],
+                'layak_tidak'     => $req['status_kend'],
                 'createdby'       => Auth::user()->email ?? Auth::user()->username,
-                'createdon'       => date('Y-m-d H:m:s'),
+                'createdon'       => getLocalDatabaseDateTime(),
             ]);
 
             DB::commit();
@@ -69,7 +73,11 @@ class KendaraanController extends Controller
                 'chassis_sn'      => $req['chassis_sn'],
                 'engine_model'    => $req['engine_model'],
                 'last_km'         => $req['last_km'],
-                'last_hm'         => $req['last_hm']
+                'last_hm'         => $req['last_hm'],
+                'tahun'           => $req['tahun'],
+                'no_rangka'       => $req['no_rangka'],
+                'bahan_bakar'     => $req['bahan_bakar'],
+                'layak_tidak'     => $req['status_kend'],
             ]);
 
             DB::commit();

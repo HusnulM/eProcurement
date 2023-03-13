@@ -27,6 +27,10 @@ class ChecklistKendaraanController extends Controller
         return view('transaksi.pbj.dataceklist');
     }
 
+    public function ViewdataCekListTidakLayak(){
+        return view('transaksi.pbj.ceklisttidaklayak');
+    }
+
     public function detailCekList($id){
         $header = DB::table('t_checklist_kendaraan')->where('id', $id)->first(); 
         $group1 = DB::table('t_ck_administrasi')->where('no_checklist', $header->no_checklist)->get();
@@ -49,6 +53,16 @@ class ChecklistKendaraanController extends Controller
             $whereClause = $params['sac'];
         }
         $query = DB::table('t_checklist_kendaraan')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)->toJson();
+    }
+
+    public function dataCekListTidakLayak(Request $request){
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('t_checklist_kendaraan')->where('hasil_pemeriksaan','TIDAK LAYAK')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }

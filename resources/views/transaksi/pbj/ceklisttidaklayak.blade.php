@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Data Cek List Kendaraan')
+@section('title', 'Data Cek List Kendaraan Tidak Layak')
 
 @section('additional-css')
 @endsection
@@ -81,7 +81,7 @@
         $("#tbl-data-ceklist").DataTable({
             serverSide: true,
             ajax: {
-                url: base_url+'/datachecklistkendaraan/datachecklist',
+                url: base_url+'/datachecklistkendaraan/datachecklisttidaklayak',
                 data: function (data) {
                     data.params = {
                         sac: "sac"
