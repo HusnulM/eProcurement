@@ -56,6 +56,9 @@
           <div class="col-4">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
+          <div class="col-8">
+            <a href="_DMS_MiAP_16823232.apk" class="btn btn-success btn-block">Download Apps</a>
+          </div>
         </div>
       </form>
     </div>
