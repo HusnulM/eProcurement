@@ -281,7 +281,7 @@
                                 return {
                                     text: item.partnumber,
                                     slug: item.partnumber,
-                                    id: item.partnumber,
+                                    id: item.material,
                                     ...item
                                 }
                             })
