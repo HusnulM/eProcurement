@@ -394,7 +394,7 @@
                                                                 <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
                                                             </td>
                                                             <td>
-                                                                <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PBJ/{{$file->efile}}#toolbar=0')">
+                                                                <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/CKL/{{$file->efile}}#toolbar=0')">
                                                                     <i class="fa fa-search"></i> Preview File
                                                                 </button>
                                                             </td>
