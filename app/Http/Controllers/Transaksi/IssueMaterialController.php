@@ -97,12 +97,17 @@ class IssueMaterialController extends Controller
                                ->where('material', $parts[$i])
                                ->where('whscode', $whscode[$i])->first();
                 if($latestStock){
-                    DB::table('t_inv_stock')
-                    ->where('material', $parts[$i])
-                    ->where('whscode',  $whscode[$i])
-                    ->update([
-                        'quantity'     => $latestStock->quantity - $qty
-                    ]);
+                    if($latestStock->quantity < $qty){
+                        DB::rollBack();
+                        return Redirect::to("/logistic/pengeluaran")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                    }else{
+                        DB::table('t_inv_stock')
+                        ->where('material', $parts[$i])
+                        ->where('whscode',  $whscode[$i])
+                        ->update([
+                            'quantity'     => $latestStock->quantity - $qty
+                        ]);
+                    }
                 }else{
                     DB::rollBack();
                     return Redirect::to("/logistic/pengeluaran")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);

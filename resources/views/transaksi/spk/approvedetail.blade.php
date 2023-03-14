@@ -166,7 +166,7 @@
                                                         
                                                         <td>
                                                             @if($row->approval_date != null)
-                                                                <i class="fa fa-clock"></i> {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br>
+                                                                <i class="fa fa-clock"></i> 
                                                                 ({{ formatDateTime($row->approval_date) }})
                                                             @endif
                                                         </td>
@@ -345,6 +345,12 @@
 
                         setTimeout(function(){ 
                             window.location.href = base_url+'/approve/spk';
+                        }, 2000);
+                    }else if(response.msgtype === "500"){
+                        toastr.error(response.message);
+
+                        setTimeout(function(){ 
+                            location.reload();
                         }, 2000);
                     }
                 },
