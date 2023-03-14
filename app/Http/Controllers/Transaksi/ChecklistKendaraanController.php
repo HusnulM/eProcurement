@@ -32,7 +32,7 @@ class ChecklistKendaraanController extends Controller
     }
 
     public function detailCekList($id){
-        $header = DB::table('t_checklist_kendaraan')->where('id', $id)->first(); 
+        $header = DB::table('v_checklist_kendaraan')->where('id', $id)->first(); 
         $group1 = DB::table('t_ck_administrasi')->where('no_checklist', $header->no_checklist)->get();
         $group2 = DB::table('t_ck_kelengkapan_kend')->where('no_checklist', $header->no_checklist)->get();
         $group3 = DB::table('t_ck_kondisi_kend')->where('no_checklist', $header->no_checklist)->get();
