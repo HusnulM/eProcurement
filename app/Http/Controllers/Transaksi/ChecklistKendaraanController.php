@@ -37,13 +37,15 @@ class ChecklistKendaraanController extends Controller
         $group2 = DB::table('t_ck_kelengkapan_kend')->where('no_checklist', $header->no_checklist)->get();
         $group3 = DB::table('t_ck_kondisi_kend')->where('no_checklist', $header->no_checklist)->get();
         $group4 = DB::table('t_ck_kondisi_ban')->where('no_checklist',  $header->no_checklist)->get();
+        $attachments = DB::table('t_attachments')->where('doc_object','CKL')->where('doc_number', $header->no_checklist)->get();
         return view('transaksi.pbj.detailceklist', 
             [
                 'header' => $header,
                 'group1' => $group1,
                 'group2' => $group2,
                 'group3' => $group3,
-                'group4' => $group4
+                'group4' => $group4,
+                'attachments'   => $attachments
             ]);
     }
 
@@ -103,10 +105,6 @@ class ChecklistKendaraanController extends Controller
             $insertData = array();
             for($i = 0; $i < sizeof($ck1_name); $i++){
                 if($ck1_expdate[$i] == null){
-                    // $exdate = null;
-                    // $data = array(
-                        // );
-                        // array_push($insertData, $data);
                     DB::table('t_ck_administrasi')->insert([
                         'no_checklist'    => $ptaNumber,
                         'ck_administrasi' => $ck1_name[$i],
@@ -116,6 +114,7 @@ class ChecklistKendaraanController extends Controller
                         'createdby'       => Auth::user()->email ?? Auth::user()->username
                     ]);
                 }else{
+                    $exdate = $ck1_expdate[$i];
                     DB::table('t_ck_administrasi')->insert([
                         'no_checklist'    => $ptaNumber,
                         'ck_administrasi' => $ck1_name[$i],
@@ -125,18 +124,6 @@ class ChecklistKendaraanController extends Controller
                         'createdon'       => getLocalDatabaseDateTime(),
                         'createdby'       => Auth::user()->email ?? Auth::user()->username
                     ]);
-                    // $exdate = $ck1_expdate[$i];
-                    // $data = array(
-                    //     'no_checklist'    => $ptaNumber,
-                    //     'ck_administrasi' => $ck1_name[$i],
-                    //     'status_adm'      => $ck1_status[$i] ?? null,
-                    //     'masa_berlaku'    => $exdate,
-                    //     'jenis_sim'       => $ck1_jnsim[$i] ?? null,
-                    //     'createdon'       => getLocalDatabaseDateTime(),
-                    //     'createdby'       => Auth::user()->email ?? Auth::user()->username
-                    // );
-                    // array_push($insertData, $data);
-                    // insertOrUpdate($insertData,'t_ck_administrasi');
                 }
             }
             // return $insertData;
@@ -197,6 +184,31 @@ class ChecklistKendaraanController extends Controller
                 array_push($insertData, $data);
             }
             insertOrUpdate($insertData,'t_ck_kondisi_ban');
+
+            //Insert Attachments | t_attachments
+            if(isset($req['efile'])){
+                $files = $req['efile'];
+                $insertFiles = array();
+    
+                foreach ($files as $efile) {
+                    $filename = $efile->getClientOriginalName();
+                    $upfiles = array(
+                        'doc_object' => 'CKL',
+                        'doc_number' => $ptaNumber,
+                        'efile'      => $filename,
+                        'pathfile'   => '/files/CKL/'. $filename,
+                        'createdon'  => getLocalDatabaseDateTime(),
+                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                    );
+                    array_push($insertFiles, $upfiles);
+    
+                    // $efile->move(public_path().'/files/PBJ/', $filename);  
+                    $efile->move('files/CKL/', $filename);  
+                }
+                if(sizeof($insertFiles) > 0){
+                    insertOrUpdate($insertFiles,'t_attachments');
+                }
+            }
 
             DB::commit();
             return Redirect::to("/checklistkendaraan")->withSuccess('Data Cek List Kendaraan Berhasil dibuat dengan Nomor : '. $ptaNumber);

@@ -94,8 +94,22 @@
                                             <input type="text" name="odometer" id="odometer" class="form-control">
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            Attachment
+                                        </td>
+                                        <td>
+                                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
+                                        </td>
+                                        <td>
+                                            
+                                        </td>
+                                        <td>
+                                            
+                                        </td>
+                                    </tr>
                                 </table>
-                            </div>
+                            </div>                                
                         </div>
                         <div class="row">                            
                             <div class="col-lg-12">
