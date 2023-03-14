@@ -70,7 +70,7 @@
                                         </td>
                                         <td>
                                             <select name="unitdesc" id="find-unitdesc" class="form-control">
-                                                <option value="{{ $header->no_kendaraan }}">{{ $header->no_kendaraan }}</option>
+                                                <option value="{{ $header->no_kendaraan }}">{{ $header->no_kendaraan }} - {{ $header->jenis_kendaraan }}</option>
                                             </select>
                                         </td>
                                         <td>
