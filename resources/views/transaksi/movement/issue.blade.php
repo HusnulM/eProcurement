@@ -17,7 +17,7 @@
 
 @section('content')        
 <div class="container-fluid">
-    <form action="{{ url('logistic/pengeluaran/save') }}" method="post">
+    <form action="{{ url('logistic/pengeluaran/save') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -50,6 +50,13 @@
                                         <div class="form-group">
                                             <label for="remark">Remark</label>
                                             <textarea name="remark" id="remark" cols="30" rows="4" class="form-control" placeholder="Remark..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="attachment">Attachment</label>
+                                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
                                         </div>
                                     </div>
                                 </div>
@@ -135,7 +142,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <!-- <button type="submit" class="btn btn-primary">Save</button> -->
             </div>
         </div>
     </div>
@@ -150,10 +157,26 @@
 
         let _token   = $('meta[name="csrf-token"]').attr('content');
 
+        let selected_pbj_items = [];
+
         $('.btn-add-po-item-based-pr').on('click', function(){
             loadListPBJ();
             $('#modal-list-pr').modal('show');
-        });        
+        });    
+        
+        function checkPbjSelected(pbjNum, pbjItem) {
+            return selected_pbj_items.some(function(el) {
+                if(el.pbjnumber === pbjNum && el.pbjitem === pbjItem){
+                    return true;
+                }else{
+                    return false;
+                }
+            }); 
+        }
+
+        function removePbjItem(index){
+            selected_pbj_items.splice(index, 1);
+        }            
 
         var fCount = 0;
         function loadListPBJ(){
@@ -202,131 +225,137 @@
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
 
-                console.log(selected_data);
-                // <td>
-                //             <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
-                //         </td>
-                fCount = fCount + 1;
-                $('#tbl-pbj-body').append(`
-                    <tr>
-                        <td>
-                            <select name="parts[]" class="form-control" readonly>
-                                <option value="`+selected_data.partnumber+`">`+selected_data.partnumber+`</option>
-                            </select>
-                            <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
-                        </td>
-                        
-                        <td>
-                            <input type="text" name="quantity[]" class="form-control inputNumber" value="`+selected_data.quantity+`" required>
-                            <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control" value="`+selected_data.unit+`" readonly>
-                        </td>
-                        <td>
-                            <select name="whscode[]" id="find-whscode`+fCount+`" class="form-control"></select>
-                        </td>
-                        <td>
-                            <input type="text" name="pbjref[]" id="pbjref`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
-                            <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
-                            <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">
-                        </td>
-                        <td style="text-align:center;">
-                            <button type="button" class="btn btn-danger btnRemove">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `);
+                if(checkPbjSelected(selected_data.pbjnumber, selected_data.pbjitem)){
+                    console.log(selected_pbj_items);
+                }else{
+                    selected_pbj_items.push(selected_data);
+                    console.log(selected_pbj_items);
+                
+                    console.log(selected_data);
+                    fCount = fCount + 1;
+                    $('#tbl-pbj-body').append(`
+                        <tr>
+                            <td>
+                                <select name="parts[]" class="form-control" readonly>
+                                    <option value="`+selected_data.partnumber+`">`+selected_data.partnumber+`</option>
+                                </select>
+                                <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
+                            </td>
+                            
+                            <td>
+                                <input type="text" name="quantity[]" class="form-control inputNumber" value="`+selected_data.quantity+`" required>
+                                <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control" value="`+selected_data.unit+`" readonly>
+                            </td>
+                            <td>
+                                <select name="whscode[]" id="find-whscode`+fCount+`" class="form-control"></select>
+                            </td>
+                            <td>
+                                <input type="text" name="pbjref[]" id="pbjref`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
+                                <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
+                                <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">
+                            </td>
+                            <td style="text-align:center;">
+                                <button type="button" class="btn btn-danger btnRemove">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+        
+                    $('.btnRemove').on('click', function(e){
+                        e.preventDefault();
+                        var row_index = $(this).closest("tr").index();
+                        removePbjItem(row_index);
+                        $(this).closest("tr").remove();
+                    });
     
-                $('.btnRemove').on('click', function(e){
-                    e.preventDefault();
-                    $(this).closest("tr").remove();
-                });
-
-                $('.inputNumber').on('change', function(){
-                    this.value = formatRupiah(this.value,'');
-                });
-
-                $('.inputNumber').on('keypress', function(e){
-                    validate(e);
-                });
-
-                $(document).on('select2:open', (event) => {
-                    const searchField = document.querySelector(
-                        `.select2-search__field`,
-                    );
-                    if (searchField) {
-                        searchField.focus();
+                    $('.inputNumber').on('change', function(){
+                        this.value = formatRupiah(this.value,'');
+                    });
+    
+                    $('.inputNumber').on('keypress', function(e){
+                        validate(e);
+                    });
+    
+                    $(document).on('select2:open', (event) => {
+                        const searchField = document.querySelector(
+                            `.select2-search__field`,
+                        );
+                        if (searchField) {
+                            searchField.focus();
+                        }
+                    });
+                    $('#find-whscode'+fCount).select2({ 
+                        placeholder: 'Ketik Nama Gudang',
+                        width: '100%',
+                        minimumInputLength: 0,
+                        ajax: {
+                            url: base_url + '/master/warehouse/findwhs',
+                            dataType: 'json',
+                            delay: 250,
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': _token
+                            },
+                            data: function (params) {
+                                var query = {
+                                    search: params.term,
+                                    // custname: $('#find-customer').val()
+                                }
+                                return query;
+                            },
+                            processResults: function (data) {
+                                // return {
+                                //     results: response
+                                // };
+                                console.log(data)
+                                return {
+                                    results: $.map(data.data, function (item) {
+                                        return {
+                                            text: item.whsname,
+                                            slug: item.whsname,
+                                            id: item.whscode,
+                                            ...item
+                                        }
+                                    })
+                                };
+                            },
+                            cache: true
+                        }
+                    });
+    
+                    function formatRupiah(angka, prefix){
+                        var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
+                        split   		  = number_string.split('.'),
+                        sisa     		  = split[0].length % 3,
+                        rupiah     		  = split[0].substr(0, sisa),
+                        ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
+                    
+                        if(ribuan){
+                            separator = sisa ? ',' : '';
+                            rupiah += separator + ribuan.join(',');
+                        }
+                    
+                        rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
+                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
                     }
-                });
-                $('#find-whscode'+fCount).select2({ 
-                    placeholder: 'Ketik Nama Gudang',
-                    width: '100%',
-                    minimumInputLength: 0,
-                    ajax: {
-                        url: base_url + '/master/warehouse/findwhs',
-                        dataType: 'json',
-                        delay: 250,
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': _token
-                        },
-                        data: function (params) {
-                            var query = {
-                                search: params.term,
-                                // custname: $('#find-customer').val()
-                            }
-                            return query;
-                        },
-                        processResults: function (data) {
-                            // return {
-                            //     results: response
-                            // };
-                            console.log(data)
-                            return {
-                                results: $.map(data.data, function (item) {
-                                    return {
-                                        text: item.whsname,
-                                        slug: item.whsname,
-                                        id: item.whscode,
-                                        ...item
-                                    }
-                                })
-                            };
-                        },
-                        cache: true
-                    }
-                });
-
-                function formatRupiah(angka, prefix){
-                    var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
-                    split   		  = number_string.split('.'),
-                    sisa     		  = split[0].length % 3,
-                    rupiah     		  = split[0].substr(0, sisa),
-                    ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-                
-                    if(ribuan){
-                        separator = sisa ? ',' : '';
-                        rupiah += separator + ribuan.join(',');
-                    }
-                
-                    rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                    return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
-                }
-
-                function validate(evt) {
-                    var theEvent = evt || window.event;
-
-                    // Handle paste
-                    if (theEvent.type === 'paste') {
-                        key = event.clipboardData.getData('text/plain');
-                    } else {
-                    // Handle key press
-                        var key = theEvent.keyCode || theEvent.which;
-                        key = String.fromCharCode(key);
-                    }
-                    var regex = /[0-9]|\./;
-                    if( !regex.test(key) ) {
-                        theEvent.returnValue = false;
-                        if(theEvent.preventDefault) theEvent.preventDefault();
+    
+                    function validate(evt) {
+                        var theEvent = evt || window.event;
+    
+                        // Handle paste
+                        if (theEvent.type === 'paste') {
+                            key = event.clipboardData.getData('text/plain');
+                        } else {
+                        // Handle key press
+                            var key = theEvent.keyCode || theEvent.which;
+                            key = String.fromCharCode(key);
+                        }
+                        var regex = /[0-9]|\./;
+                        if( !regex.test(key) ) {
+                            theEvent.returnValue = false;
+                            if(theEvent.preventDefault) theEvent.preventDefault();
+                        }
                     }
                 }
             });

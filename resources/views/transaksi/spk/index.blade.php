@@ -71,9 +71,47 @@
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="lastOdoMeter">Last Odo Meter</label>                                            
-                                            <input type="text" name="lastOdoMeter" id="lastOdoMeter" class="form-control" required>
+                                            <input type="text" name="lastOdoMeter" id="lastOdoMeter" class="form-control">
                                         </div>
                                     </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="lastKM">Last KM</label>                                            
+                                            <input type="text" name="lastKM" id="lastKM" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="lastHM">Last HM</label>                                            
+                                            <input type="text" name="lastHM" id="lastHM" class="form-control" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="jenis_kendaraan">Jenis Kendaraan</label>                                            
+                                            <input type="text" name="jenis_kendaraan" id="jenis_kendaraan" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="bahan_bakar">Bahan Bakar</label>                                            
+                                            <input type="text" name="bahan_bakar" id="bahan_bakar" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="tahun">Tahun</label>                                            
+                                            <input type="text" name="tahun" id="tahun" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="nomor_rangka">Nomor Rangka</label>                                            
+                                            <input type="text" name="nomor_rangka" id="nomor_rangka" class="form-control" readonly>
+                                        </div>
+                                    </div>
+
                                     <div class="col-lg-3 col-md-12">
                                         <div class="form-group">
                                             <label for="schedule">Status Schedule</label>                                            
@@ -460,11 +498,13 @@
             
             var data = $('#find-licenseNumber').select2('data')
             console.log(data);
-            $('#lastOdoMeter').val(data[0].last_hm + ' - ' + data[0].last_km);
+            $('#lastKM').val(data[0].last_km);
+            $('#lastHM').val(data[0].last_hm);
 
-            // alert(data[0].material);
-            // $('#partdesc'+fCount).val(data[0].partname);
-            // $('#partunit'+fCount).val(data[0].matunit);
+            $('#jenis_kendaraan').val(data[0].model_kendaraan);
+            $('#nomor_rangka').val(data[0].no_rangka);
+            $('#bahan_bakar').val(data[0].bahan_bakar);
+            $('#tahun').val(data[0].tahun);
         });
         
     });

@@ -144,6 +144,31 @@ class IssueMaterialController extends Controller
             }
             insertOrUpdate($insertData,'t_inv02');
 
+            //Insert Attachments | t_attachments
+            if(isset($req['efile'])){
+                $files = $req['efile'];
+                $insertFiles = array();
+    
+                foreach ($files as $efile) {
+                    $filename = $efile->getClientOriginalName();
+                    $upfiles = array(
+                        'doc_object' => 'ISSUED',
+                        'doc_number' => $ptaNumber,
+                        'efile'      => $filename,
+                        'pathfile'   => '/files/ISSUED/'. $filename,
+                        'createdon'  => getLocalDatabaseDateTime(),
+                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                    );
+                    array_push($insertFiles, $upfiles);
+    
+                    // $efile->move(public_path().'/files/PBJ/', $filename);  
+                    $efile->move('files/ISSUED/', $filename);  
+                }
+                if(sizeof($insertFiles) > 0){
+                    insertOrUpdate($insertFiles,'t_attachments');
+                }
+            }
+
             DB::commit();
             return Redirect::to("/logistic/pengeluaran")->withSuccess('Pengeluaran Barang Berhasil dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
