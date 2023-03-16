@@ -35,21 +35,21 @@ class ItemMasterController extends Controller
         $params = $request->params;        
         $whereClause = $params['sac'];
         $query = DB::table('v_material')->orderBy('material');
-        return DataTables::queryBuilder($query)->toJson();
+        return DataTables::queryBuilder($query)->setRowId('id')->toJson();
     }
 
     public function itemCategoryLists(Request $request){
         $params = $request->params;        
         $whereClause = $params['sac'];
         $query = DB::table('t_materialtype')->orderBy('id');
-        return DataTables::queryBuilder($query)->toJson();
+        return DataTables::queryBuilder($query)->setRowId('id')->toJson();
     }
 
     public function uomLists(Request $request){
         $params = $request->params;        
         $whereClause = $params['sac'];
         $query = DB::table('t_uom')->select('id','uom','uomdesc','createdby', 'createdon')->orderBy('uom');
-        return DataTables::queryBuilder($query)->toJson();
+        return DataTables::queryBuilder($query)->setRowId('id')->toJson();
     }
 
     public function findPartnumber(Request $request){

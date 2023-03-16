@@ -23,7 +23,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Input Checklist Kendaraan</h3>
+                        <h3 class="card-title">Detail Checklist Kendaraan</h3>
                         <div class="card-tools">
                             <a href="{{ url('/datachecklistkendaraan') }}" class="btn btn-default btn-sm">
                                 <i class="fa fa-arrow-left"></i> Back
@@ -39,13 +39,13 @@
                                             Hari / Tanggal
                                         </td>
                                         <td>
-                                            <input type="date" name="tanggal_cek" class="form-control" value="{{ $header->tanggal_cek }}" required>
+                                            <input type="date" name="tanggal_cek" class="form-control" value="{{ $header->tanggal_cek }}" readonly>
                                         </td>
                                         <td>
                                             Jenis Kendaraan
                                         </td>
                                         <td>
-                                            <input type="text" name="jenis_kendaraan" id="jenis_kendaraan" value="{{ $header->jenis_kendaraan }}" class="form-control">
+                                            <input type="text" name="jenis_kendaraan" id="jenis_kendaraan" value="{{ $header->jenis_kendaraan }}" class="form-control" readonly>
                                         </td>
                                     </tr>
 
@@ -54,13 +54,13 @@
                                             Nama Driver
                                         </td>
                                         <td>
-                                            <input type="text" name="nama_driver" value="{{ $header->nama_driver }}" class="form-control">
+                                            <input type="text" name="nama_driver" value="{{ $header->nama_driver }}" class="form-control" readonly>
                                         </td>
                                         <td>
                                             Nomor Rangka / Mesin
                                         </td>
                                         <td>
-                                            <input type="text" name="nomor_rangka" id="nomor_rangka" value="{{ $header->nomor_rangka }}" class="form-control">
+                                            <input type="text" name="nomor_rangka" id="nomor_rangka" value="{{ $header->nomor_rangka }}" class="form-control" readonly>
                                         </td>
                                     </tr>
 
@@ -69,7 +69,7 @@
                                             Plat Kendaraan
                                         </td>
                                         <td>
-                                            <select name="unitdesc" id="find-unitdesc" class="form-control">
+                                            <select name="unitdesc" class="form-control" readonly>
                                                 <option value="{{ $header->no_kendaraan }}">{{ $header->no_kendaraan }} - {{ $header->jenis_kendaraan }}</option>
                                             </select>
                                         </td>
@@ -77,7 +77,7 @@
                                             Bahan Bakar
                                         </td>
                                         <td>
-                                            <input type="text" name="bahan_bakar" id="bahan_bakar" value="{{ $header->bahan_bakar }}" class="form-control">
+                                            <input type="text" name="bahan_bakar" id="bahan_bakar" value="{{ $header->bahan_bakar }}" class="form-control" readonly>
                                         </td>
                                     </tr>
 
@@ -86,13 +86,13 @@
                                             Tahun
                                         </td>
                                         <td>
-                                            <input type="text" name="tahun" id="tahun" value="{{ $header->tahun }}" class="form-control">
+                                            <input type="text" name="tahun" id="tahun" value="{{ $header->tahun }}" class="form-control" readonly>
                                         </td>
                                         <td>
                                             Odometer
                                         </td>
                                         <td>
-                                            <input type="text" name="odometer" id="odometer" value="{{ $header->odometer }}" class="form-control">
+                                            <input type="text" name="odometer" id="odometer" value="{{ $header->odometer }}" class="form-control" readonly>
                                         </td>
                                     </tr>
                                 </table>
@@ -144,7 +144,7 @@
                                                                     <input type="hidden" name="ckl_grp1_name[]" value="{{ $row->ck_administrasi }}">
                                                                 </td>
                                                                 <td>
-                                                                    <select name="status_adm[]" class="form-control">
+                                                                    <select name="status_adm[]" class="form-control" readonly>
                                                                         <option value="{{ $row->status_adm }}">{{ $row->status_adm ?? '---' }}</option>
                                                                         <option value="ADA">ADA</option>
                                                                         <option value="TIDAK">TIDAK</option>
@@ -155,12 +155,12 @@
                                                                         <div class="input-group-prepend">
                                                                             <span class="input-group-text" id="basic-addon3">Masa Berlaku</span>
                                                                         </div>
-                                                                        <input type="date" name="masa_berlaku[]" value="{{ $row->masa_berlaku }}" class="form-control">
+                                                                        <input type="date" name="masa_berlaku[]" value="{{ $row->masa_berlaku }}" class="form-control" readonly>
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     @if($row->jenis_sim)
-                                                                    <select name="jenis_sim[]" class="form-control">
+                                                                    <select name="jenis_sim[]" class="form-control" readonly>
                                                                         <option value="{{ $row->jenis_sim }}">{{ $row->jenis_sim }}</option>
                                                                         <option value="B1 Umum">B1 Umum</option>
                                                                         <option value="B2 Umum">B2 Umum</option>
@@ -207,17 +207,17 @@
                                                                     <input type="hidden" name="ckl_grp2_name[]" value="{{ $row->nama_kelengkapan }}">
                                                                 </td>
                                                                 <td>
-                                                                    <select name="grp2_ada_tidak[]" class="form-control">
+                                                                    <select name="grp2_ada_tidak[]" class="form-control" readonly>
                                                                         <option value="{{ $row->status_kelengkapan }}">{{ $row->status_kelengkapan }}</option>
                                                                         <option value="ADA">ADA</option>
                                                                         <option value="TIDAK">TIDAK</option>
                                                                     </select>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" name="quantity[]" value="{{ $row->jumlah }}" class="form-control inputNumber">
+                                                                    <input type="text" name="quantity[]" value="{{ $row->jumlah }}" class="form-control inputNumber" readonly>
                                                                 </td>
                                                                 <td>
-                                                                    <select name="grp2_baik_rusak[]" class="form-control">
+                                                                    <select name="grp2_baik_rusak[]" class="form-control" readonly>
                                                                         <option value="{{ $row->kondisi_kelengkapan }}">{{ $row->kondisi_kelengkapan }}</option>
                                                                         <option value="BAIK">BAIK</option>
                                                                         <option value="RUSAK">RUSAK</option>
@@ -261,14 +261,14 @@
                                                                     <input type="hidden" name="ckl_grp3_name[]" value="{{ $row->kondisi_cek }}">
                                                                 </td>
                                                                 <td>
-                                                                    <select name="grp3_ada_tidak[]" class="form-control">
+                                                                    <select name="grp3_ada_tidak[]" class="form-control" readonly>
                                                                         <option value="{{ $row->status_kondisi }}">{{ $row->status_kondisi ?? '---' }}</option>
                                                                         <option value="CUKUP">CUKUP</option>
                                                                         <option value="KURANG">KURANG</option>
                                                                     </select>
                                                                 </td>
                                                                 <td>
-                                                                    <select name="grp3_baik_rusak[]" class="form-control">
+                                                                    <select name="grp3_baik_rusak[]" class="form-control" readonly>
                                                                         <option value="{{ $row->kondisi }}">{{ $row->kondisi }}</option>
                                                                         <option value="BAIK">BAIK</option>
                                                                         <option value="RUSAK">RUSAK</option>
@@ -312,14 +312,14 @@
                                                                     <input type="hidden" name="ckl_grp4_name[]" value="{{ $row->nama_kondisi }}">
                                                                 </td>
                                                                 <td>
-                                                                    <select name="grp4_ada_tidak[]" class="form-control">
+                                                                    <select name="grp4_ada_tidak[]" class="form-control" readonly>
                                                                         <option value="{{ $row->status_kondisi }}">{{ $row->status_kondisi }}</option>
                                                                         <option value="ADA">ADA</option>
                                                                         <option value="TIDAK">TIDAK</option>
                                                                     </select>
                                                                 </td>
                                                                 <td>
-                                                                    <select name="grp4_baik_rusak[]" class="form-control">
+                                                                    <select name="grp4_baik_rusak[]" class="form-control" readonly>
                                                                         <option value="{{ $row->kondisi }}">{{ $row->kondisi }}</option>
                                                                         <option value="BAIK">BAIK</option>
                                                                         <option value="RUSAK">RUSAK</option>
@@ -358,7 +358,7 @@
                                                                 <td>1</td>
                                                                 <td>Hasil Pemeriksaan</td>
                                                                 <td>
-                                                                    <select name="hasil_pemeriksaan" class="form-control" required>
+                                                                    <select name="hasil_pemeriksaan" class="form-control" readonly>
                                                                         <option value="{{ $header->hasil_pemeriksaan }}">{{ $header->hasil_pemeriksaan }}</option>
                                                                         <option value="LAYAK">LAYAK</option>
                                                                         <option value="TIDAK LAYAK">TIDAK LAYAK</option>

@@ -101,8 +101,8 @@
                                     <div class="col-lg-12">
                                         <table id="tbl-po-item" class="table table-sm">
                                             <thead>
-                                                <th>Part No. / Type</th>
-                                                <th>Description</th>
+                                                <th>Part Number</th>
+                                                {{-- <th>Description</th> --}}
                                                 <th>Quantity</th>
                                                 <th>Unit</th>
                                                 <th>Unit Price</th>
@@ -478,12 +478,9 @@
                     $('#tbl-pbj-body').append(`
                         <tr>
                             <td>
-                                <select name="parts[]" id="find-part`+fCount+`" class="form-control" readonly>
-                                    <option value="`+ selected_data.material +`">`+ selected_data.material +`</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" name="partdesc[]" id="partdesc`+fCount+`" value="`+ selected_data.matdesc +`" class="form-control" readonly>
+                                `+selected_data.material+` - `+ selected_data.matdesc +`
+                                <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
+                                <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
                             <td>
                                 <input type="text" name="quantity[]" class="form-control inputNumber" id="inputQty`+fCount+`" value="`+ selected_data.openqty +`" data-openqty="`+ selected_data.openqty +`">

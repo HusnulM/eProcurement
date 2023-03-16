@@ -273,7 +273,7 @@
             // scrollX: true,
             // scrollCollapse: true,
             columns: [
-                { "data": null,"sortable": false, "searchable": false,
+                { "data": null,"sortable": false, "searchable": false, "defaultContent": "",
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }  

@@ -101,7 +101,7 @@
                 },
                 {data: "no_checklist", className: 'uid'},
                 {data: "tanggal_cek", className: 'uid'},
-                {data: "no_plat"},
+                {data: "no_kendaraan"},
                 {data: "jenis_kendaraan"},             
                 {data: "nomor_rangka" },
                 {data: "bahan_bakar"},

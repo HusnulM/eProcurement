@@ -54,7 +54,7 @@ class ChecklistKendaraanController extends Controller
             $params = $request->params;        
             $whereClause = $params['sac'];
         }
-        $query = DB::table('t_checklist_kendaraan')
+        $query = DB::table('v_checklist_kendaraan')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }
@@ -64,7 +64,7 @@ class ChecklistKendaraanController extends Controller
             $params = $request->params;        
             $whereClause = $params['sac'];
         }
-        $query = DB::table('t_checklist_kendaraan')->where('hasil_pemeriksaan','TIDAK LAYAK')
+        $query = DB::table('v_checklist_kendaraan')->where('hasil_pemeriksaan','TIDAK LAYAK')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }
