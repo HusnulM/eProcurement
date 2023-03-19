@@ -148,4 +148,76 @@ class ApprovePbjController extends Controller
             // return Redirect::to("/approve/budget")->withError($e->getMessage());
         }
     }
+
+    public function approveItems(Request $data, $pbjID){
+        DB::beginTransaction();
+        try{
+            $pbjHeader = DB::table('t_pbj01')->where('id', $pbjID)->first();
+            $items = join(",",$data['pbjitem']); 
+            $ptaNumber = $pbjHeader->pbjnumber;
+
+            // $pbjItemData = DB::table('t_pbj02')
+            //     ->where('pbjnumber', $ptaNumber)
+            //     ->whereIn('pbjitem', $items)->get();
+            // return $items;
+            // $userAppLevel = DB::table('t_pbj_approval')
+            //                 ->select('approver_level')
+            //                 ->where('pbjnumber', $ptaNumber)
+            //                 ->where('approver', Auth::user()->id)
+            //                 ->first();
+
+            // //Set Approval
+            // DB::table('t_pbj_approval')
+            // ->where('pbjnumber', $ptaNumber)
+            // // ->where('approver_id', Auth::user()->id)
+            // ->where('approver_level',$userAppLevel->approver_level)
+            // ->update([
+            //     'approval_status' => 'A',
+            //     'approval_remark' => $req['approvernote'],
+            //     'approved_by'     => Auth::user()->username,
+            //     'approval_date'   => getLocalDatabaseDateTime()
+            // ]);
+
+            // $nextApprover = $this->getNextApproval($ptaNumber);
+            // if($nextApprover  != null){
+            //     DB::table('t_pbj_approval')
+            //     ->where('pbjnumber', $ptaNumber)
+            //     ->where('approver_level', $nextApprover)
+            //     ->update([
+            //         'is_active' => 'Y'
+            //     ]);
+            // }
+
+
+            // $checkIsFullApprove = DB::table('t_pbj_approval')
+            //                           ->where('pbjnumber', $ptaNumber)
+            //                           ->where('approval_status', '!=', 'A')
+            //                           ->get();
+            // if(sizeof($checkIsFullApprove) > 0){
+            //     // go to next approver    
+            // }else{
+            //     //Full Approve
+            //     DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->update([
+            //         'pbj_status'   => 'A'
+            //     ]);
+            // }
+
+            // DB::commit();
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'PBJ dengan Nomor : '. $ptaNumber . ' berhasil di approve',
+                'items'   => $items
+            );
+            return $result;
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+            // return Redirect::to("/approve/budget")->withError($e->getMessage());
+        }
+    }
 }

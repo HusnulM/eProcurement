@@ -45,7 +45,7 @@
                                             Jenis Kendaraan
                                         </td>
                                         <td>
-                                            <input type="text" name="jenis_kendaraan" id="jenis_kendaraan" class="form-control" readonly>
+                                            <input type="text" name="jenis_kendaraan" id="jenis_kendaraan" class="form-control" required readonly>
                                         </td>
                                     </tr>
 
@@ -54,7 +54,7 @@
                                             Nama Driver
                                         </td>
                                         <td>
-                                            <input type="text" name="nama_driver" class="form-control">
+                                            <input type="text" name="nama_driver" class="form-control" required>
                                         </td>
                                         <td>
                                             Nomor Rangka / Mesin
@@ -91,7 +91,7 @@
                                             Odometer
                                         </td>
                                         <td>
-                                            <input type="text" name="odometer" id="odometer" class="form-control">
+                                            <input type="text" name="odometer" id="odometer" class="form-control" required>
                                         </td>
                                     </tr>
                                     <tr>
@@ -563,6 +563,7 @@
             $('#nomor_rangka').val(data[0].no_rangka);
             $('#bahan_bakar').val(data[0].bahan_bakar);
             $('#tahun').val(data[0].tahun);
+            $('#odometer').val(data[0].odometer);
         });
 
         function validate(evt) {

@@ -33,10 +33,11 @@
                                 <th>Engine Model</th>
                                 <th>Last KM</th>
                                 <th>Last HM</th>
+                                <th>Odo Meter</th>
                                 <th>Bahan Bakar</th>
                                 <th>No. Rangka</th>
                                 <th>Tahun</th>
-                                <th style="text-align:center;"></th>
+                                <th style="text-align:center; width:10%;"></th>
                             </thead>
                             <tbody>
     
@@ -98,16 +99,22 @@
                             <input type="text" name="engine_model" class="form-control" required>
                         </div>
                     </div> 
-                    <div class="col-lg-6 col-sm-12">
+                    <div class="col-lg-4 col-sm-12">
                         <div class="form-group">
                             <label for="last_km">Last KM</label>
                             <input type="text" name="last_km" class="form-control" required>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-sm-12">
+                    <div class="col-lg-4 col-sm-12">
                         <div class="form-group">
                             <label for="last_hm">Last HM</label>
                             <input type="text" name="last_hm" class="form-control" required>
+                        </div>                        
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="odometer">Odo Meter</label>
+                            <input type="text" name="odometer" class="form-control" required>
                         </div>                        
                     </div>
                     <div class="col-lg-4 col-sm-12">
@@ -192,16 +199,22 @@
                             <input type="text" name="engine_model" id="engine_model" class="form-control" required>
                         </div>
                     </div> 
-                    <div class="col-lg-6 col-sm-12">
+                    <div class="col-lg-4 col-sm-12">
                         <div class="form-group">
                             <label for="last_km">Last KM</label>
                             <input type="text" name="last_km" id="last_km" class="form-control" required>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-sm-12">
+                    <div class="col-lg-4 col-sm-12">
                         <div class="form-group">
                             <label for="last_hm">Last HM</label>
                             <input type="text" name="last_hm" id="last_hm" class="form-control" required>
+                        </div>                        
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="odometer">Odo Meter</label>
+                            <input type="text" name="odometer" id="odometer" class="form-control" required>
                         </div>                        
                     </div>
                     <div class="col-lg-4 col-sm-12">
@@ -269,6 +282,7 @@
                 {data: "engine_model", className: 'uid'},
                 {data: "last_km", className: 'uid'},
                 {data: "last_hm", className: 'uid'},
+                {data: "odometer", className: 'uid'},
                 {data: "bahan_bakar", className: 'uid'},
                 {data: "no_rangka", className: 'uid'},
                 {data: "tahun", className: 'uid'},
@@ -277,7 +291,7 @@
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
                     `,
                     "className": "text-center",
-                    "width": "10%"
+                    "width": "13%"
                 }
             ]  
         });
@@ -301,6 +315,7 @@
             $('#engine_model').val(selected_data.engine_model);
             $('#last_km').val(selected_data.last_km);
             $('#last_hm').val(selected_data.last_hm);
+            $('#odometer').val(selected_data.odometer);
             $('#no_rangka').val(selected_data.no_rangka);
             $('#tahun').val(selected_data.tahun);
             $('#bahan_bakar').val(selected_data.bahan_bakar);

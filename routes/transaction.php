@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth'], function () {
 
+    Route::get('/allmaterial',          'Transaksi\GeneralController@allMaterial');
     Route::get('/matstock',             'Transaksi\GeneralController@matstockAll');
     Route::get('/matstockbywhs/{p1}',   'Transaksi\GeneralController@matstockByWhs');
 
@@ -53,6 +54,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save',                    'Transaksi\ApprovePbjController@save')->middleware('checkAuth:approve/pbj');
         Route::get('/approvelist',              'Transaksi\ApprovePbjController@pbjApprovalList')->middleware('checkAuth:approve/pbj');
         Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
+
+        Route::post('/approveitems/{p1}',       'Transaksi\ApprovePbjController@approveItems')->middleware('checkAuth:approve/pbj');
     });
 
     Route::group(['prefix' => '/proc/pr'], function () {

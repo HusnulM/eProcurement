@@ -124,6 +124,7 @@ class PbjController extends Controller
                 $remark   = $req['remarks'];
     
                 $insertData = array();
+                $pbjItems   = array();
                 $count = 0;
                 for($i = 0; $i < sizeof($parts); $i++){
                     $qty    = $quantity[$i];
@@ -143,9 +144,11 @@ class PbjController extends Controller
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
                     );
                     array_push($insertData, $data);
+                    array_push($pbjItems, $data);
                 }
                 insertOrUpdate($insertData,'t_pbj02');
-    
+                
+                // return $pbjItems;
                 //Insert Attachments | t_attachments
                 if(isset($req['efile'])){
                     $files = $req['efile'];
@@ -175,23 +178,27 @@ class PbjController extends Controller
                 //Set Approval
                 $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
                 if(sizeof($approval) > 0){
-                    $insertApproval = array();
-                    foreach($approval as $row){
-                        $is_active = 'N';
-                        if($row->approver_level == 1){
-                            $is_active = 'Y';
+                    // foreach($pbjItems as $pbitem){
+                    for($a = 0; $a < sizeof($pbjItems); $a++){
+                        $insertApproval = array();
+                        foreach($approval as $row){
+                            $is_active = 'N';
+                            if($row->approver_level == 1){
+                                $is_active = 'Y';
+                            }
+                            $approvals = array(
+                                'pbjnumber'         => $ptaNumber,
+                                'pbjitem'           => $pbjItems[$a]['pbjitem'],
+                                'approver_level'    => $row->approver_level,
+                                'approver'          => $row->approver,
+                                'requester'         => Auth::user()->id,
+                                'is_active'         => $is_active,
+                                'createdon'         => getLocalDatabaseDateTime()
+                            );
+                            array_push($insertApproval, $approvals);
                         }
-                        $approvals = array(
-                            'pbjnumber'         => $ptaNumber,
-                            'approver_level'    => $row->approver_level,
-                            'approver'          => $row->approver,
-                            'requester'         => Auth::user()->id,
-                            'is_active'         => $is_active,
-                            'createdon'         => getLocalDatabaseDateTime()
-                        );
-                        array_push($insertApproval, $approvals);
+                        insertOrUpdate($insertApproval,'t_pbj_approval');
                     }
-                    insertOrUpdate($insertApproval,'t_pbj_approval');
                 }    
                 DB::commit();
                 return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);

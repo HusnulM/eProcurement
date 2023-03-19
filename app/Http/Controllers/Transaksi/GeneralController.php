@@ -9,6 +9,13 @@ use Validator,Redirect,Response;
 
 class GeneralController extends Controller
 {
+    public function allMaterial(Request $request){
+        $params      = $request->params;        
+        $whereClause = $params['sac'];
+        $query       = DB::table('v_material')->orderBy('material');
+        return DataTables::queryBuilder($query)->toJson();
+    }
+
     public function matstockAll(Request $request){
         $params      = $request->params;        
         $whereClause = $params['sac'];

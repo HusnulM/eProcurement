@@ -95,6 +95,11 @@ class ChecklistKendaraanController extends Controller
                 'createdby'        => Auth::user()->email ?? Auth::user()->username
             ]);
 
+            DB::table('t_kendaraan')->where('id', $req['unitdesc'])
+            ->update([
+                'odometer'         => $req['odometer'],
+                'layak_tidak'      => $req['hasil_pemeriksaan']
+            ]);
             // Cek list Administrasi
             $ck1_name     = $req['ckl_grp1_name'];
             $ck1_status   = $req['status_adm'];

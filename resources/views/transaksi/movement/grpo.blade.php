@@ -239,7 +239,7 @@
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
                             </td>
                             <td>
-                            <select name="whscode[]" id="find-whscode`+fCount+`" class="form-control"></select>
+                            <select name="whscode[]" id="find-whscode`+fCount+`" class="form-control" required></select>
                             </td>
                             <td>
                                 <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.price +`" readonly>

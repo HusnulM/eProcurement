@@ -69,6 +69,7 @@
                         </ul>
                     </div>
                     <div class="card-tools">
+
                         <a href="{{ url('/approve/pbj') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
                         </a>
@@ -83,7 +84,11 @@
                                         <div class="col-lg-12">
                                             <table id="tbl-pbj" class="table table-bordered table-hover table-striped table-sm">
                                                 <thead>
-                                                    <th>No</th>
+                                                    {{-- <th>No</th> --}}
+                                                    <th style="text-align:center;">
+                                                        <input type="checkbox" id="checkAll" class="filled-in" />
+                                                        <label for="checkAll"></label>
+                                                    </th>    
                                                     <th>PBJ Item</th>
                                                     <th>Part Number</th>
                                                     <th>Description</th>
@@ -95,7 +100,11 @@
                                                 <tbody>
                                                 @foreach($pbjitem as $key => $row)
                                                     <tr>
-                                                        <td>{{ $key+1 }}</td>
+                                                        {{-- <td>{{ $key+1 }}</td> --}}
+                                                        <td style="text-align:center;">
+                                                            <input class="filled-in checkbox" type="checkbox" id="{{ $row->pbjitem }}" name="ID[]">
+                                                            <label for="{{ $row->pbjitem }}"></label>
+                                                        </td>    
                                                         <td>
                                                             {{ $row->pbjitem }}
                                                         </td>
@@ -120,10 +129,21 @@
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="7" ></td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
+                                                                <i class="fa fa-check"></i> APPROVE
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -292,6 +312,8 @@
     }
 
     $(document).ready(function () { 
+        let _token   = $('meta[name="csrf-token"]').attr('content');
+
         $('#tbl-pbj').DataTable();
 
         $('#btn-approve').on('click', function(){
@@ -306,8 +328,61 @@
             approveDocument('R');
         });
 
+        $('#checkAll').click(function(){
+            if(this.checked){
+                $('.checkbox').each(function(){
+                    this.checked = true;
+                });   
+            }else{
+                $('.checkbox').each(function(){
+                    this.checked = false;
+                });
+            } 
+        });    
+        
+        $('#btn-approve-items').on('click', function(){
+            var tableControl= document.getElementById('tbl-pbj');
+            var _splchecked = [];
+            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+                _splchecked.push($(this).parent().next().text())
+            }).get();
+            if(_splchecked.length > 0){
+                console.log(_splchecked)
+                var prtemchecked = {
+                    "pbjitem" : _splchecked,
+                    "_token": _token
+                }
+                $.ajax({
+                    url:base_url+'/approve/pbj/approveitems/{{ $pbjhdr->id }}',
+                    method:'post',
+                    data:prtemchecked,
+                    dataType:'JSON',
+                    beforeSend:function(){
+                        $('#btn-approve-items').attr('disabled','disabled');
+                    },
+                    success:function(data)
+                    {
+                        
+                    },
+                    error:function(err){
+                        console.log(JSON.stringify(err));
+                        // showErrorMessage(JSON.stringify(err))
+                    }
+                }).done(function(data){
+                    console.log(data);
+                    // $('#btn-approve').attr('disabled',false);
+                    // showSuccessMessage('Selected PO Item Approved');                        
+                });   
+            }else{
+                alert('No record selected ');
+            }                
+        });
+                
+
+
+
         function approveDocument(_action){
-            let _token   = $('meta[name="csrf-token"]').attr('content');
+            
             $.ajax({
                 url: base_url+'/approve/pbj/save',
                 type:"POST",
