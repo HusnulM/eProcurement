@@ -15,6 +15,14 @@ class PbjController extends Controller
         return view('transaksi.pbj.index', ['mekanik' => $mekanik, 'department' => $department]);
     }
 
+    public function create($id){
+        $mekanik    = DB::table('t_mekanik')->get();
+        $department = DB::table('t_department')->get();
+        $cklist     = DB::table('v_checklist_kendaraan')->where('id', $id)->first();
+        $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
+        return view('transaksi.pbj.create', ['mekanik' => $mekanik, 'department' => $department, 'cklist' => $cklist, 'kendaraan' => $kendaraan]);
+    }
+
     public function list(){
         $department = DB::table('t_department')->get();
         return view('transaksi.pbj.list', ['department' => $department]);
@@ -112,6 +120,7 @@ class PbjController extends Controller
                     'hm_km'             => $req['hmkm'],
                     'km'                => $req['km'],
                     'budget_cost_code'  => $req['budgetcode'],
+                    'cheklistnumber'    => $req['checklistnum'] ?? null,
                     'createdon'         => getLocalDatabaseDateTime(),
                     'createdby'         => Auth::user()->email ?? Auth::user()->username
                 ]);

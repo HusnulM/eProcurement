@@ -49,6 +49,24 @@ class ChecklistKendaraanController extends Controller
             ]);
     }
 
+    public function detailCekListTidakLayak($id){
+        $header = DB::table('v_checklist_kendaraan')->where('id', $id)->first(); 
+        $group1 = DB::table('t_ck_administrasi')->where('no_checklist', $header->no_checklist)->get();
+        $group2 = DB::table('t_ck_kelengkapan_kend')->where('no_checklist', $header->no_checklist)->get();
+        $group3 = DB::table('t_ck_kondisi_kend')->where('no_checklist', $header->no_checklist)->get();
+        $group4 = DB::table('t_ck_kondisi_ban')->where('no_checklist',  $header->no_checklist)->get();
+        $attachments = DB::table('t_attachments')->where('doc_object','CKL')->where('doc_number', $header->no_checklist)->get();
+        return view('transaksi.pbj.detailceklisttidaklayak', 
+            [
+                'header' => $header,
+                'group1' => $group1,
+                'group2' => $group2,
+                'group3' => $group3,
+                'group4' => $group4,
+                'attachments'   => $attachments
+            ]);
+    }
+
     public function dataCekList(Request $request){
         if(isset($request->params)){
             $params = $request->params;        

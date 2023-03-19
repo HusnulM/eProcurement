@@ -111,10 +111,11 @@
                 {data: "hasil_pemeriksaan"},
                 {"defaultContent": 
                     `
+                    <button class='btn btn-success btn-sm button-create-pbj'> <i class='fa fa-plus'></i> Buat PBJ</button>
                     <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> Detail</button>
                     `,
                     "className": "text-center",
-                    "width": "10%"
+                    "width": "13%"
                 }
             ]  
         });
@@ -124,7 +125,15 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
-            window.location = base_url+"/datachecklistkendaraan/detail/"+selected_data.id;
+            window.location = base_url+"/datachecklistkendaraan/tidaklayak/detail/"+selected_data.id;
+        });
+
+        $('#tbl-data-ceklist tbody').on( 'click', '.button-create-pbj', function () {
+            var table = $('#tbl-data-ceklist').DataTable();
+            selected_data = [];
+            selected_data = table.row($(this).closest('tr')).data();
+            console.log(selected_data)
+            window.location = base_url+"/transaction/pbj/create/"+selected_data.id;
         });
 
         // $('#tbl-pbj-list tbody').on( 'click', '.button-print', function () {    

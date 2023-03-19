@@ -38,6 +38,9 @@
                                     <input type="hidden" id="pbjNumber" value="{{ $pbjhdr->pbjnumber }}">
                                 </div>  
                                 <div class="form-group">
+                                    <label>Checklist No:</label> {{$pbjhdr->cheklistnumber}}
+                                </div>
+                                <div class="form-group">
                                     <label>Created By:</label> {{$pbjhdr->createdby}}
                                 </div>
                                 <div class="form-group">

@@ -38,6 +38,9 @@
                                     <input type="hidden" id="pbjNumber" value="{{ $pbjhdr->pbjnumber }}">
                                 </div>  
                                 <div class="form-group">
+                                    <label>Checklist No:</label> {{$pbjhdr->cheklistnumber}}
+                                </div>
+                                <div class="form-group">
                                     <label>Created By:</label> {{$pbjhdr->createdby}}
                                 </div>
                                 <div class="form-group">
@@ -131,11 +134,15 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="7" ></td>
-                                                        <td>
+                                                        <td colspan="8" style="text-align: right;">
                                                             <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
                                                                 <i class="fa fa-check"></i> APPROVE
                                                             </button>
+
+                                                            <button type="button" class="btn btn-danger pull-right btn-sm" id="btn-reject-items">
+                                                                <i class="fa fa-xmark"></i> REJECT
+                                                            </button>
+
                                                         </td>
                                                     </tr>
                                                 </tfoot>
@@ -176,7 +183,8 @@
                                                         
                                                         <td>
                                                             @if($row->approval_date != null)
-                                                                <i class="fa fa-clock"></i> {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br>
+                                                                <i class="fa fa-clock"></i> 
+                                                                {{-- {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br> --}}
                                                                 ({{ formatDateTime($row->approval_date) }})
                                                             @endif
                                                         </td>
@@ -343,6 +351,7 @@
         $('#btn-approve-items').on('click', function(){
             var tableControl= document.getElementById('tbl-pbj');
             var _splchecked = [];
+            _action = 'A';
             $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
                 _splchecked.push($(this).parent().next().text())
             }).get();
@@ -365,13 +374,35 @@
                         
                     },
                     error:function(err){
-                        console.log(JSON.stringify(err));
+                        // console.log(JSON.stringify(err));
                         // showErrorMessage(JSON.stringify(err))
+                        console.log(err);
+                        toastr.error(err)
+
+                        setTimeout(function(){ 
+                            location.reload();
+                        }, 2000);
                     }
-                }).done(function(data){
-                    console.log(data);
+                }).done(function(response){
+                    console.log(response);
                     // $('#btn-approve').attr('disabled',false);
-                    // showSuccessMessage('Selected PO Item Approved');                        
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        if(_action === "A"){
+                            toastr.success(response.message)
+                        }else if(_action === "R"){
+                            toastr.success(response.message)
+                        }                        
+
+                        setTimeout(function(){ 
+                            window.location.href = base_url+'/approve/pbj';
+                        }, 2000);
+                    }else{
+                        toastr.error(response.message)
+                        setTimeout(function(){ 
+                            location.reload();
+                        }, 2000);
+                    }                
                 });   
             }else{
                 alert('No record selected ');

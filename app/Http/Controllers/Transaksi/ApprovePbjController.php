@@ -42,6 +42,8 @@ class ApprovePbjController extends Controller
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_pbj_approval')
+                 ->select('id','pbjnumber', 'tgl_pbj','tujuan_permintaan','kepada', 'platnum', 'unit_desc','engine_model')
+                 ->distinct()
                  ->where('approver',Auth::user()->id)
                  ->where('is_active','Y')
                  ->where('approval_status','N')
@@ -156,57 +158,69 @@ class ApprovePbjController extends Controller
             $items = join(",",$data['pbjitem']); 
             $ptaNumber = $pbjHeader->pbjnumber;
 
-            // $pbjItemData = DB::table('t_pbj02')
-            //     ->where('pbjnumber', $ptaNumber)
-            //     ->whereIn('pbjitem', $items)->get();
+            $pbjItemData = DB::table('t_pbj02')
+                ->where('pbjnumber', $ptaNumber)
+                ->whereIn('pbjitem', $data['pbjitem'])->get();
             // return $items;
-            // $userAppLevel = DB::table('t_pbj_approval')
-            //                 ->select('approver_level')
-            //                 ->where('pbjnumber', $ptaNumber)
-            //                 ->where('approver', Auth::user()->id)
-            //                 ->first();
+            $userAppLevel = DB::table('t_pbj_approval')
+                            ->select('approver_level')
+                            ->where('pbjnumber', $ptaNumber)
+                            ->whereIn('pbjitem', $data['pbjitem'])
+                            ->where('approver', Auth::user()->id)
+                            ->first();
 
-            // //Set Approval
-            // DB::table('t_pbj_approval')
-            // ->where('pbjnumber', $ptaNumber)
-            // // ->where('approver_id', Auth::user()->id)
-            // ->where('approver_level',$userAppLevel->approver_level)
-            // ->update([
-            //     'approval_status' => 'A',
-            //     'approval_remark' => $req['approvernote'],
-            //     'approved_by'     => Auth::user()->username,
-            //     'approval_date'   => getLocalDatabaseDateTime()
-            // ]);
+            //Set Approval
+            DB::table('t_pbj_approval')
+            ->where('pbjnumber', $ptaNumber)
+            ->whereIn('pbjitem', $data['pbjitem'])
+            // ->where('approver_id', Auth::user()->id)
+            ->where('approver_level',$userAppLevel->approver_level)
+            ->update([
+                'approval_status' => 'A',
+                // 'approval_remark' => $req['approvernote'],
+                'approval_remark' => null,
+                'approved_by'     => Auth::user()->username,
+                'approval_date'   => getLocalDatabaseDateTime()
+            ]);
 
-            // $nextApprover = $this->getNextApproval($ptaNumber);
-            // if($nextApprover  != null){
-            //     DB::table('t_pbj_approval')
-            //     ->where('pbjnumber', $ptaNumber)
-            //     ->where('approver_level', $nextApprover)
-            //     ->update([
-            //         'is_active' => 'Y'
-            //     ]);
-            // }
+            $nextApprover = $this->getNextApproval($ptaNumber);
+            if($nextApprover  != null){
+                DB::table('t_pbj_approval')
+                ->where('pbjnumber', $ptaNumber)
+                ->whereIn('pbjitem', $data['pbjitem'])
+                ->where('approver_level', $nextApprover)
+                ->update([
+                    'is_active' => 'Y'
+                ]);
+            }
 
 
-            // $checkIsFullApprove = DB::table('t_pbj_approval')
-            //                           ->where('pbjnumber', $ptaNumber)
-            //                           ->where('approval_status', '!=', 'A')
-            //                           ->get();
-            // if(sizeof($checkIsFullApprove) > 0){
-            //     // go to next approver    
-            // }else{
-            //     //Full Approve
-            //     DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->update([
-            //         'pbj_status'   => 'A'
-            //     ]);
-            // }
+            $checkIsFullApprove = DB::table('t_pbj_approval')
+                                      ->where('pbjnumber', $ptaNumber)
+                                      ->whereIn('pbjitem', $data['pbjitem'])
+                                      ->where('approval_status', '!=', 'A')
+                                      ->get();
+            if(sizeof($checkIsFullApprove) > 0){
+                // go to next approver    
+            }else{
+                //Full Approve
+                DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)
+                ->update([
+                    'pbj_status'   => 'A'
+                ]);
 
-            // DB::commit();
+                DB::table('t_pbj02')->where('pbjnumber', $ptaNumber)
+                ->whereIn('pbjitem', $data['pbjitem'])
+                ->update([
+                    'approvestat'   => 'A'
+                ]);
+            }
+
+            DB::commit();
             $result = array(
                 'msgtype' => '200',
                 'message' => 'PBJ dengan Nomor : '. $ptaNumber . ' berhasil di approve',
-                'items'   => $items
+                'items'   => $pbjItemData
             );
             return $result;
         }

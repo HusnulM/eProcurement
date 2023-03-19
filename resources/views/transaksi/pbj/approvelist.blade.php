@@ -30,7 +30,7 @@
                                 <th>Tanggal PBJ</th>
                                 <th>Tujuan Permintaan</th>
                                 <th>Kepada</th>
-                                <th>Unit Desc / Code</th>
+                                <th>Unit Desc / Plat No</th>
                                 <th>Engine Model</th>
                                 <th></th>
                             </thead>
@@ -96,7 +96,7 @@
                 {data: "tgl_pbj", className: 'uid'},
                 {data: "tujuan_permintaan"},
                 {data: "kepada"},             
-                {data: "unit_desc" },
+                {data: "platnum" },
                 {data: "engine_model"},
                 {"defaultContent": 
                     `
