@@ -25,7 +25,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Detail Checklist Kendaraan Tidak Layak</h3>
                         <div class="card-tools">
-                            <a href="{{ url('/datachecklistkendaraan/tidaklayak') }}" class="btn btn-default btn-sm">
+                            <a href="{{ url('/transaction/pbj') }}" class="btn btn-default btn-sm">
                                 <i class="fa fa-arrow-left"></i> Back
                             </a>
                         </div>

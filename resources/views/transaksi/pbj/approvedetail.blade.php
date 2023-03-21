@@ -104,9 +104,12 @@
                                                 @foreach($pbjitem as $key => $row)
                                                     <tr>
                                                         {{-- <td>{{ $key+1 }}</td> --}}
+                                                        {{-- {{ $row->approval_status == 'A' ? 'background-color:green' : '' }} --}}
                                                         <td style="text-align:center;">
+                                                            @if($row->approval_status !== "A")
                                                             <input class="filled-in checkbox" type="checkbox" id="{{ $row->pbjitem }}" name="ID[]">
                                                             <label for="{{ $row->pbjitem }}"></label>
+                                                            @endif
                                                         </td>    
                                                         <td>
                                                             {{ $row->pbjitem }}
@@ -158,15 +161,17 @@
                                                 <thead>
                                                     <th>Approver Name</th>
                                                     <th>Approver Level</th>
+                                                    <th>PBJ Item</th>
                                                     <th>Approval Status</th>
                                                     <th>Approve/Reject Date</th>
-                                                    <th>Approver Note</th>
+                                                    {{-- <th>Approver Note</th> --}}
                                                 </thead>
                                                 <tbody>
                                                     @foreach($approvals as $key => $row)
                                                     <tr>
                                                         <td>{{ $row->approver_name }}</td>
                                                         <td>{{ $row->approver_level }}</td>
+                                                        <td>{{ $row->pbjitem }}</td>
                                                         @if($row->approval_status == "A")
                                                         <td style="text-align:center; background-color:green; color:white;">
                                                             Approved
@@ -188,14 +193,14 @@
                                                                 ({{ formatDateTime($row->approval_date) }})
                                                             @endif
                                                         </td>
-                                                        <td>{!! $row->approval_remark !!}</td>
+                                                        {{-- <td>{!! $row->approval_remark !!}</td> --}}
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
                                             </table>                                                    
                                         </div>
                                     </div>
-                                    @if($isApprovedbyUser)
+                                    {{-- @if($isApprovedbyUser)
                                         @if($isApprovedbyUser->approval_status <> "A")
                                         <div class="row">
                                             <div class="col-lg-12">
@@ -215,7 +220,7 @@
                                             </div>
                                         </div>
                                         @endif
-                                    @endif
+                                    @endif --}}
                                 </div>       
                                 
                                 <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">

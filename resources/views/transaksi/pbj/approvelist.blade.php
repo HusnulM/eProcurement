@@ -96,7 +96,7 @@
                 {data: "tgl_pbj", className: 'uid'},
                 {data: "tujuan_permintaan"},
                 {data: "kepada"},             
-                {data: "platnum" },
+                {data: "unit_desc" },
                 {data: "engine_model"},
                 {"defaultContent": 
                     `

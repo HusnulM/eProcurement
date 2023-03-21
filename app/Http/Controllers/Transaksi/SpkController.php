@@ -18,6 +18,19 @@ class SpkController extends Controller
         return view('transaksi.spk.listspk');
     }
 
+    public function listApprovedPbj(Request $request){
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('v_pbj02')
+                 ->where('pbj_status', 'A')
+                 ->where('approvestat', 'A')
+                //  ->where('openqty', '>', 0)
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)->toJson();
+    }  
+
     public function wodetail($id){
         $wohdr = DB::table('v_wo01')->where('id', $id)->first();
         if($wohdr){

@@ -23,7 +23,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/detail/{p1}',  'Transaksi\PbjController@detailPBJ')->middleware('checkAuth:transaction/pbj');  
         Route::get('/budgetlist',   'Transaksi\PbjController@budgetLists')->middleware('checkAuth:transaction/pbj');  
         
-        Route::get('/create/{p1}',   'Transaksi\PbjController@create')->middleware('checkAuth:transaction/pbj');
+        Route::get('/create/{p1}',             'Transaksi\PbjController@create')->middleware('checkAuth:transaction/pbj');
+        Route::get('/datachecklisttidaklayak', 'Transaksi\PbjController@dataCekListTidakLayak')->middleware('checkAuth:transaction/pbj');
+        Route::get('/tidaklayak/detail/{p1}',   'Transaksi\ChecklistKendaraanController@detailCekListTidakLayak')->middleware('checkAuth:transaction/pbj');
+    });
+
+    Route::group(['prefix' => '/datachecklistkendaraan'], function () {
+        Route::get('/',                 'Transaksi\ChecklistKendaraanController@ViewdataCekList')->middleware('checkAuth:datachecklistkendaraan');
+        Route::get('/detail/{p1}',      'Transaksi\ChecklistKendaraanController@detailCekList')->middleware('checkAuth:datachecklistkendaraan');
+        Route::get('/tidaklayak',       'Transaksi\ChecklistKendaraanController@ViewdataCekListTidakLayak')->middleware('checkAuth:datachecklistkendaraan');
+        Route::get('/tidaklayak/detail/{p1}',       'Transaksi\ChecklistKendaraanController@detailCekListTidakLayak')->middleware('checkAuth:datachecklistkendaraan');
+        Route::get('/datachecklist',    'Transaksi\ChecklistKendaraanController@dataCekList')->middleware('checkAuth:datachecklistkendaraan');
+        Route::get('/datachecklisttidaklayak', 'Transaksi\ChecklistKendaraanController@dataCekListTidakLayak')->middleware('checkAuth:datachecklistkendaraan');
+        // Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
     });
 
     Route::group(['prefix' => '/approve/budget'], function () {
@@ -41,15 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
         // Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
     });
 
-    Route::group(['prefix' => '/datachecklistkendaraan'], function () {
-        Route::get('/',                 'Transaksi\ChecklistKendaraanController@ViewdataCekList')->middleware('checkAuth:datachecklistkendaraan');
-        Route::get('/detail/{p1}',      'Transaksi\ChecklistKendaraanController@detailCekList')->middleware('checkAuth:datachecklistkendaraan');
-        Route::get('/tidaklayak',       'Transaksi\ChecklistKendaraanController@ViewdataCekListTidakLayak')->middleware('checkAuth:datachecklistkendaraan');
-        Route::get('/tidaklayak/detail/{p1}',       'Transaksi\ChecklistKendaraanController@detailCekListTidakLayak')->middleware('checkAuth:datachecklistkendaraan');
-        Route::get('/datachecklist',    'Transaksi\ChecklistKendaraanController@dataCekList')->middleware('checkAuth:datachecklistkendaraan');
-        Route::get('/datachecklisttidaklayak', 'Transaksi\ChecklistKendaraanController@dataCekListTidakLayak')->middleware('checkAuth:datachecklistkendaraan');
-        // Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
-    });
+    
 
     // datachecklisttidaklayak
 
@@ -123,6 +127,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/detail/{p1}',     'Transaksi\SpkController@wodetail')->middleware('checkAuth:logistic/wo');   
         Route::get('/print/{p1}',      'Transaksi\SpkController@printprlist')->middleware('checkAuth:logistic/wo');  
         Route::post('/save',           'Transaksi\SpkController@save')->middleware('checkAuth:logistic/wo');
+
+        Route::get('/listapprovedpbj', 'Transaksi\SpkController@listApprovedPbj')->middleware('checkAuth:logistic/wo');
     });
     // logistic/terimapo
 });

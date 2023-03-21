@@ -16,8 +16,12 @@ class ApprovePbjController extends Controller
     public function approveDetail($id){
         $pbjhdr = DB::table('t_pbj01')->where('id', $id)->first();
         if($pbjhdr){
-            $pbjitem = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
-            $approvals = DB::table('v_pbj_approval')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
+            $pbjitem = DB::table('v_pbj03')->where('pbjnumber', $pbjhdr->pbjnumber)->where('approver', Auth::user()->id)->get();
+            $approvals = DB::table('v_pbj_approval')
+                ->where('pbjnumber', $pbjhdr->pbjnumber)
+                ->orderBy('approver_level','asc')
+                ->orderBy('pbjitem', 'asc')
+                ->get();
             $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
 
             $isApprovedbyUser = DB::table('v_pbj_approval')
@@ -42,7 +46,7 @@ class ApprovePbjController extends Controller
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_pbj_approval')
-                 ->select('id','pbjnumber', 'tgl_pbj','tujuan_permintaan','kepada', 'platnum', 'unit_desc','engine_model')
+                 ->select('id','pbjnumber', 'tgl_pbj','tujuan_permintaan','kepada','unit_desc','engine_model')
                  ->distinct()
                  ->where('approver',Auth::user()->id)
                  ->where('is_active','Y')

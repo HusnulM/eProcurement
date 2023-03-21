@@ -82,7 +82,7 @@ class ChecklistKendaraanController extends Controller
             $params = $request->params;        
             $whereClause = $params['sac'];
         }
-        $query = DB::table('v_checklist_kendaraan')->where('hasil_pemeriksaan','TIDAK LAYAK')
+        $query = DB::table('v_checklist_kendaraan')->where('hasil_pemeriksaan','TIDAK LAYAK')->where('pbj_created', 'N')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }

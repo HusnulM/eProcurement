@@ -10,9 +10,10 @@ use Validator,Redirect,Response;
 class PbjController extends Controller
 {
     public function index(){
-        $mekanik    = DB::table('t_mekanik')->get();
-        $department = DB::table('t_department')->get();
-        return view('transaksi.pbj.index', ['mekanik' => $mekanik, 'department' => $department]);
+        // $mekanik    = DB::table('t_mekanik')->get();
+        // $department = DB::table('t_department')->get();
+        // return view('transaksi.pbj.index', ['mekanik' => $mekanik, 'department' => $department]);
+        return view('transaksi.pbj.ceklisttidaklayak');
     }
 
     public function create($id){
@@ -26,6 +27,16 @@ class PbjController extends Controller
     public function list(){
         $department = DB::table('t_department')->get();
         return view('transaksi.pbj.list', ['department' => $department]);
+    }
+
+    public function dataCekListTidakLayak(Request $request){
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('v_checklist_kendaraan')->where('hasil_pemeriksaan','TIDAK LAYAK')->where('pbj_created', 'N')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)->toJson();
     }
 
     public function listPBJ(Request $request){
@@ -57,7 +68,11 @@ class PbjController extends Controller
             $pbjitem     = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
             $department  = DB::table('t_department')->get();
             $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
-            $approvals   = DB::table('v_pbj_approval')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
+            $approvals   = DB::table('v_pbj_approval')
+            ->where('pbjnumber', $pbjhdr->pbjnumber)
+            ->orderBy('approver_level','asc')
+            ->orderBy('pbjitem', 'asc')
+            ->get();
             return view('transaksi.pbj.pbjdetail', 
                 [
                     'department' => $department, 
@@ -209,6 +224,11 @@ class PbjController extends Controller
                         insertOrUpdate($insertApproval,'t_pbj_approval');
                     }
                 }    
+
+                DB::table('t_checklist_kendaraan')->where('no_checklist',$req['checklistnum'])->update([
+                    'pbj_created' => 'Y',
+                    'pbjnumber'   => $ptaNumber
+                ]);
                 DB::commit();
                 return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
             }else{

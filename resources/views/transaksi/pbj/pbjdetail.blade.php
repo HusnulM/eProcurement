@@ -143,15 +143,17 @@
                                                             <thead>
                                                                 <th>Approver Name</th>
                                                                 <th>Approver Level</th>
+                                                                <th>PBJ Item</th>
                                                                 <th>Approval Status</th>
                                                                 <th>Approve/Reject Date</th>
-                                                                <th>Approver Note</th>
+                                                                {{-- <th>Approver Note</th> --}}
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($approvals as $key => $row)
                                                                 <tr>
                                                                     <td>{{ $row->approver_name }}</td>
                                                                     <td>{{ $row->approver_level }}</td>
+                                                                    <td>{{ $row->pbjitem }}</td>
                                                                     @if($row->approval_status == "A")
                                                                     <td style="text-align:center; background-color:green; color:white;">
                                                                         Approved
@@ -168,11 +170,11 @@
                                                                     
                                                                     <td>
                                                                         @if($row->approval_date != null)
-                                                                            <i class="fa fa-clock"></i> {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br>
+                                                                            <i class="fa fa-clock"></i> 
                                                                             ({{ formatDateTime($row->approval_date) }})
                                                                         @endif
                                                                     </td>
-                                                                    <td>{!! $row->approval_remark !!}</td>
+                                                                    {{-- <td>{!! $row->approval_remark !!}</td> --}}
                                                                 </tr>
                                                                 @endforeach
                                                             </tbody>
