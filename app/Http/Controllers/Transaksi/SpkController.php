@@ -11,7 +11,7 @@ use PDF;
 class SpkController extends Controller
 {
     public function index(){
-        return view('transaksi.spk.index');
+        return view('transaksi.spk.create');
     }
 
     public function listwoview(){
@@ -34,9 +34,9 @@ class SpkController extends Controller
     public function wodetail($id){
         $wohdr = DB::table('v_wo01')->where('id', $id)->first();
         if($wohdr){
-            $mekanik    = DB::table('t_mekanik')->where('id', $wohdr->mekanik)->first();
+            // $mekanik    = DB::table('t_mekanik')->where('id', $wohdr->mekanik)->first();
             $warehouse  = DB::table('t_warehouse')->where('id', $wohdr->whscode)->first();
-            $kendaraan  = DB::table('t_kendaraan')->where('id', $wohdr->license_number)->first();
+            // $kendaraan  = DB::table('t_kendaraan')->where('id', $wohdr->license_number)->first();
             $woitem     = DB::table('t_wo02')->where('wonum', $wohdr->wonum)->get();
             $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $wohdr->wonum)->get();
             // $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $prhdr->wonum)->get();
@@ -92,10 +92,10 @@ class SpkController extends Controller
                 'wonum'             => $ptaNumber,
                 'wodate'            => $req['servicedate'],
                 'description'       => $req['descr'],
-                'mekanik'           => $req['mekanik'],
+                // 'mekanik'           => $req['mekanik'],
                 'whscode'           => $req['whscode'],
-                'license_number'    => $req['licenseNumber'],
-                'last_odo_meter'    => $req['lastOdoMeter'],
+                // 'license_number'    => $req['licenseNumber'],
+                // 'last_odo_meter'    => $req['lastOdoMeter'],
                 'schedule_type'     => $req['schedule'],
                 'issued'            => $req['issued'],
                 'createdon'         => date('Y-m-d H:m:s'),
@@ -106,8 +106,11 @@ class SpkController extends Controller
             $partdsc  = $req['partdesc'];
             $quantity = $req['quantity'];
             $uom      = $req['uoms'];
+            $pbjnum   = $req['pbjnum'];
+            $pbjitm   = $req['pbjitm'];
 
             $insertData = array();
+            $woItems    = array();
             $count = 0;            
 
             for($i = 0; $i < sizeof($parts); $i++){
@@ -142,55 +145,70 @@ class SpkController extends Controller
                     'matdesc'      => $partdsc[$i],
                     'quantity'     => $qty,
                     'unit'         => $uom[$i],
+                    'refdoc'       => $pbjnum[$i] ?? null,
+                    'refdocitem'   => $pbjitm[$i] ?? null,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertData, $data);
+                array_push($woItems, $data);
+
+                DB::table('t_pbj02')
+                    ->where('pbjnumber', $pbjnum[$i])
+                    ->where('pbjitem', $pbjitm[$i])->update([
+                        'wocreated' => 'Y'
+                    ]);
             }
             insertOrUpdate($insertData,'t_wo02');
 
             //Insert Attachments | t_attachments
-            $files = $req['efile'];
-            $insertFiles = array();
-
-            foreach ($files as $efile) {
-                $filename = $efile->getClientOriginalName();
-                $upfiles = array(
-                    'doc_object' => 'SPK',
-                    'doc_number' => $ptaNumber,
-                    'efile'      => $filename,
-                    'pathfile'   => '/files/SPK/'. $filename,
-                    'createdon'  => getLocalDatabaseDateTime(),
-                    'createdby'  => Auth::user()->username ?? Auth::user()->email
-                );
-                array_push($insertFiles, $upfiles);
-
-                $efile->move('files/SPK/', $filename);  
-                // $efile->move(public_path().'/files/SPK/', $filename);  
-            }
-
-            if(sizeof($insertFiles) > 0){
-                insertOrUpdate($insertFiles,'t_attachments');
+            if(isset($req['efile'])){
+                $files = $req['efile'];
+                $insertFiles = array();
+    
+                foreach ($files as $efile) {
+                    $filename = $efile->getClientOriginalName();
+                    $upfiles = array(
+                        'doc_object' => 'SPK',
+                        'doc_number' => $ptaNumber,
+                        'efile'      => $filename,
+                        'pathfile'   => '/files/SPK/'. $filename,
+                        'createdon'  => getLocalDatabaseDateTime(),
+                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                    );
+                    array_push($insertFiles, $upfiles);
+    
+                    $efile->move('files/SPK/', $filename);  
+                    // $efile->move(public_path().'/files/SPK/', $filename);  
+                }
+    
+                if(sizeof($insertFiles) > 0){
+                    insertOrUpdate($insertFiles,'t_attachments');
+                }
             }
 
             //Set Approval
             $approval = DB::table('v_workflow_budget')->where('object', 'SPK')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){
-                $insertApproval = array();
-                foreach($approval as $row){
-                    $is_active = 'N';
-                    if($row->approver_level == 1){
-                        $is_active = 'Y';
+                
+                for($a = 0; $a < sizeof($woItems); $a++){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $is_active = 'N';
+                        if($row->approver_level == 1){
+                            $is_active = 'Y';
+                        }
+                        $approvals = array(
+                            'wonum'             => $ptaNumber,
+                            'woitem'            => $woItems[$a]['woitem'],
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $row->approver,
+                            'creator'           => Auth::user()->id,
+                            'is_active'         => $is_active,
+                            'createdon'         => getLocalDatabaseDateTime()
+                        );
+                        array_push($insertApproval, $approvals);
                     }
-                    $approvals = array(
-                        'wonum'             => $ptaNumber,
-                        'approver_level'    => $row->approver_level,
-                        'approver'          => $row->approver,
-                        'creator'           => Auth::user()->id,
-                        'is_active'         => $is_active,
-                        'createdon'         => getLocalDatabaseDateTime()
-                    );
-                    array_push($insertApproval, $approvals);
                 }
                 insertOrUpdate($insertApproval,'t_wo_approval');
             }else{

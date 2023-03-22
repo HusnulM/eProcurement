@@ -32,12 +32,9 @@
                                 <th>Nomor WO</th>
                                 <th>Tanggal WO</th>
                                 <th>Keterangan</th>
-                                <th>Mekanik</th>
                                 <th>Warehouse</th>
-                                <th>No. Kendaraan</th>
                                 <th>Schedule Type</th>
                                 <th>Issued</th>
-                                <th>Last oddo meter</th>
                                 <th></th>
                             </thead>
                             <tbody>
@@ -109,12 +106,12 @@
                         }
                     },
                     {data: "description", className: 'uid'},
-                    {data: "nama_mekanik", className: 'uid'},
+                    // {data: "nama_mekanik", className: 'uid'},
                     {data: "whsname", className: 'uid'},
-                    {data: "license_number", className: 'uid'},
+                    // {data: "license_number", className: 'uid'},
                     {data: "schedule_type", className: 'uid'},
                     {data: "issued", className: 'uid'},
-                    {data: "last_odo_meter", className: 'uid'},
+                    // {data: "last_odo_meter", className: 'uid'},
                     // {data: "wo_status", 
                     //     render: function (data, type, row){
                     //         if(row.wo_status == "O"){
