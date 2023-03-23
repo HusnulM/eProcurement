@@ -253,6 +253,15 @@ class SpkController extends Controller
             DB::table('t_wo01')->where('wonum', $req['wonum'])->update([
                 'wo_process' => $req['wo_process']
             ]);
+
+            if($req['wo_process'] === "Closed"){
+                $woitems = DB::table('v_wo_pbj_kendaraan')
+                ->where('wonum', $req['wonum'])->get();
+
+                DB::table('t_kendaraan')->whereIn('no_kendaraan', $woitems->pluck('unit_desc'))->update([
+                    'layak_tidak' => 'Layak'
+                ]);
+            }
             DB::commit();
             return Redirect::to("/logistic/wo/process")->withSuccess('Status WO : '. $req['wonum'] . ' berhasil di update');
         }catch(\Exception $e){
