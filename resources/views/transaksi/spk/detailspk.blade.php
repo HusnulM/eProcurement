@@ -40,15 +40,11 @@
                                 <div class="form-group">
                                     <label>Description:</label> {{$prhdr->description}}
                                 </div>
-                                <div class="form-group">
-                                    <label>Mekanik:</label> {{$prhdr->nama_mekanik}}
-                                </div>
+                                
                                 <div class="form-group">
                                     <label>Warehouse:</label> {{$prhdr->whsname}}
                                 </div>
-                                <div class="form-group">
-                                    <label>License Plate Number:</label> {{$prhdr->no_kendaraan}} - {{$prhdr->last_odo_meter}}
-                                </div>
+                                
                                 <div class="form-group">
                                     <label>WO Date:</label>
                                     <p>{!! formatDate($prhdr->wodate) !!}

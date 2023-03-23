@@ -26,13 +26,13 @@ class SpkController extends Controller
         $query = DB::table('v_pbj02')
                  ->where('pbj_status', 'A')
                  ->where('approvestat', 'A')
-                //  ->where('openqty', '>', 0)
+                 ->where('wocreated', 'N')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }  
 
     public function wodetail($id){
-        $wohdr = DB::table('v_wo01')->where('id', $id)->first();
+        $wohdr = DB::table('v_spk01')->where('id', $id)->first();
         if($wohdr){
             // $mekanik    = DB::table('t_mekanik')->where('id', $wohdr->mekanik)->first();
             $warehouse  = DB::table('t_warehouse')->where('id', $wohdr->whscode)->first();
@@ -48,9 +48,9 @@ class SpkController extends Controller
                 [
                     'prhdr'       => $wohdr, 
                     'pritem'      => $woitem,
-                    'mekanik'     => $mekanik,
+                    // 'mekanik'     => $mekanik,
                     'warehouse'   => $warehouse,
-                    'kendaraan'   => $kendaraan,
+                    // 'kendaraan'   => $kendaraan,
                     'attachments' => $attachments,
                     'approvals'   => $approvals, 
                 ]);
@@ -60,7 +60,7 @@ class SpkController extends Controller
     }
 
     public function listdatawo(Request $request){
-        $query = DB::table('v_wo01');
+        $query = DB::table('v_spk01');
 
         $query->where('createdby', Auth::user()->email);
 
@@ -209,8 +209,8 @@ class SpkController extends Controller
                         );
                         array_push($insertApproval, $approvals);
                     }
+                    insertOrUpdate($insertApproval,'t_wo_approval');
                 }
-                insertOrUpdate($insertApproval,'t_wo_approval');
             }else{
                 DB::rollBack();
                 return Redirect::to("/logistic/wo")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
