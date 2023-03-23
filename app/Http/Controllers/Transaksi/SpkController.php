@@ -79,6 +79,23 @@ class SpkController extends Controller
         ->toJson();
     }
 
+    public function listdatawotoprocess(Request $request){
+        $query = DB::table('v_spk01');
+
+        $query->where('createdby', Auth::user()->email);
+        $query->where('wo_process', '<>', 'Closed');
+
+        $query->orderBy('id', 'DESC');
+
+        return DataTables::queryBuilder($query)
+        ->editColumn('wodate', function ($query){
+            return [
+                'wodate1' => \Carbon\Carbon::parse($query->wodate)->format('d-m-Y')
+             ];
+        })
+        ->toJson();
+    }
+
     public function save(Request $req){
         DB::beginTransaction();
         try{
@@ -225,6 +242,22 @@ class SpkController extends Controller
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/logistic/wo")->withError($e->getMessage());
+            // dd($e->getMessage());
+        }
+    }
+
+    public function saveWoProcess(Request $req)
+    {
+        DB::beginTransaction();
+        try{
+            DB::table('t_wo01')->where('wonum', $req['wonum'])->update([
+                'wo_process' => $req['wo_process']
+            ]);
+            DB::commit();
+            return Redirect::to("/logistic/wo/process")->withSuccess('Status WO : '. $req['wonum'] . ' berhasil di update');
+        }catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/logistic/wo/process")->withError($e->getMessage());
             // dd($e->getMessage());
         }
     }

@@ -46,32 +46,42 @@
 @endsection
 
 @section('additional-modal')
-<div class="modal fade" id="modal-list-pbj">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Update WO Status / Process</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <label for="">WO / SPK Number</label>
-                        <input type="text" name="wonum" id="wonum" class="form-control">
-                    </div> 
-                    <div class="col-lg-12">
-                        <label for="">WO / SPK Status</label>
-                        <input type="text" name="wonum" id="wonum" class="form-control">
-                    </div> 
+<div class="modal fade" id="modal-process-wo">
+    <div class="modal-dialog modal-md">
+        <form action="{{ url('logistic/wo/saveprocess') }}" method="post" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Update WO Status / Process</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label for="">WO / SPK Number</label>
+                            <input type="text" name="wonum" id="wonum" class="form-control" readonly>
+                        </div> 
+                        <div class="col-lg-12">
+                            <label for="">WO / SPK Status</label>
+                            <select name="wo_process" id="wo_process" class="form-control" required>
+                                <option value="">---</option>
+                                <option value="Open">Open</option>
+                                <option value="Waiting Sparepart">Waiting Sparepart</option>
+                                <option value="Waiting ManPower">Waiting ManPower</option>
+                                <option value="On Proses">On Proses</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div> 
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <!-- <button type="submit" class="btn btn-primary">Save</button> -->
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 @endsection
@@ -103,7 +113,7 @@
             $("#tbl-wo-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/logistic/wo/listdatawo',
+                    url: base_url+'/logistic/wo/listdatawotoprocess',
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -144,24 +154,27 @@
                 ]  
             });
 
-            $('#tbl-wo-list tbody').on( 'click', '.button-print', function () {                
-                var table = $('#tbl-wo-list').DataTable();
-                selected_data = [];
-                selected_data = table.row($(this).closest('tr')).data();
-                // window.location = base_url+"/proc/pr/print";
-                // if(selected_data.doctype === "Corporate Procedure"){
-                    window.open(
-                        base_url+"/printdoc/wo/print/"+selected_data.id,
-                        '_blank' // <- This is what makes it open in a new window.
-                    );
-                // }
-            });
+            // $('#tbl-wo-list tbody').on( 'click', '.button-print', function () {                
+            //     var table = $('#tbl-wo-list').DataTable();
+            //     selected_data = [];
+            //     selected_data = table.row($(this).closest('tr')).data();
+            //     // window.location = base_url+"/proc/pr/print";
+            //     // if(selected_data.doctype === "Corporate Procedure"){
+            //         window.open(
+            //             base_url+"/printdoc/wo/print/"+selected_data.id,
+            //             '_blank' // <- This is what makes it open in a new window.
+            //         );
+            //     // }
+            // });
 
             $('#tbl-wo-list tbody').on( 'click', '.button-detail', function () {                
                 var table = $('#tbl-wo-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                window.location = "/logistic/wo/detail/"+selected_data.id;
+
+                $('#wonum').val(selected_data.wonum)
+                $('#modal-process-wo').modal('show');
+                // window.location = "/logistic/wo/detail/"+selected_data.id;
                 // if(selected_data.doctype === "Corporate Procedure"){
                     // window.open(
                     //     base_url+"/printdoc/pr/print/"+selected_data.id,
