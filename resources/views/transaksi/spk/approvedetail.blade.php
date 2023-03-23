@@ -40,15 +40,15 @@
                                 <div class="form-group">
                                     <label>Description:</label> {{$prhdr->description}}
                                 </div>
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                     <label>Mekanik:</label> {{$prhdr->nama_mekanik}}
-                                </div>
+                                </div> --}}
                                 <div class="form-group">
                                     <label>Warehouse:</label> {{$prhdr->whsname}}
                                 </div>
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                     <label>License Plate Number:</label> {{$prhdr->no_kendaraan}} - {{$prhdr->last_odo_meter}}
-                                </div>
+                                </div> --}}
                                 <div class="form-group">
                                     <label>WO Date:</label>
                                     <p>{!! formatDateTime($prhdr->wodate) !!}
@@ -98,9 +98,12 @@
                                 <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <table id="tbl-pr-data" class="table table-bordered table-hover table-striped table-sm">
+                                            <table id="tbl-wo-data" class="table table-bordered table-hover table-striped table-sm">
                                                 <thead>
-                                                    <th>No</th>
+                                                    <th>
+                                                        <input type="checkbox" id="checkAll" class="filled-in" />
+                                                        <label for="checkAll"></label>
+                                                    </th>
                                                     <th>WO Item</th>
                                                     <th>Part Number</th>
                                                     <th>Description</th>
@@ -110,7 +113,12 @@
                                                 <tbody>
                                                 @foreach($pritem as $key => $row)
                                                     <tr>
-                                                        <td>{{ $key+1 }}</td>
+                                                        <td style="text-align:center;">
+                                                            @if($row->approval_status !== "A")
+                                                            <input class="filled-in checkbox" type="checkbox" id="{{ $row->woitem }}" name="ID[]">
+                                                            <label for="{{ $row->woitem }}"></label>
+                                                            @endif
+                                                        </td>  
                                                         <td>
                                                             {{ $row->woitem }}
                                                         </td>
@@ -129,6 +137,20 @@
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="8" style="text-align: right;">
+                                                            <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
+                                                                <i class="fa fa-check"></i> APPROVE
+                                                            </button>
+
+                                                            <button type="button" class="btn btn-danger pull-right btn-sm" id="btn-reject-items">
+                                                                <i class="fa fa-xmark"></i> REJECT
+                                                            </button>
+
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>
@@ -177,7 +199,7 @@
                                             </table>                                                    
                                         </div>
                                     </div>
-                                    @if($isApprovedbyUser)
+                                    {{-- @if($isApprovedbyUser)
                                         @if($isApprovedbyUser->approval_status <> "A")
                                         <div class="row">
                                             <div class="col-lg-12">
@@ -199,7 +221,7 @@
                                             </div>
                                         </div>
                                         @endif
-                                    @endif
+                                    @endif --}}
                                 </div>       
                                 
                                 <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
@@ -309,6 +331,8 @@
     }
 
     $(document).ready(function () { 
+        let _token   = $('meta[name="csrf-token"]').attr('content');
+
         $('#tbl-pr-data').DataTable();
 
         $('#btn-approve').on('click', function(){
@@ -323,8 +347,81 @@
             approveDocument('R');
         });
 
+        $('#checkAll').click(function(){
+            if(this.checked){
+                $('.checkbox').each(function(){
+                    this.checked = true;
+                });   
+            }else{
+                $('.checkbox').each(function(){
+                    this.checked = false;
+                });
+            } 
+        }); 
+
+        $('#btn-approve-items').on('click', function(){
+            var tableControl= document.getElementById('tbl-wo-data');
+            var _splchecked = [];
+            _action = 'A';
+            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+                _splchecked.push($(this).parent().next().text())
+            }).get();
+            if(_splchecked.length > 0){
+                console.log(_splchecked)
+                var prtemchecked = {
+                    "woitem" : _splchecked,
+                    "_token": _token
+                }
+                $.ajax({
+                    url:base_url+'/approve/spk/approveitems/{{ $prhdr->id }}',
+                    method:'post',
+                    data:prtemchecked,
+                    dataType:'JSON',
+                    beforeSend:function(){
+                        $('#btn-approve-items').attr('disabled','disabled');
+                    },
+                    success:function(data)
+                    {
+                        
+                    },
+                    error:function(err){
+                        // console.log(JSON.stringify(err));
+                        // showErrorMessage(JSON.stringify(err))
+                        console.log(err);
+                        toastr.error(err)
+
+                        // setTimeout(function(){ 
+                        //     location.reload();
+                        // }, 2000);
+                    }
+                }).done(function(response){
+                    console.log(response);
+                    // $('#btn-approve').attr('disabled',false);
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        if(_action === "A"){
+                            toastr.success(response.message)
+                        }else if(_action === "R"){
+                            toastr.success(response.message)
+                        }                        
+
+                        setTimeout(function(){ 
+                            window.location.href = base_url+'/approve/spk';
+                        }, 2000);
+                    }else{
+                        toastr.error(response.message)
+                        // setTimeout(function(){ 
+                        //     location.reload();
+                        // }, 2000);
+                    }                
+                });   
+            }else{
+                alert('No record selected ');
+            }                
+        });
+
         function approveDocument(_action){
-            let _token   = $('meta[name="csrf-token"]').attr('content');
+            
             $.ajax({
                 url: base_url+'/approve/spk/save',
                 type:"POST",

@@ -18,6 +18,10 @@ class SpkController extends Controller
         return view('transaksi.spk.listspk');
     }
 
+    public function processWO(){
+        return view('transaksi.spk.process');
+    }
+
     public function listApprovedPbj(Request $request){
         if(isset($request->params)){
             $params = $request->params;        

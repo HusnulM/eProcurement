@@ -90,9 +90,8 @@
                                                 {{-- <th>Description</th> --}}
                                                 <th>Quantity</th>
                                                 <th>Unit</th>
+                                                <th>PBJ Number</th>
                                                 <th style="text-align:right;">
-                                                    
-
                                                     <button type="button" class="btn btn-success btn-sm btn-select-pbj-item">
                                                         <i class="fa fa-list"></i> List PBJ
                                                     </button>
@@ -327,8 +326,10 @@
                             </td>
                             <td>
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" readonly class="form-control">
-                                <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
-                                <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">
+                                </td>
+                            <td>
+                                <input type="text" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`" readonly>
+                                <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">        
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">

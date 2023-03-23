@@ -106,6 +106,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save',                    'Transaksi\ApproveSpkController@save')->middleware('checkAuth:approve/spk');
         Route::get('/approvelist',              'Transaksi\ApproveSpkController@ApprovalList')->middleware('checkAuth:approve/spk');
         Route::get('/detail/{p1}',              'Transaksi\ApproveSpkController@approveDetail')->middleware('checkAuth:approve/spk');
+
+        Route::post('/approveitems/{p1}',       'Transaksi\ApproveSpkController@approveItems')->middleware('checkAuth:approve/spk');
     });
 
     Route::group(['prefix' => '/logistic/terimapo'], function () {
@@ -122,6 +124,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => '/logistic/wo'], function () {
         Route::get('/',                'Transaksi\SpkController@index')->middleware('checkAuth:logistic/wo');
+        Route::get('/process',         'Transaksi\SpkController@processWO')->middleware('checkAuth:logistic/wo');
         Route::get('/listwo',          'Transaksi\SpkController@listwoview')->middleware('checkAuth:logistic/wo');
         Route::get('/listdatawo',      'Transaksi\SpkController@listdatawo')->middleware('checkAuth:logistic/wo');
         Route::get('/detail/{p1}',     'Transaksi\SpkController@wodetail')->middleware('checkAuth:logistic/wo');   

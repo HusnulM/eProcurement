@@ -14,10 +14,14 @@ class ApproveSpkController extends Controller
     }
 
     public function approveDetail($id){
-        $prhdr = DB::table('v_wo01')->where('id', $id)->first();
+        $prhdr = DB::table('v_spk01')->where('id', $id)->first();
         if($prhdr){
-            $items      = DB::table('t_wo02')->where('wonum', $prhdr->wonum)->get();
-            $approvals  = DB::table('v_wo_approval')->where('wonum', $prhdr->wonum)->get();
+            $items      = DB::table('v_wo02')->where('wonum', $prhdr->wonum)->where('approver', Auth::user()->id)->get();
+            $approvals  = DB::table('v_wo_approval')
+                ->where('wonum', $prhdr->wonum)
+                ->orderBy('approver','asc')
+                ->orderBy('woitem', 'asc')
+                ->get();
             // $department = DB::table('v_wo_approval')->where('wonum', $prhdr->wonum)->first();
             $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $prhdr->wonum)->get();
 
@@ -55,6 +59,8 @@ class ApproveSpkController extends Controller
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_wo_approval')
+                 ->select('id','wonum','wodate','description','schedule_type')
+                 ->distinct()
                  ->where('approver',Auth::user()->id)
                  ->where('is_active','Y')
                  ->where('approval_status','N')
@@ -226,6 +232,148 @@ class ApproveSpkController extends Controller
             );
             return $result;
             // return Redirect::to("/approve/pr")->withError($e->getMessage());
+        }
+    }
+
+    public function approveItems(Request $data, $woID){
+        DB::beginTransaction();
+        try{
+            $woHeader = DB::table('t_wo01')->where('id', $woID)->first();
+            $items = join(",",$data['woitem']); 
+            $ptaNumber = $woHeader->wonum;
+
+            $podata  = DB::table('t_wo01')->where('wonum', $ptaNumber)->first();
+            $woitem  = DB::table('t_wo02')->where('wonum', $ptaNumber)->get();
+            // return $woitem;
+            foreach($woitem as $row){
+                $latestStock = DB::table('t_inv_stock')
+                ->where('material', $row->material)
+                ->where('whscode',  $podata->whscode)->first();
+                if($latestStock){
+                    if($latestStock->quantity < $row->quantity){
+                        DB::rollBack();
+                        $result = array(
+                            'msgtype' => '500',
+                            'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+                        );
+                        return $result;
+                    }
+                }else{
+                    DB::rollBack();
+                    $result = array(
+                        'msgtype' => '500',
+                        'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+                    );
+                    return $result;
+                }
+            }
+
+            $pbjItemData = DB::table('t_wo02')
+                ->where('wonum', $ptaNumber)
+                ->whereIn('woitem', $data['woitem'])->get();
+            // return $pbjItemData;
+            $userAppLevel = DB::table('t_wo_approval')
+                            ->select('approver_level')
+                            ->where('wonum', $ptaNumber)
+                            ->whereIn('woitem', $data['woitem'])
+                            ->where('approver', Auth::user()->id)
+                            ->first();
+
+            //Set Approval
+            DB::table('t_wo_approval')
+            ->where('wonum', $ptaNumber)
+            ->whereIn('woitem', $data['woitem'])
+            // ->where('approver_id', Auth::user()->id)
+            ->where('approver_level',$userAppLevel->approver_level)
+            ->update([
+                'approval_status' => 'A',
+                // 'approval_remark' => $req['approvernote'],
+                'approval_remark' => null,
+                'approved_by'     => Auth::user()->username,
+                'approval_date'   => getLocalDatabaseDateTime()
+            ]);
+
+            $nextApprover = $this->getNextApproval($ptaNumber);
+            if($nextApprover  != null){
+                DB::table('t_wo_approval')
+                ->where('wonum', $ptaNumber)
+                ->whereIn('woitem', $data['woitem'])
+                ->where('approver_level', $nextApprover)
+                ->update([
+                    'is_active' => 'Y'
+                ]);
+            }
+
+
+            $checkIsFullApprove = DB::table('t_wo_approval')
+                                      ->where('wonum', $ptaNumber)
+                                      ->whereIn('woitem', $data['woitem'])
+                                      ->where('approval_status', '!=', 'A')
+                                      ->get();
+            if(sizeof($checkIsFullApprove) > 0){
+                // go to next approver    
+            }else{
+                //Full Approve
+                foreach($woitem as $row){
+                    $latestStock = DB::table('t_inv_stock')
+                    ->where('material', $row->material)
+                    ->where('whscode',  $podata->whscode)->first();
+                    if($latestStock){
+                        if($latestStock->quantity < $row->quantity){
+                            DB::rollBack();
+                            $result = array(
+                                'msgtype' => '500',
+                                'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+                            );
+                            return $result;
+                        }else{
+                            DB::table('t_inv_stock')
+                            ->where('material', $row->material)
+                            ->where('whscode',  $podata->whscode)
+                            ->update([
+                                'quantity'     => $latestStock->quantity - $row->quantity
+                            ]);
+                        }
+                    }else{
+                        DB::rollBack();
+                        $result = array(
+                            'msgtype' => '500',
+                            'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+                        );
+                        return $result;
+                    }
+                }
+
+                DB::table('t_wo01')->where('wonum', $ptaNumber)
+                ->update([
+                    'wo_status'   => 'A'
+                ]);
+
+                DB::table('t_wo02')->where('wonum', $ptaNumber)
+                ->whereIn('woitem', $data['woitem'])
+                ->update([
+                    'approvestat'   => 'A'
+                ]);
+
+                
+            }
+
+            DB::commit();
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'WO/SPK dengan Nomor : '. $ptaNumber . ' berhasil di approve',
+                'items'   => $pbjItemData
+            );
+            return $result;
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+            // return Redirect::to("/approve/budget")->withError($e->getMessage());
         }
     }
 }
