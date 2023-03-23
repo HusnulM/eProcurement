@@ -52,6 +52,7 @@ class PurchaseOrderController extends Controller
                 'ext_ponum'         => $ptaNumber,
                 'deptid'            => $req['department'],
                 'podat'             => $req['tglreq'],
+                'delivery_date'     => $req['deldate'],
                 'vendor'            => $req['vendor'],
                 'note'              => $req['remark'],
                 'currency'          => $req['currency'],
@@ -80,7 +81,7 @@ class PurchaseOrderController extends Controller
 
                 $count = $count + 1;
                 $data = array(
-                    'ponum'       => $ptaNumber,
+                    'ponum'        => $ptaNumber,
                     'poitem'       => $count,
                     'material'     => $parts[$i],
                     'matdesc'      => $partdsc[$i],
@@ -100,6 +101,26 @@ class PurchaseOrderController extends Controller
                 ]);
             }
             insertOrUpdate($insertData,'t_po02');
+
+            if(isset($req['costname'])){
+                $costname  = $req['costname'];
+                $costvalue = $req['costvalue'];
+    
+                $insertData = array();
+                for($i = 0; $i < sizeof($costname); $i++){
+                    $costVal = $costvalue[$i];
+                    $costVal = str_replace(',','',$costVal);
+                    $costdata = array(
+                        'ponum'        => $ptaNumber,
+                        'costname'     => $costname[$i],
+                        'costvalue'    => $costVal,
+                        'createdon'    => date('Y-m-d H:m:s'),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    );
+                    array_push($insertData, $costdata);
+                }
+                insertOrUpdate($insertData,'t_po03');
+            }
 
             //Insert Attachments | t_attachments
             if(isset($req['efile'])){

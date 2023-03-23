@@ -45,6 +45,12 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
+                                            <label for="deldate">Delivery Date</label>
+                                            <input type="date" name="deldate" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
                                             <label for="vendor">Vendor</label>
                                             <select name="vendor" id="find-vendor" class="form-control"></select>
                                         </div>
@@ -97,39 +103,89 @@
                                 </div>
                             </div>
                             <div class="col-lg-10 col-md-12">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <table id="tbl-po-item" class="table table-sm">
-                                            <thead>
-                                                <th>Part Number</th>
-                                                {{-- <th>Description</th> --}}
-                                                <th>Quantity</th>
-                                                <th>Unit</th>
-                                                <th>Unit Price</th>
-                                                <th>PR Reference</th>
-                                                <th style="text-align:right;">
-                                                    <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                        <i class="fa fa-plus"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-success btn-sm btn-add-po-item-based-pr">
-                                                        <i class="fa fa-list"></i> List PR
-                                                    </button>
-                                                </th>
-                                            </thead>
-                                            <tbody id="tbl-pbj-body">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">PO Items</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="custom-content-above-cost-tab" data-toggle="pill" href="#custom-content-above-cost" role="tab" aria-controls="custom-content-above-cost" aria-selected="false">Additional Cost</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-tools">
+                                            <a href="{{ url('/approve/pbj') }}" class="btn btn-default btn-sm">
+                                                <i class="fa fa-arrow-left"></i> Back
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="tab-content" id="custom-content-above-tabContent">
+                                                    <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <table id="tbl-po-item" class="table table-sm">
+                                                                    <thead>
+                                                                        <th>Part Number</th>
+                                                                        {{-- <th>Description</th> --}}
+                                                                        <th>Quantity</th>
+                                                                        <th>Unit</th>
+                                                                        <th>Unit Price</th>
+                                                                        <th>PR Reference</th>
+                                                                        <th style="text-align:right;">
+                                                                            <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
+                                                                                <i class="fa fa-plus"></i>
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-success btn-sm btn-add-po-item-based-pr">
+                                                                                <i class="fa fa-list"></i> List PR
+                                                                            </button>
+                                                                        </th>
+                                                                    </thead>
+                                                                    <tbody id="tbl-pbj-body">
+                        
+                                                                    </tbody>
+                                                                    <!-- <tfoot>
+                                                                        <tr>
+                                                                            <td colspan="7"></td>
+                                                                            <td style="text-align:right;">
+                                                                                <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
+                                                                                    <i class="fa fa-plus"></i>
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tfoot> -->
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                            </tbody>
-                                            <!-- <tfoot>
-                                                <tr>
-                                                    <td colspan="7"></td>
-                                                    <td style="text-align:right;">
-                                                        <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                            <i class="fa fa-plus"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </tfoot> -->
-                                        </table>
+                                                    <div class="tab-pane fade" id="custom-content-above-cost" role="tabpanel" aria-labelledby="custom-content-above-cost-tab">
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <table class="table table-sm">
+                                                                    <thead>
+                                                                        <th>Cost Component</th>
+                                                                        <th>Cost Amount</th>
+                                                                        <th style="text-align: right;">
+                                                                            <button type="button" class="btn btn-success btn-sm" id="btn-add-cost">
+                                                                                <i class="fa fa-add"></i>
+                                                                            </button>
+                                                                        </th>
+                                                                    </thead>
+                                                                    <tbody id="tbl-cost-body">
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -237,7 +293,31 @@
         $('.btn-add-po-item-based-pr').on('click', function(){
             loadListPR();
             $('#modal-list-pr').modal('show');
-        });        
+        });     
+        
+        $('#btn-add-cost').on('click', function(){
+            count = count + 1;
+            $('#tbl-cost-body').append(`
+                <tr>
+                    <td>
+                        <input type="text" name="costname[]" class="form-control" required>    
+                    </td>
+                    <td>
+                        <input type="text" name="costvalue[]" class="form-control" required>    
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" id="btnRemoveCost`+count+`">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            $('#btnRemoveCost'+count).on('click', function(e){
+                e.preventDefault();
+                $(this).closest("tr").remove();
+            });
+        });
 
         var fCount = 0;
         function loadMaterial(){
