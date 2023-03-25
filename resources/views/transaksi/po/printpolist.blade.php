@@ -202,7 +202,7 @@
                 // window.location = base_url+"/proc/pr/print";
                 // if(selected_data.doctype === "Corporate Procedure"){
                     window.open(
-                        base_url+"/printdoc/po/print/"+selected_data.id,
+                        base_url+"/proc/po/print/"+selected_data.id,
                         '_blank' // <- This is what makes it open in a new window.
                     );
                 // }
@@ -212,7 +212,7 @@
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                window.location = "/printdoc/po/detail/"+selected_data.id;
+                window.location = "/proc/po/detail/"+selected_data.id;
                 // if(selected_data.doctype === "Corporate Procedure"){
                     // window.open(
                     //     base_url+"/printdoc/pr/print/"+selected_data.id,

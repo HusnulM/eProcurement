@@ -16,9 +16,10 @@ class ApprovePurchaseOrderController extends Controller
     public function approveDetail($id){
         $prhdr = DB::table('v_po01')->where('id', $id)->first();
         if($prhdr){
-            $items      = DB::table('t_po02')->where('ponum', $prhdr->ponum)->get();
-            $approvals  = DB::table('v_po_approval')->where('ponum', $prhdr->ponum)->get();
-            $department = DB::table('v_po_approval')->where('ponum', $prhdr->ponum)->first();
+            $items       = DB::table('t_po02')->where('ponum', $prhdr->ponum)->get();
+            $costs       = DB::table('t_po03')->where('ponum', $prhdr->ponum)->get();
+            $approvals   = DB::table('v_po_approval')->where('ponum', $prhdr->ponum)->get();
+            $department  = DB::table('v_po_approval')->where('ponum', $prhdr->ponum)->first();
             $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $prhdr->ponum)->get();
 
             $purchases = DB::table('v_po02')
@@ -37,6 +38,7 @@ class ApprovePurchaseOrderController extends Controller
                 [   
                     'prhdr'     => $prhdr, 
                     'pritem'    => $items, 
+                    'costs'     => $costs,
                     'approvals' => $approvals, 
                     'department'=> $department,
                     'isApprovedbyUser' => $isApprovedbyUser,

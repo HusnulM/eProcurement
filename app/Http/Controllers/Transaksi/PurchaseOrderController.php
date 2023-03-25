@@ -55,6 +55,7 @@ class PurchaseOrderController extends Controller
                 'delivery_date'     => $req['deldate'],
                 'vendor'            => $req['vendor'],
                 'note'              => $req['remark'],
+                'ppn'               => $req['ppn'] ?? 0,
                 'currency'          => $req['currency'],
                 'createdon'         => date('Y-m-d H:m:s'),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username

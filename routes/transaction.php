@@ -90,6 +90,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listpo',         'Transaksi\PurchaseOrderController@listPO')->middleware('checkAuth:proc/po');  
         // Route::get('/budgetlist',   'Transaksi\PurchaseRequestController@budgetLists')->middleware('checkAuth:proc/pr');  
 
+        Route::get('/print/{p1}',     'Transaksi\PrintDocumentController@printpo')->middleware('checkAuth:printdoc/po');   
+        Route::get('/detail/{p1}',    'Transaksi\PrintDocumentController@podetail')->middleware('checkAuth:printdoc/po');   
+        Route::get('/printlist',      'Transaksi\PrintDocumentController@printpolist')->middleware('checkAuth:printdoc/po'); 
+
         Route::get('/listapprovedpr', 'Transaksi\PurchaseOrderController@getApprovedPR')->middleware('checkAuth:proc/po');
         
     });

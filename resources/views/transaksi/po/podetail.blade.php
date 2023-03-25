@@ -28,7 +28,7 @@
                             <!-- <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan Purchase Order
                             </button> -->
-                            <a href="{{ url('/printdoc/po/print/') }}/{{ $pohdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
+                            <a href="{{ url('/proc/po/print/') }}/{{ $pohdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
                                 <i class='fa fa-print'></i> Print
                             </a>
                             <a href="{{ url('/proc/po/listpo') }}" class="btn btn-default btn-sm">
@@ -75,7 +75,7 @@
                                         <div class="form-group">
                                             <label for="currency">Currency</label>                                            
                                             <select name="currency" id="currency" class="form-control">
-                                                <option value="IDR">IDR - Indonesian Rupiah</option>
+                                                <option value="{{ $pohdr->currency }}">{{ $pohdr->currency }}</option>
                                                 <option value="USD">USD - US Dollar</option>
                                             </select>
                                         </div>
@@ -105,6 +105,9 @@
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" id="custom-content-above-cost-tab" data-toggle="pill" href="#custom-content-above-cost" role="tab" aria-controls="custom-content-above-cost" aria-selected="false">Additional Cost</a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
@@ -189,6 +192,44 @@
                                                                 </div>
                                                             </div>
                                                         </div>   
+
+                                                        <div class="tab-pane fade" id="custom-content-above-cost" role="tabpanel" aria-labelledby="custom-content-above-cost-tab">
+                                                            <div class="row">
+                                                                <div class="col-lg-4 col-md-12 mb-2">
+                                                                    <label for="PPn">PPN</label>
+                                                                    <select name="ppn" id="ppn" class="form-control form-sm">
+                                                                        <option value="">{{ $pohdr->ppn }} %</option>
+                                                                        {{-- <option value="11">11 %</option> --}}
+                                                                    </select>
+                                                                </div>
+                                                                {{-- <hr> --}}
+                                                                <div class="col-lg-8">
+                                                                    <table class="table table-sm">
+                                                                        <thead>
+                                                                            <th>Cost Component</th>
+                                                                            <th>Cost Amount</th>
+                                                                            {{-- <th style="text-align: right;">
+                                                                                <button type="button" class="btn btn-success btn-sm" id="btn-add-cost">
+                                                                                    <i class="fa fa-add"></i>
+                                                                                </button>
+                                                                            </th> --}}
+                                                                        </thead>
+                                                                        <tbody id="tbl-cost-body">
+                                                                            @foreach ($costs as $key => $row)
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        {{ $row->costname }}
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        {{ $row->costvalue }}
+                                                                                    </td>
+                                                                                </tr>
+                                                                            @endforeach
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
 
                                                         <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
                                                             <div class="row">

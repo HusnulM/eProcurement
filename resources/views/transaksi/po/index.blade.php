@@ -165,7 +165,15 @@
 
                                                     <div class="tab-pane fade" id="custom-content-above-cost" role="tabpanel" aria-labelledby="custom-content-above-cost-tab">
                                                         <div class="row">
-                                                            <div class="col-lg-12">
+                                                            <div class="col-lg-4 col-md-12 mb-2">
+                                                                <label for="PPn">PPN</label>
+                                                                <select name="ppn" id="ppn" class="form-control form-sm">
+                                                                    <option value="">---</option>
+                                                                    <option value="11">11 %</option>
+                                                                </select>
+                                                            </div>
+                                                            {{-- <hr> --}}
+                                                            <div class="col-lg-8">
                                                                 <table class="table table-sm">
                                                                     <thead>
                                                                         <th>Cost Component</th>
