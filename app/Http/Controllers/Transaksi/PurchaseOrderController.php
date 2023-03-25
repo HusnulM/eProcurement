@@ -100,6 +100,10 @@ class PurchaseOrderController extends Controller
                 ->update([
                     'pocreated' => 'Y'
                 ]);
+
+                DB::table('t_material')->where('material', $parts[$i])->update([
+                    'last_purchase_price' => $uprice
+                ]);
             }
             insertOrUpdate($insertData,'t_po02');
 

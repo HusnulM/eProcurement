@@ -386,7 +386,7 @@
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
                             </td>
                             <td>
-                                <input type="text" name="unitprice[]" class="form-control inputNumber">
+                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.last_purchase_price +`">
                             </td>
                             <td>
                                 <input type="text" name="prref[]" id="prref`+fCount+`" class="form-control">
@@ -574,7 +574,7 @@
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
                             </td>
                             <td>
-                                <input type="text" name="unitprice[]" class="form-control inputNumber">
+                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.last_purchase_price +`">
                             </td>
                             <td>
                                 <input type="text" name="prref[]" id="prref`+fCount+`" value="`+ selected_data.prnum +`" class="form-control">
