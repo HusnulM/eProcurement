@@ -67,13 +67,24 @@ class ChecklistKendaraanController extends Controller
             ]);
     }
 
-    public function dataCekList(Request $request){
-        if(isset($request->params)){
-            $params = $request->params;        
+    public function dataCekList(Request $req){
+        if(isset($req->params)){
+            $params = $req->params;        
             $whereClause = $params['sac'];
         }
-        $query = DB::table('v_checklist_kendaraan')
-                 ->orderBy('id');
+
+        $query = DB::table('v_checklist_kendaraan');
+
+        if(isset($req->datefrom) && isset($req->dateto)){
+            $query->whereBetween('tanggal_cek', [$req->datefrom, $req->dateto]);
+        }elseif(isset($req->datefrom)){
+            $query->where('tanggal_cek', $req->datefrom);
+        }elseif(isset($req->dateto)){
+            $query->where('tanggal_cek', $req->dateto);
+        }
+
+        $query->orderBy('id');
+
         return DataTables::queryBuilder($query)->toJson();
     }
 
