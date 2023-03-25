@@ -124,9 +124,9 @@
                             <th>No</th>
                             <th>Material</th>
                             <th>Description</th>
-                            <th>Part Number</th>
+                            {{-- <th>Part Number</th>
                             <th>Warehouse</th>
-                            <th>Warehouse Name</th>
+                            <th>Warehouse Name</th> --}}
                             <th>Available Quantity</th>
                             <th>Unit</th>
                             <th></th>
@@ -207,7 +207,7 @@
             $("#tbl-material-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/matstock',
+                    url: base_url+'/allmaterial',
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -223,11 +223,11 @@
                     },
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'fname'},
-                    {data: "partnumber", className: 'fname'},
-                    {data: "whsnum", className: 'fname'},
-                    {data: "whsname", className: 'fname'},
-                    {data: "quantity", className: 'fname'},
-                    {data: "unit", className: 'fname'},
+                    // {data: "partnumber", className: 'fname'},
+                    // {data: "whsnum", className: 'fname'},
+                    // {data: "whsname", className: 'fname'},
+                    {data: "availableQty", "className": "text-right"},
+                    {data: "matunit", className: 'fname'},
                     {"defaultContent": 
                         "<button type='button' class='btn btn-primary btn-sm button-add-material'> <i class='fa fa-plus'></i> Add</button>"
                     }
@@ -258,7 +258,7 @@
                                 <input type="text" name="quantity[]" class="form-control inputNumber" required>
                             </td>
                             <td>
-                                <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
+                                <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
                             </td>
                             <td>
                                 <input type="text" name="pbjref[]" id="pbjref`+fCount+`" class="form-control">
