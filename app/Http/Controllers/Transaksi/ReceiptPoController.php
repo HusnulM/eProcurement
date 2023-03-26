@@ -45,7 +45,7 @@ class ReceiptPoController extends Controller
                 'received_by'       => $req['recipient'],
                 'movement_code'     => '101',
                 'remark'            => $req['remark'],
-                'createdon'         => date('Y-m-d H:m:s'),
+                'createdon'         => getLocalDatabaseDateTime(),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);
 
@@ -62,6 +62,7 @@ class ReceiptPoController extends Controller
             $count = 0;            
 
             for($i = 0; $i < sizeof($parts); $i++){
+                $batchNumber = generateBatchNumber();
                 $qty    = $quantity[$i];
                 $qty    = str_replace(',','',$qty);
 
@@ -76,6 +77,7 @@ class ReceiptPoController extends Controller
                     'movement_code'=> '101',
                     'material'     => $parts[$i],
                     'matdesc'      => $partdsc[$i],
+                    'batch_number' => $batchNumber,
                     'quantity'     => $qty,
                     'unit'         => $uom[$i],
                     'unit_price'   => $matPrice,
@@ -84,15 +86,20 @@ class ReceiptPoController extends Controller
                     'poitem'       => $poitem[$i] ?? null,
                     'whscode'      => $whscode[$i],
                     'shkzg'        => '+',
-                    'createdon'    => date('Y-m-d H:m:s'),
+                    'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertData, $data);
 
-                // DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
-                // ->update([
-                //     'prcreated' => 'Y'
-                // ]);
+                DB::table('t_inv_batch_stock')->insert([
+                    'material'     => $parts[$i],
+                    'whscode'      => $whscode[$i],
+                    'batchnum'     => $batchNumber,
+                    'quantity'     => $qty,
+                    'unit'         => $uom[$i],
+                    'last_udpate'  => getLocalDatabaseDateTime()
+                ]);
+
                 $latestStock = DB::table('t_inv_stock')
                                ->where('material', $parts[$i])
                                ->where('whscode', $whscode[$i])->first();

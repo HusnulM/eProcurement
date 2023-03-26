@@ -56,7 +56,7 @@ class PurchaseRequestController extends Controller
                 'deptid'            => Auth::user()->deptid,
                 'requestby'         => $req['requestor'],
                 'remark'            => $req['remark'],
-                'createdon'         => date('Y-m-d H:m:s'),
+                'createdon'         => getLocalDatabaseDateTime(),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);
 
@@ -84,7 +84,7 @@ class PurchaseRequestController extends Controller
                     'unit'         => $uom[$i],
                     'pbjnumber'    => $pbjnum[$i] ?? 0,
                     'pbjitem'      => $pbjitm[$i] ?? 0,
-                    'createdon'    => date('Y-m-d H:m:s'),
+                    'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertData, $data);
