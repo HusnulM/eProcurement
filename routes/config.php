@@ -76,6 +76,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::post('/savepbjwf',         'Config\WorkflowController@savePbjApproval')->middleware('checkAuth:config/workflow');
         Route::post('/savespkwf',         'Config\WorkflowController@saveSPKApproval')->middleware('checkAuth:config/workflow');
+
         Route::post('/saveprwf',          'Config\WorkflowController@savePRApproval')->middleware('checkAuth:config/workflow');
         Route::post('/savepowf',          'Config\WorkflowController@savePOApproval')->middleware('checkAuth:config/workflow');
 
@@ -90,6 +91,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/saveassignment',    'Config\WorkflowController@saveAssignment')->middleware('checkAuth:config/workflow');
 
         Route::get('/deleteassignment/{p1}/{p2}/{p3}/{p4}/{p5}',   'Config\WorkflowController@deleteAssignment')->middleware('checkAuth:config/workflow');
+        Route::get('/deletepbjwf/{id}','Config\WorkflowController@deletePBJwf')->middleware('checkAuth:config/workflow');
+        Route::get('/deletewowf/{id}','Config\WorkflowController@deleteSPKwf')->middleware('checkAuth:config/workflow');
+        Route::get('/deleteprwf/{id}','Config\WorkflowController@deletePRwf')->middleware('checkAuth:config/workflow');
+        Route::get('/deletepowf/{id}','Config\WorkflowController@deletePOwf')->middleware('checkAuth:config/workflow');
     });
 
     Route::group(['prefix' => '/config/objectauth'], function () {

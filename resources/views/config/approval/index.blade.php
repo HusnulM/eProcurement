@@ -145,7 +145,7 @@
                                             <td>{{ $row->approver_name }}</td>
                                             <td>{{ $row->approver_level }}</td>
                                             <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deletepbjwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
+                                                <a href="{{ url('config/workflow/deletewowf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
                                                     <i class='fa fa-trash'></i> DELETE
                                                 </a> 
                                             </td>
@@ -185,7 +185,7 @@
                                             <td>{{ $row->approver_name }}</td>
                                             <td>{{ $row->approver_level }}</td>
                                             <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deletepbjwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
+                                                <a href="{{ url('config/workflow/deleteprwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
                                                     <i class='fa fa-trash'></i> DELETE
                                                 </a> 
                                             </td>
@@ -225,7 +225,7 @@
                                             <td>{{ $row->approver_name }}</td>
                                             <td>{{ $row->approver_level }}</td>
                                             <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deletepbjwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
+                                                <a href="{{ url('config/workflow/deletepowf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
                                                     <i class='fa fa-trash'></i> DELETE
                                                 </a> 
                                             </td>

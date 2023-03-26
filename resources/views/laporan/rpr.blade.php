@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form action="{{ url('reports/documentlist/export') }}" method="post">
+                            <form action="{{ url('report/exportpr') }}" method="post">
                                 @csrf
                                 <div class="row">
                                     <div class="col-lg-2">

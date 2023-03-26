@@ -181,5 +181,51 @@ class WorkflowController extends Controller
         }
     }
 
-    
+    public function deletePBJwf($id){
+        DB::beginTransaction();
+        try{
+            DB::table('workflow_budget')->where('id', $id)->delete();
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval PBJ Berhasil dihapus');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
+    public function deletePRwf($id){
+        DB::beginTransaction();
+        try{
+            DB::table('workflow_budget')->where('id', $id)->delete();
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval PR Berhasil dihapus');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
+    public function deleteSPKwf($id){
+        DB::beginTransaction();
+        try{
+            DB::table('workflow_budget')->where('id', $id)->delete();
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval WO Berhasil dihapus');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
+
+    public function deletePOwf($id){
+        DB::beginTransaction();
+        try{
+            DB::table('workflow_budget')->where('id', $id)->delete();
+            DB::commit();
+            return Redirect::to("/config/workflow")->withSuccess('Approval PO Berhasil dihapus');
+        } catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/config/workflow")->withError($e->getMessage());
+        }
+    }
 }

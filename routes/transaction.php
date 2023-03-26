@@ -35,6 +35,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/tidaklayak/detail/{p1}',       'Transaksi\ChecklistKendaraanController@detailCekListTidakLayak')->middleware('checkAuth:datachecklistkendaraan');
         Route::get('/datachecklist',    'Transaksi\ChecklistKendaraanController@dataCekList')->middleware('checkAuth:datachecklistkendaraan');
         Route::get('/datachecklisttidaklayak', 'Transaksi\ChecklistKendaraanController@dataCekListTidakLayak')->middleware('checkAuth:datachecklistkendaraan');
+        Route::post('/export',                'ExportDataController@exportCeklistAll')->middleware('checkAuth:datachecklistkendaraan');
         // Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
     });
 

@@ -20,12 +20,15 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/pbj',                      'Reports\ReportsController@pbj')->middleware('checkAuth:report/pbj');
         Route::get('/pbjlist',                  'Reports\ReportsController@pbjList')->middleware('checkAuth:report/pbj');
+        Route::post('/exportpbj',               'ExportDataController@exportPBJ')->middleware('checkAuth:report/pbj');
 
         Route::get('/po',                       'Reports\ReportsController@po')->middleware('checkAuth:report/po');
         Route::get('/polist',                   'Reports\ReportsController@poList')->middleware('checkAuth:report/po');
+        Route::post('/exportpo',                'ExportDataController@exportPO')->middleware('checkAuth:report/pr');
 
         Route::get('/pr',                       'Reports\ReportsController@pr')->middleware('checkAuth:report/pr');
         Route::get('/prlist',                   'Reports\ReportsController@prList')->middleware('checkAuth:report/pr');
+        Route::post('/exportpr',                'ExportDataController@exportPR')->middleware('checkAuth:report/pr');
 
         Route::get('/wo',                       'Reports\ReportsController@wo')->middleware('checkAuth:report/wo');
         Route::get('/wolist',                   'Reports\ReportsController@woList')->middleware('checkAuth:report/wo');
