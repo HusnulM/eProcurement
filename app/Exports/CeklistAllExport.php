@@ -37,7 +37,7 @@ class CeklistAllExport implements FromCollection, WithHeadings, WithMapping
         $fields = [
             $row->no_checklist,
             $row->tanggal_cek,
-            $row->no_plat,
+            $row->no_kendaraan,
             $row->jenis_kendaraan,
             $row->nomor_rangka,
             $row->bahan_bakar,
