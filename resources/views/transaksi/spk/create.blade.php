@@ -154,6 +154,7 @@
                                 <th>Part Name</th>
                                 <th>Quantity</th>
                                 <th>Unit</th>
+                                <th>No. Plat</th>
                                 <th>Figure</th>
                                 <th>Remark</th>
                                 <th style="width:50px; text-align:center;">
@@ -324,6 +325,7 @@
                     {data: "description"},
                     {data: "quantity", "className": "text-right",},
                     {data: "unit"},      
+                    {data: "unit_desc"},      
                     {data: "figure"},
                     {data: "remark"},      
                     {"defaultContent": 
