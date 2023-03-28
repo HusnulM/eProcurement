@@ -12,6 +12,8 @@ use App\Exports\PrExport;
 use App\Exports\PoExport;
 use App\Exports\WoExport;
 use App\Exports\CeklistAllExport;
+use App\Exports\StockExport;
+use App\Exports\BatchStockExport;
 
 class ExportDataController extends Controller
 {
@@ -33,5 +35,13 @@ class ExportDataController extends Controller
 
     public function exportCeklistAll(Request $req){
         return Excel::download(new CeklistAllExport($req), 'Laporan-Ceklist.xlsx');
+    }
+
+    public function exportStock(Request $req){
+        return Excel::download(new StockExport($req), 'Laporan-Stock.xlsx');
+    }
+
+    public function exportBatchStock(Request $req){
+        return Excel::download(new BatchStockExport($req), 'Laporan-Batch-Stock.xlsx');
     }
 }

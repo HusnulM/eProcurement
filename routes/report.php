@@ -41,5 +41,10 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/stock',                    'Reports\ReportsController@stock')->middleware('checkAuth:report/stock');
         Route::get('/stocklist',                'Reports\ReportsController@stockList')->middleware('checkAuth:report/stock');
+        Route::post('/exportstock',             'ExportDataController@exportStock')->middleware('checkAuth:report/stock');
+
+        Route::get('/batchstock',               'Reports\ReportsController@batchStock')->middleware('checkAuth:report/batchstock');
+        Route::get('/batchstocklist',           'Reports\ReportsController@batchStockList')->middleware('checkAuth:report/batchstock');
+        Route::post('/exportbatchstock',        'ExportDataController@exportBatchStock')->middleware('checkAuth:report/batchstock');
     });
 });

@@ -322,7 +322,24 @@ class ReportsController extends Controller
     }
 
     public function stockList(Request $req){
-        $query = DB::table('v_rstock');
+        $query = DB::table('v_inv_summary_stock');
+
+        return DataTables::queryBuilder($query)
+        ->editColumn('quantity', function ($query){
+            return [
+                'qty1' => number_format($query->quantity,0)
+            ];
+        })
+        ->toJson();
+    }
+
+    public function batchStock(){
+        $warehouse = DB::table('t_warehouse')->get();
+        return view('laporan.rsbatchtock', ['warehouse' => $warehouse]);
+    }
+
+    public function batchStockList(Request $req){
+        $query = DB::table('v_inv_batch_stock');
 
         return DataTables::queryBuilder($query)
         ->editColumn('quantity', function ($query){

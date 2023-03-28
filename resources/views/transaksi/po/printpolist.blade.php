@@ -135,7 +135,7 @@
             $("#tbl-budget-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/printdoc/po/printlist'+_params,
+                    url: base_url+'/proc/po/printlist'+_params,
                     data: function (data) {
                         data.params = {
                             sac: "sac"

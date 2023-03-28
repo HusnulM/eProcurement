@@ -52,7 +52,7 @@ function formatDateTime($dateTime, $format = "d-m-Y h:i A")
 }
 
 function generateBatchNumber(){
-    $dcnNumber = '';
+    $dcnNumber = 'BATCH-';
     $getdata = DB::table('dcn_nriv')->where('year', date('Y'))
                 ->where('month', date('m'))
                 ->where('object','BATCH')->first();
@@ -770,6 +770,84 @@ function generateGRPONumber($tahun, $bulan){
         try{
             DB::table('t_nriv_budget')->insert([
                 'object'          => 'GRPO',
+                'tahun'           => $tahun,
+                'bulan'           => $bulan,
+                'tanggal'         => '01',
+                // 'deptid'          => $dept,
+                'lastnumber'      => '1',
+                'createdon'       => date('Y-m-d H:m:s'),
+                'createdby'       => Auth::user()->email ?? Auth::user()->username
+            ]);
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            // dd($e->getMessage());
+            return null;
+        }
+    }   
+}
+
+function generateIssueNumber($tahun, $bulan){
+    $dcnNumber = 'ISSUE/'.$tahun.$bulan;
+    // dd($dcnNumber);
+    $getdata = DB::table('t_nriv_budget')
+               ->where('tahun',  $tahun)
+               ->where('object', 'ISSUE')
+               ->where('bulan',  $bulan)
+            //    ->where('tanggal',  $tgl)
+            //    ->where('deptid', $dept)
+               ->first();
+    
+    if($getdata){
+        DB::beginTransaction();
+        try{
+            $leadingZero = '';
+            if(strlen($getdata->lastnumber) == 5){
+                $leadingZero = '0';
+            }elseif(strlen($getdata->lastnumber) == 4){
+                $leadingZero = '00';
+            }elseif(strlen($getdata->lastnumber) == 3){
+                $leadingZero = '000';
+            }elseif(strlen($getdata->lastnumber) == 2){
+                $leadingZero = '0000';
+            }elseif(strlen($getdata->lastnumber) == 1){
+                $leadingZero = '00000';
+            }
+
+            $lastnum = ($getdata->lastnumber*1) + 1;
+
+            if($leadingZero == ''){
+                $dcnNumber = $dcnNumber. $lastnum; 
+            }else{
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+            }
+
+            // dd($leadingZero);
+
+            DB::table('t_nriv_budget')
+            ->where('tahun',  $tahun)
+            ->where('object', 'ISSUE')
+            ->where('bulan',  $bulan)
+            // ->where('tanggal',  $tgl)
+            // ->where('deptid', $dept)
+            ->update([
+                'lastnumber' => $lastnum
+            ]);
+
+            DB::commit();
+            // dd($dcnNumber);
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            return null;
+        }
+    }else{
+        $dcnNumber = $dcnNumber.'000001';
+        DB::beginTransaction();
+        try{
+            DB::table('t_nriv_budget')->insert([
+                'object'          => 'ISSUE',
                 'tahun'           => $tahun,
                 'bulan'           => $bulan,
                 'tanggal'         => '01',

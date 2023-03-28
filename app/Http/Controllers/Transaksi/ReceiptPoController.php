@@ -100,24 +100,33 @@ class ReceiptPoController extends Controller
                     'last_udpate'  => getLocalDatabaseDateTime()
                 ]);
 
-                $latestStock = DB::table('t_inv_stock')
-                               ->where('material', $parts[$i])
-                               ->where('whscode', $whscode[$i])->first();
-                if($latestStock){
-                    DB::table('t_inv_stock')
-                    ->where('material', $parts[$i])
-                    ->where('whscode', $whscode[$i])
-                    ->update([
-                        'quantity'     => $qty + $latestStock->quantity
-                    ]);
-                }else{
-                    DB::table('t_inv_stock')->insert([
-                        'material'     => $parts[$i],
-                        'whscode'      => $whscode[$i],
-                        'quantity'     => $qty,
-                        'unit'         => $uom[$i],
-                    ]);
-                }
+                DB::table('t_inv_stock')->insert([
+                    'material'     => $parts[$i],
+                    'whscode'      => $whscode[$i],
+                    'batchnum'     => $batchNumber,
+                    'quantity'     => $qty,
+                    'unit'         => $uom[$i],
+                    'last_udpate'  => getLocalDatabaseDateTime()
+                ]);
+
+                // $latestStock = DB::table('t_inv_stock')
+                //                ->where('material', $parts[$i])
+                //                ->where('whscode', $whscode[$i])->first();
+                // if($latestStock){
+                //     DB::table('t_inv_stock')
+                //     ->where('material', $parts[$i])
+                //     ->where('whscode', $whscode[$i])
+                //     ->update([
+                //         'quantity'     => $qty + $latestStock->quantity
+                //     ]);
+                // }else{
+                //     DB::table('t_inv_stock')->insert([
+                //         'material'     => $parts[$i],
+                //         'whscode'      => $whscode[$i],
+                //         'quantity'     => $qty,
+                //         'unit'         => $uom[$i],
+                //     ]);
+                // }
 
                 $POItemQty = DB::table('t_po02')
                 ->where('ponum', $ponum[$i])

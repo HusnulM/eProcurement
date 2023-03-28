@@ -16,7 +16,10 @@ class ApproveSpkController extends Controller
     public function approveDetail($id){
         $prhdr = DB::table('v_spk01')->where('id', $id)->first();
         if($prhdr){
-            $items      = DB::table('v_wo02')->where('wonum', $prhdr->wonum)->where('approver', Auth::user()->id)->get();
+            $items      = DB::table('v_wo02')->where('wonum', $prhdr->wonum)
+                        ->where('approver', Auth::user()->id)
+                        ->orderBy('woitem', 'asc')
+                        ->get();
             $approvals  = DB::table('v_wo_approval')
                 ->where('wonum', $prhdr->wonum)
                 ->orderBy('approver','asc')
@@ -243,14 +246,14 @@ class ApproveSpkController extends Controller
             $ptaNumber = $woHeader->wonum;
 
             $podata  = DB::table('t_wo01')->where('wonum', $ptaNumber)->first();
-            $woitem  = DB::table('t_wo02')->where('wonum', $ptaNumber)->get();
+            $woitem  = DB::table('t_wo02')->where('wonum', $ptaNumber)->whereIn('woitem', $data['woitem'])->get();
             // return $woitem;
             foreach($woitem as $row){
-                $latestStock = DB::table('t_inv_stock')
+                $latestStock = DB::table('v_inv_summary_stock')
                 ->where('material', $row->material)
-                ->where('whscode',  $podata->whscode)->first();
+                ->where('whsid',  $podata->whscode)->first();
                 if($latestStock){
-                    if($latestStock->quantity < $row->quantity){
+                    if((double)$latestStock->quantity < (double)$row->quantity){
                         DB::rollBack();
                         $result = array(
                             'msgtype' => '500',
@@ -314,12 +317,18 @@ class ApproveSpkController extends Controller
                 // go to next approver    
             }else{
                 //Full Approve
+                // $tgl   = substr($req['grdate'], 8, 2);
+                // $bulan = substr($req['grdate'], 5, 2);
+                // $tahun = substr($req['grdate'], 0, 4);
+            // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
+                $ptaNumber = generateIssueNumber(date('Y'), date('m'));
+
                 foreach($woitem as $row){
-                    $latestStock = DB::table('t_inv_stock')
+                    $latestStock = DB::table('v_inv_summary_stock')
                     ->where('material', $row->material)
-                    ->where('whscode',  $podata->whscode)->first();
+                    ->where('whsid',  $podata->whscode)->first();
                     if($latestStock){
-                        if($latestStock->quantity < $row->quantity){
+                        if((double)$latestStock->quantity < (double)$row->quantity){
                             DB::rollBack();
                             $result = array(
                                 'msgtype' => '500',
@@ -327,12 +336,41 @@ class ApproveSpkController extends Controller
                             );
                             return $result;
                         }else{
-                            DB::table('t_inv_stock')
-                            ->where('material', $row->material)
-                            ->where('whscode',  $podata->whscode)
-                            ->update([
-                                'quantity'     => $latestStock->quantity - $row->quantity
-                            ]);
+                            // DB::table('t_inv_stock')
+                            // ->where('material', $row->material)
+                            // ->where('whscode',  $podata->whscode)
+                            // ->update([
+                            //     'quantity'     => $latestStock->quantity - $row->quantity
+                            // ]);
+                            // spIssueMaterialWithBatchFIFO
+                            // DB::select('CALL spIssueMaterialWithBatchFIFO(
+                            //     "'. $row->material .'",
+                            //     "'. $podata->whscode .'",
+                            //     "'. $row->quantity .'",
+                            //     "'. $ptaNumber .'",
+                            //     "'. date('Y') .'",
+                            //     "201",
+                            //     "'. $row->matdesc .'",
+                            //     "'. $row->unit .'",
+                            //     "-",
+                            //     "'. $row->wonum .'",
+                            //     "'. $row->woitem .'",
+                            //     "'. Auth::user()->email ?? Auth::user()->username .'"
+                            // )');
+
+                            DB::select('call spIssueMaterialWithBatchFIFO(
+                                "'. $row->material .'",
+                                "'. $podata->whscode .'",
+                                "'. $row->quantity .'",
+                                "'. $ptaNumber .'",
+                                "'. date('Y') .'",
+                                "201",
+                                "'. $row->matdesc .'",
+                                "'. $row->unit .'",
+                                "-",
+                                "'. $row->wonum .'",
+                                "'. $row->woitem .'",
+                                "'. Auth::user()->email .'")');
                         }
                     }else{
                         DB::rollBack();
