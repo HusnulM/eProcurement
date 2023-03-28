@@ -22,6 +22,20 @@ class SpkController extends Controller
         return view('transaksi.spk.process');
     }
 
+    public function findkendaraan(Request $request){
+        $query['data'] = DB::table('t_kendaraan')
+                ->select('no_kendaraan', 'model_kendaraan', 'engine_model', 'engine_sn', 'chassis_sn')
+                ->where('no_kendaraan', 'like', '%'. $request->search . '%')
+                ->orWhere('model_kendaraan', 'like', '%'. $request->search . '%')
+                ->orWhere('engine_sn', 'like', '%'. $request->search . '%')
+                ->orWhere('chassis_sn', 'like', '%'. $request->search . '%')
+                ->orWhere('engine_model', 'like', '%'. $request->search . '%')
+                ->get();
+
+        // return \Response::json($query);
+        return $query;
+    }
+
     public function listApprovedPbj(Request $request){
         if(isset($request->params)){
             $params = $request->params;        
@@ -115,7 +129,7 @@ class SpkController extends Controller
                 'description'       => $req['descr'],
                 // 'mekanik'           => $req['mekanik'],
                 'whscode'           => $req['whscode'],
-                // 'license_number'    => $req['licenseNumber'],
+                'license_number'    => $req['licenseNumber'],
                 // 'last_odo_meter'    => $req['lastOdoMeter'],
                 'schedule_type'     => $req['schedule'],
                 'issued'            => $req['issued'],

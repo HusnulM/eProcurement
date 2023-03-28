@@ -136,6 +136,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/print/{p1}',      'Transaksi\SpkController@printprlist')->middleware('checkAuth:logistic/wo');  
         Route::post('/save',           'Transaksi\SpkController@save')->middleware('checkAuth:logistic/wo');
 
+        Route::post('/findkendaraan',   'Transaksi\SpkController@findkendaraan')->middleware('checkAuth:logistic/wo');
         Route::get('/listdatawotoprocess',      'Transaksi\SpkController@listdatawotoprocess')->middleware('checkAuth:logistic/wo');
         Route::get('/listapprovedpbj', 'Transaksi\SpkController@listApprovedPbj')->middleware('checkAuth:logistic/wo');
         Route::post('/saveprocess',    'Transaksi\SpkController@saveWoProcess')->middleware('checkAuth:logistic/wo');

@@ -50,14 +50,22 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="currency">Warehouse</label>                                            
                                             <select name="whscode" id="find-whscode" class="form-control" required></select>
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3 col-md-12">
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="licenseNumber">No. Plat Kendaraan</label>
+                                            <!-- <input type="text" name="licenseNumber" class="form-control" required> -->
+                                            <select name="licenseNumber" id="find-licenseNumber" class="form-control" required></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-12">
                                         <div class="form-group">
                                             <label for="schedule">Status Schedule</label>                                            
                                             <select name="schedule" id="schedule" class="form-control" required>
@@ -73,7 +81,7 @@
                                             <input type="text" name="issued" class="form-control" required>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-12">
+                                    <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="attachment">Attachment</label>
                                             <input type="file" class="form-control" name="efile[]" multiple="multiple">
@@ -227,6 +235,45 @@
                 cache: true
             }
         });  
+
+        $('#find-licenseNumber').select2({ 
+            placeholder: 'No Kendaraan',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/logistic/wo/findkendaraan',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.no_kendaraan + ' - ' + item.model_kendaraan,
+                                slug: item.model_kendaraan,
+                                id: item.no_kendaraan,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
         
         $('.btn-select-pbj-item').on('click', function(){
             loadListPBJ();
@@ -248,6 +295,8 @@
         }            
 
         function loadListPBJ(){
+            // alert($('#find-licenseNumber').val())
+            
             $("#tbl-pbj-list").DataTable({
                 serverSide: true,
                 ajax: {
