@@ -37,14 +37,18 @@ class SpkController extends Controller
     }
 
     public function listApprovedPbj(Request $request){
+        // return $request->params;
+
         if(isset($request->params)){
             $params = $request->params;        
             $whereClause = $params['sac'];
+            $noPol       = $params['nopol'];
         }
         $query = DB::table('v_pbj02')
                  ->where('pbj_status', 'A')
                  ->where('approvestat', 'A')
                  ->where('wocreated', 'N')
+                 ->where('unit_desc', $noPol)
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }  
