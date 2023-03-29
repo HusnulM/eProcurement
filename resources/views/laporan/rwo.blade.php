@@ -49,7 +49,7 @@
                                         <select name="mekanik" id="mekanik" class="form-control">
                                             <option value="All">All</option>
                                             @foreach($mekanik as $key => $row)
-                                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
+                                                <option value="{{ $row->nama }}">{{ $row->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
