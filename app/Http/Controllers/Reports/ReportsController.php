@@ -349,4 +349,12 @@ class ReportsController extends Controller
         })
         ->toJson();
     }
+
+    public function cost(){
+
+    }
+
+    public function costList(Request $req){
+
+    }
 }

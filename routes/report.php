@@ -46,5 +46,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/batchstock',               'Reports\ReportsController@batchStock')->middleware('checkAuth:report/batchstock');
         Route::get('/batchstocklist',           'Reports\ReportsController@batchStockList')->middleware('checkAuth:report/batchstock');
         Route::post('/exportbatchstock',        'ExportDataController@exportBatchStock')->middleware('checkAuth:report/batchstock');
+
+        Route::get('/cost',                     'Reports\ReportsController@cost')->middleware('checkAuth:report/cost');
+        Route::get('/costlist',                 'Reports\ReportsController@costList')->middleware('checkAuth:report/cost');
+        Route::post('/exportcost',              'ExportDataController@exportCost')->middleware('checkAuth:report/cost');
     });
 });

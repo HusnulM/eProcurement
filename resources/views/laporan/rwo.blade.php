@@ -166,7 +166,7 @@
                         "className": "text-right",
                     },
                     {data: "unit"},
-                    {data: "nama"},
+                    {data: "mekanik"},
                     {data: "wo_status", 
                         render: function (data, type, row){
                             if(row.wo_status == "O"){
