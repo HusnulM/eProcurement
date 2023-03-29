@@ -14,6 +14,7 @@ use App\Exports\WoExport;
 use App\Exports\CeklistAllExport;
 use App\Exports\StockExport;
 use App\Exports\BatchStockExport;
+use App\Exports\CostExport;
 
 class ExportDataController extends Controller
 {
@@ -43,5 +44,9 @@ class ExportDataController extends Controller
 
     public function exportBatchStock(Request $req){
         return Excel::download(new BatchStockExport($req), 'Laporan-Batch-Stock.xlsx');
+    }
+    
+    public function exportCost(Request $req){
+        return Excel::download(new CostExport($req), 'Laporan-Cost-WO.xlsx');
     }
 }

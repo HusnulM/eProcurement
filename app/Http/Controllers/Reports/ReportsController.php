@@ -351,10 +351,44 @@ class ReportsController extends Controller
     }
 
     public function cost(){
-
+        $mekanik = DB::table('t_mekanik')->get();
+        return view('laporan.cost', ['mekanik' => $mekanik]);
     }
 
     public function costList(Request $req){
+        // v_report_cost
+        $query = DB::table('v_report_cost');
 
+        if(isset($req->mekanik)){
+            if($req->mekanik !== 'All'){
+                $query->where('mekanik', $req->mekanik);
+            }
+        }
+
+        if(isset($req->datefrom) && isset($req->dateto)){
+            $query->whereBetween('wodate', [$req->datefrom, $req->dateto]);
+        }elseif(isset($req->datefrom)){
+            $query->where('wodate', $req->datefrom);
+        }elseif(isset($req->dateto)){
+            $query->where('wodate', $req->dateto);
+        }
+
+        $query->orderBy('id');
+
+        return DataTables::queryBuilder($query)
+        ->editColumn('quantity', function ($query){
+            return [
+                'qty1' => number_format($query->quantity,0)
+            ];
+        })->editColumn('wodate', function ($query){
+            return [
+                'wodate1' => \Carbon\Carbon::parse($query->wodate)->format('d-m-Y')
+             ];
+        })->editColumn('total_price', function ($query){
+            return [
+                'totalprice' => number_format($query->total_price,0)
+            ];
+        })
+        ->toJson();
     }
 }
