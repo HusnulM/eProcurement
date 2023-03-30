@@ -37,6 +37,7 @@
                                 <th>Bahan Bakar</th>
                                 <th>No. Rangka</th>
                                 <th>Tahun</th>
+                                <th>Layak/Tidak</th>
                                 <th style="text-align:center; width:10%;"></th>
                             </thead>
                             <tbody>
@@ -286,6 +287,7 @@
                 {data: "bahan_bakar", className: 'uid'},
                 {data: "no_rangka", className: 'uid'},
                 {data: "tahun", className: 'uid'},
+                {data: "layak_tidak", className: 'uid'},
                 {"defaultContent": 
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button> 
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
