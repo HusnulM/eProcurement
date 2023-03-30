@@ -232,6 +232,7 @@
                                 <th>Unit</th>
                                 <th>Request By</th>
                                 <th>Department</th>
+                                <th>No. Plat</th>
                                 <th>Remark</th>
                                 <th style="width:50px; text-align:center;">
                                     
@@ -523,6 +524,7 @@
                     {data: "unit"},      
                     {data: "requestby"},
                     {data: "department"},      
+                    {data: "no_plat"},      
                     {data: "remark"},      
                     {"defaultContent": 
                         `

@@ -66,6 +66,7 @@ class PurchaseRequestController extends Controller
             $uom      = $req['uoms'];
             $pbjnum   = $req['pbjnum'];
             $pbjitm   = $req['pbjitm'];
+            $nopol    = $req['nopol'];
 
             $insertData = array();
             $count = 0;            
@@ -84,6 +85,7 @@ class PurchaseRequestController extends Controller
                     'unit'         => $uom[$i],
                     'pbjnumber'    => $pbjnum[$i] ?? 0,
                     'pbjitem'      => $pbjitm[$i] ?? 0,
+                    'no_plat'      => $nopol[$i] ?? null,
                     'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );

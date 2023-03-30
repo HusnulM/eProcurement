@@ -159,6 +159,7 @@
                                 <th></th>
                                 <th>Nomor PBJ</th>
                                 <th>Tanggal PBJ</th>
+                                <th>No. Plat</th>
                                 <th>Part Number</th>
                                 <th>Part Name</th>
                                 <th>Quantity</th>
@@ -264,6 +265,7 @@
                                 <input type="text" name="pbjref[]" id="pbjref`+fCount+`" class="form-control">
                                 <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control">
                                 <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control">
+                                <input type="hidden" name="nopol[]" id="nopol`+fCount+`" class="form-control">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
@@ -326,6 +328,7 @@
                     },
                     {data: "pbjnumber", className: 'uid'},
                     {data: "tgl_pbj", className: 'uid'},
+                    {data: "unit_desc", className: 'uid'},
                     {data: "partnumber"},
                     {data: "description"},
                     {data: "quantity", "className": "text-right",},
@@ -388,6 +391,7 @@
                                 <input type="text" name="pbjref[]" id="pbjref`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`" readonly>
                                 <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
                                 <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">
+                                <input type="hidden" name="nopol[]" id="nopol`+fCount+`" class="form-control" value="`+selected_data.unit_desc+`">
                             </td>
                             <td style="text-align:center;">
                                 <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">
