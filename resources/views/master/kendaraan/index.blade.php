@@ -235,8 +235,8 @@
                             <label for="status_kend">Status</label>
                             <select name="status_kend" id="status_kend" class="form-control">
                                 <option value="">---</option>
-                                <option value="Layak">Layak</option>
-                                <option value="Tidak Layak">Tidak Layak</option>
+                                <option value="LAYAK">Layak</option>
+                                <option value="TIDAK LAYAK">Tidak Layak</option>
                             </select>
                         </div>                        
                     </div>
