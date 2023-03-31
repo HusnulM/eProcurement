@@ -158,7 +158,7 @@ class SpkController extends Controller
 
                 $latestStock = DB::table('v_inv_summary_stock')
                                ->where('material', $parts[$i])
-                               ->where('whscode',  $req['whscode'])->first();
+                               ->where('whsid',  $req['whscode'])->first();
                 if($latestStock){
                     if($latestStock->quantity < $qty){
                         DB::rollBack();
