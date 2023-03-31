@@ -156,7 +156,7 @@ class SpkController extends Controller
                 $qty    = $quantity[$i];
                 $qty    = str_replace(',','',$qty);
 
-                $latestStock = DB::table('t_inv_stock')
+                $latestStock = DB::table('v_inv_summary_stock')
                                ->where('material', $parts[$i])
                                ->where('whscode',  $req['whscode'])->first();
                 if($latestStock){
@@ -164,12 +164,12 @@ class SpkController extends Controller
                         DB::rollBack();
                         return Redirect::to("/logistic/wo")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
                     }else{
-                        DB::table('t_inv_stock')
-                        ->where('material', $parts[$i])
-                        ->where('whscode',  $req['whscode'])
-                        ->update([
-                            'quantity'     => $latestStock->quantity - $qty
-                        ]);
+                        // DB::table('t_inv_stock')
+                        // ->where('material', $parts[$i])
+                        // ->where('whscode',  $req['whscode'])
+                        // ->update([
+                        //     'quantity'     => $latestStock->quantity - $qty
+                        // ]);
                     }
                 }else{
                     DB::rollBack();
