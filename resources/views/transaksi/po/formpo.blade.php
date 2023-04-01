@@ -215,7 +215,7 @@
                     <img src="{{ public_path(Auth::user()->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
                     @else
                     
-                    <img src="/{{ Auth::user()->s_signfile }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    <img src="asset('{{ Auth::user()->s_signfile }}')" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                     @endif
                     @endif
                 </td>
