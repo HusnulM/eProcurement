@@ -206,7 +206,7 @@
         <br>
         <table>
             <tr>
-                <td>Purchasing Manager,</td>
+                <td>Purchasing Manager, {{ $_SERVER['DOCUMENT_ROOT'] }}</td>
             </tr>
             <tr>
                 <td>
