@@ -211,6 +211,7 @@
             <tr>
                 <td>
                     @if($pohdr->approvestat == "A")
+                    {{-- <img src="{{ asset(Auth::user()->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;"> --}}
                     @if(checkIsLocalhost())
                     <img src="{{ public_path(Auth::user()->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
                     @else
