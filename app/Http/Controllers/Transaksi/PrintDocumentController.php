@@ -165,9 +165,9 @@ class PrintDocumentController extends Controller
         $pohdr = DB::table('v_rpo')->where('id', $id)->first();
         $podtl = DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
 
+        $pdf = PDF::loadview('transaksi.po.formpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
         $pdf->setOptions(['isRemoteEnabled' => true]);
         $pdf->setProtocol($_SERVER['DOCUMENT_ROOT']);
-        $pdf = PDF::loadview('transaksi.po.formpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
         // $pdf = PDF::loadview('transaksi.po.printpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
         return $pdf->stream();
     }
