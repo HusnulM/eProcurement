@@ -1,6 +1,6 @@
 <?php 
     $imagePath = public_path();
-    $imagePath = str_replace("main/public","");
+    $imagePath = str_replace("main/public","",$imagePath);
 ?>
 <!DOCTYPE html>
 <html>
