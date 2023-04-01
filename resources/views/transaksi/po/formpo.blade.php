@@ -206,7 +206,7 @@
         <br>
         <table>
             <tr>
-                <td>Purchasing Manager,</td>
+                <td>Purchasing Manager, {{ {{ public_path('/assets/img/logo.png') }} }}</td>
             </tr>
             <tr>
                 <td>
