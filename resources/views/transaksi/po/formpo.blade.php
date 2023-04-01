@@ -202,7 +202,7 @@
         <br>
         <table>
             <tr>
-                <td>Purchasing Manager, {{ checkIsLocalhost() }}</td>
+                <td>Purchasing Manager, {{ public_path() }}</td>
             </tr>
             <tr>
                 <td>
