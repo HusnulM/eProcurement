@@ -84,7 +84,13 @@
 <body> 
     <div class="leftbox">
         {{-- <img src="{{ public_path($logo->setting_value ?? '') }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;"> --}}
+        @if(checkIsLocalhost())
         <img src="{{ public_path('/assets/img/logo.png') }}" class="img-thumbnail" alt="Logo" style="width:100px; height:100px;">
+        @else
+        {{-- <img src="{{ public_path('/assets/img/logo.png') }}" class="img-thumbnail" alt="Logo" style="width:100px; height:100px;"> --}}
+        <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+        @endif
+        {{-- getCompanyLogo --}}
         <p style="text-align:left; font-family: Arial, Helvetica, sans-serif;">
             <b>Head Office :</b></p>
         <p style="text-align:left; font-family: Arial, Helvetica, sans-serif;">

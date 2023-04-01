@@ -397,6 +397,11 @@ function getCompanyAddress(){
     return $addr->setting_value;
 }
 
+function getCompanyLogo(){
+    $addr = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
+    return $addr->setting_value;
+}
+
 function getDepartmentByID($id){
     $userDept = DB::table('t_department')->where('deptid', $id)->first();
     if($userDept){
