@@ -206,7 +206,7 @@
         <br>
         <table>
             <tr>
-                <td>Purchasing Manager, {{ $_SERVER['DOCUMENT_ROOT'] }}</td>
+                <td>Purchasing Manager,</td>
             </tr>
             <tr>
                 <td>
@@ -215,7 +215,7 @@
                     <img src="{{ public_path(Auth::user()->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
                     @else
                     
-                    <img src="{{ Auth::user()->s_signfile }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    <img src="/{{ Auth::user()->s_signfile }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                     @endif
                     @endif
                 </td>
