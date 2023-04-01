@@ -211,13 +211,12 @@
             <tr>
                 <td>
                     @if($pohdr->approvestat == "A")
-                    <img src="{{ public_path(Auth::user()->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                    {{-- @if(checkIsLocalhost())
-                    
+                    @if(checkIsLocalhost())
+                    <img src="{{ public_path(Auth::user()->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
                     @else
                     
-                    <img src="{{ $imagePath }}{{ Auth::user()->s_signfile ?? '' }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                    @endif --}}
+                    <img src="/home/eprocmit/dms.eprocmitra.com/{{ Auth::user()->s_signfile }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    @endif
                     @endif
                 </td>
             </tr>
