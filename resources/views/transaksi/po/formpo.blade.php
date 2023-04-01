@@ -211,13 +211,13 @@
             <tr>
                 <td>
                     @if($pohdr->approvestat == "A")
-                    @if(checkIsLocalhost())
-                    
                     <img src="{{ public_path(Auth::user()->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    {{-- @if(checkIsLocalhost())
+                    
                     @else
                     
                     <img src="{{ $imagePath }}{{ Auth::user()->s_signfile ?? '' }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                    @endif
+                    @endif --}}
                     @endif
                 </td>
             </tr>
