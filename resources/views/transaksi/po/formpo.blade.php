@@ -1,3 +1,7 @@
+<?php 
+    $imagePath = public_path();
+    $imagePath = str_replace("main/public","");
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -202,7 +206,7 @@
         <br>
         <table>
             <tr>
-                <td>Purchasing Manager, {{ public_path() }}</td>
+                <td>Purchasing Manager, {{ $imagePath }}</td>
             </tr>
             <tr>
                 <td>
@@ -210,7 +214,7 @@
                     @if(checkIsLocalhost())
                     <img src="{{ public_path(Auth::user()->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                     @else
-                    <img src="{{ Auth::user()->s_signfile ?? '' }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    <img src="{{ $imagePath }}{{ Auth::user()->s_signfile ?? '' }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                     @endif
                     @endif
                 </td>
