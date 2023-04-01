@@ -202,7 +202,7 @@
         <br>
         <table>
             <tr>
-                <td>Purchasing Manager, {{ Auth::user()->s_signfile }}</td>
+                <td>Purchasing Manager, {{ public_path(Auth::user()->s_signfile) }}</td>
             </tr>
             <tr>
                 <td>
