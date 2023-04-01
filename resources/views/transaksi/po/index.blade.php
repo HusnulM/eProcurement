@@ -127,6 +127,7 @@
                                                 <div class="tab-content" id="custom-content-above-tabContent">
                                                     <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                                                         <div class="row">
+                                                            
                                                             <div class="col-lg-12">
                                                                 <table id="tbl-po-item" class="table table-sm">
                                                                     <thead>
@@ -165,7 +166,12 @@
 
                                                     <div class="tab-pane fade" id="custom-content-above-cost" role="tabpanel" aria-labelledby="custom-content-above-cost-tab">
                                                         <div class="row">
-                                                            <div class="col-lg-4 col-md-12 mb-2">
+                                                            <div class="col-lg-12">
+                                                                <label for="top">Term of Payment</label>
+                                                                <input type="text" class="form-control" name="termofpayment">
+                                                            </div>
+                                                            <hr>
+                                                            <div class="col-lg-4 col-md-12 mb-2 mt-2">
                                                                 <label for="PPn">PPN</label>
                                                                 <select name="ppn" id="ppn" class="form-control form-sm">
                                                                     <option value="">---</option>

@@ -31,7 +31,7 @@ function getLocalDatabaseDateTime(){
 
 function getTotalPricePO($ponum){
     // fGetTotalPricePO
-    $totalPrice = DB::select("SELECT fGetTotalPricePO('.$ponum.') as price");
+    $totalPrice = DB::select("SELECT fGetTotalPricePO('$ponum') as price");
     return $totalPrice[0]->price;
 }
 
@@ -390,6 +390,11 @@ function getAppBgImage(){
 function getUserDepartment(){
     $userDept = DB::table('t_department')->where('deptid', Auth::user()->deptid)->first();
     return $userDept->department;
+}
+
+function getCompanyAddress(){
+    $addr = DB::table('general_setting')->where('setting_name', 'COMPANY_ADDRESS')->first();
+    return $addr->setting_value;
 }
 
 function getDepartmentByID($id){

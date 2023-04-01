@@ -209,6 +209,11 @@
 
                                 <div class="tab-pane fade" id="custom-content-above-cost" role="tabpanel" aria-labelledby="custom-content-above-cost-tab">
                                     <div class="row">
+                                        <div class="col-lg-12">
+                                            <label for="top">Term of Payment</label>
+                                            <input type="text" class="form-control" name="termofpayment" value="{{ $prhdr->tf_top }}">
+                                        </div>
+                                        <hr>
                                         <div class="col-lg-4 col-md-12 mb-2">
                                             <label for="PPn">PPN</label>
                                             <select name="ppn" id="ppn" class="form-control form-sm">
@@ -378,6 +383,11 @@
 
                         setTimeout(function(){ 
                             window.location.href = base_url+'/approve/po';
+                        }, 2000);
+                    }else if(response.msgtype === "500"){
+                        toastr.error(response.message);
+                        setTimeout(function(){ 
+                            location.reload();
                         }, 2000);
                     }
                 },

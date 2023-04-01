@@ -57,6 +57,7 @@ class PurchaseOrderController extends Controller
                 'note'              => $req['remark'],
                 'ppn'               => $req['ppn'] ?? 0,
                 'currency'          => $req['currency'],
+                'tf_top'            => $req['termofpayment'] ?? null,
                 'createdon'         => date('Y-m-d H:m:s'),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);

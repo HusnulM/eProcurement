@@ -22,10 +22,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listpbj',      'Transaksi\PbjController@listPBJ')->middleware('checkAuth:transaction/pbj');  
         Route::get('/detail/{p1}',  'Transaksi\PbjController@detailPBJ')->middleware('checkAuth:transaction/pbj');  
         Route::get('/budgetlist',   'Transaksi\PbjController@budgetLists')->middleware('checkAuth:transaction/pbj');  
-        
+        Route::get('/print/{p1}',              'Transaksi\PrintDocumentController@printpbj')->middleware('checkAuth:transaction/pbj');  
         Route::get('/create/{p1}',             'Transaksi\PbjController@create')->middleware('checkAuth:transaction/pbj');
         Route::get('/datachecklisttidaklayak', 'Transaksi\PbjController@dataCekListTidakLayak')->middleware('checkAuth:transaction/pbj');
-        Route::get('/tidaklayak/detail/{p1}',   'Transaksi\ChecklistKendaraanController@detailCekListTidakLayak')->middleware('checkAuth:transaction/pbj');
+        Route::get('/tidaklayak/detail/{p1}',  'Transaksi\ChecklistKendaraanController@detailCekListTidakLayak')->middleware('checkAuth:transaction/pbj');
     });
 
     Route::group(['prefix' => '/datachecklistkendaraan'], function () {
@@ -63,7 +63,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save',                    'Transaksi\ApprovePbjController@save')->middleware('checkAuth:approve/pbj');
         Route::get('/approvelist',              'Transaksi\ApprovePbjController@pbjApprovalList')->middleware('checkAuth:approve/pbj');
         Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
-
+        
         Route::post('/approveitems/{p1}',       'Transaksi\ApprovePbjController@approveItems')->middleware('checkAuth:approve/pbj');
     });
 

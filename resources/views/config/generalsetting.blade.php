@@ -49,6 +49,24 @@
                                                 <img src="{{ asset($complogo->setting_value ?? '/assets/dist/img/no-image.png') }}" alt="Company-Logo" class="img-thumbnail" style="width:200px; height:200px;">
                                             </div>
                                         </div>
+                                        
+                                        <br>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <form action="{{ url('/general/setting/saveaddress') }}" method="post">
+                                                    @csrf
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="companyAddress" value="{{ $address->setting_value }}">
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-primary btn-sm" type="submit">
+                                                                <i class="fa fa-save"></i> SAVE COMPANY ADDRESS
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
 
                                         <br>
                                         <hr>

@@ -13,7 +13,8 @@ class GeneralSettingController extends Controller
         $data    = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
         $theme   = DB::table('general_setting')->where('setting_name', 'APP_THEME')->first();
         $bgimage = DB::table('general_setting')->where('setting_name', 'APP_BGIMAGE')->first();
-        return view('config.generalsetting', ['complogo' => $data, 'theme' => $theme, 'bgimage' => $bgimage]);
+        $address = DB::table('general_setting')->where('setting_name', 'COMPANY_ADDRESS')->first();
+        return view('config.generalsetting', ['complogo' => $data, 'theme' => $theme, 'bgimage' => $bgimage, 'address' => $address]);
     }
 
     public function save(Request $request){
@@ -116,6 +117,30 @@ class GeneralSettingController extends Controller
             }
             DB::commit();
             return Redirect::to("/general/setting")->withSuccess('IPD API Saved!');
+        }catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/general/setting")->withError($e->getMessage());
+        }
+    }
+
+    public function saveAddress(Request $request){
+        DB::beginTransaction();
+        try{
+            $check = DB::table('general_setting')->where('setting_name', 'COMPANY_ADDRESS')->first();
+            if($check){
+                DB::table('general_setting')->where('setting_name', 'COMPANY_ADDRESS')->update([
+                    'setting_value' => $request['companyAddress']
+                ]);
+            }else{
+                DB::table('general_setting')->insert([
+                    'setting_name'  => 'COMPANY_ADDRESS',
+                    'setting_value' => $request['companyAddress'],
+                    'createdby'     => Auth::user()->username,
+                    'createdon'     => getLocalDatabaseDateTime()
+                ]);
+            }
+            DB::commit();
+            return Redirect::to("/general/setting")->withSuccess('Company Address Updated!');
         }catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/general/setting")->withError($e->getMessage());

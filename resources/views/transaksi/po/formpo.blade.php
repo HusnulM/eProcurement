@@ -84,8 +84,7 @@
         <p style="text-align:left; font-family: Arial, Helvetica, sans-serif;">
             <b>Head Office :</b></p>
         <p style="text-align:left; font-family: Arial, Helvetica, sans-serif;">
-            Jl. Pluit Selatan Raya No. 107 RT.08 RW.007 Pluit
-            Penjaringan - DKI Jakarta
+            {{ getCompanyAddress() }}
         </p>
         <table border="1" cellspacing="3" cellpadding="5" class="customers">
             <tr>
@@ -115,7 +114,7 @@
             </tr>
             <tr>
                 <td>Term of Payment</td>
-                <td>14 Hari setelah periode sewa berjalan</td>
+                <td>{{ $pohdr->tf_top }}</td>
             </tr>
         </table>
     </div> 
@@ -136,7 +135,10 @@
                 <th style="text-align:right;">Total Price</th>
             </thead>
             <tbody>
-                <?php $totalPrice = 0; ?>
+                <?php 
+                    $totalPrice = 0;
+                    $totalPPN   = 0; 
+                ?>
                 @foreach($poitem as $key => $row)
                 <tr>
                     <td>{{ $key+1 }}</td>
@@ -162,17 +164,35 @@
                     </td>
                 </tr>
 
-                <?php $totalPrice = $totalPrice + ($row->quantity*$row->price); ?>
+                <?php 
+                    $totalPrice = $totalPrice + ($row->quantity*$row->price); 
+                ?>
                 @endforeach
+
+                <?php 
+                    if($pohdr->ppn > 0){
+                        $totalPPN   = $totalPrice * ($pohdr->ppn / 100);
+                    }
+                ?>
             </tbody>
             <tfoot>
+                <tr>
+                    <td colspan="6" style="text-align:right;">
+                        <b> PPN</b>
+                    </td>
+                    <td style="text-align:right;">
+                        <b>
+                            {{ number_format($totalPPN, 0, ',', '.') }}
+                        </b>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="6" style="text-align:right;">
                         <b> Grand Total</b>
                     </td>
                     <td style="text-align:right;">
                         <b>
-                            {{ number_format($totalPrice, 0, ',', '.') }}
+                            {{ number_format($totalPrice+$totalPPN, 0, ',', '.') }}
                         </b>
                     </td>
                 </tr>
@@ -186,7 +206,9 @@
             </tr>
             <tr>
                 <td>
-                <img src="{{ public_path('/assets/img/esign1.png') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    @if($pohdr->approvestat == "A")
+                    <img src="{{ public_path(Auth::user()->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    @endif
                 </td>
             </tr>
             <tr>

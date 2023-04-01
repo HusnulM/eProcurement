@@ -74,6 +74,7 @@
                                     <th>No</th>
                                     <th>Nomor WO</th>
                                     <th>Tanggal WO</th>
+                                    <th>No. Plat</th>
                                     <th>Partnumber</th>
                                     <th>Description</th>
                                     <th>Quantity</th>
@@ -157,6 +158,7 @@
                             return ``+ row.wodate.wodate1 + ``;
                         }
                     },
+                    {data: "license_number", className: 'uid'},
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'uid'},
                     {data: "quantity", "sortable": false,

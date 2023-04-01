@@ -125,7 +125,7 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
                 window.open(
-                    base_url+"/printdoc/pbj/print/"+selected_data.id,
+                    base_url+"/transaction/pbj/print/"+selected_data.id,
                     '_blank'
                 );
         });

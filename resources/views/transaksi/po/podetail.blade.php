@@ -180,7 +180,7 @@
                                                                                 
                                                                                 <td>
                                                                                     @if($row->approval_date != null)
-                                                                                        <i class="fa fa-clock"></i> {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br>
+                                                                                        <i class="fa fa-clock"></i> 
                                                                                         ({{ formatDateTime($row->approval_date) }})
                                                                                     @endif
                                                                                 </td>
@@ -195,6 +195,12 @@
 
                                                         <div class="tab-pane fade" id="custom-content-above-cost" role="tabpanel" aria-labelledby="custom-content-above-cost-tab">
                                                             <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <label for="top">Term of Payment</label>
+                                                                    <input type="text" class="form-control" name="termofpayment" value="{{ $pohdr->tf_top }}">
+                                                                </div>
+                                                                <hr>
+
                                                                 <div class="col-lg-4 col-md-12 mb-2">
                                                                     <label for="PPn">PPN</label>
                                                                     <select name="ppn" id="ppn" class="form-control form-sm">

@@ -19,6 +19,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save',                  'Config\GeneralSettingController@save')->middleware('checkAuth:general/setting');
         Route::post('/savetheme',             'Config\GeneralSettingController@saveAppTheme')->middleware('checkAuth:general/setting');
         Route::post('/savebgimg',             'Config\GeneralSettingController@saveBgImage')->middleware('checkAuth:general/setting');
+        Route::post('/saveaddress',           'Config\GeneralSettingController@saveAddress')->middleware('checkAuth:general/setting');
     });
 
     Route::group(['prefix' => '/config/users'], function () {
