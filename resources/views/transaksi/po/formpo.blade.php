@@ -206,14 +206,16 @@
         <br>
         <table>
             <tr>
-                <td>Purchasing Manager, {{ $imagePath }}</td>
+                <td>Purchasing Manager, {{ $imagePath }}{{ Auth::user()->s_signfile ?? '' }}</td>
             </tr>
             <tr>
                 <td>
                     @if($pohdr->approvestat == "A")
                     @if(checkIsLocalhost())
+                    A
                     <img src="{{ public_path(Auth::user()->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                     @else
+                    B
                     <img src="{{ $imagePath }}{{ Auth::user()->s_signfile ?? '' }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                     @endif
                     @endif
