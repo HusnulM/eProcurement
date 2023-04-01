@@ -225,29 +225,31 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table id="tbl-pr-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                            <thead>
-                                <th></th>
-                                <th>Nomor PR</th>
-                                <th>Tanggal PR</th>
-                                <th>Part Number</th>
-                                <th>Part Name</th>
-                                <th>Quantity</th>
-                                <th>Quantity PO</th>
-                                <th>Open Quantity</th>
-                                <th>Unit</th>
-                                <th>Request By</th>
-                                <th>Department</th>
-                                <th>No. Plat</th>
-                                <th>Remark</th>
-                                <th style="width:50px; text-align:center;">
-                                    
-                                </th>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>  
+                        <div class="table-responsive">
+                            <table id="tbl-pr-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                <thead>
+                                    <th></th>
+                                    <th>Nomor PR</th>
+                                    <th>Tanggal PR</th>
+                                    <th>Part Number</th>
+                                    <th>Part Name</th>
+                                    <th>Quantity</th>
+                                    <th>Quantity PO</th>
+                                    <th>Open Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Request By</th>
+                                    <th>Department</th>
+                                    <th>No. Plat</th>
+                                    <th>Remark</th>
+                                    <th style="width:50px; text-align:center;">
+                                        
+                                    </th>
+                                </thead>
+                                <tbody>
+    
+                                </tbody>
+                            </table>  
+                        </div>
                     </div> 
                 </div>
             </div>
