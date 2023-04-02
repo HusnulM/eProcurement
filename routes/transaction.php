@@ -75,7 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update/{p1}',    'Transaksi\PurchaseRequestController@update')->middleware('checkAuth:proc/pr');
 
         Route::get('/listpr',          'Transaksi\PurchaseRequestController@listPR')->middleware('checkAuth:proc/pr');  
-        Route::get('/printlist',       'Transaksi\PrintDocumentController@printprlist')->middleware('checkAuth:proc/po');
+        Route::get('/printlist',       'Transaksi\PrintDocumentController@printprlist')->middleware('checkAuth:proc/pr');
         Route::get('/print/{p1}',      'Transaksi\PrintDocumentController@printpr')->middleware('checkAuth:proc/pr'); 
         Route::get('/listapprovedpbj', 'Transaksi\PurchaseRequestController@listApprovedPbj')->middleware('checkAuth:proc/pr');
         Route::get('/detail/{p1}',     'Transaksi\PrintDocumentController@prdetail')->middleware('checkAuth:proc/pr');   
