@@ -156,7 +156,7 @@
                                                         
                                                         <td>
                                                             @if($row->approval_date != null)
-                                                                <i class="fa fa-clock"></i> {{\Carbon\Carbon::parse($row->approval_date)->diffForHumans()}} <br>
+                                                                <i class="fa fa-clock"></i>
                                                                 ({{ formatDateTime($row->approval_date) }})
                                                             @endif
                                                         </td>

@@ -24,6 +24,33 @@ class PbjController extends Controller
         return view('transaksi.pbj.create', ['mekanik' => $mekanik, 'department' => $department, 'cklist' => $cklist, 'kendaraan' => $kendaraan]);
     }
 
+    public function changePBJ($id){
+        $pbjhdr = DB::table('t_pbj01')->where('id', $id)->first();
+        if($pbjhdr){
+            $pbjitem     = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
+            $department  = DB::table('t_department')->get();
+            $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
+            $mekanik     = DB::table('t_mekanik')->get();
+
+            $approvals   = DB::table('v_pbj_approval')
+            ->where('pbjnumber', $pbjhdr->pbjnumber)
+            ->orderBy('approver_level','asc')
+            ->orderBy('pbjitem', 'asc')
+            ->get();
+            return view('transaksi.pbj.change', 
+                [
+                    'department'  => $department, 
+                    'pbjhdr'      => $pbjhdr, 
+                    'pbjitem'     => $pbjitem,
+                    'attachments' => $attachments, 
+                    'approvals'   => $approvals,
+                    'mekanik'     => $mekanik
+                ]);
+        }else{
+            return Redirect::to("/transaction/pbj")->withError('Dokumen PBJ tidak ditemukan');
+        }
+    }
+
     public function list(){
         $department = DB::table('t_department')->get();
         return view('transaksi.pbj.list', ['department' => $department]);

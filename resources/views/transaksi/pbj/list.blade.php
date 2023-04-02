@@ -105,9 +105,10 @@
                     `
                     <button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
                     <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> Detail</button>
+                    <button class='btn btn-primary btn-sm button-change'> <i class='fa fa-edit'></i> Change</button>
                     `,
                     "className": "text-center",
-                    "width": "10%"
+                    "width": "20%"
                 }
             ]  
         });
@@ -129,6 +130,14 @@
                     '_blank'
                 );
         });
+
+        $('#tbl-pbj-list tbody').on( 'click', '.button-change', function () {  
+            var table = $('#tbl-pbj-list').DataTable();
+            selected_data = [];
+            selected_data = table.row($(this).closest('tr')).data();
+            window.location = "/transaction/pbj/change/"+selected_data.id;
+        });
+                          
                         
 
         $('.inputNumber').on('change', function(){

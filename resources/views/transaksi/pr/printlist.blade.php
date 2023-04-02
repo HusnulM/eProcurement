@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Print PR')
+@section('title', 'List PR')
 
 @section('additional-css')
 @endsection
@@ -135,7 +135,7 @@
             $("#tbl-budget-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/printdoc/pr/printlist'+_params,
+                    url: base_url+'/proc/pr/printlist'+_params,
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -190,11 +190,16 @@
                         `
                         <button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
                         <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> View Detail</button>
+                        <button class='btn btn-primary btn-sm button-change'> <i class='fa fa-edit'></i> Change</button>
+                        
                         `,
                         "className": "text-center",
+                        "width": "20%"
                     }
                 ]  
             });
+
+            // <button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> Delete</button>
 
             $('#tbl-budget-list tbody').on( 'click', '.button-print', function () {                
                 var table = $('#tbl-budget-list').DataTable();
@@ -203,23 +208,31 @@
                 // window.location = base_url+"/proc/pr/print";
                 // if(selected_data.doctype === "Corporate Procedure"){
                     window.open(
-                        base_url+"/printdoc/pr/print/"+selected_data.id,
+                        base_url+"/proc/pr/print/"+selected_data.id,
                         '_blank' // <- This is what makes it open in a new window.
                     );
                 // }
             });
 
+            // $('#tbl-budget-list tbody').on( 'click', '.button-delete', function () {                
+            //     var table = $('#tbl-budget-list').DataTable();
+            //     selected_data = [];
+            //     selected_data = table.row($(this).closest('tr')).data();
+            //     window.location = "/proc/pr/delete/"+selected_data.id;
+            // });
+
             $('#tbl-budget-list tbody').on( 'click', '.button-detail', function () {                
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                window.location = "/printdoc/pr/detail/"+selected_data.id;
-                // if(selected_data.doctype === "Corporate Procedure"){
-                    // window.open(
-                    //     base_url+"/printdoc/pr/print/"+selected_data.id,
-                    //     '_blank' // <- This is what makes it open in a new window.
-                    // );
-                // }
+                window.location = "/proc/pr/detail/"+selected_data.id;
+            });
+
+            $('#tbl-budget-list tbody').on( 'click', '.button-change', function () {                
+                var table = $('#tbl-budget-list').DataTable();
+                selected_data = [];
+                selected_data = table.row($(this).closest('tr')).data();
+                window.location = "/proc/pr/change/"+selected_data.id;
             });
         }
         

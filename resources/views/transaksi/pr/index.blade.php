@@ -17,7 +17,7 @@
 
 @section('content')        
 <div class="container-fluid">
-    <form action="{{ url('proc/pr/save') }}" method="post" enctype="multipart/form-data">
+    <form id="form-submit-data" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -25,8 +25,8 @@
                     <div class="card-header">
                         <h3 class="card-title">Purchase Request</h3>
                         <div class="card-tools">
-                            <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
-                                <i class="fas fa-save"></i> Buat Purchase Request
+                            <button type="submit" class="btn btn-primary btn-sm btn-save-pr">
+                                <i class="fas fa-save"></i> Simpan Purchase Request
                             </button>
                             <a href="{{ url('/proc/pr/listpr') }}" class="btn btn-success btn-sm">
                                 <i class="fa fa-list"></i> List PR
@@ -373,6 +373,8 @@
                     selected_pbj_items.push(selected_data);
                     console.log(selected_pbj_items);
                     fCount = fCount + 1;
+                    var _qty = selected_data.openqty;
+                    _qty     = _qty.replace('.000', '');
                     $('#tbl-pbj-body').append(`
                         <tr>
                             <td>
@@ -382,7 +384,7 @@
                             </td>
                             
                             <td>
-                                <input type="text" name="quantity[]" class="form-control inputNumber" value="`+selected_data.openqty+`" required>
+                                <input type="text" name="quantity[]" class="form-control inputNumber" value="`+_qty+`" style="text-align:right;" required>
                             </td>
                             <td>
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control" value="`+selected_data.unit+`" readonly>
@@ -456,6 +458,50 @@
             });
 
         }
+
+        // action="{{ url('proc/pr/save') }}"
+        $('#form-submit-data').on('submit', function(event){
+            event.preventDefault();
+            var formData = new FormData(this);
+            console.log($(this).serialize())
+            $.ajax({
+                url:base_url+'/proc/pr/save',
+                method:'post',
+                data:formData,
+                dataType:'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend:function(){
+                    $('.btn-save-pr').attr('disabled','disabled');
+                    // showBasicMessage();
+                },
+                success:function(data)
+                {
+
+                },
+                error:function(error){
+                    toastr.error(error)
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
+                }
+            }).done(function(result){
+                console.log(result)
+                if(result.msgtype === "200"){
+                    toastr.success(result.message)
+                    setTimeout(function(){ 
+                        window.location.href = base_url+'/proc/pr';
+                    }, 2000);
+                }else{
+                    toastr.error(result.message)
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
+                }
+            }) ;
+            
+        });
     });
 </script>
 @endsection
