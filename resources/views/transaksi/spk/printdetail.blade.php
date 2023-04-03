@@ -59,7 +59,7 @@
                                         <div class="form-group">
                                             <label for="mekanik">Mekanik</label>
                                             <select name="mekanik" id="find-mekanik" class="form-control" required>
-                                                <option value="{{ $spkhdr->mekanik }}">{{ $mekanik->nama }}</option>
+                                                <option value="{{ $spkhdr->mekanik }}">{{ $spkhdr->mekanik }}</option>
                                             </select>
                                         </div>
                                     </div>

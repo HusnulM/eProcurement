@@ -178,7 +178,7 @@ class PrintDocumentController extends Controller
 
     public function wodetail($id){
         // return view('transaksi.spk.printlist');
-        $wohdr = DB::table('t_wo01')->where('id', $id)->first();
+        $wohdr = DB::table('v_spk01')->where('id', $id)->first();
         if($wohdr){
             $woitem     = DB::table('t_wo02')->where('wonum', $wohdr->wonum)->get();
             $mekanik    = DB::table('t_mekanik')->where('id', $wohdr->mekanik)->first();

@@ -109,7 +109,7 @@
                         }
                     },
                     {data: "description", className: 'uid'},
-                    {data: "nama_mekanik", className: 'uid'},
+                    {data: "mekanik", className: 'uid'},
                     {data: "whsname", className: 'uid'},
                     {data: "license_number", className: 'uid'},
                     {data: "schedule_type", className: 'uid'},
