@@ -111,7 +111,7 @@ class SpkController extends Controller
     public function listdatawo(Request $request){
         $query = DB::table('v_spk01');
 
-        // $query->where('createdby', Auth::user()->email);
+        $query->where('createdby', Auth::user()->email);
 
         $query->orderBy('id', 'DESC');
 
