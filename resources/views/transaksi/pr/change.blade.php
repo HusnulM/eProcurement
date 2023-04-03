@@ -433,6 +433,11 @@
                         setTimeout(function(){ 
                             window.location.href = base_url+'/proc/pr/change/{{ $prhdr->id }}';
                         }, 2000);
+                    }else{
+                        toastr.error(response.message);
+                        setTimeout(function(){ 
+                            location.reload();
+                        }, 2000);
                     }
                 },
                 error: function(error) {

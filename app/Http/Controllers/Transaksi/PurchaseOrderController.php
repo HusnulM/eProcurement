@@ -223,6 +223,17 @@ class PurchaseOrderController extends Controller
             $pohdr = DB::table('t_po01')->where('id', $poid)->first();
             $ptaNumber = $pohdr->ponum;
 
+            $checkApproval = DB::table('v_po_approval')
+                ->where('ponum', $ptaNumber)->where('approval_status', 'A')->first();
+            
+            if($checkApproval){
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'PO : '. $ptaNumber . ' sudah di approve, data tidak bisa diupdate'
+                );
+                return $result;
+            }
+
             DB::table('t_po01')->where('id', $poid)->update([
                 'deptid'            => $req['department'],
                 'podat'             => $req['tglreq'],

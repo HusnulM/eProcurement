@@ -319,9 +319,22 @@ class SpkController extends Controller
     public function update(Request $req, $woid){
         DB::beginTransaction();
         try{
-            $wodata = DB::table('t_wo01')->where('id', $woid)->first();
 
+            
+            $wodata = DB::table('t_wo01')->where('id', $woid)->first();
             $ptaNumber = $wodata->wonum;
+            $checkApproval = DB::table('v_wo_approval')
+                ->where('wonum', $wodata->wonum)->where('approval_status', 'A')->first();
+            
+            if($checkApproval){
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'WO : '. $ptaNumber . ' sudah di approve, data tidak bisa diupdate'
+                );
+                return $result;
+            }
+
+            
 
             // return $ptaNumber;
 
@@ -375,7 +388,7 @@ class SpkController extends Controller
                     // return Redirect::to("/logistic/wo")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
                 }
 
-                if($pritem[$i]){
+                if($woitem[$i]){
                     $count = $woitem[$i];
                 }else{
                     $count += 1;
@@ -429,10 +442,52 @@ class SpkController extends Controller
                 }
             }
 
+            $approval = DB::table('v_workflow_budget')->where('object', 'SPK')->where('requester', Auth::user()->id)->get();
+            if(sizeof($approval) > 0){
+                
+                for($a = 0; $a < sizeof($woItems); $a++){
+                    $checkData = DB::table('t_wo_approval')
+                        ->where('wonum',$ptaNumber)->where('woitem', $woItems[$a]['woitem'])->first();
+                    if(!$checkData){
+                        $insertApproval = array();
+                        foreach($approval as $row){
+                            $is_active = 'N';
+                            if($row->approver_level == 1){
+                                $is_active = 'Y';
+                            }
+                            $approvals = array(
+                                'wonum'             => $ptaNumber,
+                                'woitem'            => $woItems[$a]['woitem'],
+                                'approver_level'    => $row->approver_level,
+                                'approver'          => $row->approver,
+                                'creator'           => Auth::user()->id,
+                                'is_active'         => $is_active,
+                                'createdon'         => getLocalDatabaseDateTime()
+                            );
+                            array_push($insertApproval, $approvals);
+                        }
+                        insertOrUpdate($insertApproval,'t_wo_approval');
+                    }
+                }
+            }else{
+                // DB::rollBack();
+                // return Redirect::to("/logistic/wo")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
+            }
+
             DB::commit();
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'WO : '. $ptaNumber . ' berhasil diupdate'
+            );
+            return $result;
             // return Redirect::to("/logistic/wo")->withSuccess('WO Berhasil dibuat dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
             DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
             // return Redirect::to("/logistic/wo")->withError($e->getMessage());
             // dd($e->getMessage());
         }
@@ -444,6 +499,13 @@ class SpkController extends Controller
             $prhdr = DB::table('t_wo01')->where('id', $id)->first();
             $pbjdoc = DB::table('t_wo02')
                         ->where('wonum', $prhdr->wonum)->get();
+
+            $checkApproval = DB::table('v_wo_approval')
+                        ->where('wonum', $prhdr->wonum)->where('approval_status', 'A')->first();
+                    
+            if($checkApproval){
+                return Redirect::to("/logistic/wo/listwo")->withError('WO : '. $prhdr->wonum . ' sudah di approve, data tidak bisa dihapus');   
+            }                        
 
             DB::table('t_wo01')->where('id', $id)->delete();
             DB::table('t_attachments')->where('doc_object', 'SPK')->where('doc_number',$prhdr->wonum)->delete();
@@ -465,6 +527,61 @@ class SpkController extends Controller
         }catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/logistic/wo/listwo")->withError($e->getMessage());
+            // dd($e->getMessage());
+        }
+    }
+
+    public function deleteWOItem(Request $req){
+        DB::beginTransaction();
+        try{
+            $checkApproval = DB::table('v_wo_approval')
+                ->where('wonum', $req['wonum'])->where('approval_status', 'A')->first();
+            
+            if($checkApproval){
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'WO : '. $req['wonum'] . ' sudah di approve, data tidak bisa dihapus'
+                );
+                return $result;
+            }
+
+            $pbjdoc = DB::table('t_wo02')
+                        ->where('wonum', $req['wonum'])
+                        ->where('woitem', $req['woitem'])->get();
+
+            // $prhdr = DB::table('t_pr01')->where('prnum', $req['prnum'])->first();
+            // DB::table('t_pr02')->where('prnum', $req['prnum'])->where('pritem', $req['pritem'])->update([
+            //     'isdeleted' => 'Y'
+            // ]);
+            DB::table('t_wo02')->where('wonum', $req['wonum'])->where('woitem', $req['woitem'])->delete();
+            // DB::table('t_pr_approval')->where('prnum', $prhdr->prnum)->delete();
+
+            foreach($pbjdoc as $row){
+                DB::table('t_pbj02')
+                    ->where('pbjnumber', $row->refdoc)
+                    ->where('pbjitem', $row->refdocitem)->update([
+                        'wocreated' => 'N'
+                ]);
+
+                // DB::commit();
+            }
+
+            DB::commit();
+
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'Item WO : '. $req['wonum'] . ' - ' . $req['woitem'] . ' berhasil dihapus'
+            );
+            // return Redirect::to("/approve/pr")->withSuccess('PR dengan Nomor : '. $ptaNumber . ' berhasil di approve');
+            return $result;
+        } catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+            // return Redirect::to("/proc/pr")->withError($e->getMessage());
             // dd($e->getMessage());
         }
     }

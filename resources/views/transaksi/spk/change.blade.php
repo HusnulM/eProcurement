@@ -17,7 +17,8 @@
 
 @section('content')        
 <div class="container-fluid">
-    <form action="{{ url('logistic/wo/update') }}" method="post" enctype="multipart/form-data">
+    {{-- action="{{ url('logistic/wo/update') }}" --}}
+    <form id="form-submit-data" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -29,7 +30,7 @@
                                 <i class="fa fa-arrow-left"></i> Back
                             </a>
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
-                                <i class="fas fa-save"></i> Save Work Order
+                                <i class="fas fa-save"></i> Update Work Order
                             </button>
                             <a href="{{ url('/logistic/wo/delete') }}/{{ $prhdr->id }}" class="btn btn-danger btn-sm">
                                 <i class="fa fa-trash"></i> Delete Work Order
@@ -134,7 +135,7 @@
                                                         <input type="hidden" name="pbjitm[]" class="form-control" value="{{ $row->refdocitem }}">        
                                                     </td>
                                                     <td style="text-align:center;">
-                                                        <button type="button" class="btn btn-danger btn-sm btn-delete-woitem">
+                                                        <button type="button" class="btn btn-danger btn-sm btn-delete-woitem" data-wonum="{{ $row->wonum }}" data-woitem="{{ $row->woitem }}">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </td>
@@ -222,6 +223,54 @@
 
         var fCount = 0;
         
+        $('.btn-delete-woitem').on('click', function(){
+            var _adata = $(this).data();
+            console.log(_adata)
+            // let _token   = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                url: base_url+'/logistic/wo/deleteitem',
+                type:"POST",
+                data:{
+                    wonum: _adata.wonum,
+                    woitem: _adata.woitem,
+                    _token: _token
+                },
+                beforeSend:function(){
+                    $('.btn-delete-item').attr('disabled','disabled');
+                    // showBasicMessage();
+                },
+                success:function(response){
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        // if(_action === "A"){
+                        toastr.success(response.message)
+                        // }else if(_action === "R"){
+                        //     toastr.success(response.message)
+                        // }                        
+                        // $(this).closest("tr").remove();
+                        setTimeout(function(){ 
+                            window.location.href = base_url+'/logistic/wo/change/{{ $prhdr->id }}';
+                        }, 2000);
+                    }else{
+                        toastr.error(response.message);
+                        setTimeout(function(){ 
+                            location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    toastr.error(error)
+
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
+                }
+            }).done(function(response){
+                console.log(response);
+                // $(this).closest("tr").remove();
+            });
+        });
 
         $(document).on('select2:open', (event) => {
             const searchField = document.querySelector(
@@ -403,6 +452,8 @@
                         selected_pbj_items.push(selected_data);
                         console.log(selected_pbj_items);
                         fCount = fCount + 1;
+                        var selQty = selected_data.quantity;
+                        selQty = selQty.replace('.000','');
                         $('#tbl-pbj-body').append(`
                             <tr>
                                 <td>
@@ -411,17 +462,20 @@
                                     <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.description +`" readonly>
                                 </td>
                                 <td>
-                                    <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ selected_data.quantity +`" onkeypress="`+validate(event)+`" required>
+                                    <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ selQty +`" style="text-align:right;" onkeypress="`+validate(event)+`" required>
                                 </td>
                                 <td>
-                                    <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" readonly class="form-control">
+                                    `+ selected_data.unit +`
+                                    <input type="hidden" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" readonly class="form-control">
                                     </td>
                                 <td>
-                                    <input type="text" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`" readonly>
-                                    <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">        
+                                    `+selected_data.pbjnumber+`
+                                    <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`" readonly>
+                                    <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">     
+                                    <input type="hidden" name="woitem[]" class="form-control">   
                                 </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
+                                <td style="text-align:center;">
+                                    <button type="button" class="btn btn-sm btn-danger" id="btnRemove`+fCount+`">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
@@ -485,6 +539,50 @@
             }
 
         }
+
+        $('#form-submit-data').on('submit', function(event){
+            event.preventDefault();
+            // action="{{ url('proc/pr/update') }}/{{ $prhdr->id }}" 
+            var formData = new FormData(this);
+            console.log($(this).serialize())
+            $.ajax({
+                url:base_url+'/logistic/wo/update/{{ $prhdr->id }}',
+                method:'post',
+                data:formData,
+                dataType:'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend:function(){
+                    $('.btn-update-pr').attr('disabled','disabled');
+                    // showBasicMessage();
+                },
+                success:function(data)
+                {
+
+                },
+                error:function(error){
+                    toastr.error(error)
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
+                }
+            }).done(function(result){
+                console.log(result)
+                if(result.msgtype === "200"){
+                    toastr.success(result.message)
+                    setTimeout(function(){ 
+                        window.location.href = base_url+'/logistic/wo/change/{{ $prhdr->id }}';
+                    }, 2000);
+                }else{
+                    toastr.error(result.message)
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
+                }
+            }) ;
+            
+        });
     });
 </script>
 @endsection

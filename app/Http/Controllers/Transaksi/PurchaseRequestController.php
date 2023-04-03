@@ -202,13 +202,23 @@ class PurchaseRequestController extends Controller
 
             $prhdr = DB::table('t_pr01')->where('id', $prid)->first();
 
+
             $tgl   = substr($req['tglreq'], 8, 2);
             $bulan = substr($req['tglreq'], 5, 2);
             $tahun = substr($req['tglreq'], 0, 4);
             // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
             $ptaNumber = $prhdr->prnum;
 
-            // return $ptaNumber;
+            $checkApproval = DB::table('v_pr_approval')
+                ->where('prnum', $ptaNumber)->where('approval_status', 'A')->first();
+            
+            if($checkApproval){
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'PR : '. $ptaNumber . ' sudah di approve, data tidak bisa diupdate'
+                );
+                return $result;
+            }
 
             // $amount = $req['nominal'];
             // $amount = str_replace(',','',$amount);
@@ -364,6 +374,13 @@ class PurchaseRequestController extends Controller
             $pbjdoc = DB::table('t_pr02')
                         ->where('prnum', $prhdr->prnum)->get();
 
+            $checkApproval = DB::table('v_pr_approval')
+                        ->where('prnum', $prhdr->prnum)->where('approval_status', 'A')->first();
+                        
+            if($checkApproval){
+                return Redirect::to("/proc/pr/listpr")->withError('PR : '. $prhdr->prnum . ' sudah di approve, data tidak bisa dihapus');
+            }
+                        
             DB::table('t_pr01')->where('id', $id)->delete();
             DB::table('t_attachments')->where('doc_object', 'PR')->where('doc_number',$prhdr->prnum)->delete();
             DB::table('t_pr_approval')->where('prnum', $prhdr->prnum)->delete();
@@ -391,6 +408,17 @@ class PurchaseRequestController extends Controller
     public function deletePRItem(Request $req){
         DB::beginTransaction();
         try{
+            $checkApproval = DB::table('v_pr_approval')
+                ->where('prnum', $req['prnum'])->where('approval_status', 'A')->first();
+            
+            if($checkApproval){
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'PR : '. $req['prnum'] . ' sudah di approve, data tidak bisa dihapus'
+                );
+                return $result;
+            }
+
             $pbjdoc = DB::table('t_pr02')
                         ->where('prnum', $req['prnum'])
                         ->where('pritem', $req['pritem'])->get();
