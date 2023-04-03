@@ -144,7 +144,7 @@
                 // window.location = base_url+"/proc/pr/print";
                 // if(selected_data.doctype === "Corporate Procedure"){
                     window.open(
-                        base_url+"/printdoc/wo/print/"+selected_data.id,
+                        base_url+"/logistic/wo/print/"+selected_data.id,
                         '_blank' // <- This is what makes it open in a new window.
                     );
                 // }

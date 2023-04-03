@@ -138,5 +138,20 @@
             @endforeach
         </tbody>
     </table>
+
+    <br>
+        <table>
+            <tr>
+                <td>Plant Manager,</td>
+            </tr>
+            <tr>
+                <td>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>____________________</td>
+            </tr>
+        </table>
 </body>
 </html>

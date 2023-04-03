@@ -144,8 +144,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listwo',          'Transaksi\SpkController@listwoview')->middleware('checkAuth:logistic/wo');
         Route::get('/listdatawo',      'Transaksi\SpkController@listdatawo'); //->middleware('checkAuth:logistic/wo');
         Route::get('/detail/{p1}',     'Transaksi\SpkController@wodetail')->middleware('checkAuth:logistic/wo');   
-        Route::get('/print/{p1}',      'Transaksi\SpkController@printprlist')->middleware('checkAuth:logistic/wo');  
+        Route::get('/print/{p1}',      'Transaksi\PrintDocumentController@printwo')->middleware('checkAuth:logistic/wo');  
         Route::post('/save',           'Transaksi\SpkController@save')->middleware('checkAuth:logistic/wo');
+
+        // Route::get('/print/{p1}',   'Transaksi\PrintDocumentController@printwo')->middleware('checkAuth:printdoc/wo');
 
         Route::post('/findkendaraan',   'Transaksi\SpkController@findkendaraan'); //->middleware('checkAuth:logistic/wo');
         Route::get('/listdatawotoprocess',      'Transaksi\SpkController@listdatawotoprocess')->middleware('checkAuth:logistic/wo');
