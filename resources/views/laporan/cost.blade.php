@@ -3,6 +3,16 @@
 @section('title', 'Laporan Cost Work Order')
 
 @section('additional-css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style type="text/css">
+        .select2-container {
+            display: block
+        }
+
+        .select2-container .select2-selection--single {
+            height: 36px;
+        }
+    </style>
 @endsection
 
 @section('content')        
@@ -27,16 +37,16 @@
                             <form action="{{ url('report/exportcost') }}" method="post">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
                                         <label for="">Tanggal Work Order</label>
                                         <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
                                         <label for="">-</label>
                                         <input type="date" class="form-control" name="dateto" id="dateto" value="{{ $_GET['dateto'] ?? '' }}">
                                     </div>
                                     
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-2 col-md-6 col-sm-12">
                                         <label for="">Mekanik</label>
                                         <select name="mekanik" id="mekanik" class="form-control">
                                             <option value="All">All</option>
@@ -45,7 +55,15 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-lg-3" style="text-align:center;">
+
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="licenseNumber">No. Plat Kendaraan</label>
+                                            <select name="licenseNumber" id="find-licenseNumber" class="form-control"></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-6 col-sm-12" style="text-align:center;">
                                         <br>
                                         <button type="button" class="btn btn-default mt-2 btn-search"> 
                                             <i class="fa fa-search"></i> Filter
@@ -64,11 +82,11 @@
                             <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                 <thead>
                                     <th>No</th>
+                                    <th>No. Plat</th>
                                     <th>Nomor WO</th>
                                     <th>Item</th>
                                     <th>Tanggal WO</th>
-                                    <th>Deskripsi WO</th>
-                                    <th>No. Plat</th>
+                                    <th>Deskripsi WO</th>                                    
                                     <th>Material</th>
                                     <th>Deskripsi Material</th>
                                     <th>Quantity</th>
@@ -94,6 +112,8 @@
 @endsection
 
 @section('additional-js')
+<script src="{{ asset('/assets/js/select2.min.js') }}"></script>
+<script src="https://cdn.datatables.net/rowgroup/1.3.1/js/dataTables.rowGroup.min.js"></script>
 <script>
     function validate(evt) {
         var theEvent = evt || window.event;
@@ -115,8 +135,11 @@
 
     $(document).ready(function(){
 
+        let _token   = $('meta[name="csrf-token"]').attr('content');
+
         $('.btn-search').on('click', function(){
-            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&mekanik='+$('#mekanik').val();
+            
+            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&mekanik='+$('#mekanik').val()+'&nopol='+$('#find-licenseNumber').val();
             loadDocument(param);
         });
 
@@ -145,6 +168,7 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }  
                     },
+                    {data: "license_number", className: 'uid'},
                     {data: "wonum", className: 'uid'},
                     {data: "woitem", className: 'uid'},
                     
@@ -153,8 +177,7 @@
                             return ``+ row.wodate.wodate1 + ``;
                         }
                     },
-                    {data: "description", className: 'uid'},
-                    {data: "license_number", className: 'uid'},
+                    {data: "description", className: 'uid'},                    
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'uid'},
                     {data: "quantity", "sortable": false,
@@ -171,13 +194,121 @@
                         },
                         "className": "text-right",
                     }
-                ]  
+                ],
+                order: [[2, 'asc']],
+                rowGroup: {
+                    startRender: null,
+                    endRender: function ( rows, group ) {
+                        var data  = [];
+                        var rdata = [];
+                        rdata = rows.data()
+                        data  = rows.data()[rdata.length-1];
+
+                        console.log(rdata.length);
+                        var totalPrice = 0;
+                        for(var i = 0; i < rdata.length; i++){
+                            console.log(rdata[i].total_price.totalprice2)
+
+                            totalPrice = totalPrice*1 + rdata[i].total_price.totalprice2*1;
+                        }
+                        // var ageAvg = rows
+                        //     .data()
+                        //     .pluck(11)
+                        //     .reduce( function (a, b) {
+                        //         return a + b*1;
+                        //     }, 0) / rows.count();
+
+                        //     console.log(ageAvg)
+
+                        return $('<tr>')
+                            .append( '<td colspan="11" align="right"><b>Total Cost</b></td>' )
+                            .append( '<td style="text-align:right;"><b>'+ formatRupiah(totalPrice,'') +'</b></td>' )
+                            
+                            .append( '</tr>' );
+                        
+                        // console.log(rdata[6]);
+                        // console.log(group);
+                        // return group +' ('+rows.count()+')';
+                        // var salaryAvg = rows
+                        //     .data()
+                        //     .pluck(11)
+                        //     .reduce( function (a, b) {
+                        //         return a + b.replace(/[^\d]/g, '')*1;
+                        //     }, 0) / rows.count();
+                        // salaryAvg = $.fn.dataTable.render.number(',', '.', 0, '$').display( salaryAvg );
+        
+                        // var ageAvg = rows
+                        //     .data()
+                        //     .pluck(3)
+                        //     .reduce( function (a, b) {
+                        //         return a + b*1;
+                        //     }, 0) / rows.count();
+        
+                        // return $('<tr/>')
+                        //     .append( '<td colspan="3">Averages for '+group+'</td>' )
+                        //     .append( '<td>'+ageAvg.toFixed(0)+'</td>' )
+                        //     .append( '<td/>' )
+                        //     .append( '<td>'+salaryAvg+'</td>' );
+                    },
+                    dataSrc: 2
+                }
+                // rowGroup: {
+                //     dataSrc: 1
+                // }
             });
         }
         
 
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');
+        });
+
+        $(document).on('select2:open', (event) => {
+            const searchField = document.querySelector(
+                `.select2-search__field`,
+            );
+            if (searchField) {
+                searchField.focus();
+            }
+        });
+
+        $('#find-licenseNumber').select2({ 
+            placeholder: 'No Kendaraan',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/logistic/wo/findkendaraan',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.no_kendaraan + ' - ' + item.model_kendaraan,
+                                slug: item.model_kendaraan,
+                                id: item.no_kendaraan,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
         });
 
         function formatRupiah(angka, prefix){

@@ -365,6 +365,10 @@ class ReportsController extends Controller
             }
         }
 
+        if(isset($req->nopol)){
+            $query->where('license_number', $req->nopol);
+        }
+
         if(isset($req->datefrom) && isset($req->dateto)){
             $query->whereBetween('wodate', [$req->datefrom, $req->dateto]);
         }elseif(isset($req->datefrom)){
@@ -386,7 +390,8 @@ class ReportsController extends Controller
              ];
         })->editColumn('total_price', function ($query){
             return [
-                'totalprice' => number_format($query->total_price,0)
+                'totalprice' => number_format($query->total_price,0),
+                'totalprice2' => $query->total_price
             ];
         })
         ->toJson();

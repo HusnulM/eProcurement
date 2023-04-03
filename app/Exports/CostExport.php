@@ -27,6 +27,10 @@ class CostExport implements FromCollection, WithHeadings, WithMapping
             }
         }
 
+        if(isset($req->nopol)){
+            $query->where('license_number', $req->nopol);
+        }
+
         if(isset($req->datefrom) && isset($req->dateto)){
             $query->whereBetween('wodate', [$req->datefrom, $req->dateto]);
         }elseif(isset($req->datefrom)){
