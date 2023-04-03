@@ -151,6 +151,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listdatawotoprocess',      'Transaksi\SpkController@listdatawotoprocess')->middleware('checkAuth:logistic/wo');
         Route::get('/listapprovedpbj', 'Transaksi\SpkController@listApprovedPbj')->middleware('checkAuth:logistic/wo');
         Route::post('/saveprocess',    'Transaksi\SpkController@saveWoProcess')->middleware('checkAuth:logistic/wo');
+
+        Route::get('/change/{p1}',      'Transaksi\SpkController@changeWO')->middleware('checkAuth:logistic/wo');
+        Route::post('/update/{p1}',     'Transaksi\SpkController@update')->middleware('checkAuth:logistic/wo');
+        Route::post('/deleteitem',      'Transaksi\SpkController@deleteWOItem')->middleware('checkAuth:logistic/wo');
+        Route::get('/delete/{p1}',      'Transaksi\SpkController@deleteWO')->middleware('checkAuth:logistic/wo');
     });
     // logistic/terimapo
 });

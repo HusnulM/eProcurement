@@ -40,7 +40,9 @@
                                 <div class="form-group">
                                     <label>Description:</label> {{$prhdr->description}}
                                 </div>
-                                
+                                <div class="form-group">
+                                    <label>No. Plat:</label> {{$prhdr->license_number}}
+                                </div>
                                 <div class="form-group">
                                     <label>Warehouse:</label> {{$prhdr->whsname}}
                                 </div>

@@ -129,8 +129,10 @@
                         `
                         <button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
                         <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> View Detail</button>
+                        <button class='btn btn-primary btn-sm button-change'> <i class='fa fa-edit'></i> Change</button>
                         `,
                         "className": "text-center",
+                        "width": "20%"
                     }
                 ]  
             });
@@ -153,6 +155,19 @@
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
                 window.location = "/logistic/wo/detail/"+selected_data.id;
+                // if(selected_data.doctype === "Corporate Procedure"){
+                    // window.open(
+                    //     base_url+"/printdoc/pr/print/"+selected_data.id,
+                    //     '_blank' // <- This is what makes it open in a new window.
+                    // );
+                // }
+            });
+
+            $('#tbl-wo-list tbody').on( 'click', '.button-change', function () {                
+                var table = $('#tbl-wo-list').DataTable();
+                selected_data = [];
+                selected_data = table.row($(this).closest('tr')).data();
+                window.location = "/logistic/wo/change/"+selected_data.id;
                 // if(selected_data.doctype === "Corporate Procedure"){
                     // window.open(
                     //     base_url+"/printdoc/pr/print/"+selected_data.id,
