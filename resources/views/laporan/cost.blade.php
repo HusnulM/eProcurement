@@ -68,6 +68,9 @@
                                         <button type="button" class="btn btn-default mt-2 btn-search"> 
                                             <i class="fa fa-search"></i> Filter
                                         </button>
+                                        <button type="button" class="btn btn-default mt-2 btn-reset-filter"> 
+                                            <i class="fa fa-refresh"></i> Reset Filter
+                                        </button>
                                         <button type="submit" class="btn btn-success mt-2 btn-export"> 
                                             <i class="fa fa-download"></i> Export Data
                                         </button>
@@ -138,9 +141,25 @@
         let _token   = $('meta[name="csrf-token"]').attr('content');
 
         $('.btn-search').on('click', function(){
-            
-            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&mekanik='+$('#mekanik').val()+'&nopol='+$('#find-licenseNumber').val();
+            var nopol = $('#find-licenseNumber').val();
+            // alert(nopol)
+            if(nopol == null){
+                // alert('ok')
+                var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&mekanik='+$('#mekanik').val();
+            }else{
+                // alert('tes')
+                var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&mekanik='+$('#mekanik').val()+'&nopol='+$('#find-licenseNumber').val();
+            }
+            // alert(param)
             loadDocument(param);
+        });
+
+        $('.btn-reset-filter').on('click', function(){
+            $('#datefrom').val('');
+            $('#dateto').val('');
+            // $('#find-licenseNumber').val('');
+            $("#find-licenseNumber").select2("val", "");
+            loadDocument('');
         });
 
         loadDocument('');
@@ -211,44 +230,12 @@
 
                             totalPrice = totalPrice*1 + rdata[i].total_price.totalprice2*1;
                         }
-                        // var ageAvg = rows
-                        //     .data()
-                        //     .pluck(11)
-                        //     .reduce( function (a, b) {
-                        //         return a + b*1;
-                        //     }, 0) / rows.count();
-
-                        //     console.log(ageAvg)
 
                         return $('<tr>')
                             .append( '<td colspan="11" align="right"><b>Total Cost</b></td>' )
                             .append( '<td style="text-align:right;"><b>'+ formatRupiah(totalPrice,'') +'</b></td>' )
                             
                             .append( '</tr>' );
-                        
-                        // console.log(rdata[6]);
-                        // console.log(group);
-                        // return group +' ('+rows.count()+')';
-                        // var salaryAvg = rows
-                        //     .data()
-                        //     .pluck(11)
-                        //     .reduce( function (a, b) {
-                        //         return a + b.replace(/[^\d]/g, '')*1;
-                        //     }, 0) / rows.count();
-                        // salaryAvg = $.fn.dataTable.render.number(',', '.', 0, '$').display( salaryAvg );
-        
-                        // var ageAvg = rows
-                        //     .data()
-                        //     .pluck(3)
-                        //     .reduce( function (a, b) {
-                        //         return a + b*1;
-                        //     }, 0) / rows.count();
-        
-                        // return $('<tr/>')
-                        //     .append( '<td colspan="3">Averages for '+group+'</td>' )
-                        //     .append( '<td>'+ageAvg.toFixed(0)+'</td>' )
-                        //     .append( '<td/>' )
-                        //     .append( '<td>'+salaryAvg+'</td>' );
                     },
                     dataSrc: 2
                 }
@@ -276,6 +263,7 @@
             placeholder: 'No Kendaraan',
             width: '100%',
             minimumInputLength: 0,
+            allowClear: true,
             ajax: {
                 url: base_url + '/logistic/wo/findkendaraan',
                 dataType: 'json',
