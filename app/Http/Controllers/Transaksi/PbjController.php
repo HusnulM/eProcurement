@@ -24,6 +24,10 @@ class PbjController extends Controller
         return view('transaksi.pbj.create', ['mekanik' => $mekanik, 'department' => $department, 'cklist' => $cklist, 'kendaraan' => $kendaraan]);
     }
 
+    public function duedatepbj(){
+        return view('transaksi.pbj.duedatepbj');
+    }
+
     public function changePBJ($id){
         $pbjhdr = DB::table('t_pbj01')->where('id', $id)->first();
         if($pbjhdr){
@@ -75,6 +79,29 @@ class PbjController extends Controller
                  ->where('createdby',Auth::user()->email)
                 //  ->where('is_active','Y')
                 //  ->where('approval_status','N')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)
+        // ->editColumn('amount', function ($query){
+        //     return [
+        //         'amount1' => number_format($query->amount,0)
+        //      ];
+        // })->editColumn('approved_amount', function ($query){
+        //     return [
+        //         'amount2' => number_format($query->approved_amount,0)
+        //      ];
+        // })
+        ->toJson();
+    }
+
+    public function listDuedatePBJ(Request $request){
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('v_duedate_pbj')
+                //  ->where('createdby',Auth::user()->email)
+                 ->where('duedate','>','3')
+                 ->where('prcreated','N')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)
         // ->editColumn('amount', function ($query){

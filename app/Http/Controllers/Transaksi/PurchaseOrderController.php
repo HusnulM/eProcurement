@@ -15,6 +15,44 @@ class PurchaseOrderController extends Controller
         return view('transaksi.po.index', ['department' => $department]);
     }
 
+    public function duedate(){
+        return view('transaksi.po.duedatepo');
+    }
+
+    public function listDuedatePO(Request $request){
+        $params = $request->params;        
+        if(isset($request->params)){
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('v_po_duedate')
+                 ->where('duedate','>','3')
+                 ->where('openqty', '>', 0)
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)
+        ->editColumn('quantity', function ($query){
+            return [
+                'qty1' => number_format($query->quantity,0)
+            ];
+        })->editColumn('grqty', function ($query){
+            return [
+                'qty2' => number_format($query->grqty,0)
+            ];
+        })->editColumn('openqty', function ($query){
+            return [
+                'qty3' => number_format($query->openqty,0)
+            ];
+        })->editColumn('price', function ($query){
+            return [
+                'price1' => number_format($query->price,0)
+            ];
+        })->editColumn('podat', function ($query){
+            return [
+                'podat1' => \Carbon\Carbon::parse($query->podat)->format('d-m-Y')
+             ];
+        })
+        ->toJson();
+    }
+
     public function changePO($id){
         $department  = DB::table('t_department')->get();
         $pohdr       = DB::table('t_po01')->where('id', $id)->first();

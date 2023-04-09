@@ -20,6 +20,33 @@ class PurchaseRequestController extends Controller
         return view('transaksi.pr.printlist', ['department' => $department]);
     }
 
+    public function duedate(){
+        return view('transaksi.pr.duedatepr');
+    }
+
+    public function listDuedatePR(Request $request){
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('v_pr_duedate')
+                ->where('duedate','>','3')
+                ->where('pocreated','N')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)
+        ->editColumn('quantity', function ($query){
+            return [
+                'quantity1' => number_format($query->quantity,0)
+             ];
+        })
+        // ->editColumn('approved_amount', function ($query){
+        //     return [
+        //         'amount2' => number_format($query->approved_amount,0)
+        //      ];
+        // })
+        ->toJson();
+    }
+
     public function changePR($id){
         // return view('transaksi.pr.change');
         $department = DB::table('t_department')->get();

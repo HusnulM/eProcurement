@@ -30,6 +30,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/change/{p1}',      'Transaksi\PbjController@changePBJ')->middleware('checkAuth:transaction/pbj');
     });
 
+    Route::get('/pbj/duedatepbj',      'Transaksi\PbjController@duedatepbj')->middleware('checkAuth:pbj/duedatepbj');
+    Route::get('/pbj/duedatepbjlist',  'Transaksi\PbjController@listDuedatePBJ')->middleware('checkAuth:pbj/duedatepbj');
+    
+
     Route::group(['prefix' => '/datachecklistkendaraan'], function () {
         Route::get('/',                 'Transaksi\ChecklistKendaraanController@ViewdataCekList')->middleware('checkAuth:datachecklistkendaraan');
         Route::get('/detail/{p1}',      'Transaksi\ChecklistKendaraanController@detailCekList')->middleware('checkAuth:datachecklistkendaraan');
@@ -58,8 +62,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     
 
-    // datachecklisttidaklayak
-
     Route::group(['prefix' => '/approve/pbj'], function () {
         Route::get('/',                         'Transaksi\ApprovePbjController@index')->middleware('checkAuth:approve/pbj');
         Route::post('/save',                    'Transaksi\ApprovePbjController@save')->middleware('checkAuth:approve/pbj');
@@ -83,6 +85,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/change/{p1}',      'Transaksi\PurchaseRequestController@changePR')->middleware('checkAuth:proc/pr');
         Route::post('/deleteitem',      'Transaksi\PurchaseRequestController@deletePRItem')->middleware('checkAuth:proc/pr');
         Route::get('/delete/{p1}',      'Transaksi\PurchaseRequestController@deletePR')->middleware('checkAuth:proc/pr');
+
+        Route::get('/duedatepr',        'Transaksi\PurchaseRequestController@duedate')->middleware('checkAuth:proc/pr');
+        Route::get('/duedateprlist',    'Transaksi\PurchaseRequestController@listDuedatePR')->middleware('checkAuth:proc/pr');
     });
 
     Route::group(['prefix' => '/approve/pr'], function () {
@@ -108,6 +113,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update/{p1}',     'Transaksi\PurchaseOrderController@update')->middleware('checkAuth:proc/po');
         Route::post('/deleteitem',      'Transaksi\PurchaseOrderController@deletePOItem')->middleware('checkAuth:proc/po');
         Route::get('/delete/{p1}',      'Transaksi\PurchaseOrderController@deletePO')->middleware('checkAuth:proc/po');
+
+        Route::get('/duedatepo',        'Transaksi\PurchaseOrderController@duedate')->middleware('checkAuth:proc/po');
+        Route::get('/duedatepolist',    'Transaksi\PurchaseOrderController@listDuedatePO')->middleware('checkAuth:proc/po');
     });
 
     Route::group(['prefix' => '/approve/po'], function () {
