@@ -55,7 +55,7 @@ class EmailNotifController extends Controller
     }
 
     public function notifDueDatePO(){
-        $dept = DB::table('v_pr_duedate')
+        $dept = DB::table('v_po_duedate')
                ->select('deptid')->distinct()
                ->where('openqty','>',0)->get();
         
