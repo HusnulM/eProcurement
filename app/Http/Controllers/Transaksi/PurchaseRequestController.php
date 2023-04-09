@@ -39,11 +39,11 @@ class PurchaseRequestController extends Controller
                 'quantity1' => number_format($query->quantity,0)
              ];
         })
-        // ->editColumn('approved_amount', function ($query){
-        //     return [
-        //         'amount2' => number_format($query->approved_amount,0)
-        //      ];
-        // })
+        ->editColumn('prdate', function ($query){
+            return [
+                'prdate1' => \Carbon\Carbon::parse($query->prdate)->format('d-m-Y')
+            ];
+        })
         ->toJson();
     }
 

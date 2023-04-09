@@ -36,7 +36,7 @@
                                     <th>Description</th>
                                     <th>Quantity</th>
                                     <th>Unit</th>
-                                    {{-- <th>Department</th> --}}
+                                    <th>Department</th>
                                     <th>Status</th>
                                     <th>Remark</th>
                                     <th>Aging Days</th>
@@ -125,7 +125,7 @@
                         "className": "text-right",
                     },
                     {data: "unit"},
-                    // {data: "deptname"},
+                    {data: "deptname"},
                     {data: "approvestat", 
                         render: function (data, type, row){
                             if(row.approvestat == "O"){
