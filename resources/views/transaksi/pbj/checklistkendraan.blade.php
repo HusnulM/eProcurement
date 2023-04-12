@@ -12,6 +12,10 @@
         .select2-container .select2-selection--single {
             height: 36px;
         }
+
+        .input-error{
+            outline: 1px solid red;
+        }
     </style>
 @endsection
 
@@ -323,7 +327,7 @@
                                                                     </select>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" name="quantity[]" class="form-control inputNumber">
+                                                                    <input type="text" name="quantity[]" class="form-control inputNumber" id="qty{{ $key+1 }}" onkeypress="return isNumberKey(event)">
                                                                 </td>
                                                                 <td>
                                                                     <select name="grp2_baik_rusak[]" class="form-control">
@@ -498,6 +502,14 @@
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
 <script>    
+    function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            // if (charCode > 31 && (charCode < 48 || charCode > 57))
+            if (charCode > 31 && (charCode != 46 &&(charCode < 48 || charCode > 57)))
+                return false;
+            return true;
+    }
+
     $(document).ready(function(){
         var count = 0;
 
@@ -588,9 +600,48 @@
             return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
         }
 
-        $('.inputNumber').on('change', function(){
-            this.value = formatNumber(this.value);
+        $('.inputNumber').on('keypress', function(){
+            // alert(this.id)
+            // var inputQty = formatNumber(this.value);
+            // $('#'+this.id).val('');
+
+            // console.log(inputQty)
+
+            // setInputFilter(document.getElementById('#'+this.id), function(value) {
+            // return /^-?\d*[.,]?\d{0,2}$/.test(value); }, "Must be a currency value");
         });
+
+        
+
+        function setInputFilter(textbox, inputFilter, errMsg) {
+            ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"].forEach(function(event) {
+                textbox.addEventListener(event, function(e) {
+                if (inputFilter(this.value)) {
+                    // Accepted value
+                    if (["keydown","mousedown","focusout"].indexOf(e.type) >= 0){
+                    this.classList.remove("input-error");
+                    this.setCustomValidity("");
+                    }
+                    this.oldValue = this.value;
+                    this.oldSelectionStart = this.selectionStart;
+                    this.oldSelectionEnd = this.selectionEnd;
+                } else if (this.hasOwnProperty("oldValue")) {
+                    // Rejected value - restore the previous one
+                    this.classList.add("input-error");
+                    this.setCustomValidity(errMsg);
+                    this.reportValidity();
+                    this.value = this.oldValue;
+                    this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                } else {
+                    // Rejected value - nothing to restore
+                    this.value = "";
+                }
+                });
+            });
+        }
+
+        
+
     });
 </script>
 @endsection
