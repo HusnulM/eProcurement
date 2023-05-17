@@ -13,6 +13,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get(
+    '/down',
+    function () {
+        \Artisan::call('down');
+        dd("Done");
+        // Artisan::call( 'down', [
+        //     '--secrect' => 'allow-certain-users-to-access-the-application-using-this-secret',
+        // ] );
+
+        // dd( Artisan::output() );
+    }
+);
+
+Route::get(
+    '/up',
+    function () {
+        // Artisan::call( 'up' );
+        // dd(Artisan::output());
+        \Artisan::call('up');
+        dd("Done");
+    }
+);
+
 Route::group(['middleware' => 'guest'], function(){
     Route::group(['middleware' => 'revalidate'], function () {
         Route::get('/',              'HomeController@index')->name('login');
