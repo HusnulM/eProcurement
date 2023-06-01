@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Update Work Order')
+@section('title', 'Create Work Order')
 
 @section('additional-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -17,23 +17,19 @@
 
 @section('content')        
 <div class="container-fluid">
-    {{-- action="{{ url('logistic/wo/update') }}" --}}
-    <form id="form-submit-data" method="post" enctype="multipart/form-data">
+    <form action="{{ url('logistic/wo/save') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Update Work Order <b>[ {{ $prhdr->wonum }} ]</b></h3>
+                        <h3 class="card-title">Create Work Order | Checklist <b>( {{ $cklist->no_checklist }} )</b></h3>
                         <div class="card-tools">
-                            <a href="{{ url('/logistic/wo/listwo') }}" class="btn btn-default btn-sm">
-                                <i class="fa fa-arrow-left"></i> Back
-                            </a>
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
-                                <i class="fas fa-save"></i> Update Work Order
+                                <i class="fas fa-save"></i> Simpan Work Order
                             </button>
-                            <a href="{{ url('/logistic/wo/delete') }}/{{ $prhdr->id }}" class="btn btn-danger btn-sm">
-                                <i class="fa fa-trash"></i> Delete Work Order
+                            <a href="{{ url('/logistic/wo') }}" class="btn btn-default btn-sm">
+                                <i class="fa fa-arrow-left"></i> Back
                             </a>
                         </div>
                     </div>
@@ -44,31 +40,31 @@
                                     <div class="col-lg-9 col-md-12">
                                         <div class="form-group">
                                             <label for="descr">Description</label>
-                                            <input type="text" name="descr" class="form-control" value="{{ $prhdr->description }}" required>
+                                            <input type="text" name="descr" class="form-control" required>
+                                            <input type="hidden" name="cknumber" value="{{ $cklist->no_checklist }}">
+                                            <input type="hidden" name="ckID" value="{{ $cklist->id }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-12">
                                         <div class="form-group">
                                             <label for="servicedate">Service Date</label>
-                                            <input type="date" name="servicedate" class="form-control" value="{{ $prhdr->wodate }}" required>
+                                            <input type="date" name="servicedate" class="form-control" required>
                                         </div>
                                     </div>
                                     
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="currency">Warehouse</label>                                            
-                                            <select name="whscode" id="find-whscode" class="form-control" required>
-                                                <option value="{{ $prhdr->whscode }}">{{ $prhdr->whsname }}</option>
-                                            </select>
+                                            <select name="whscode" id="find-whscode" class="form-control" required></select>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="licenseNumber">No. Plat Kendaraan</label>
-                                            <!-- <input type="text" name="licenseNumber" class="form-control" required> -->
-                                            <select name="licenseNumber" id="find-licenseNumber" class="form-control" required>
-                                                <option value="{{ $prhdr->license_number }}">{{ $prhdr->license_number }} - {{ $kendaraan->model_kendaraan }}</option>
+                                            <!-- <input type="text" name="licenseNumber" id="find-licenseNumber" class="form-control" required> -->
+                                            <select name="licenseNumber" class="form-control" required>
+                                                <option value="{{ $kendaraan->no_kendaraan }}">{{ $kendaraan->no_kendaraan }} - {{ $kendaraan->model_kendaraan }}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -77,7 +73,7 @@
                                         <div class="form-group">
                                             <label for="schedule">Status Schedule</label>                                            
                                             <select name="schedule" id="schedule" class="form-control" required>
-                                                <option value="{{ $prhdr->schedule_type }}">{{ $prhdr->schedule_type }}</option>
+                                                <option value="">Pilih Status Schedule</option>
                                                 <option value="Schedule">Schedule</option>
                                                 <option value="Un-Schedule">Un-Schedule</option>
                                             </select>
@@ -86,7 +82,7 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="issued">Issued</label>
-                                            <input type="text" name="issued" class="form-control" value="{{ $prhdr->issued }}" required>
+                                            <input type="text" name="issued" class="form-control" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -103,10 +99,10 @@
                                         <table class="table table-sm">
                                             <thead>
                                                 <th>Part Number / Material</th>
-                                                
+                                                {{-- <th>Description</th> --}}
                                                 <th>Quantity</th>
                                                 <th>Unit</th>
-                                                <th>PBJ Number</th>
+                                                <th>Checklist Number</th>
                                                 <th style="text-align:right;">
                                                     <button type="button" class="btn btn-success btn-sm btn-select-pbj-item">
                                                         <i class="fa fa-list"></i> List Material
@@ -114,33 +110,7 @@
                                                 </th>
                                             </thead>
                                             <tbody id="tbl-pbj-body">
-                                                @foreach($pritem as $key => $row)
-                                                <tr>
-                                                    <td>
-                                                        {{ $row->material }} - {{ $row->matdesc }}
-                                                        <input type="hidden" name="parts[]" class="form-control" value="{{ $row->material }}">
-                                                        <input type="hidden" name="partdesc[]" class="form-control" value="{{ $row->matdesc }}">
-                                                        <input type="hidden" name="woitem[]" value="{{ $row->woitem }}" class="form-control">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="quantity[]" class="form-control inputNumber" value="{{ number_format($row->quantity) }}" style="text-align:right;" required>
-                                                    </td>
-                                                    <td>
-                                                        {{ $row->unit }}
-                                                        <input type="hidden" name="uoms[]" value="{{ $row->unit }}" readonly class="form-control">
-                                                    </td>
-                                                    <td>
-                                                        {{ $row->refdoc }}
-                                                        <input type="hidden" name="pbjnum[]" class="form-control" value="{{ $row->refdoc }}" readonly>
-                                                        {{-- <input type="hidden" name="pbjitm[]" class="form-control" value="{{ $row->refdocitem }}">         --}}
-                                                    </td>
-                                                    <td style="text-align:center;">
-                                                        <button type="button" class="btn btn-danger btn-sm btn-delete-woitem" data-wonum="{{ $row->wonum }}" data-woitem="{{ $row->woitem }}">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
+
                                             </tbody>
                                             <!-- <tfoot>
                                                 <tr>
@@ -258,54 +228,6 @@
 
         var fCount = 0;
         
-        $('.btn-delete-woitem').on('click', function(){
-            var _adata = $(this).data();
-            console.log(_adata)
-            // let _token   = $('meta[name="csrf-token"]').attr('content');
-            $.ajax({
-                url: base_url+'/logistic/wo/deleteitem',
-                type:"POST",
-                data:{
-                    wonum: _adata.wonum,
-                    woitem: _adata.woitem,
-                    _token: _token
-                },
-                beforeSend:function(){
-                    $('.btn-delete-item').attr('disabled','disabled');
-                    // showBasicMessage();
-                },
-                success:function(response){
-                    console.log(response);
-                    if(response.msgtype === "200"){
-                        // if(_action === "A"){
-                        toastr.success(response.message)
-                        // }else if(_action === "R"){
-                        //     toastr.success(response.message)
-                        // }                        
-                        // $(this).closest("tr").remove();
-                        setTimeout(function(){ 
-                            window.location.href = base_url+'/logistic/wo/change/{{ $prhdr->id }}';
-                        }, 2000);
-                    }else{
-                        toastr.error(response.message);
-                        setTimeout(function(){ 
-                            location.reload();
-                        }, 2000);
-                    }
-                },
-                error: function(error) {
-                    console.log(error);
-                    toastr.error(error)
-
-                    setTimeout(function(){ 
-                        location.reload();
-                    }, 2000);
-                }
-            }).done(function(response){
-                console.log(response);
-                // $(this).closest("tr").remove();
-            });
-        });
 
         $(document).on('select2:open', (event) => {
             const searchField = document.querySelector(
@@ -394,10 +316,39 @@
         });
         
         $('.btn-select-pbj-item').on('click', function(){
-            loadMaterial();            
+            loadMaterial();                     
         });
 
+        function checkPbjSelected(pbjNum, pbjItem) {
+            return selected_pbj_items.some(function(el) {
+                if(el.pbjnumber === pbjNum && el.pbjitem === pbjItem){
+                    return true;
+                }else{
+                    return false;
+                }
+            }); 
+        }
+
+        function removePbjItem(index){
+            selected_pbj_items.splice(index, 1);
+        }            
+
+        function checkSelectedMaterial(pMaterial) {
+            return selected_items.some(function(el) {
+                if(el.material === pMaterial){
+                    return true;
+                }else{
+                    return false;
+                }
+            }); 
+        }
+
+        function removeItem(index){
+            selected_items.splice(index, 1);
+        }
+
         function loadMaterial(){
+
             $('#modal-add-material').modal('show');
             $("#tbl-material-list").DataTable({
                 serverSide: true,
@@ -449,7 +400,7 @@
                                     <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                                 </td>
                                 <td>
-                                    <input type="text" name="quantity[]" class="form-control inputNumber" onkeypress="`+validate(event)+`" required>
+                                    <input type="text" name="quantity[]" style="text-align:right;" class="form-control inputNumber" onkeypress="`+validate(event)+`" required>
                                 </td>
                                 <td>
                                     <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" readonly class="form-control">
@@ -465,24 +416,24 @@
                                 </td>
                             </tr>
                         `);                    
-
+            
                         $('#btnRemove'+fCount).on('click', function(e){
                             e.preventDefault();
                             var row_index = $(this).closest("tr").index();
                             removeItem(row_index);
                             $(this).closest("tr").remove();
-
+    
                             console.log(selected_pbj_items);
                         });
-
+        
                         $('.inputNumber').on('change', function(){
                             this.value = formatRupiah(this.value,'');
                         });
-
+        
                         $('.inputNumber').on('keypress', function(e){
                             validate(e);
                         });
-
+        
                         function formatRupiah(angka, prefix){
                             var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
                             split   		  = number_string.split('.'),
@@ -498,10 +449,10 @@
                             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
                             return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
                         }
-
+        
                         function validate(evt) {
                             var theEvent = evt || window.event;
-
+        
                             // Handle paste
                             if (theEvent.type === 'paste') {
                                 key = event.clipboardData.getData('text/plain');
@@ -519,34 +470,6 @@
                 }
             });
         }
-
-        function checkSelectedMaterial(pMaterial) {
-            return selected_items.some(function(el) {
-                if(el.material === pMaterial){
-                    return true;
-                }else{
-                    return false;
-                }
-            }); 
-        }
-
-        function removeItem(index){
-            selected_items.splice(index, 1);
-        }
-
-        function checkPbjSelected(pbjNum, pbjItem) {
-            return selected_pbj_items.some(function(el) {
-                if(el.pbjnumber === pbjNum && el.pbjitem === pbjItem){
-                    return true;
-                }else{
-                    return false;
-                }
-            }); 
-        }
-
-        function removePbjItem(index){
-            selected_pbj_items.splice(index, 1);
-        }            
 
         function loadListPBJ(){
             let noPol = $('#find-licenseNumber').val();
@@ -597,20 +520,6 @@
                     bDestroy: true,
                 });
     
-                // function checkPbjSelected(pbjNum, pbjItem) {
-                //     return selected_pbj_items.some(function(el) {
-                //         if(el.pbjnumber === pbjNum && el.pbjitem === pbjItem){
-                //             return true;
-                //         }else{
-                //             return false;
-                //         }
-                //     }); 
-                // }
-    
-                // function removePbjItem(index){
-                //     selected_pbj_items.splice(index, 1);
-                // }
-    
                 $('#tbl-pbj-list tbody').on( 'click', '.button-add-pbj-to-pritem', function () {
                     var table = $('#tbl-pbj-list').DataTable();
                     selected_data = [];
@@ -623,8 +532,6 @@
                         selected_pbj_items.push(selected_data);
                         console.log(selected_pbj_items);
                         fCount = fCount + 1;
-                        var selQty = selected_data.quantity;
-                        selQty = selQty.replace('.000','');
                         $('#tbl-pbj-body').append(`
                             <tr>
                                 <td>
@@ -633,20 +540,17 @@
                                     <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.description +`" readonly>
                                 </td>
                                 <td>
-                                    <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ selQty +`" style="text-align:right;" onkeypress="`+validate(event)+`" required>
+                                    <input type="text" name="quantity[]" class="form-control inputNumber" value="`+ selected_data.quantity +`" onkeypress="`+validate(event)+`" required>
                                 </td>
                                 <td>
-                                    `+ selected_data.unit +`
-                                    <input type="hidden" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" readonly class="form-control">
+                                    <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" readonly class="form-control">
                                     </td>
                                 <td>
-                                    `+selected_data.pbjnumber+`
-                                    <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`" readonly>
-                                    <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">     
-                                    <input type="hidden" name="woitem[]" class="form-control">   
+                                    <input type="text" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`" readonly>
+                                    <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">        
                                 </td>
-                                <td style="text-align:center;">
-                                    <button type="button" class="btn btn-sm btn-danger" id="btnRemove`+fCount+`">
+                                <td>
+                                    <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
@@ -710,50 +614,6 @@
             }
 
         }
-
-        $('#form-submit-data').on('submit', function(event){
-            event.preventDefault();
-            // action="{{ url('proc/pr/update') }}/{{ $prhdr->id }}" 
-            var formData = new FormData(this);
-            console.log($(this).serialize())
-            $.ajax({
-                url:base_url+'/logistic/wo/update/{{ $prhdr->id }}',
-                method:'post',
-                data:formData,
-                dataType:'JSON',
-                contentType: false,
-                cache: false,
-                processData: false,
-                beforeSend:function(){
-                    $('.btn-update-pr').attr('disabled','disabled');
-                    // showBasicMessage();
-                },
-                success:function(data)
-                {
-
-                },
-                error:function(error){
-                    toastr.error(error)
-                    setTimeout(function(){ 
-                        location.reload();
-                    }, 2000);
-                }
-            }).done(function(result){
-                console.log(result)
-                if(result.msgtype === "200"){
-                    toastr.success(result.message)
-                    setTimeout(function(){ 
-                        window.location.href = base_url+'/logistic/wo/change/{{ $prhdr->id }}';
-                    }, 2000);
-                }else{
-                    toastr.error(result.message)
-                    setTimeout(function(){ 
-                        location.reload();
-                    }, 2000);
-                }
-            }) ;
-            
-        });
     });
 </script>
 @endsection

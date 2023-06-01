@@ -14,8 +14,8 @@
                     <h3 class="card-title"></h3>
                     <div class="card-tools">
                         
-                        <a href="{{ url('/transaction/pbj/list') }}" class="btn btn-success btn-sm">
-                            <i class="fa fa-list"></i> List PBJ
+                        <a href="{{ url('/logistic/wo/listwo') }}" class="btn btn-success btn-sm">
+                            <i class="fa fa-list"></i> List WO
                         </a>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
             serverSide: true,
             ajax: {
                 // url: base_url+'/datachecklistkendaraan/datachecklisttidaklayak',
-                url: base_url+'/transaction/pbj/datachecklisttidaklayak',
+                url: base_url+'/logistic/wo/datachecklisttidaklayak',
                 data: function (data) {
                     data.params = {
                         sac: "sac"
@@ -121,7 +121,7 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
-            window.location = base_url+"/transaction/pbj/tidaklayak/detail/"+selected_data.id;
+            window.location = base_url+"/logistic/wo/detailchecklist/"+selected_data.id;
         });
 
         $('#tbl-data-ceklist tbody').on( 'click', '.button-create-pbj', function () {
@@ -129,7 +129,7 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
-            window.location = base_url+"/transaction/pbj/create/"+selected_data.id;
+            window.location = base_url+"/logistic/wo/create/"+selected_data.id;
         });
 
         // $('#tbl-pbj-list tbody').on( 'click', '.button-print', function () {    

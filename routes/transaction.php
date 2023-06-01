@@ -153,6 +153,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => '/logistic/wo'], function () {
         Route::get('/',                'Transaksi\SpkController@index')->middleware('checkAuth:logistic/wo');
+        Route::get('/create/{p1}',     'Transaksi\SpkController@create')->middleware('checkAuth:logistic/wo');
+        Route::get('/detailchecklist/{p1}', 'Transaksi\SpkController@detailChecklist')->middleware('checkAuth:logistic/wo');
         Route::get('/process',         'Transaksi\SpkController@processWO')->middleware('checkAuth:logistic/wo');
         Route::get('/listwo',          'Transaksi\SpkController@listwoview')->middleware('checkAuth:logistic/wo');
         Route::get('/listdatawo',      'Transaksi\SpkController@listdatawo'); //->middleware('checkAuth:logistic/wo');
@@ -162,6 +164,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         // Route::get('/print/{p1}',   'Transaksi\PrintDocumentController@printwo')->middleware('checkAuth:printdoc/wo');
 
+        Route::get('/datachecklisttidaklayak', 'Transaksi\SpkController@dataCekListTidakLayak')->middleware('checkAuth:logistic/wo');
         Route::post('/findkendaraan',   'Transaksi\SpkController@findkendaraan'); //->middleware('checkAuth:logistic/wo');
         Route::get('/listdatawotoprocess',      'Transaksi\SpkController@listdatawotoprocess')->middleware('checkAuth:logistic/wo');
         Route::get('/listapprovedpbj', 'Transaksi\SpkController@listApprovedPbj')->middleware('checkAuth:logistic/wo');

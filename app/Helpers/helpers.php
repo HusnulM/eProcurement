@@ -195,9 +195,9 @@ function generateCheckListNumber($tahun, $bulan){
             $lastnum = ($getdata->current_number*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $lastnum; 
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2). $bulan .'-'. $lastnum; 
             }else{
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $leadingZero . $lastnum; 
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2). $bulan .'-'. $leadingZero . $lastnum; 
             }
 
             DB::table('dcn_nriv')->where('year', $tahun)->where('month', $bulan)->where('object','CKL')->update([
@@ -211,7 +211,7 @@ function generateCheckListNumber($tahun, $bulan){
             return null;
         }
     }else{
-        $dcnNumber = $doctype . '-' .substr(date('Y'),2).'-000001';
+        $dcnNumber = $doctype . '-' .substr(date('Y'),2).$bulan.'-000001';
         DB::beginTransaction();
         try{
             DB::table('dcn_nriv')->insert([

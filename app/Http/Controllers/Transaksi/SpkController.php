@@ -11,7 +11,50 @@ use PDF;
 class SpkController extends Controller
 {
     public function index(){
-        return view('transaksi.spk.create');
+        return view('transaksi.spk.listchecklist');
+    }
+
+    public function create($ckID){
+        $mekanik    = DB::table('t_mekanik')->get();
+        $department = DB::table('t_department')->get();
+        $cklist     = DB::table('v_checklist_kendaraan')->where('id', $ckID)->first();
+        $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
+        // return $cklist;
+        return view('transaksi.spk.createwo',
+            [
+                'mekanik'    => $mekanik, 
+                'department' => $department, 
+                'cklist'     => $cklist, 
+                'kendaraan'  => $kendaraan
+            ]
+        );
+    }
+
+    public function detailChecklist($id){
+        $header = DB::table('v_checklist_kendaraan')->where('id', $id)->first(); 
+        $group1 = DB::table('t_ck_administrasi')->where('no_checklist', $header->no_checklist)->get();
+        // return $header;
+        $group2 = DB::table('t_ck_kelengkapan_kend')->where('no_checklist', $header->no_checklist)->get();
+        $group3 = DB::table('t_ck_kondisi_kend')->where('no_checklist', $header->no_checklist)->get();
+        $group4 = DB::table('t_ck_kondisi_ban')->where('no_checklist',  $header->no_checklist)->get();
+        $attachments = DB::table('t_attachments')->where('doc_object','CKL')->where('doc_number', $header->no_checklist)->get();
+        return view('transaksi.spk.detailceklisttidaklayak', 
+            [
+                'header' => $header,
+                'group1' => $group1,
+                'group2' => $group2,
+                'group3' => $group3,
+                'group4' => $group4,
+                'attachments'   => $attachments
+            ]);
+    }
+
+    public function listwoview(){
+        return view('transaksi.spk.listspk');
+    }
+
+    public function processWO(){
+        return view('transaksi.spk.process');
     }
 
     public function changeWO($id){
@@ -24,13 +67,13 @@ class SpkController extends Controller
             $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $wohdr->wonum)->get();
             // $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $prhdr->wonum)->get();
             $approvals  = DB::table('v_wo_approval')->where('wonum', $wohdr->wonum)->get();
-            
+            $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $wohdr->cheklistnumber)->first();
 
             return view('transaksi.spk.change', 
                 [
                     'prhdr'       => $wohdr, 
                     'pritem'      => $woitem,
-                    // 'mekanik'     => $mekanik,
+                    'cklist'      => $cklist,
                     'warehouse'   => $warehouse,
                     'kendaraan'   => $kendaraan,
                     'attachments' => $attachments,
@@ -41,13 +84,17 @@ class SpkController extends Controller
         }
     }
 
-    public function listwoview(){
-        return view('transaksi.spk.listspk');
+    public function dataCekListTidakLayak(Request $request){
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('v_checklist_kendaraan')->where('hasil_pemeriksaan','TIDAK LAYAK')->where('wocreated', 'N')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)->toJson();
     }
 
-    public function processWO(){
-        return view('transaksi.spk.process');
-    }
+    
 
     public function findkendaraan(Request $request){
         $query['data'] = DB::table('t_kendaraan')
@@ -164,6 +211,7 @@ class SpkController extends Controller
                 // 'last_odo_meter'    => $req['lastOdoMeter'],
                 'schedule_type'     => $req['schedule'],
                 'issued'            => $req['issued'],
+                'cheklistnumber'    => $req['cknumber'],
                 'createdon'         => date('Y-m-d H:m:s'),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);
@@ -173,7 +221,6 @@ class SpkController extends Controller
             $quantity = $req['quantity'];
             $uom      = $req['uoms'];
             $pbjnum   = $req['pbjnum'];
-            $pbjitm   = $req['pbjitm'];
 
             $insertData = array();
             $woItems    = array();
@@ -189,7 +236,7 @@ class SpkController extends Controller
                 if($latestStock){
                     if($latestStock->quantity < $qty){
                         DB::rollBack();
-                        return Redirect::to("/logistic/wo")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                        return Redirect::to("/logistic/wo/create/".$req['ckID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
                     }else{
                         // DB::table('t_inv_stock')
                         // ->where('material', $parts[$i])
@@ -200,7 +247,7 @@ class SpkController extends Controller
                     }
                 }else{
                     DB::rollBack();
-                    return Redirect::to("/logistic/wo")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                    return Redirect::to("/logistic/wo/create/".$req['ckID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
                 }
 
                 $count = $count + 1;
@@ -212,20 +259,24 @@ class SpkController extends Controller
                     'quantity'     => $qty,
                     'unit'         => $uom[$i],
                     'refdoc'       => $pbjnum[$i] ?? null,
-                    'refdocitem'   => $pbjitm[$i] ?? null,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertData, $data);
                 array_push($woItems, $data);
 
-                DB::table('t_pbj02')
-                    ->where('pbjnumber', $pbjnum[$i])
-                    ->where('pbjitem', $pbjitm[$i])->update([
-                        'wocreated' => 'Y'
-                    ]);
+                // DB::table('t_pbj02')
+                //     ->where('pbjnumber', $pbjnum[$i])
+                //     ->where('pbjitem', $pbjitm[$i])->update([
+                //         'wocreated' => 'Y'
+                //     ]);
             }
             insertOrUpdate($insertData,'t_wo02');
+
+            DB::table('t_checklist_kendaraan')->where('id', $req['ckID'])->update([
+                'wonum'     => $ptaNumber,
+                'wocreated' => 'Y'
+            ]);
 
             //Insert Attachments | t_attachments
             if(isset($req['efile'])){
@@ -279,14 +330,14 @@ class SpkController extends Controller
                 }
             }else{
                 DB::rollBack();
-                return Redirect::to("/logistic/wo")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
+                return Redirect::to("/logistic/wo/create/".$req['ckID'])->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
             }
 
             DB::commit();
             return Redirect::to("/logistic/wo")->withSuccess('WO Berhasil dibuat dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
             DB::rollBack();
-            return Redirect::to("/logistic/wo")->withError($e->getMessage());
+            return Redirect::to("/logistic/wo/create/".$req['ckID'])->withError($e->getMessage());
             // dd($e->getMessage());
         }
     }
@@ -357,7 +408,7 @@ class SpkController extends Controller
             $quantity = $req['quantity'];
             $uom      = $req['uoms'];
             $pbjnum   = $req['pbjnum'];
-            $pbjitm   = $req['pbjitm'];
+            // $pbjitm   = $req['pbjitm'];
             $woitem   = $req['woitem'];
 
             $insertData = array();
@@ -401,18 +452,18 @@ class SpkController extends Controller
                     'quantity'     => $qty,
                     'unit'         => $uom[$i],
                     'refdoc'       => $pbjnum[$i] ?? null,
-                    'refdocitem'   => $pbjitm[$i] ?? null,
+                    // 'refdocitem'   => $pbjitm[$i] ?? null,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertData, $data);
                 array_push($woItems, $data);
 
-                DB::table('t_pbj02')
-                    ->where('pbjnumber', $pbjnum[$i])
-                    ->where('pbjitem', $pbjitm[$i])->update([
-                        'wocreated' => 'Y'
-                    ]);
+                // DB::table('t_pbj02')
+                //     ->where('pbjnumber', $pbjnum[$i])
+                //     ->where('pbjitem', $pbjitm[$i])->update([
+                //         'wocreated' => 'Y'
+                //     ]);
             }
             insertOrUpdate($insertData,'t_wo02');
 
