@@ -253,10 +253,12 @@
         var count = 0;
 
         let _token   = $('meta[name="csrf-token"]').attr('content');
-        let selected_items = [];
+        let selected_items     = [];
         let selected_pbj_items = [];     
 
         var fCount = 0;
+
+        
         
         $('.btn-delete-woitem').on('click', function(){
             var _adata = $(this).data();
@@ -447,19 +449,21 @@
                                     `+selected_data.material+` - `+ selected_data.matdesc +`
                                     <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
                                     <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
+                                    <input type="hidden" name="woitem[]" class="form-control">
                                 </td>
                                 <td>
-                                    <input type="text" name="quantity[]" class="form-control inputNumber" onkeypress="`+validate(event)+`" required>
+                                    <input type="text" name="quantity[]" style="text-align:right;" class="form-control inputNumber" onkeypress="`+validate(event)+`" required>
                                 </td>
                                 <td>
-                                    <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" readonly class="form-control">
+                                    `+ selected_data.matunit +`
+                                    <input type="hidden" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" readonly class="form-control">
                                     </td>
-                                <td>
-                                    <input type="text" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="{{ $cklist->no_checklist }}" readonly>
+                                <td>`+"{{ $cklist->no_checklist }}"+`
+                                    <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="{{ $cklist->no_checklist }}" readonly>
                                     <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="">        
                                 </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
+                                <td style="text-align:center;">
+                                    <button type="button" class="btn btn-danger btn-sm" id="btnRemove`+fCount+`">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>

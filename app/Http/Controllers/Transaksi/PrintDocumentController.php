@@ -165,7 +165,17 @@ class PrintDocumentController extends Controller
         $pohdr = DB::table('v_rpo')->where('id', $id)->first();
         $podtl = DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
 
-        $pdf = PDF::loadview('transaksi.po.formpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
+        $userPO = DB::table('users')->where('email', $pohdr->createdby)->first();
+
+        $POApprover = DB::table('workflow_budget')
+                ->where('object', 'PO')
+                ->where('requester', $userPO->id)
+                ->orderBy('approver_level','DESC')
+                ->first();
+
+        $lastApprover = DB::table('users')->where('id', $POApprover->approver)->first();
+
+        $pdf = PDF::loadview('transaksi.po.formpo', ['pohdr' => $pohdr, 'poitem' => $podtl, 'lastApprover' => $lastApprover]);
         // $pdf->setOptions(['isRemoteEnabled' => true]);
         // $pdf->setProtocol($_SERVER['DOCUMENT_ROOT']);
         // $pdf = PDF::loadview('transaksi.po.printpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);

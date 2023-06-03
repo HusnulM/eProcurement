@@ -322,6 +322,16 @@ class ApproveSpkController extends Controller
                 // $tahun = substr($req['grdate'], 0, 4);
             // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
                 $ptaNumber = generateIssueNumber(date('Y'), date('m'));
+                DB::table('t_inv01')->insert([
+                    'docnum' => $ptaNumber,
+                    'docyear' => date('Y'),
+                    'docdate' => date('Y-m-d'),
+                    'postdate' => date('Y-m-d'),
+                    'movement_code' => '201',
+                    'remark' => 'Issued Work Order',
+                    'createdon'         => date('Y-m-d H:m:s'),
+                    'createdby'         => Auth::user()->email ?? Auth::user()->username
+                ]);
 
                 foreach($woitem as $row){
                     $latestStock = DB::table('v_inv_summary_stock')
@@ -357,6 +367,8 @@ class ApproveSpkController extends Controller
                             //     "'. $row->woitem .'",
                             //     "'. Auth::user()->email ?? Auth::user()->username .'"
                             // )');
+
+                            
 
                             DB::select('call spIssueMaterialWithBatchFIFO(
                                 "'. $row->material .'",

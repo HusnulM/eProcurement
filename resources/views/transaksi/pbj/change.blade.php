@@ -225,7 +225,7 @@
                                                                 <th>Unit</th>
                                                                 <th>Figure</th>
                                                                 <th>Remark</th>
-                                                                <th></th>
+                                                                {{-- <th></th> --}}
                                                             </thead>
                                                             <tbody>
                                                                 @foreach($pbjitem as $key => $row)
@@ -247,11 +247,11 @@
                                                                         <td>
                                                                             <input type="text" name="remarks[]" class="form-control" value="{{ $row->remark }}" required>
                                                                         </td>
-                                                                        <td style="text-align: center;">
+                                                                        {{-- <td style="text-align: center;">
                                                                             <button type="button" class="btn btn-danger btn-sm btn-delete-item" data-pbjnumber="{{ $row->pbjnumber }}" data-pbjitem="{{ $row->pbjitem }}">
                                                                                 <i class="fa fa-trash"></i>
                                                                             </button>
-                                                                        </td>
+                                                                        </td> --}}
                                                                     </tr>
                                                                 @endforeach
                                                             </tbody>

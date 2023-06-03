@@ -13,15 +13,26 @@ class PbjController extends Controller
         // $mekanik    = DB::table('t_mekanik')->get();
         // $department = DB::table('t_department')->get();
         // return view('transaksi.pbj.index', ['mekanik' => $mekanik, 'department' => $department]);
-        return view('transaksi.pbj.ceklisttidaklayak');
+        // return view('transaksi.pbj.ceklisttidaklayak');
+        return view('transaksi.pbj.openwo');
     }
 
     public function create($id){
+        $wodata     = DB::table('t_wo01')->where('id', $id)->first();
+        $woitems    = DB::table('t_wo02')->where('wonum', $wodata->wonum)->get();
         $mekanik    = DB::table('t_mekanik')->get();
         $department = DB::table('t_department')->get();
-        $cklist     = DB::table('v_checklist_kendaraan')->where('id', $id)->first();
+        $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $wodata->cheklistnumber)->first();
         $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
-        return view('transaksi.pbj.create', ['mekanik' => $mekanik, 'department' => $department, 'cklist' => $cklist, 'kendaraan' => $kendaraan]);
+        return view('transaksi.pbj.create', 
+            [
+                'wodata'     => $wodata,
+                'mekanik'    => $mekanik, 
+                'department' => $department, 
+                'cklist'     => $cklist, 
+                'kendaraan'  => $kendaraan,
+                'woitems'    => $woitems
+            ]);
     }
 
     public function duedatepbj(){
@@ -58,6 +69,12 @@ class PbjController extends Controller
     public function list(){
         $department = DB::table('t_department')->get();
         return view('transaksi.pbj.list', ['department' => $department]);
+    }
+
+    public function listOpenWO(){
+        $query = DB::table('v_wo_to_pbj')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)->toJson();
     }
 
     public function dataCekListTidakLayak(Request $request){
@@ -225,6 +242,14 @@ class PbjController extends Controller
                     array_push($pbjItems, $data);
                 }
                 insertOrUpdate($insertData,'t_pbj02');
+
+                DB::table('t_wo01')->where('wonum', $req['woNumber'])->update([
+                    'pbj_created' => 'Y'
+                ]);
+
+                DB::table('t_wo02')->where('wonum', $req['woNumber'])->update([
+                    'pbj_created' => 'Y'
+                ]);
                 
                 // return $pbjItems;
                 //Insert Attachments | t_attachments

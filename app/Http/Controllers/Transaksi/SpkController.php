@@ -68,7 +68,7 @@ class SpkController extends Controller
             // $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $prhdr->wonum)->get();
             $approvals  = DB::table('v_wo_approval')->where('wonum', $wohdr->wonum)->get();
             $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $wohdr->cheklistnumber)->first();
-
+            // return $woitem;
             return view('transaksi.spk.change', 
                 [
                     'prhdr'       => $wohdr, 
@@ -205,7 +205,7 @@ class SpkController extends Controller
                 'wonum'             => $ptaNumber,
                 'wodate'            => $req['servicedate'],
                 'description'       => $req['descr'],
-                // 'mekanik'           => $req['mekanik'],
+                'mekanik'           => $req['mekanik'],
                 'whscode'           => $req['whscode'],
                 'license_number'    => $req['licenseNumber'],
                 // 'last_odo_meter'    => $req['lastOdoMeter'],

@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/tidaklayak/detail/{p1}',  'Transaksi\ChecklistKendaraanController@detailCekListTidakLayak')->middleware('checkAuth:transaction/pbj');
 
         Route::get('/change/{p1}',      'Transaksi\PbjController@changePBJ')->middleware('checkAuth:transaction/pbj');
+
+        Route::get('/listopenwo', 'Transaksi\PbjController@listOpenWO')->middleware('checkAuth:transaction/pbj');
     });
 
     Route::get('/pbj/duedatepbj',      'Transaksi\PbjController@duedatepbj')->middleware('checkAuth:pbj/duedatepbj');

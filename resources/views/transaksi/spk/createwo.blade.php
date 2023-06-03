@@ -52,14 +52,25 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="currency">Warehouse</label>                                            
                                             <select name="whscode" id="find-whscode" class="form-control" required></select>
                                         </div>
                                     </div>
-
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="col-lg-3 col-md-12">
+                                        <div class="form-group">
+                                            <label for="user">Mekanik</label>
+                                            <!-- <input type="text" name="user" class="form-control"> -->
+                                            <select name="mekanik" id="mekanik" class="form-control" required>
+                                                <option value="">Pilih Mekanik</option>
+                                                @foreach($mekanik as $key => $row)
+                                                    <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="licenseNumber">No. Plat Kendaraan</label>
                                             <!-- <input type="text" name="licenseNumber" id="find-licenseNumber" class="form-control" required> -->
@@ -69,7 +80,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4 col-md-12">
+                                    <div class="col-lg-3 col-md-12">
                                         <div class="form-group">
                                             <label for="schedule">Status Schedule</label>                                            
                                             <select name="schedule" id="schedule" class="form-control" required>

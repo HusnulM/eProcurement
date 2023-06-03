@@ -23,7 +23,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Pembuatan PBJ</h3>
+                        <h3 class="card-title">Pembuatan PBJ | Work Order / SPK ({{ $wodata->wonum }})</h3>
                         <div class="card-tools">
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan PBJ
@@ -39,6 +39,7 @@
                                         <div class="form-group">
                                             <label for="tglpbj">Tanggal PBJ</label>
                                             <input type="date" name="tglpbj" class="form-control" required>
+                                            <input type="hidden" name="woNumber" value="{{ $wodata->wonum }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -171,14 +172,41 @@
                                                 <th>Unit</th>
                                                 <th>Figure</th>
                                                 <th>Remark</th>
-                                                <th style="text-align:right;">
+                                                {{-- <th style="text-align:right;">
                                                     <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
                                                         <i class="fa fa-plus"></i>
                                                     </button>
-                                                </th>
+                                                </th> --}}
                                             </thead>
                                             <tbody id="tbl-pbj-body">
-
+                                                @foreach ($woitems as $key => $row)
+                                                <tr>
+                                                    <td>
+                                                        {{ $row->material }} - {{ $row->matdesc }}
+                                                        <input type="hidden" name="parts[]" class="form-control" value="{{ $row->material }}" readonly>
+                                                        <input type="hidden" name="partdesc[]" class="form-control" value="{{ $row->matdesc }}" readonly>
+                                                    </td>
+                                                    <td>
+                                                        {{ $row->quantity }}
+                                                        <input type="hidden" name="quantity[]" style="text-align: right;" class="form-control" onkeypress="validate(event)" value="{{ $row->quantity }}" required>
+                                                    </td>
+                                                    <td>
+                                                        {{ $row->unit }}
+                                                        <input type="hidden" name="uoms[]" value="" class="form-control" readonly>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="figures[]" class="form-control" required>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="remarks[]" class="form-control" required>
+                                                    </td>
+                                                    {{-- <td>
+                                                        <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td> --}}
+                                                </tr>
+                                                @endforeach
                                             </tbody>
                                             <!-- <tfoot>
                                                 <tr>
@@ -244,6 +272,24 @@
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
 <script>    
+    function validate(evt) {
+                        var theEvent = evt || window.event;
+    
+                        // Handle paste
+                        if (theEvent.type === 'paste') {
+                            key = event.clipboardData.getData('text/plain');
+                        } else {
+                        // Handle key press
+                            var key = theEvent.keyCode || theEvent.which;
+                            key = String.fromCharCode(key);
+                        }
+                        var regex = /[0-9]|\./;
+                        if( !regex.test(key) ) {
+                            theEvent.returnValue = false;
+                            if(theEvent.preventDefault) theEvent.preventDefault();
+                        }
+    }
+
     $(document).ready(function(){
         var count = 0;
 
