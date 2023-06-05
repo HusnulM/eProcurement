@@ -178,4 +178,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/delete/{p1}',      'Transaksi\SpkController@deleteWO')->middleware('checkAuth:logistic/wo');
     });
     // logistic/terimapo
+
+    Route::group(['prefix' => '/logistic/bast'], function () {
+        Route::get('/',                 'Transaksi\BastController@index')->middleware('checkAuth:logistic/bast');
+        Route::post('/save',            'Transaksi\BastController@save')->middleware('checkAuth:logistic/bast');
+        Route::get('/listbast',         'Transaksi\BastController@viewListBast')->middleware('checkAuth:logistic/bast');
+        Route::get('/databast',         'Transaksi\BastController@dataBast')->middleware('checkAuth:logistic/bast');
+    });
 });
