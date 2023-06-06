@@ -29,6 +29,10 @@
                                 <a href="{{ url('/master/item/create') }}" class="btn btn-success btn-sm">
                                     <i class="fas fa-plus"></i> Create Item Master
                                 </a>
+
+                                <a href="{{ url('/master/item/upload') }}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-upload"></i> Upload Item Master
+                                </a>
                             </div>
                         </div>
                         <div class="card-body">

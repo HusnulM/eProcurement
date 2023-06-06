@@ -3,15 +3,23 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Imports\KendaraanImport;
+use App\Models\Kendaraan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
+use Excel;
+
 
 class KendaraanController extends Controller
 {
     public function index(){
         return view('master.kendaraan.index');
+    }
+
+    public function upload(){
+        return view('master.kendaraan.upload');
     }
 
     public function findKendaraan(Request $request){
@@ -99,6 +107,33 @@ class KendaraanController extends Controller
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/master/kendaraan")->withError($e->getMessage());
+        }
+    }
+
+    public function importKendaraan(Request $request){
+        $this->validate($request, [
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+
+        $file = $request->file('file');
+
+        // membuat nama file unik
+        $nama_file = $file->hashName();        
+
+        $destinationPath = 'excel/';
+        $file->move($destinationPath,$file->getClientOriginalName());
+
+        config(['excel.import.startRow' => 2]);
+        // import data
+        $import = Excel::import(new KendaraanImport(), 'excel/'.$file->getClientOriginalName());
+
+        //remove from server
+		unlink('excel/'.$file->getClientOriginalName());
+
+        if($import) {
+            return Redirect::to("/master/kendaraan")->withSuccess('Data Kendaraan Berhasil di Upload');
+        } else {
+            return Redirect::to("/master/kendaraan")->withError('Error');
         }
     }
 }

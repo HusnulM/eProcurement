@@ -25,6 +25,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/updateuom',        'Master\ItemMasterController@updateuom')->middleware('checkAuth:master/item');
         Route::get('/deleteuom/{p1}',    'Master\ItemMasterController@deleteuom')->middleware('checkAuth:master/item');
 
+        Route::get('/upload',            'Master\ItemMasterController@upload')->middleware('checkAuth:master/item');
+        Route::post('/upload/save',      'Master\ItemMasterController@importMaterial')->middleware('checkAuth:master/item');
+
         Route::post('/findpartnumber', 'Master\ItemMasterController@findPartnumber');
     });
 
@@ -87,6 +90,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/delete/{id}',    'Master\KendaraanController@delete')->middleware('checkAuth:master/kendaraan');  
         Route::get('/kendaraanlist',  'Master\KendaraanController@kendaraanLists')->middleware('checkAuth:master/kendaraan');   
         Route::post('/findkendaraan', 'Master\KendaraanController@findKendaraan');
+
+        Route::get('/upload',          'Master\KendaraanController@upload')->middleware('checkAuth:master/kendaraan');
+        Route::post('/upload/save',    'Master\KendaraanController@importKendaraan')->middleware('checkAuth:master/kendaraan');
     });
 
     Route::group(['prefix' => '/master/doctype'], function () {

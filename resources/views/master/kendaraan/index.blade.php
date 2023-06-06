@@ -16,6 +16,9 @@
                         <button type="button" class="btn btn-success btn-sm btn-add-dept">
                             <i class="fas fa-plus"></i> Tambah Kendaraan
                         </button>
+                        <a href="{{ url('/master/kendaraan/upload') }}" class="btn btn-success btn-sm">
+                            <i class="fas fa-upload"></i> Upload Master Kendaraan
+                        </a>
                         <!-- <a href="{{ url('/master/department/create') }}" class="btn btn-success btn-sm">
                             <i class="fas fa-plus"></i> Create Department
                         </a> -->

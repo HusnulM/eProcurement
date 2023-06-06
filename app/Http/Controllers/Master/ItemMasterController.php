@@ -7,12 +7,19 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
+use App\Imports\MaterialImport;
+use App\Models\Material;
 
+use Excel;
 
 class ItemMasterController extends Controller
 {
     public function index(){
         return view('master.material.index');
+    }
+
+    public function upload(){
+        return view('master.material.upload');
     }
 
     public function create(){
@@ -299,6 +306,33 @@ class ItemMasterController extends Controller
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/master/item")->withError($e->getMessage());
+        }
+    }
+
+    public function importMaterial(Request $request){
+        $this->validate($request, [
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+
+        $file = $request->file('file');
+
+        // membuat nama file unik
+        $nama_file = $file->hashName();        
+
+        $destinationPath = 'excel/';
+        $file->move($destinationPath,$file->getClientOriginalName());
+
+        config(['excel.import.startRow' => 2]);
+        // import data
+        $import = Excel::import(new MaterialImport(), 'excel/'.$file->getClientOriginalName());
+
+        //remove from server
+		unlink('excel/'.$file->getClientOriginalName());
+
+        if($import) {
+            return Redirect::to("/master/item")->withSuccess('Data Material Berhasil di Upload');
+        } else {
+            return Redirect::to("/master/item")->withError('Error');
         }
     }
 }
