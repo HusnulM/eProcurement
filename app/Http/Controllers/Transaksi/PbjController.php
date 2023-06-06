@@ -46,12 +46,16 @@ class PbjController extends Controller
             $department  = DB::table('t_department')->get();
             $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
             $mekanik     = DB::table('t_mekanik')->get();
+            $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $pbjhdr->cheklistnumber)->first();
+            $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
 
             $approvals   = DB::table('v_pbj_approval')
             ->where('pbjnumber', $pbjhdr->pbjnumber)
             ->orderBy('approver_level','asc')
             ->orderBy('pbjitem', 'asc')
             ->get();
+
+            return $pbjhdr;
             return view('transaksi.pbj.change', 
                 [
                     'department'  => $department, 
@@ -59,7 +63,8 @@ class PbjController extends Controller
                     'pbjitem'     => $pbjitem,
                     'attachments' => $attachments, 
                     'approvals'   => $approvals,
-                    'mekanik'     => $mekanik
+                    'mekanik'     => $mekanik,
+                    'kendaraan'  => $kendaraan,
                 ]);
         }else{
             return Redirect::to("/transaction/pbj")->withError('Dokumen PBJ tidak ditemukan');
@@ -217,6 +222,8 @@ class PbjController extends Controller
                 $uom      = $req['uoms'];
                 $figure   = $req['figures'];
                 $remark   = $req['remarks'];
+                $wonum    = $req['wonum'];
+                $woitem   = $req['woitem'];
     
                 $insertData = array();
                 $pbjItems   = array();
@@ -235,6 +242,8 @@ class PbjController extends Controller
                         'unit'         => $uom[$i],
                         'figure'       => $figure[$i],
                         'remark'       => $remark[$i],
+                        'wonum'        => $wonum[$i],
+                        'woitem'       => $woitem[$i],
                         'createdon'    => getLocalDatabaseDateTime(),
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
                     );

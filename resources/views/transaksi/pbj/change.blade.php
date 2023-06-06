@@ -66,19 +66,19 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="engine">Engine Model</label>
-                                            <input type="text" name="engine" id="engine_model" class="form-control">
+                                            <input type="text" name="engine" id="engine_model" class="form-control" value="{{ $pbjhdr->engine_model }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="chassis">Chassis S/N</label>
-                                            <input type="text" name="chassis" id="chassis" class="form-control">
+                                            <input type="text" name="chassis" id="chassis" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="refrensi">Refrensi Permintaan</label>
-                                            <input type="text" name="refrensi" class="form-control">
+                                            <input type="text" name="refrensi" class="form-control" value="{{ $pbjhdr->reference }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -90,7 +90,7 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="typeModel">Type / Model</label>
-                                            <input type="text" name="typeModel" id="typeModel" class="form-control">
+                                            <input type="text" name="typeModel" id="typeModel" class="form-control" value="{{ $pbjhdr->type_model }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -108,37 +108,37 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="kodeJasa">Kode Barang / Jasa</label>
-                                            <input type="text" name="kodeJasa" class="form-control">
+                                            <input type="text" name="kodeJasa" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="nginesn">Engine S/N</label>
-                                            <input type="text" name="nginesn" id="nginesn" class="form-control">
+                                            <input type="text" name="nginesn" id="nginesn" class="form-control" value="{{ $pbjhdr->engine_sn }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="hmkm">HM</label>
-                                            <input type="text" name="hmkm" id="hmkm" class="form-control">
+                                            <input type="text" name="hmkm" id="hmkm" class="form-control" value="{{ $pbjhdr->hm_km }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="km">KM</label>
-                                            <input type="text" name="km" id="km" class="form-control">
+                                            <input type="text" name="km" id="km" class="form-control" value="{{ $pbjhdr->km }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="budgetcode">Budget / Cost Code</label>
-                                            <input type="text" name="budgetcode" class="form-control">
+                                            <input type="text" name="budgetcode" class="form-control" value="{{ $pbjhdr->budget_cost_code }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="no_rangka">No. Rangka</label>
-                                            <input type="text" name="no_rangka" id="no_rangka" class="form-control">
+                                            <input type="text" name="no_rangka" id="no_rangka" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
                                         </div>
                                     </div>
                                     

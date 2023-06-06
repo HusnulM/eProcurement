@@ -181,8 +181,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => '/logistic/bast'], function () {
         Route::get('/',                 'Transaksi\BastController@index')->middleware('checkAuth:logistic/bast');
+        Route::get('/create/{p}',       'Transaksi\BastController@create')->middleware('checkAuth:logistic/bast');
         Route::post('/save',            'Transaksi\BastController@save')->middleware('checkAuth:logistic/bast');
         Route::get('/listbast',         'Transaksi\BastController@viewListBast')->middleware('checkAuth:logistic/bast');
         Route::get('/databast',         'Transaksi\BastController@dataBast')->middleware('checkAuth:logistic/bast');
+        Route::post('/finduser',        'Transaksi\BastController@findUser');
     });
 });

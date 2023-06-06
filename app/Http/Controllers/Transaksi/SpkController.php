@@ -230,25 +230,18 @@ class SpkController extends Controller
                 $qty    = $quantity[$i];
                 $qty    = str_replace(',','',$qty);
 
-                $latestStock = DB::table('v_inv_summary_stock')
-                               ->where('material', $parts[$i])
-                               ->where('whsid',  $req['whscode'])->first();
-                if($latestStock){
-                    if($latestStock->quantity < $qty){
-                        DB::rollBack();
-                        return Redirect::to("/logistic/wo/create/".$req['ckID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
-                    }else{
-                        // DB::table('t_inv_stock')
-                        // ->where('material', $parts[$i])
-                        // ->where('whscode',  $req['whscode'])
-                        // ->update([
-                        //     'quantity'     => $latestStock->quantity - $qty
-                        // ]);
-                    }
-                }else{
-                    DB::rollBack();
-                    return Redirect::to("/logistic/wo/create/".$req['ckID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
-                }
+                // $latestStock = DB::table('v_inv_summary_stock')
+                //                ->where('material', $parts[$i])
+                //                ->where('whsid',  $req['whscode'])->first();
+                // if($latestStock){
+                //     if($latestStock->quantity < $qty){
+                //         DB::rollBack();
+                //         return Redirect::to("/logistic/wo/create/".$req['ckID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                //     }
+                // }else{
+                //     DB::rollBack();
+                //     return Redirect::to("/logistic/wo/create/".$req['ckID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                // }
 
                 $count = $count + 1;
                 $data = array(
@@ -264,12 +257,6 @@ class SpkController extends Controller
                 );
                 array_push($insertData, $data);
                 array_push($woItems, $data);
-
-                // DB::table('t_pbj02')
-                //     ->where('pbjnumber', $pbjnum[$i])
-                //     ->where('pbjitem', $pbjitm[$i])->update([
-                //         'wocreated' => 'Y'
-                //     ]);
             }
             insertOrUpdate($insertData,'t_wo02');
 

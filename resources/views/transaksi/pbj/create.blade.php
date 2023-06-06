@@ -192,13 +192,15 @@
                                                     </td>
                                                     <td>
                                                         {{ $row->unit }}
-                                                        <input type="hidden" name="uoms[]" value="" class="form-control" readonly>
+                                                        <input type="hidden" name="uoms[]" value="{{ $row->unit }}" class="form-control" readonly>
                                                     </td>
                                                     <td>
                                                         <input type="text" name="figures[]" class="form-control" required>
                                                     </td>
                                                     <td>
                                                         <input type="text" name="remarks[]" class="form-control" required>
+                                                        <input type="hidden" name="wonum[]" value="{{ $row->wonum }}">
+                                                        <input type="hidden" name="woitem[]" value="{{ $row->woitem }}">
                                                     </td>
                                                     {{-- <td>
                                                         <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
