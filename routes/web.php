@@ -50,4 +50,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('logout2',         'HomeController@logout')->name('logout');
         Route::post('changepassword', 'HomeController@changepassword')->name('changepassword');
     });
+
+    Route::group(['prefix' => '/inbal'], function () {
+        Route::get('/stock',      'InbalController@stock');
+        Route::post('/stock',     'InbalController@saveInbalStock');
+    });
 });

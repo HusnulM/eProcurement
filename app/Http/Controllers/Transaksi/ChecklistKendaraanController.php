@@ -120,6 +120,7 @@ class ChecklistKendaraanController extends Controller
                 'odometer'         => $req['odometer'],
                 'nama_driver'      => $req['nama_driver'],
                 'hasil_pemeriksaan'=> $req['hasil_pemeriksaan'],
+                'remark'           => $req['remark'],
                 'createdon'        => getLocalDatabaseDateTime(),
                 'createdby'        => Auth::user()->email ?? Auth::user()->username
             ]);

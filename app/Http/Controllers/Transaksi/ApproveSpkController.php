@@ -321,78 +321,78 @@ class ApproveSpkController extends Controller
                 // $bulan = substr($req['grdate'], 5, 2);
                 // $tahun = substr($req['grdate'], 0, 4);
             // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
-                $ptaNumber = generateIssueNumber(date('Y'), date('m'));
-                DB::table('t_inv01')->insert([
-                    'docnum' => $ptaNumber,
-                    'docyear' => date('Y'),
-                    'docdate' => date('Y-m-d'),
-                    'postdate' => date('Y-m-d'),
-                    'movement_code' => '201',
-                    'remark' => 'Issued Work Order',
-                    'createdon'         => date('Y-m-d H:m:s'),
-                    'createdby'         => Auth::user()->email ?? Auth::user()->username
-                ]);
+                // // $ptaNumber = generateIssueNumber(date('Y'), date('m'));
+                // DB::table('t_inv01')->insert([
+                //     'docnum' => $ptaNumber,
+                //     'docyear' => date('Y'),
+                //     'docdate' => date('Y-m-d'),
+                //     'postdate' => date('Y-m-d'),
+                //     'movement_code' => '201',
+                //     'remark' => 'Issued Work Order',
+                //     'createdon'         => date('Y-m-d H:m:s'),
+                //     'createdby'         => Auth::user()->email ?? Auth::user()->username
+                // ]);
 
-                foreach($woitem as $row){
-                    $latestStock = DB::table('v_inv_summary_stock')
-                    ->where('material', $row->material)
-                    ->where('whsid',  $podata->whscode)->first();
-                    if($latestStock){
-                        if((double)$latestStock->quantity < (double)$row->quantity){
-                            DB::rollBack();
-                            $result = array(
-                                'msgtype' => '500',
-                                'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
-                            );
-                            return $result;
-                        }else{
-                            // DB::table('t_inv_stock')
-                            // ->where('material', $row->material)
-                            // ->where('whscode',  $podata->whscode)
-                            // ->update([
-                            //     'quantity'     => $latestStock->quantity - $row->quantity
-                            // ]);
-                            // spIssueMaterialWithBatchFIFO
-                            // DB::select('CALL spIssueMaterialWithBatchFIFO(
-                            //     "'. $row->material .'",
-                            //     "'. $podata->whscode .'",
-                            //     "'. $row->quantity .'",
-                            //     "'. $ptaNumber .'",
-                            //     "'. date('Y') .'",
-                            //     "201",
-                            //     "'. $row->matdesc .'",
-                            //     "'. $row->unit .'",
-                            //     "-",
-                            //     "'. $row->wonum .'",
-                            //     "'. $row->woitem .'",
-                            //     "'. Auth::user()->email ?? Auth::user()->username .'"
-                            // )');
+                // foreach($woitem as $row){
+                //     $latestStock = DB::table('v_inv_summary_stock')
+                //     ->where('material', $row->material)
+                //     ->where('whsid',  $podata->whscode)->first();
+                //     if($latestStock){
+                //         if((double)$latestStock->quantity < (double)$row->quantity){
+                //             DB::rollBack();
+                //             $result = array(
+                //                 'msgtype' => '500',
+                //                 'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+                //             );
+                //             return $result;
+                //         }else{
+                //             // DB::table('t_inv_stock')
+                //             // ->where('material', $row->material)
+                //             // ->where('whscode',  $podata->whscode)
+                //             // ->update([
+                //             //     'quantity'     => $latestStock->quantity - $row->quantity
+                //             // ]);
+                //             // spIssueMaterialWithBatchFIFO
+                //             // DB::select('CALL spIssueMaterialWithBatchFIFO(
+                //             //     "'. $row->material .'",
+                //             //     "'. $podata->whscode .'",
+                //             //     "'. $row->quantity .'",
+                //             //     "'. $ptaNumber .'",
+                //             //     "'. date('Y') .'",
+                //             //     "201",
+                //             //     "'. $row->matdesc .'",
+                //             //     "'. $row->unit .'",
+                //             //     "-",
+                //             //     "'. $row->wonum .'",
+                //             //     "'. $row->woitem .'",
+                //             //     "'. Auth::user()->email ?? Auth::user()->username .'"
+                //             // )');
 
                             
 
-                            DB::select('call spIssueMaterialWithBatchFIFO(
-                                "'. $row->material .'",
-                                "'. $podata->whscode .'",
-                                "'. $row->quantity .'",
-                                "'. $ptaNumber .'",
-                                "'. date('Y') .'",
-                                "201",
-                                "'. $row->matdesc .'",
-                                "'. $row->unit .'",
-                                "-",
-                                "'. $row->wonum .'",
-                                "'. $row->woitem .'",
-                                "'. Auth::user()->email .'")');
-                        }
-                    }else{
-                        DB::rollBack();
-                        $result = array(
-                            'msgtype' => '500',
-                            'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
-                        );
-                        return $result;
-                    }
-                }
+                //             DB::select('call spIssueMaterialWithBatchFIFO(
+                //                 "'. $row->material .'",
+                //                 "'. $podata->whscode .'",
+                //                 "'. $row->quantity .'",
+                //                 "'. $ptaNumber .'",
+                //                 "'. date('Y') .'",
+                //                 "201",
+                //                 "'. $row->matdesc .'",
+                //                 "'. $row->unit .'",
+                //                 "-",
+                //                 "'. $row->wonum .'",
+                //                 "'. $row->woitem .'",
+                //                 "'. Auth::user()->email .'")');
+                //         }
+                //     }else{
+                //         DB::rollBack();
+                //         $result = array(
+                //             'msgtype' => '500',
+                //             'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+                //         );
+                //         return $result;
+                //     }
+                // }
 
                 DB::table('t_wo01')->where('wonum', $ptaNumber)
                 ->update([

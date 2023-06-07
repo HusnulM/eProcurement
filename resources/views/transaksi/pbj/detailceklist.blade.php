@@ -365,6 +365,13 @@
                                                                     </select>
                                                                 </td>
                                                             </tr>
+                                                            <tr>
+                                                                <td>2</td>
+                                                                <td>Catatan Hasil Pemeriksaan</td>
+                                                                <td>
+                                                                    <textarea name="remark" cols="30" rows="10" class="form-control" readonly>{!! $header->remark !!}</textarea>
+                                                                </td>
+                                                            </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>

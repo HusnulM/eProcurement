@@ -69,6 +69,19 @@ class BastController extends Controller
             $insertData = array();
             $count = 0;            
 
+            $ptaNumber = generateIssueNumber(date('Y'), date('m'));
+
+                DB::table('t_inv01')->insert([
+                    'docnum' => $ptaNumber,
+                    'docyear' => date('Y'),
+                    'docdate' => date('Y-m-d'),
+                    'postdate' => date('Y-m-d'),
+                    'movement_code' => '201',
+                    'remark' => 'Issued BAST',
+                    'createdon'         => date('Y-m-d H:m:s'),
+                    'createdby'         => Auth::user()->email ?? Auth::user()->username
+                ]);
+
             for($i = 0; $i < sizeof($parts); $i++){
                 $qty    = $quantity[$i];
                 $qty    = str_replace(',','',$qty);
@@ -117,8 +130,27 @@ class BastController extends Controller
                 ->update([
                     'bast_created' => 'Y'
                 ]);
+
+                //Insert movement
+                DB::select('call spIssueMaterialWithBatchFIFO(
+                    "'. $parts[$i] .'",
+                    "'. $wodata->whscode .'",
+                    "'. $qty .'",
+                    "'. $ptaNumber .'",
+                    "'. date('Y') .'",
+                    "201",
+                    "'. $partdsc[$i] .'",
+                    "'. $uom[$i] .'",
+                    "-",
+                    "'. $pbjnum[$i] .'",
+                    "'. $pbjitm[$i] .'",
+                    "'. Auth::user()->email .'")');
             }
             insertOrUpdate($insertData,'t_bast02');
+
+            
+                        
+                
 
             //Insert Attachments | t_attachments
             if(isset($req['efile'])){
