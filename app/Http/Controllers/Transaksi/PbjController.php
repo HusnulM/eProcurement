@@ -18,25 +18,57 @@ class PbjController extends Controller
     }
 
     public function create($id){
-        $wodata     = DB::table('t_wo01')->where('id', $id)->first();
-        $woitems    = DB::table('t_wo02')->where('wonum', $wodata->wonum)->get();
-        $mekanik    = DB::table('t_mekanik')->get();
-        $department = DB::table('t_department')->get();
-        $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $wodata->cheklistnumber)->first();
-        $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
-        return view('transaksi.pbj.create', 
-            [
-                'wodata'     => $wodata,
-                'mekanik'    => $mekanik, 
-                'department' => $department, 
-                'cklist'     => $cklist, 
-                'kendaraan'  => $kendaraan,
-                'woitems'    => $woitems
-            ]);
+        $wodata     = DB::table('v_wo_to_pbj')->where('id', $id)->where('wo_status', 'A')->first();
+        if($wodata){
+            $woitems    = DB::table('t_wo02')->where('wonum', $wodata->wonum)->get();
+            $mekanik    = DB::table('t_mekanik')->get();
+            $department = DB::table('t_department')->get();
+            $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $wodata->cheklistnumber)->first();
+            $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
+            return view('transaksi.pbj.create', 
+                [
+                    'wodata'     => $wodata,
+                    'mekanik'    => $mekanik, 
+                    'department' => $department, 
+                    'cklist'     => $cklist, 
+                    'kendaraan'  => $kendaraan,
+                    'woitems'    => $woitems
+                ]);
+        }else{
+            return Redirect::to("/transaction/pbj")->withError('Data SPK/Work Order tidak ditemukan');
+        }
     }
 
     public function duedatepbj(){
         return view('transaksi.pbj.duedatepbj');
+    }
+
+    public function detailWO($id){
+        $wohdr = DB::table('v_spk01')->where('id', $id)->first();
+        if($wohdr){
+            // $mekanik    = DB::table('t_mekanik')->where('id', $wohdr->mekanik)->first();
+            $warehouse  = DB::table('t_warehouse')->where('id', $wohdr->whscode)->first();
+            // $kendaraan  = DB::table('t_kendaraan')->where('id', $wohdr->license_number)->first();
+            $woitem     = DB::table('t_wo02')->where('wonum', $wohdr->wonum)->get();
+            $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $wohdr->wonum)->get();
+            // $attachments = DB::table('t_attachments')->where('doc_object','SPK')->where('doc_number', $prhdr->wonum)->get();
+            $approvals  = DB::table('v_wo_approval')->where('wonum', $wohdr->wonum)->get();
+            // $department = DB::table('v_wo_approval')->where('wonum', $prhdr->wonum)->first();
+            // return $woitem;
+
+            return view('transaksi.pbj.detailwo', 
+                [
+                    'prhdr'       => $wohdr, 
+                    'pritem'      => $woitem,
+                    // 'mekanik'     => $mekanik,
+                    'warehouse'   => $warehouse,
+                    // 'kendaraan'   => $kendaraan,
+                    'attachments' => $attachments,
+                    'approvals'   => $approvals, 
+                ]);
+        }else{
+            return Redirect::to("/transaction/pbj")->withError('Data SPK/Work Order tidak ditemukan');
+        }
     }
 
     public function changePBJ($id){
@@ -49,13 +81,15 @@ class PbjController extends Controller
             $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $pbjhdr->cheklistnumber)->first();
             $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
 
+            // $pbjdept   = DB::table('t_department')->where()->firts();
+
             $approvals   = DB::table('v_pbj_approval')
             ->where('pbjnumber', $pbjhdr->pbjnumber)
             ->orderBy('approver_level','asc')
             ->orderBy('pbjitem', 'asc')
             ->get();
 
-            return $pbjhdr;
+            // return $pbjhdr;
             return view('transaksi.pbj.change', 
                 [
                     'department'  => $department, 
@@ -78,6 +112,7 @@ class PbjController extends Controller
 
     public function listOpenWO(){
         $query = DB::table('v_wo_to_pbj')
+                 ->where('wo_status', 'A')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }

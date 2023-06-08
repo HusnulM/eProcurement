@@ -16,7 +16,7 @@ class BastController extends Controller
     public function create($pbjID){
         $pbjheader = DB::table('v_pbj_to_bast')->where('id', $pbjID)->first();
         if($pbjheader){
-            $pbjitems = DB::table('t_pbj02')->where('pbjnumber', $pbjheader->pbjnumber)->get();
+            $pbjitems = DB::table('t_pbj02')->where('pbjnumber', $pbjheader->pbjnumber)->where('approvestat', 'A')->get();
             // return $pbjitems;
             return view('transaksi.bast.create',[
                 'pbjheader' => $pbjheader,
@@ -27,6 +27,41 @@ class BastController extends Controller
 
     public function viewListBast(){
         return view('transaksi.bast.list');
+    }
+
+    public function detailBAST($id){
+        $header = DB::table('v_bast_01')->where('id', $id)->first();
+        $items  = DB::table('t_bast02')->where('bast_id', $id)->get();
+        $attachment = DB::table('t_attachments')->where('doc_object', 'BAST')
+                     ->where('doc_number', $id)->first();
+
+        if(!$attachment){
+            $attachment = null;
+        }             
+        return view('transaksi.bast.detail',[
+            'header' => $header,
+            'items'  => $items,
+            'file'   => $attachment
+        ]);
+    }
+
+    function listDataBast(Request $req){
+        $params = $req->params;        
+        $whereClause = $params['sac'];
+        $query = DB::table('v_bast_01');
+
+        if(isset($req->datefrom) && isset($req->dateto)){
+            $query->whereBetween('tanggal_bast', [$req->datefrom, $req->dateto]);
+        }elseif(isset($req->datefrom)){
+            $query->where('tanggal_bast', $req->datefrom);
+        }elseif(isset($req->dateto)){
+            $query->where('tanggal_bast', '<=', $req->dateto);
+        }
+
+        $query->orderBy('id');
+
+        return DataTables::queryBuilder($query)
+        ->toJson();
     }
 
     public function dataBast(Request $request){

@@ -102,7 +102,7 @@
                                             <label for="user">User</label>
                                             <!-- <input type="text" name="user" class="form-control"> -->
                                             <select name="user" id="user" class="form-control" required>
-                                                <option value="">Pilih Mekanik</option>
+                                                <option value="{{ $wodata->mekanik }}">{{ $wodata->mekanik }}</option>
                                                 @foreach($mekanik as $key => $row)
                                                     <option value="{{ $row->nama }}">{{ $row->nama }}</option>
                                                 @endforeach

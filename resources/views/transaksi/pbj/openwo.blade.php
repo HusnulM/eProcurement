@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'List Open WOrk Order')
+@section('title', 'List Open Work Order')
 
 @section('additional-css')
 @endsection
@@ -117,7 +117,7 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
-            window.location = base_url+"/transaction/pbj/tidaklayak/detail/"+selected_data.id;
+            window.location = base_url+"/transaction/pbj/wo/detail/"+selected_data.id;
         });
 
         $('#tbl-data-ceklist tbody').on( 'click', '.button-create-pbj', function () {

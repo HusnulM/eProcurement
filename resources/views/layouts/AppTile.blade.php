@@ -108,6 +108,11 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="/user/account" title="User Account" role="button">
+          <i class="fas fa-user"></i>
+        </a>
+      </li>
+      <li class="nav-item">
         <form id="logout-form" method="post" action="{{ url('logout') }}">
           @csrf
           <a href="javascript:{}" class="nav-link" onclick="document.getElementById('logout-form').submit();" title="Logout">

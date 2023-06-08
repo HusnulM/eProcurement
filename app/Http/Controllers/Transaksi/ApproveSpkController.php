@@ -115,37 +115,37 @@ class ApproveSpkController extends Controller
             $podata  = DB::table('t_wo01')->where('wonum', $ptaNumber)->first();
             $woitem  = DB::table('t_wo02')->where('wonum', $ptaNumber)->get();
             // return $woitem;
-            foreach($woitem as $row){
-                $latestStock = DB::table('t_inv_stock')
-                ->where('material', $row->material)
-                ->where('whscode',  $podata->whscode)->first();
-                if($latestStock){
-                    if($latestStock->quantity < $row->quantity){
-                        DB::rollBack();
-                        $result = array(
-                            'msgtype' => '500',
-                            'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
-                        );
-                        return $result;
-                        // return Redirect::to("/logistic/wo")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
-                    }else{
-                        // DB::table('t_inv_stock')
-                        // ->where('material', $parts[$i])
-                        // ->where('whscode',  $req['whscode'])
-                        // ->update([
-                        //     'quantity'     => $latestStock->quantity - $qty
-                        // ]);
-                    }
-                }else{
-                    DB::rollBack();
-                    $result = array(
-                        'msgtype' => '500',
-                        'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
-                    );
-                    return $result;
-                    // return Redirect::to("/logistic/wo")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
-                }
-            }
+            // foreach($woitem as $row){
+            //     $latestStock = DB::table('t_inv_stock')
+            //     ->where('material', $row->material)
+            //     ->where('whscode',  $podata->whscode)->first();
+            //     if($latestStock){
+            //         if($latestStock->quantity < $row->quantity){
+            //             DB::rollBack();
+            //             $result = array(
+            //                 'msgtype' => '500',
+            //                 'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+            //             );
+            //             return $result;
+            //             // return Redirect::to("/logistic/wo")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+            //         }else{
+            //             // DB::table('t_inv_stock')
+            //             // ->where('material', $parts[$i])
+            //             // ->where('whscode',  $req['whscode'])
+            //             // ->update([
+            //             //     'quantity'     => $latestStock->quantity - $qty
+            //             // ]);
+            //         }
+            //     }else{
+            //         DB::rollBack();
+            //         $result = array(
+            //             'msgtype' => '500',
+            //             'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+            //         );
+            //         return $result;
+            //         // return Redirect::to("/logistic/wo")->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+            //     }
+            // }
 
             //Set Approval
             DB::table('t_wo_approval')
@@ -177,35 +177,35 @@ class ApproveSpkController extends Controller
             if(sizeof($checkIsFullApprove) > 0){
                 // go to next approver    
             }else{
-                foreach($woitem as $row){
-                    $latestStock = DB::table('t_inv_stock')
-                    ->where('material', $row->material)
-                    ->where('whscode',  $podata->whscode)->first();
-                    if($latestStock){
-                        if($latestStock->quantity < $row->quantity){
-                            DB::rollBack();
-                            $result = array(
-                                'msgtype' => '500',
-                                'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
-                            );
-                            return $result;
-                        }else{
-                            DB::table('t_inv_stock')
-                            ->where('material', $row->material)
-                            ->where('whscode',  $podata->whscode)
-                            ->update([
-                                'quantity'     => $latestStock->quantity - $row->quantity
-                            ]);
-                        }
-                    }else{
-                        DB::rollBack();
-                        $result = array(
-                            'msgtype' => '500',
-                            'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
-                        );
-                        return $result;
-                    }
-                }
+                // foreach($woitem as $row){
+                //     $latestStock = DB::table('t_inv_stock')
+                //     ->where('material', $row->material)
+                //     ->where('whscode',  $podata->whscode)->first();
+                //     if($latestStock){
+                //         if($latestStock->quantity < $row->quantity){
+                //             DB::rollBack();
+                //             $result = array(
+                //                 'msgtype' => '500',
+                //                 'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+                //             );
+                //             return $result;
+                //         }else{
+                //             DB::table('t_inv_stock')
+                //             ->where('material', $row->material)
+                //             ->where('whscode',  $podata->whscode)
+                //             ->update([
+                //                 'quantity'     => $latestStock->quantity - $row->quantity
+                //             ]);
+                //         }
+                //     }else{
+                //         DB::rollBack();
+                //         $result = array(
+                //             'msgtype' => '500',
+                //             'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+                //         );
+                //         return $result;
+                //     }
+                // }
 
                 //Full Approve
                 DB::table('t_wo01')->where('wonum', $ptaNumber)->update([

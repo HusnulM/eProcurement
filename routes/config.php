@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 Route::group(['middleware' => 'auth'], function () {
 
+    Route::get('/user/account',                       'Config\UserController@account');
+    Route::post('/user/account',                      'Config\UserController@accountSave');
+
     Route::group(['prefix' => '/general/setting'], function () {
         Route::get('/',                       'Config\GeneralSettingController@index')->middleware('checkAuth:general/setting');
         Route::post('/save',                  'Config\GeneralSettingController@save')->middleware('checkAuth:general/setting');

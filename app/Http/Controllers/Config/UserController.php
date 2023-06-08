@@ -13,6 +13,10 @@ class UserController extends Controller
         return view('config.users.index');
     }
 
+    public function account(){
+        return view('config.users.account');
+    }
+
     public function create(){
         $jabatan = DB::table('t_jabatan')->get();
         $departm = DB::table('t_department')->get();
@@ -146,6 +150,57 @@ class UserController extends Controller
         }catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/config/users")->withError($e->getMessage());
+        }
+    }
+
+    public function accountSave(Request $request){
+        $validated = $request->validate([
+            'email'    => 'required|max:255',
+            'name'     => 'required',
+            'username' => 'required',
+        ]);
+
+        DB::beginTransaction();
+        try{
+            if($request['password'] != null || $request['password'] != ""){
+                $options = [
+                    'cost' => 12,
+                ];
+                $password = password_hash($request['password'], PASSWORD_BCRYPT, $options);
+        
+                $output = array();
+    
+                DB::table('users')->where('id',$request['iduser'])->update([
+                    'name'        => $request['name'],
+                    'email'       => $request['email'],
+                    'username'    => $request['username'],
+                    'password'    => $password
+                ]);
+            }else{
+                DB::table('users')->where('id',$request['iduser'])->update([
+                    'name'        => $request['name'],
+                    'email'       => $request['email'],
+                    'username'    => $request['username']
+                ]);
+            }
+
+            $esignfile = $request->file('esignfile');
+            if($esignfile){
+                $filename  = $esignfile->getClientOriginalName();
+                $esignpath = 'storage/files/e_signature/'. $filename;  
+
+                DB::table('users')->where('id',$request['iduser'])->update([
+                    's_signfile'     => $esignpath,
+                ]);
+
+                $esignfile->move('storage/files/e_signature/', $filename);  
+            }
+            
+            DB::commit();
+            return Redirect::to("/user/account")->withSuccess('User Account updated');
+        }catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/user/account")->withError($e->getMessage());
         }
     }
 

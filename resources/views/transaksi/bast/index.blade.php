@@ -23,7 +23,9 @@
                 <div class="card-header">
                     <h3 class="card-title">List PBJ</h3>
                     <div class="card-tools">
-                        
+                        <a href="{{ url('/logistic/bast/listbast') }}" class="btn btn-success btn-sm">
+                            <i class="fa fa-list"></i> List BAST
+                        </a>
                     </div>
                 </div>
                 <div class="card-body">

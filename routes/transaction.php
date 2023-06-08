@@ -35,6 +35,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/change/{p1}',      'Transaksi\PbjController@changePBJ')->middleware('checkAuth:transaction/pbj');
 
         Route::get('/listopenwo', 'Transaksi\PbjController@listOpenWO')->middleware('checkAuth:transaction/pbj');
+
+        Route::get('/wo/detail/{p1}',      'Transaksi\PbjController@detailWO')->middleware('checkAuth:transaction/pbj');
     });
 
     Route::get('/pbj/duedatepbj',      'Transaksi\PbjController@duedatepbj')->middleware('checkAuth:pbj/duedatepbj');
@@ -176,6 +178,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update/{p1}',     'Transaksi\SpkController@update')->middleware('checkAuth:logistic/wo');
         Route::post('/deleteitem',      'Transaksi\SpkController@deleteWOItem')->middleware('checkAuth:logistic/wo');
         Route::get('/delete/{p1}',      'Transaksi\SpkController@deleteWO')->middleware('checkAuth:logistic/wo');
+
+        
     });
     // logistic/terimapo
 
@@ -186,5 +190,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listbast',         'Transaksi\BastController@viewListBast')->middleware('checkAuth:logistic/bast');
         Route::get('/databast',         'Transaksi\BastController@dataBast')->middleware('checkAuth:logistic/bast');
         Route::post('/finduser',        'Transaksi\BastController@findUser');
+
+        Route::get('/listdatabast',     'Transaksi\BastController@listDataBast')->middleware('checkAuth:logistic/bast');
+        Route::get('/detail/{p}',       'Transaksi\BastController@detailBAST')->middleware('checkAuth:logistic/bast');
     });
 });

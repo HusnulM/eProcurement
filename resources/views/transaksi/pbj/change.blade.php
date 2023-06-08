@@ -41,7 +41,7 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="requestto">Tujuan Permintaan</label>
-                                            <input type="text" name="requestto" class="form-control" required>
+                                            <input type="text" name="requestto" class="form-control" value="{{ $pbjhdr->tujuan_permintaan }}" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -49,7 +49,7 @@
                                             <label for="kepada">Kepada</label>
                                             <!-- <input type="text" name="kepada" class="form-control"> -->
                                             <select name="kepada" id="kepada" class="form-control" required>
-                                                <option value="">Pilih Department</option>
+                                                <option value="{{ $pbjhdr->kepada }}">{{ $pbjhdr->kepada }}</option>
                                                 @foreach($department as $key => $row)
                                                     <option value="{{ $row->department }}">{{ $row->department }}</option>
                                                 @endforeach
@@ -59,7 +59,9 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="unitdesc">Unit Desc / Code</label>
-                                            <select name="unitdesc" id="find-unitdesc" class="form-control"></select>
+                                            <select name="unitdesc" id="find-unitdesc" class="form-control">
+                                                <option value="{{ $kendaraan->no_kendaraan }}">{{ $kendaraan->no_kendaraan }} - {{ $kendaraan->model_kendaraan }}</option>
+                                            </select>
                                             <!-- <input type="text" name="unitdesc" class="form-control"> -->
                                         </div>
                                     </div>
@@ -98,7 +100,7 @@
                                             <label for="user">User</label>
                                             <!-- <input type="text" name="user" class="form-control"> -->
                                             <select name="user" id="user" class="form-control" required>
-                                                <option value="">Pilih Mekanik</option>
+                                                <option value="{{ $pbjhdr->user }}">{{ $pbjhdr->user }}</option>
                                                 @foreach($mekanik as $key => $row)
                                                     <option value="{{ $row->nama }}">{{ $row->nama }}</option>
                                                 @endforeach
@@ -236,7 +238,8 @@
                                                                             <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="{{ $row->description }}" readonly>
                                                                         </td>
                                                                         <td style="text-align:right;">
-                                                                            <input type="text" name="uoms[]" value="{{ number_format($row->quantity,0) }}" class="form-control" style="text-align: right;">
+                                                                            {{ number_format($row->quantity,0) }}
+                                                                            <input type="hidden" name="quantity[]" value="{{ number_format($row->quantity,0) }}" class="form-control" style="text-align: right;">
                                                                         </td>
                                                                         <td>
                                                                             {{ $row->unit }}
