@@ -90,7 +90,7 @@
         <tr>
             <td style="text-align:center; width:130px;" rowspan="2">
                 <!-- LOGO -->
-                <img src="{{ public_path(getCompanyLogo()) }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;">
+                <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;">
                 <!-- <img src="{{ public_path('/assets/img/logo.png') }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;"> -->
             </td>
             <td style="text-align:center; width:330px;" rowspan="2">
