@@ -248,28 +248,28 @@ class ApproveSpkController extends Controller
             $podata  = DB::table('t_wo01')->where('wonum', $ptaNumber)->first();
             $woitem  = DB::table('t_wo02')->where('wonum', $ptaNumber)->whereIn('woitem', $data['woitem'])->get();
             // return $woitem;
-            foreach($woitem as $row){
-                $latestStock = DB::table('v_inv_summary_stock')
-                ->where('material', $row->material)
-                ->where('whsid',  $podata->whscode)->first();
-                if($latestStock){
-                    if((double)$latestStock->quantity < (double)$row->quantity){
-                        DB::rollBack();
-                        $result = array(
-                            'msgtype' => '500',
-                            'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
-                        );
-                        return $result;
-                    }
-                }else{
-                    DB::rollBack();
-                    $result = array(
-                        'msgtype' => '500',
-                        'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
-                    );
-                    return $result;
-                }
-            }
+            // foreach($woitem as $row){
+            //     $latestStock = DB::table('v_inv_summary_stock')
+            //     ->where('material', $row->material)
+            //     ->where('whsid',  $podata->whscode)->first();
+            //     if($latestStock){
+            //         if((double)$latestStock->quantity < (double)$row->quantity){
+            //             DB::rollBack();
+            //             $result = array(
+            //                 'msgtype' => '500',
+            //                 'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+            //             );
+            //             return $result;
+            //         }
+            //     }else{
+            //         DB::rollBack();
+            //         $result = array(
+            //             'msgtype' => '500',
+            //             'message' => 'Stock Tidak Mencukupi untuk material '. $row->material
+            //         );
+            //         return $result;
+            //     }
+            // }
 
             $pbjItemData = DB::table('t_wo02')
                 ->where('wonum', $ptaNumber)
