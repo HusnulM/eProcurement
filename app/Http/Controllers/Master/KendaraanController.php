@@ -24,6 +24,8 @@ class KendaraanController extends Controller
 
     public function findKendaraan(Request $request){
         $query['data'] = DB::table('t_kendaraan')
+                ->select('no_kendaraan', 'model_kendaraan', 'engine_sn', 'chassis_sn', 'engine_model','last_km',
+                         'last_hm', 'tahun', 'no_rangka', 'bahan_bakar', 'odometer', 'layak_tidak', 'createdby', 'createdon')
                 ->where('no_kendaraan', 'like', '%'. $request->search . '%')
                 ->orWhere('model_kendaraan', 'like', '%'. $request->search . '%')
                 ->orWhere('engine_sn', 'like', '%'. $request->search . '%')

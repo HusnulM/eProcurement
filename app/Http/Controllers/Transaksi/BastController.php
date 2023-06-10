@@ -102,7 +102,9 @@ class BastController extends Controller
             $wonum    = $req['wonum'];
             // return $wonum;
             $insertData = array();
-            $count = 0;            
+            $count = 0;      
+            
+            $pbjheader = DB::table('t_pbj01')->where('pbjnumber', $pbjnum[0])->first();
 
             $ptaNumber = generateIssueNumber(date('Y'), date('m'));
 
@@ -121,26 +123,57 @@ class BastController extends Controller
                 $qty    = $quantity[$i];
                 $qty    = str_replace(',','',$qty);
 
-                $wodata = DB::table('t_wo01')->where('wonum', $wonum[$i])->first();
+                $warehouseID = 0;
 
-                $latestStock = DB::table('v_inv_summary_stock')
-                               ->where('material', $parts[$i])
-                               ->where('whsid',    $wodata->whscode)->first();
-                if($latestStock){
-                    if($latestStock->quantity < $qty){
+                if($pbjheader->pbjtype == 1){
+                    $wodata = DB::table('t_wo01')->where('wonum', $wonum[$i])->first();
+
+                    $warehouseID = $wodata->whscode;
+    
+                    $latestStock = DB::table('v_inv_summary_stock')
+                                   ->where('material', $parts[$i])
+                                   ->where('whsid',    $wodata->whscode)->first();
+                    if($latestStock){
+                        if($latestStock->quantity < $qty){
+                            DB::rollBack();
+                            return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                        }else{
+                                        //    DB::table('t_inv_stock')
+                                        //        ->where('material', $parts[$i])
+                                        //        ->where('whscode',  $wodata->whscode)
+                                        //        ->update([
+                                        //            'quantity'     => $latestStock->quantity - $qty
+                                        //        ]);
+                        }
+                    }else{
                         DB::rollBack();
                         return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
-                    }else{
-                        DB::table('t_inv_stock')
-                            ->where('material', $parts[$i])
-                            ->where('whscode',  $wodata->whscode)
-                            ->update([
-                                'quantity'     => $latestStock->quantity - $qty
-                            ]);
                     }
                 }else{
-                    DB::rollBack();
-                    return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                    $pbjdtl = DB::table('t_pbj02')
+                            ->where('pbjnumber', $pbjnum[$i])
+                            ->where('pbjitem', $pbjitm[$i])->first();
+                    
+                    $warehouseID = $pbjdtl->whscode;
+                    $latestStock = DB::table('v_inv_summary_stock')
+                                   ->where('material', $parts[$i])
+                                   ->where('whsid',    $pbjdtl->whscode)->first();
+                    if($latestStock){
+                        if($latestStock->quantity < $qty){
+                            DB::rollBack();
+                            return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                        }else{
+                            // DB::table('t_inv_stock')
+                            // ->where('material', $parts[$i])
+                            // ->where('whscode',  $pbjdtl->whscode)
+                            // ->update([
+                            //     'quantity'     => $latestStock->quantity - $qty
+                            // ]);
+                        }
+                    }else{
+                        DB::rollBack();
+                        return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
+                    }
                 }
                 $data = array(
                     'bast_id'      => $bastID,
@@ -169,7 +202,7 @@ class BastController extends Controller
                 //Insert movement
                 DB::select('call spIssueMaterialWithBatchFIFO(
                     "'. $parts[$i] .'",
-                    "'. $wodata->whscode .'",
+                    "'. $warehouseID .'",
                     "'. $qty .'",
                     "'. $ptaNumber .'",
                     "'. date('Y') .'",
@@ -182,9 +215,6 @@ class BastController extends Controller
                     "'. Auth::user()->email .'")');
             }
             insertOrUpdate($insertData,'t_bast02');
-
-            
-                        
                 
 
             //Insert Attachments | t_attachments
@@ -215,6 +245,7 @@ class BastController extends Controller
             return Redirect::to("/logistic/bast")->withSuccess('BAST Berhasil disimpan');
         } catch(\Exception $e){
             DB::rollBack();
+            // dd($e);
             return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError($e->getMessage());
         }
     }

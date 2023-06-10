@@ -23,12 +23,11 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Pembuatan PBJ | Work Order / SPK ({{ $wodata->wonum }})</h3>
+                        <h3 class="card-title">Pembuatan PBJ</h3>
                         <div class="card-tools">
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan PBJ
                             </button>
-                            
                         </div>
                     </div>
                     <div class="card-body">
@@ -39,14 +38,19 @@
                                         <div class="form-group">
                                             <label for="tglpbj">Tanggal PBJ</label>
                                             <input type="date" name="tglpbj" class="form-control" required>
-                                            <input type="hidden" name="woNumber" value="{{ $wodata->wonum }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="requestto">Tujuan Permintaan</label>
                                             <input type="text" name="requestto" class="form-control" required>
-                                            <input type="hidden" name="pbjTYpe" value="1">
+                                            <input type="hidden" name="pbjTYpe" value="2">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="currency">Warehouse</label>                                            
+                                            <select name="whscode" id="find-whscode" class="form-control" required></select>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -64,20 +68,19 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="unitdesc">Unit Desc / Code</label>
-                                            {{-- <select name="unitdesc" id="find-unitdesc" class="form-control"></select> --}}
-                                            <input type="text" name="unitdesc" class="form-control" value="{{ $cklist->no_kendaraan }}">
+                                            <select name="unitdesc" id="find-unitdesc" class="form-control"></select>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="engine">Engine Model</label>
-                                            <input type="text" name="engine" id="engine_model" class="form-control" value="{{ $kendaraan->engine_model }}">
+                                            <input type="text" name="engine" id="engine_model" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="chassis">Chassis S/N</label>
-                                            <input type="text" name="chassis" id="chassis" class="form-control" value="{{ $kendaraan->chassis_sn }}">
+                                            <input type="text" name="chassis" id="chassis" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -95,7 +98,7 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="typeModel">Type / Model</label>
-                                            <input type="text" name="typeModel" id="typeModel" class="form-control" value="{{ $kendaraan->model_kendaraan }}">
+                                            <input type="text" name="typeModel" id="typeModel" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -103,7 +106,7 @@
                                             <label for="user">User</label>
                                             <!-- <input type="text" name="user" class="form-control"> -->
                                             <select name="user" id="user" class="form-control" required>
-                                                <option value="{{ $wodata->mekanik }}">{{ $wodata->mekanik }}</option>
+                                                <option value="">Pilih Mekanik</option>
                                                 @foreach($mekanik as $key => $row)
                                                     <option value="{{ $row->nama }}">{{ $row->nama }}</option>
                                                 @endforeach
@@ -119,19 +122,19 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="nginesn">Engine S/N</label>
-                                            <input type="text" name="nginesn" id="nginesn" class="form-control" value="{{ $kendaraan->engine_sn }}">
+                                            <input type="text" name="nginesn" id="nginesn" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="hmkm">HM</label>
-                                            <input type="text" name="hmkm" id="hmkm" class="form-control" value="{{ $kendaraan->last_hm }}">
+                                            <input type="text" name="hmkm" id="hmkm" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="km">KM</label>
-                                            <input type="text" name="km" id="km" class="form-control" value="{{ $kendaraan->last_km }}">
+                                            <input type="text" name="km" id="km" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -139,21 +142,15 @@
                                             <label for="budgetcode">Budget / Cost Code</label>
                                             <input type="text" name="budgetcode" class="form-control">
                                         </div>
-                                    </div>
+                                    </div>       
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="no_rangka">No. Rangka</label>
-                                            <input type="text" name="no_rangka" id="no_rangka" class="form-control" value="{{ $kendaraan->no_rangka }}">
+                                            <input type="text" name="no_rangka" id="no_rangka" class="form-control">
                                         </div>
-                                    </div>                                    
+                                    </div>                           
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12">
-                                        <div class="form-group">
-                                            <label for="checklistnum">Nomor Ceklist</label>
-                                            <input type="text" class="form-control" name="checklistnum" value="{{ $cklist->no_checklist }}" readonly>
-                                        </div>
-                                    </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="attachment">Attachment</label>
@@ -174,45 +171,14 @@
                                                 {{-- <th>Warehouse</th> --}}
                                                 <th>Figure</th>
                                                 <th>Remark</th>
-                                                {{-- <th style="text-align:right;">
+                                                <th style="text-align:right;">
                                                     <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
                                                         <i class="fa fa-plus"></i>
                                                     </button>
-                                                </th> --}}
+                                                </th>
                                             </thead>
                                             <tbody id="tbl-pbj-body">
-                                                @foreach ($woitems as $key => $row)
-                                                <tr>
-                                                    <td>
-                                                        {{ $row->material }} - {{ $row->matdesc }}
-                                                        <input type="hidden" name="parts[]" class="form-control" value="{{ $row->material }}" readonly>
-                                                        <input type="hidden" name="partdesc[]" class="form-control" value="{{ $row->matdesc }}" readonly>
-                                                    </td>
-                                                    <td>
-                                                        {{ $row->quantity }}
-                                                        <input type="hidden" name="quantity[]" style="text-align: right;" class="form-control" onkeypress="validate(event)" value="{{ $row->quantity }}" required>
-                                                    </td>
-                                                    <td>
-                                                        {{ $row->unit }}
-                                                        <input type="hidden" name="uoms[]" value="{{ $row->unit }}" class="form-control" readonly>
-                                                    </td>
-                                                    
-                                                    <td>
-                                                        <input type="hidden" name="warehouse[]" value="{{ $wodata->whscode }}">
-                                                        <input type="text" name="figures[]" class="form-control" required>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="remarks[]" class="form-control" required>
-                                                        <input type="hidden" name="wonum[]" value="{{ $row->wonum }}">
-                                                        <input type="hidden" name="woitem[]" value="{{ $row->woitem }}">
-                                                    </td>
-                                                    {{-- <td>
-                                                        <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </td> --}}
-                                                </tr>
-                                                @endforeach
+                                                
                                             </tbody>
                                             <!-- <tfoot>
                                                 <tr>
@@ -279,21 +245,21 @@
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
 <script>    
     function validate(evt) {
-                        var theEvent = evt || window.event;
-    
-                        // Handle paste
-                        if (theEvent.type === 'paste') {
-                            key = event.clipboardData.getData('text/plain');
-                        } else {
-                        // Handle key press
-                            var key = theEvent.keyCode || theEvent.which;
-                            key = String.fromCharCode(key);
-                        }
-                        var regex = /[0-9]|\./;
-                        if( !regex.test(key) ) {
-                            theEvent.returnValue = false;
-                            if(theEvent.preventDefault) theEvent.preventDefault();
-                        }
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+        // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if( !regex.test(key) ) {
+            theEvent.returnValue = false;
+            if(theEvent.preventDefault) theEvent.preventDefault();
+        }                        
     }
 
     $(document).ready(function(){
@@ -353,7 +319,7 @@
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
                             <td>
-                                <input type="text" name="quantity[]" class="form-control" onkeypress="`+validate(event)+`" required>
+                                <input type="text" name="quantity[]" class="form-control" style="text-align:right;" onkeypress="`+validate(event)+`" required>
                             </td>
                             <td>
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
@@ -363,6 +329,9 @@
                             </td>
                             <td>
                                 <input type="text" name="remarks[]" class="form-control" required>
+                                <input type="hidden" name="warehouse[]" class="form-control" value="`+ $('#find-whscode').val() +`">
+                                <input type="hidden" name="wonum[]" class="form-control">
+                                <input type="hidden" name="woitem[]" class="form-control">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
@@ -398,8 +367,13 @@
             
 
         $('.btn-add-pbj-item').on('click', function(){
-            loadMaterial();
-            $('#modal-add-material').modal('show');
+            // alert($('#find-whscode').val())
+            if($('#find-whscode').val() === '' || $('#find-whscode').val() == null){
+                toastr.error("Pilih warehouse");
+            }else{
+                loadMaterial();
+                $('#modal-add-material').modal('show');
+            }
         });
 
         // $('.btn-add-pbj-item').on('click', function(){
@@ -558,6 +532,45 @@
             $('#tahun').val(data[0].tahun);
             $('#bahan_bakar').val(data[0].bahan_bakar);
         });
+
+        $('#find-whscode').select2({ 
+            placeholder: 'Ketik Nama Gudang',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/master/warehouse/findwhs',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.whsname,
+                                slug: item.whsname,
+                                id: item.whscode,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        }); 
 
         function validate(evt) {
             var theEvent = evt || window.event;

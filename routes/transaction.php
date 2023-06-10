@@ -37,6 +37,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listopenwo', 'Transaksi\PbjController@listOpenWO')->middleware('checkAuth:transaction/pbj');
 
         Route::get('/wo/detail/{p1}',      'Transaksi\PbjController@detailWO')->middleware('checkAuth:transaction/pbj');
+        
+    });
+
+    Route::post('/transaction/pbj/deleteitem',          'Transaksi\PbjController@deletePBJItem');
+    Route::post('/transaction/pbj/udpate',              'Transaksi\PbjController@update');
+
+    Route::group(['prefix' => '/transaction/pbjtanpawo'], function () {
+        Route::get('/',          'Transaksi\PbjController@createWithoueWO');
+        //->middleware('checkAuth:transaction/pbj');
     });
 
     Route::get('/pbj/duedatepbj',      'Transaksi\PbjController@duedatepbj')->middleware('checkAuth:pbj/duedatepbj');

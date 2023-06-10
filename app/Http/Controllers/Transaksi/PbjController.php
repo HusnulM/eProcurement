@@ -25,6 +25,7 @@ class PbjController extends Controller
             $department = DB::table('t_department')->get();
             $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $wodata->cheklistnumber)->first();
             $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
+            $warehouse  = DB::table('t_warehouse')->where('id', $wodata->whscode)->first();
             return view('transaksi.pbj.create', 
                 [
                     'wodata'     => $wodata,
@@ -32,11 +33,24 @@ class PbjController extends Controller
                     'department' => $department, 
                     'cklist'     => $cklist, 
                     'kendaraan'  => $kendaraan,
-                    'woitems'    => $woitems
+                    'woitems'    => $woitems,
+                    'warehouse'  => $warehouse
                 ]);
         }else{
             return Redirect::to("/transaction/pbj")->withError('Data SPK/Work Order tidak ditemukan');
         }
+    }
+
+    public function createWithoueWO(){        
+        $mekanik    = DB::table('t_mekanik')->get();
+        $department = DB::table('t_department')->get();
+        $kendaraan  = DB::table('t_kendaraan')->get();
+        return view('transaksi.pbj.createpbj', 
+            [
+                'mekanik'    => $mekanik, 
+                'department' => $department,
+                'kendaraan'  => $kendaraan
+            ]);
     }
 
     public function duedatepbj(){
@@ -74,32 +88,64 @@ class PbjController extends Controller
     public function changePBJ($id){
         $pbjhdr = DB::table('t_pbj01')->where('id', $id)->first();
         if($pbjhdr){
-            $pbjitem     = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
-            $department  = DB::table('t_department')->get();
-            $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
-            $mekanik     = DB::table('t_mekanik')->get();
-            $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $pbjhdr->cheklistnumber)->first();
-            $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
-
-            // $pbjdept   = DB::table('t_department')->where()->firts();
-
-            $approvals   = DB::table('v_pbj_approval')
-            ->where('pbjnumber', $pbjhdr->pbjnumber)
-            ->orderBy('approver_level','asc')
-            ->orderBy('pbjitem', 'asc')
-            ->get();
-
-            // return $pbjhdr;
-            return view('transaksi.pbj.change', 
-                [
-                    'department'  => $department, 
-                    'pbjhdr'      => $pbjhdr, 
-                    'pbjitem'     => $pbjitem,
-                    'attachments' => $attachments, 
-                    'approvals'   => $approvals,
-                    'mekanik'     => $mekanik,
-                    'kendaraan'  => $kendaraan,
-                ]);
+            if($pbjhdr->pbjtype == 1){
+                $pbjitem     = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
+                $department  = DB::table('t_department')->get();
+                $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
+                $mekanik     = DB::table('t_mekanik')->get();
+                $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $pbjhdr->cheklistnumber)->first();
+                $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
+    
+                // $pbjdept   = DB::table('t_department')->where()->firts();
+    
+                $approvals   = DB::table('v_pbj_approval')
+                ->where('pbjnumber', $pbjhdr->pbjnumber)
+                ->orderBy('approver_level','asc')
+                ->orderBy('pbjitem', 'asc')
+                ->get();
+    
+                // return $pbjhdr;
+                return view('transaksi.pbj.change', 
+                    [
+                        'department'  => $department, 
+                        'pbjhdr'      => $pbjhdr, 
+                        'pbjitem'     => $pbjitem,
+                        'attachments' => $attachments, 
+                        'approvals'   => $approvals,
+                        'mekanik'     => $mekanik,
+                        'kendaraan'   => $kendaraan,
+                    ]);
+            }else{
+                $pbjitem     = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
+                $department  = DB::table('t_department')->get();
+                $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
+                $mekanik     = DB::table('t_mekanik')->get();
+                // $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $pbjhdr->cheklistnumber)->first();
+                $kendaraan  = DB::table('t_kendaraan')->where('no_kendaraan', $pbjhdr->unit_desc)->first();
+    
+                $pbjdept   = DB::table('t_department')->where('deptid', $pbjhdr->deptid)->first();
+                $pbjwhs    = DB::table('t_warehouse')->where('id', $pbjitem[0]->whscode)->first();
+    
+                $approvals   = DB::table('v_pbj_approval')
+                ->where('pbjnumber', $pbjhdr->pbjnumber)
+                ->orderBy('approver_level','asc')
+                ->orderBy('pbjitem', 'asc')
+                ->get();
+    
+                // return $pbjhdr;
+                return view('transaksi.pbj.changePbj', 
+                    [
+                        'department'  => $department, 
+                        'pbjhdr'      => $pbjhdr, 
+                        'pbjitem'     => $pbjitem,
+                        'attachments' => $attachments, 
+                        'approvals'   => $approvals,
+                        'mekanik'     => $mekanik,
+                        'kendaraan'   => $kendaraan,
+                        'pbjdept'     => $pbjdept,
+                        'pbjwhs'      => $pbjwhs
+                    ]);
+            }
         }else{
             return Redirect::to("/transaction/pbj")->withError('Dokumen PBJ tidak ditemukan');
         }
@@ -215,6 +261,7 @@ class PbjController extends Controller
     }
 
     public function save(Request $req){
+        // return $req;
         DB::beginTransaction();
         try{
             if(isset($req['parts'])){
@@ -230,6 +277,7 @@ class PbjController extends Controller
                 // $amount = str_replace(',','',$amount);
                 DB::table('t_pbj01')->insert([
                     'pbjnumber'         => $ptaNumber,
+                    'pbjtype'           => $req['pbjTYpe'],
                     'deptid'            => Auth::user()->deptid,
                     'tgl_pbj'           => $req['tglpbj'],
                     'tujuan_permintaan' => $req['requestto'],
@@ -259,6 +307,7 @@ class PbjController extends Controller
                 $remark   = $req['remarks'];
                 $wonum    = $req['wonum'];
                 $woitem   = $req['woitem'];
+                $whscode  = $req['warehouse'];
     
                 $insertData = array();
                 $pbjItems   = array();
@@ -266,7 +315,7 @@ class PbjController extends Controller
                 for($i = 0; $i < sizeof($parts); $i++){
                     $qty    = $quantity[$i];
                     $qty    = str_replace(',','',$qty);
-    
+                    
                     $count = $count + 1;
                     $data = array(
                         'pbjnumber'    => $ptaNumber,
@@ -277,8 +326,9 @@ class PbjController extends Controller
                         'unit'         => $uom[$i],
                         'figure'       => $figure[$i],
                         'remark'       => $remark[$i],
-                        'wonum'        => $wonum[$i],
-                        'woitem'       => $woitem[$i],
+                        'wonum'        => $wonum[$i] ?? null,
+                        'woitem'       => $woitem[$i] ?? 0,
+                        'whscode'      => $whscode[$i],
                         'createdon'    => getLocalDatabaseDateTime(),
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
                     );
@@ -353,13 +403,230 @@ class PbjController extends Controller
                     'pbjnumber'   => $ptaNumber
                 ]);
                 DB::commit();
-                return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
+                if($req['pbjTYpe'] === "1"){
+                    return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
+                }else{
+                    return Redirect::to("/transaction/pbjtanpawo")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
+                }
             }else{
-                return Redirect::to("/transaction/pbj")->withError('PBJ Item Belum di Pilih');
+                if($req['pbjTYpe'] === "1"){
+                    return Redirect::to("/transaction/pbj")->withError('PBJ Item Belum di Pilih');
+                }else{
+                    return Redirect::to("/transaction/pbjtanpawo")->withError('PBJ Item Belum di Pilih');
+                }
             }
         } catch(\Exception $e){
             DB::rollBack();
-            return Redirect::to("/transaction/pbj")->withError($e->getMessage());
+            if($req['pbjTYpe'] === "1"){
+                return Redirect::to("/transaction/pbj")->withError($e->getMessage());
+            }else{
+                return Redirect::to("/transaction/pbjtanpawo")->withError($e->getMessage());
+            }
+        }
+    }
+
+    public function update(Request $req){
+        // return $req;
+        DB::beginTransaction();
+        try{
+            if(isset($req['parts'])){
+               
+                $ptaNumber = $req['pbjnumber'];
+    
+                // return $ptaNumber;
+    
+                // $amount = $req['nominal'];
+                // $amount = str_replace(',','',$amount);
+                DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->update([                    
+                    'deptid'            => Auth::user()->deptid,
+                    'tgl_pbj'           => $req['tglpbj'],
+                    'tujuan_permintaan' => $req['requestto'],
+                    'kepada'            => $req['kepada'],
+                    'unit_desc'         => $req['unitdesc'],
+                    'engine_model'      => $req['engine'],
+                    'chassis_sn'        => $req['chassis'],
+                    'reference'         => $req['refrensi'],
+                    'requestor'         => $req['requestor'],
+                    'type_model'        => $req['typeModel'],
+                    'user'              => $req['user'],
+                    'kode_brg_jasa'     => $req['kodeJasa'],
+                    'engine_sn'         => $req['nginesn'],
+                    'hm_km'             => $req['hmkm'],
+                    'km'                => $req['km'],
+                    'budget_cost_code'  => $req['budgetcode']
+                ]);
+    
+                $parts    = $req['parts'];
+                $partdsc  = $req['partdesc'];
+                $quantity = $req['quantity'];
+                $uom      = $req['uoms'];
+                $figure   = $req['figures'];
+                $remark   = $req['remarks'];
+                $wonum    = $req['wonum'];
+                $woitem   = $req['woitem'];
+                $whscode  = $req['warehouse'];
+                $pbjitem  = $req['pbjitem'];
+
+                $insertData = array();
+                $pbjItems   = array();
+                $count = 0;
+                for($i = 0; $i < sizeof($parts); $i++){
+                    $qty    = $quantity[$i];
+                    $qty    = str_replace(',','',$qty);
+                    
+                    if($pbjitem[$i]){
+                        $count = $pbjitem[$i];
+                    }else{
+                        $count += 1;
+                    }
+
+                    $data = array(
+                        'pbjnumber'    => $ptaNumber,
+                        'pbjitem'      => $count,
+                        'partnumber'   => $parts[$i],
+                        'description'  => $partdsc[$i],
+                        'quantity'     => $qty,
+                        'unit'         => $uom[$i],
+                        'figure'       => $figure[$i],
+                        'remark'       => $remark[$i],
+                        'wonum'        => $wonum[$i] ?? null,
+                        'woitem'       => $woitem[$i] ?? 0,
+                        'whscode'      => $whscode[$i] ?? $req['whscode'],
+                        'createdon'    => getLocalDatabaseDateTime(),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    );
+                    array_push($insertData, $data);
+                    array_push($pbjItems, $data);
+                }
+                insertOrUpdate($insertData,'t_pbj02');
+                
+                // return $pbjItems;
+                //Insert Attachments | t_attachments
+                if(isset($req['efile'])){
+                    $files = $req['efile'];
+                    $insertFiles = array();
+        
+                    foreach ($files as $efile) {
+                        $filename = $efile->getClientOriginalName();
+                        $upfiles = array(
+                            'doc_object' => 'PBJ',
+                            'doc_number' => $ptaNumber,
+                            'efile'      => $filename,
+                            'pathfile'   => '/files/PBJ/'. $filename,
+                            'createdon'  => getLocalDatabaseDateTime(),
+                            'createdby'  => Auth::user()->username ?? Auth::user()->email
+                        );
+                        array_push($insertFiles, $upfiles);
+        
+                        // $efile->move(public_path().'/files/PBJ/', $filename);  
+                        $efile->move('files/PBJ/', $filename);  
+                    }
+                    if(sizeof($insertFiles) > 0){
+                        insertOrUpdate($insertFiles,'t_attachments');
+                    }
+                }
+                // insertOrUpdate($insertFiles,'t_attachments');
+    
+                //Set Approval
+                // $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
+                // if(sizeof($approval) > 0){
+                //     // foreach($pbjItems as $pbitem){
+                //     for($a = 0; $a < sizeof($pbjItems); $a++){
+                //         $insertApproval = array();
+                //         foreach($approval as $row){
+                //             $is_active = 'N';
+                //             if($row->approver_level == 1){
+                //                 $is_active = 'Y';
+                //             }
+                //             $approvals = array(
+                //                 'pbjnumber'         => $ptaNumber,
+                //                 'pbjitem'           => $pbjItems[$a]['pbjitem'],
+                //                 'approver_level'    => $row->approver_level,
+                //                 'approver'          => $row->approver,
+                //                 'requester'         => Auth::user()->id,
+                //                 'is_active'         => $is_active,
+                //                 'createdon'         => getLocalDatabaseDateTime()
+                //             );
+                //             array_push($insertApproval, $approvals);
+                //         }
+                //         insertOrUpdate($insertApproval,'t_pbj_approval');
+                //     }
+                // }    
+
+                // DB::table('t_checklist_kendaraan')->where('no_checklist',$req['checklistnum'])->update([
+                //     'pbj_created' => 'Y',
+                //     'pbjnumber'   => $ptaNumber
+                // ]);
+                DB::commit();
+                return Redirect::to("/transaction/pbj/list")->withSuccess('PBJ '. $ptaNumber .' Berhasil diupdate');
+                // if($req['pbjTYpe'] === "1"){
+                //     return Redirect::to("/transaction/pbj")->withSuccess('PBJ '. $ptaNumber .' Berhasil diupdate');
+                // }else{
+                //     return Redirect::to("/transaction/pbjtanpawo")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
+                // }
+            }else{
+                // if($req['pbjTYpe'] === "1"){
+                    return Redirect::to("/transaction/pbj/list")->withError('PBJ Item Belum di Pilih');
+                // }else{
+                //     return Redirect::to("/transaction/pbjtanpawo")->withError('PBJ Item Belum di Pilih');
+                // }
+                
+            }
+        } catch(\Exception $e){
+            DB::rollBack();
+            dd($e);
+            return Redirect::to("/transaction/pbj/list")->withError($e->getMessage());
+        }
+    }
+
+    public function deletePBJItem(Request $req){
+        DB::beginTransaction();
+        try{
+            $checkApproval = DB::table('v_pbj_approval')
+                ->where('pbjnumber', $req['pbjnumber'])
+                ->where('pbjitem', $req['pbjitem'])
+                ->where('approval_status', 'A')->first();
+            
+            if($checkApproval){
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'PBJ : '. $req['pbjnumber'] . ' sudah di approve, data tidak bisa dihapus'
+                );
+                return $result;
+            }
+
+            $checkBAST = DB::table('t_pbj02')
+                ->where('pbjnumber', $req['pbjnumber'])
+                ->where('pbjitem', $req['pbjitem'])
+                ->where('bast_created', 'N')->first();
+
+            if($checkBAST){
+                DB::table('t_pbj02')->where('pbjnumber', $req['pbjnumber'])->where('pbjitem', $req['pbjitem'])->delete();
+    
+                DB::commit();
+                $result = array(
+                    'msgtype' => '200',
+                    'message' => 'Item PBJ : '. $req['pbjnumber'] . ' - ' . $req['pbjitem'] . ' berhasil dihapus'
+                );
+
+            }else{
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'Item PBJ : '. $req['prnum'] . ' - ' . $req['pbjitem'] . ' sudah dibuat BAST'
+                );
+            }
+            
+            // return Redirect::to("/approve/pr")->withSuccess('PR dengan Nomor : '. $ptaNumber . ' berhasil di approve');
+            return $result;
+        } catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+            // return Redirect::to("/proc/pr")->withError($e->getMessage());
+            // dd($e->getMessage());
         }
     }
 }
