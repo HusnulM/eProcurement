@@ -93,7 +93,7 @@
                 <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;">
                 <!-- <img src="{{ public_path('/assets/img/logo.png') }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;"> -->
             </td>
-            <td style="text-align:center; width:330px;" rowspan="3">
+            <td style="text-align:center; width:300px;" rowspan="3">
                 <h2>
                 PERMINTAAN BARANG / JASA<br>
                 PBJ
