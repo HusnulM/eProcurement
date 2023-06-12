@@ -79,6 +79,7 @@
                                                 <th>Quantity</th>
                                                 <th>Unit</th>
                                                 <th>PBJ Reference</th>
+                                                <th>Project</th>
                                                 <th style="text-align:right;">
                                                     <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
                                                         <i class="fa fa-plus"></i>
@@ -159,6 +160,7 @@
                                 <th></th>
                                 <th>Nomor PBJ</th>
                                 <th>Tanggal PBJ</th>
+                                <th>Project</th>
                                 <th>No. Plat</th>
                                 <th>Part Number</th>
                                 <th>Part Name</th>
@@ -268,6 +270,10 @@
                                 <input type="hidden" name="nopol[]" id="nopol`+fCount+`" class="form-control">
                             </td>
                             <td>
+                                <input type="text" name="namaproject[]" class="form-control" value="" readonly>
+                                <input type="hidden" name="project[]" id="project`+fCount+`" value="">
+                            </td>
+                            <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
                                     <i class="fa fa-trash"></i>
                                 </button>
@@ -328,6 +334,7 @@
                     },
                     {data: "pbjnumber", className: 'uid'},
                     {data: "tgl_pbj", className: 'uid'},
+                    {data: "nama_project", className: 'uid'},
                     {data: "unit_desc", className: 'uid'},
                     {data: "partnumber"},
                     {data: "description"},
@@ -394,6 +401,10 @@
                                 <input type="hidden" name="pbjnum[]" id="pbjnum`+fCount+`" class="form-control" value="`+selected_data.pbjnumber+`">
                                 <input type="hidden" name="pbjitm[]" id="pbjitm`+fCount+`" class="form-control" value="`+selected_data.pbjitem+`">
                                 <input type="hidden" name="nopol[]" id="nopol`+fCount+`" class="form-control" value="`+selected_data.unit_desc+`">
+                            </td>
+                            <td>
+                                <input type="text" name="namaproject[]" class="form-control" value="`+ selected_data.nama_project +`" readonly>
+                                <input type="hidden" name="project[]" id="project`+fCount+`" value="`+ selected_data.idproject +`">
                             </td>
                             <td style="text-align:center;">
                                 <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">

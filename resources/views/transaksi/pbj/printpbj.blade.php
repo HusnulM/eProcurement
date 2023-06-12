@@ -107,13 +107,16 @@
             </td>
         </tr>
         <tr>
-            
             <td>
                 PBJ Date
             </td>
             <td>
                 {{ formatDate($hdr->tgl_pbj) }}
             </td>
+        </tr>
+        <tr>
+            <td>Project</td>
+            <td>{{ $project->nama_project ?? '' }}</td>
         </tr>
     </table>
     

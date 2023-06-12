@@ -137,6 +137,7 @@
                                                                         <th>Unit</th>
                                                                         <th>Unit Price</th>
                                                                         <th>PR Reference</th>
+                                                                        <th>Project</th>
                                                                         <th style="text-align:right;">
                                                                             <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
                                                                                 <i class="fa fa-plus"></i>
@@ -241,6 +242,7 @@
                                     <th>Department</th>
                                     <th>No. Plat</th>
                                     <th>Remark</th>
+                                    <th>Project</th>
                                     <th style="width:50px; text-align:center;">
                                         
                                     </th>
@@ -533,7 +535,8 @@
                     {data: "requestby"},
                     {data: "department"},      
                     {data: "no_plat"},      
-                    {data: "remark"},      
+                    {data: "remark"},
+                    {data: "nama_project"},      
                     {"defaultContent": 
                         `
                         <button class='btn btn-success btn-sm button-add-pbj-to-pritem'> <i class="fa fa-plus"></i></button>
@@ -590,6 +593,10 @@
                                 <input type="text" name="prref[]" id="prref`+fCount+`" value="`+ selected_data.prnum +`" class="form-control">
                                 <input type="hidden" name="prnum[]" id="prnum`+fCount+`" value="`+ selected_data.prnum +`" class="form-control">
                                 <input type="hidden" name="pritem[]" id="pritem`+fCount+`" value="`+ selected_data.pritem +`" class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="namaproject[]" class="form-control" value="`+ selected_data.nama_project +`" readonly>
+                                <input type="hidden" name="project[]" id="project`+fCount+`" value="`+ selected_data.idproject +`">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">

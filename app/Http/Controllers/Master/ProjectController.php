@@ -15,23 +15,76 @@ class ProjectController extends Controller
         return view('master.project.index');
     }
 
-    public function save(){
+    public function save(Request $req){
+        DB::beginTransaction();
+        try{
+            $kodeProject = $req['kodeproject'];
+            $namaProject = $req['namaproject'];
+            $insertData = array();
+            for($i = 0; $i < sizeof($kodeProject); $i++){
+                $data = array(
+                    'kode_project'  => $kodeProject[$i],
+                    'nama_project'  => $namaProject[$i],
+                    'createdon'     => getLocalDatabaseDateTime(),
+                    'createdby'     => Auth::user()->email ?? Auth::user()->username
+                );
+                array_push($insertData, $data);
+            }
+            insertOrUpdate($insertData,'t_projects');
+            DB::commit();
+            return Redirect::to("/master/project")->withSuccess('Master Project Berhasil dibuat');
 
+        }catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/project")->withError($e->getMessage());
+        }
     }
 
-    public function update(){
+    public function update(Request $req){
+        DB::beginTransaction();
+        try{
+            $idProject   = $req['idProject'];
+            $kodeProject = $req['kodeproject'];
+            $namaProject = $req['namaproject'];
+            
+            DB::table('t_projects')->where('idproject', $idProject)->update([
+                'nama_project' => $namaProject
+            ]);
 
+            DB::commit();
+            return Redirect::to("/master/project")->withSuccess('Master Project Berhasil di update');
+
+        }catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/project")->withError($e->getMessage());
+        }
     }
 
-    public function delete(){
+    public function delete($idProject){
+        DB::beginTransaction();
+        try{
+            DB::table('t_projects')->where('idproject', $idProject)->delete();
 
+            DB::commit();
+            return Redirect::to("/master/project")->withSuccess('Master Project Berhasil dihapus');
+
+        }catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/master/project")->withError($e->getMessage());
+        }
     }
 
-    public function projectlist(){
-
+    public function projectlist(Request $request){
+        $params = $request->params;        
+        $whereClause = $params['sac'];
+        $query = DB::table('t_projects')->orderBy('idproject');
+        return DataTables::queryBuilder($query)->toJson();
     }
 
-    public function findproject(){
+    public function findproject(Request $request){
+        $query['data'] = DB::table('t_projects')->where('nama_project', 'like', '%'. $request->search . '%')->get();
 
+        // return \Response::json($query);
+        return $query;
     }
 }

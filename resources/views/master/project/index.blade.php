@@ -83,7 +83,7 @@
     </form>
 </div>
 
-<div class="modal fade" id="modal-edit-department">
+<div class="modal fade" id="modal-edit-project">
     <form action="{{ url('master/project/update') }}" method="post">
         @csrf
         <div class="modal-dialog modal-lg">
@@ -105,8 +105,11 @@
                             <tbody id="tbl-edit-dept-body">
                                 <tr>
                                     <td>
-                                        <input type="text" class="form-control" name="nama" id="mknama">
-                                        <input type="hidden" class="form-control" name="mkid" id="mkid">
+                                        <input type="text" class="form-control" name="kodeproject" id="kdProject" readonly>
+                                        <input type="hidden" class="form-control" name="idProject" id="idProject">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="namaproject" id="nmProject">
                                     </td>
                                 </tr>
                             </tbody>
@@ -148,7 +151,8 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }  
                 },
-                {data: "nama", className: 'uid'},
+                {data: "kode_project", className: 'uid'},
+                {data: "nama_project", className: 'uid'},
                 {"defaultContent": 
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button> 
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
@@ -163,7 +167,7 @@
             var table = $('#tbl-dept-master').DataTable();
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
-            window.location = base_url+"/master/mekanik/delete/"+selected_data.id;
+            window.location = base_url+"/master/project/delete/"+selected_data.idproject;
         });
         $('#tbl-dept-master tbody').on( 'click', '.button-edit', function () {
             var table = $('#tbl-dept-master').DataTable();
@@ -171,9 +175,10 @@
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
             // window.location = base_url+"/master/department/edit/"+selected_data.deptid;
-            $('#mknama').val(selected_data.nama);
-            $('#mkid').val(selected_data.id);
-            $('#modal-edit-department').modal('show');
+            $('#kdProject').val(selected_data.kode_project);
+            $('#nmProject').val(selected_data.nama_project);
+            $('#idProject').val(selected_data.idproject);
+            $('#modal-edit-project').modal('show');
         });
 
         $('.btn-add-dept').on('click', function(){
@@ -184,10 +189,10 @@
             $('#tbl-new-dept-body').append(`
                 <tr>
                     <td>
-                        <input type="text" name="kodeproject[]" class="form-control"/>
+                        <input type="text" name="kodeproject[]" class="form-control" required/>
                     </td>
                     <td>
-                        <input type="text" name="namaproject[]" class="form-control"/>
+                        <input type="text" name="namaproject[]" class="form-control" required/>
                     </td>
                     <td style="text-align:center;">
                         <button type="button" class="btn btn-danger btn-sm btnRemove">

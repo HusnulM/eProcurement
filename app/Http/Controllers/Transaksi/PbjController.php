@@ -93,9 +93,12 @@ class PbjController extends Controller
                 $department  = DB::table('t_department')->get();
                 $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
                 $mekanik     = DB::table('t_mekanik')->get();
-                $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $pbjhdr->cheklistnumber)->first();
-                $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
-    
+                $cklist      = DB::table('v_checklist_kendaraan')->where('no_checklist', $pbjhdr->cheklistnumber)->first();
+                $kendaraan   = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
+                $project     = DB::table('t_projects')->where('idproject', $pbjhdr->idproject);
+                if(!$project){
+                    $project = null;
+                }
                 // $pbjdept   = DB::table('t_department')->where()->firts();
     
                 $approvals   = DB::table('v_pbj_approval')
@@ -114,6 +117,7 @@ class PbjController extends Controller
                         'approvals'   => $approvals,
                         'mekanik'     => $mekanik,
                         'kendaraan'   => $kendaraan,
+                        'project'     => $project
                     ]);
             }else{
                 $pbjitem     = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
@@ -143,7 +147,8 @@ class PbjController extends Controller
                         'mekanik'     => $mekanik,
                         'kendaraan'   => $kendaraan,
                         'pbjdept'     => $pbjdept,
-                        'pbjwhs'      => $pbjwhs
+                        'pbjwhs'      => $pbjwhs,
+                        'project'     => $project
                     ]);
             }
         }else{
@@ -295,6 +300,7 @@ class PbjController extends Controller
                     'km'                => $req['km'],
                     'budget_cost_code'  => $req['budgetcode'],
                     'cheklistnumber'    => $req['checklistnum'] ?? null,
+                    'idproject'         => $req['project'] ?? null,
                     'createdon'         => getLocalDatabaseDateTime(),
                     'createdby'         => Auth::user()->email ?? Auth::user()->username
                 ]);

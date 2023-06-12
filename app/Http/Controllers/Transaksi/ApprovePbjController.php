@@ -30,10 +30,16 @@ class ApprovePbjController extends Controller
                     ->where('is_active', 'Y')
                     ->first();
 
+            $pbjProject = DB::table('t_projects')->where('idproject', $pbjhdr->idproject)->first();
+            if(!$pbjProject){
+                $pbjProject = null;
+            }
             return view('transaksi.pbj.approvedetail', ['pbjhdr' => $pbjhdr, 'pbjitem' => $pbjitem, 
                 'approvals' => $approvals, 
                 'isApprovedbyUser' => $isApprovedbyUser,
-                'attachments'      => $attachments]);
+                'attachments'      => $attachments,
+                'project'          => $pbjProject
+            ]);
         }else{
             return Redirect::to("/approve/pbj")->withError('Dokumen PBJ tidak ditemukan');
         }

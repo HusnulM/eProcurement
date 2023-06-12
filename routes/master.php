@@ -135,7 +135,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update',      'Master\ProjectController@update')->middleware('checkAuth:master/project');
         Route::get('/delete/{id}',  'Master\ProjectController@delete')->middleware('checkAuth:master/project');  
 
-        Route::get('/lists',        'Master\ProjectController@projectlist')->middleware('checkAuth:master/project');  
-        Route::post('/findproject', 'Master\ProjectController@findproject')->middleware('checkAuth:master/project');  
+        Route::get('/projectlist',  'Master\ProjectController@projectlist')->middleware('checkAuth:master/project');  
+        Route::post('/findproject', 'Master\ProjectController@findproject');//->middleware('checkAuth:master/project');  
     });
 });

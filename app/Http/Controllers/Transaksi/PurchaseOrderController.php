@@ -130,6 +130,7 @@ class PurchaseOrderController extends Controller
             $price    = $req['unitprice'];
             $prnum    = $req['prnum'];
             $pritem   = $req['pritem'];
+            $project  = $req['project'];
 
             $insertData = array();
             $count = 0;
@@ -153,6 +154,7 @@ class PurchaseOrderController extends Controller
                     'price'        => $uprice,
                     'prnum'        => $prnum[$i] ?? 0,
                     'pritem'       => $pritem[$i] ?? 0,
+                    'idproject'    => $project[$i] ?? null,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );

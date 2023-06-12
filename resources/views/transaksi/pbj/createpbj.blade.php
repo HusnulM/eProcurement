@@ -148,7 +148,13 @@
                                             <label for="no_rangka">No. Rangka</label>
                                             <input type="text" name="no_rangka" id="no_rangka" class="form-control">
                                         </div>
-                                    </div>                           
+                                    </div>      
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="project">Project</label>
+                                            <select name="project" id="find-project" class="form-control"></select>
+                                        </div>
+                                    </div>                        
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12">
@@ -571,6 +577,45 @@
                 cache: true
             }
         }); 
+
+        $('#find-project').select2({ 
+            placeholder: 'Nama Project',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/master/project/findproject',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.kode_project + ' - ' + item.nama_project,
+                                slug: item.nama_project,
+                                id: item.idproject,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
 
         function validate(evt) {
             var theEvent = evt || window.event;
