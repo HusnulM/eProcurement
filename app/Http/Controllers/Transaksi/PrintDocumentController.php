@@ -89,7 +89,7 @@ class PrintDocumentController extends Controller
         $prhdr = DB::table('t_pbj01')->where('id', $id)->first();
         $prdtl = DB::table('t_pbj02')->where('pbjnumber', $prhdr->pbjnumber)->get();
         $logo = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
-        $project = DB::table('t_projects')->where('idproject', $prhdr->idproject);
+        $project = DB::table('t_projects')->where('idproject', $prhdr->idproject)->first();
         if(!$project){
             $project = null;
         }
