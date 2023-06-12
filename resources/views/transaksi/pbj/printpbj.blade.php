@@ -94,10 +94,10 @@
                 <!-- <img src="{{ public_path('/assets/img/logo.png') }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;"> -->
             </td>
             <td style="text-align:center; width:330px;" rowspan="3">
-                <h3>
+                <h2>
                 PERMINTAAN BARANG / JASA<br>
                 PBJ
-                </h3>
+                </h2>
             </td>
             <td style="width:72.5px;">
                 PBJ No.
