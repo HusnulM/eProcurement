@@ -536,7 +536,7 @@
             width: '100%',
             minimumInputLength: 0,
             ajax: {
-                url: base_url + '/master/kendaraan/findkendaraan',
+                url: base_url + '/master/kendaraan/findkendaraan2',
                 dataType: 'json',
                 delay: 250,
                 method: 'POST',

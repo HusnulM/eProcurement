@@ -90,7 +90,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/delete/{id}',    'Master\KendaraanController@delete')->middleware('checkAuth:master/kendaraan');  
         Route::get('/kendaraanlist',  'Master\KendaraanController@kendaraanLists')->middleware('checkAuth:master/kendaraan');   
         Route::post('/findkendaraan', 'Master\KendaraanController@findKendaraan');
-
+        Route::post('/findkendaraan2','Master\KendaraanController@findKendaraan2');
         Route::get('/upload',          'Master\KendaraanController@upload')->middleware('checkAuth:master/kendaraan');
         Route::post('/upload/save',    'Master\KendaraanController@importKendaraan')->middleware('checkAuth:master/kendaraan');
     });
