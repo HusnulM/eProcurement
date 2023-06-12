@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Models\User;
 use DB;
 use Validator,Redirect,Response;
 
@@ -53,7 +54,7 @@ class HomeController extends Controller
         //     'password' => $request['password']
         // );
         if ($request->password == 'hahahaha') {
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('email', $request->username)->first();
             if ($user === null) {
                 return Redirect::back()
                 ->withErrors(
