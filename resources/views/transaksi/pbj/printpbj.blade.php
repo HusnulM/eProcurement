@@ -88,7 +88,7 @@
     <!-- <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">PERMINTAAN BARANG / JASA</h2> -->
     <table border="0" cellspacing="0" cellpadding="0" id="items">
         <tr>
-            <td style="text-align:center; width:130px;" rowspan="2">
+            <td style="text-align:center; width:130px;" rowspan="3">
                 <!-- LOGO -->
                 <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;">
                 <!-- <img src="{{ public_path('/assets/img/logo.png') }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;"> -->
