@@ -128,4 +128,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/lists',        'Master\CustomerController@customerlist')->middleware('checkAuth:master/customer');  
         Route::post('/findcustomer', 'Master\CustomerController@findcustomer')->middleware('checkAuth:master/customer');  
     });
+
+    Route::group(['prefix' => '/master/project'], function () {
+        Route::get('/',             'Master\ProjectController@index')->middleware('checkAuth:master/project');  
+        Route::post('/save',        'Master\ProjectController@save')->middleware('checkAuth:master/project');
+        Route::post('/update',      'Master\ProjectController@update')->middleware('checkAuth:master/project');
+        Route::get('/delete/{id}',  'Master\ProjectController@delete')->middleware('checkAuth:master/project');  
+
+        Route::get('/lists',        'Master\ProjectController@projectlist')->middleware('checkAuth:master/project');  
+        Route::post('/findproject', 'Master\ProjectController@findproject')->middleware('checkAuth:master/project');  
+    });
 });
