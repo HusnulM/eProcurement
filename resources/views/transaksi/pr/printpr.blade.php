@@ -60,7 +60,7 @@
         <td style="text-align:center; width:130px;" rowspan="3">
             <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;">
         </td>
-        <td style="text-align:right;">
+        <td style="text-align:center;">
             <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">PURCHASE REQUISITION</h2>
         </td>
 
