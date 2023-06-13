@@ -150,7 +150,7 @@
     <br>
     <table>
         <tr>
-            <td>Plant Manager,</td>
+            <td>Dibuat Oleh,</td>
         </tr>
         <tr>
             <td>
@@ -158,7 +158,7 @@
             </td>
         </tr>
         <tr>
-            <td>____________________</td>
+            <td> <u> {{ getUserNameByID($prhdr->createdby) }} </u></td>
         </tr>
     </table>
     
