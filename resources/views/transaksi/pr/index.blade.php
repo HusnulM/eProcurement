@@ -18,6 +18,7 @@
 @section('content')        
 <div class="container-fluid">
     <form id="form-submit-data" method="post" enctype="multipart/form-data">
+    <!-- <form id="form-submit-dataxx" action="/proc/pr/save" method="post" enctype="multipart/form-data"> -->
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -270,8 +271,8 @@
                                 <input type="hidden" name="nopol[]" id="nopol`+fCount+`" class="form-control">
                             </td>
                             <td>
-                                <input type="text" name="namaproject[]" class="form-control" value="" readonly>
-                                <input type="hidden" name="project[]" id="project`+fCount+`" value="">
+                                <select name="project[]" id="find-project`+fCount+`" class="form-control"></select>
+                                
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
@@ -287,6 +288,52 @@
                         removeItem(row_index);
                         $(this).closest("tr").remove();
                     });
+
+                    $('#find-project'+fCount).select2({ 
+                        placeholder: 'Nama Project',
+                        width: '100%',
+                        minimumInputLength: 0,
+                        ajax: {
+                            url: base_url + '/master/project/findproject',
+                            dataType: 'json',
+                            delay: 250,
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': _token
+                            },
+                            data: function (params) {
+                                var query = {
+                                    search: params.term,
+                                    // custname: $('#find-customer').val()
+                                }
+                                return query;
+                            },
+                            processResults: function (data) {
+                                // return {
+                                //     results: response
+                                // };
+                                console.log(data)
+                                return {
+                                    results: $.map(data.data, function (item) {
+                                        return {
+                                            text: item.kode_project + ' - ' + item.nama_project,
+                                            slug: item.nama_project,
+                                            id: item.idproject,
+                                            ...item
+                                        }
+                                    })
+                                };
+                            },
+                            cache: true
+                        }
+                    });
+
+                    // $('#find-project'+fCount).on('change', function(){
+                    //     var data = $('#find-project'+fCount).select2('data')
+                    //     console.log(data);
+                    //     // $('#project'+fCount).val(data[0].idproject);
+                        
+                    // });
                 }
             });
         }

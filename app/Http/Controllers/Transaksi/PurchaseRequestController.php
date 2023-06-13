@@ -132,10 +132,11 @@ class PurchaseRequestController extends Controller
                     'pbjnumber'    => $pbjnum[$i] ?? 0,
                     'pbjitem'      => $pbjitm[$i] ?? 0,
                     'no_plat'      => $nopol[$i] ?? null,
-                    'idproject'    => $project[$i] ?? null,
+                    'idproject'    => $project[$i] ?? 0,
                     'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
+                
                 array_push($insertData, $data);
 
                 DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
@@ -143,6 +144,7 @@ class PurchaseRequestController extends Controller
                     'prcreated' => 'Y'
                 ]);
             }
+            // return $insertData;
             insertOrUpdate($insertData,'t_pr02');
 
             //Insert Attachments | t_attachments
