@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Imports\VendorImport;
 use Illuminate\Http\Request;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
+use Excel;
 
 class VendorMasterController extends Controller
 {
@@ -15,6 +17,10 @@ class VendorMasterController extends Controller
 
     public function create(){
         return view('master.vendor.create');
+    }
+
+    public function upload(){
+        return view('master.vendor.upload');
     }
 
     public function edit($code){
@@ -92,6 +98,33 @@ class VendorMasterController extends Controller
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/master/vendor")->withError($e->getMessage());
+        }
+    }
+
+    public function importVendor(Request $request){
+        $this->validate($request, [
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+
+        $file = $request->file('file');
+
+        // membuat nama file unik
+        $nama_file = $file->hashName();        
+
+        $destinationPath = 'excel/';
+        $file->move($destinationPath,$file->getClientOriginalName());
+
+        config(['excel.import.startRow' => 2]);
+        // import data
+        $import = Excel::import(new VendorImport(), 'excel/'.$file->getClientOriginalName());
+
+        //remove from server
+		unlink('excel/'.$file->getClientOriginalName());
+
+        if($import) {
+            return Redirect::to("/master/vendor")->withSuccess('Data Vendor Berhasil di Upload');
+        } else {
+            return Redirect::to("/master/vendor")->withError('Error');
         }
     }
 }

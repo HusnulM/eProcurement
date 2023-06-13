@@ -953,3 +953,45 @@ function generateWONumber($tahun, $bulan){
         }
     } 
 }
+
+function generateVendorCode(){
+    $getdata = DB::table('t_nriv')
+    ->where('object', 'VENDOR')
+    ->first();
+
+    if($getdata){
+        DB::beginTransaction();
+        try{
+            $dcnNumber = (int)$getdata->currentnum;
+            $dcnNumber = $dcnNumber + 1;
+
+            DB::table('t_nriv')->where('object', 'VENDOR')->update([
+                'currentnum' => $dcnNumber
+            ]);
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            // dd($e->getMessage());
+            return '3000000000';
+        }
+    }else{
+        $dcnNumber = '3000000000';
+        DB::beginTransaction();
+        try{
+            DB::table('t_nriv')->insert([
+                'object'          => 'VENDOR',
+                'fromnum'         => '3000000000',
+                'tonumber'        => '3999999999',
+                'currentnum'      => '3000000000',
+                'nyear'           => 0,
+            ]);
+            DB::commit();
+            return $dcnNumber;
+        }catch(\Exception $e){
+            DB::rollBack();
+            // dd($e->getMessage());
+            return '3000000000';
+        }
+    }
+}

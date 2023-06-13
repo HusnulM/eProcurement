@@ -16,6 +16,10 @@
                         <a href="{{ url('/master/vendor/create') }}" class="btn btn-success btn-sm">
                             <i class="fas fa-plus"></i> Create Vendor
                         </a>
+
+                        <a href="{{ url('/master/vendor/upload') }}" class="btn btn-success btn-sm">
+                            <i class="fas fa-upload"></i> Upload Master Vendor
+                        </a>
                     </div>
                 </div>
                 <div class="card-body">

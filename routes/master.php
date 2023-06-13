@@ -40,6 +40,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/delete/{id}',  'Master\VendorMasterController@delete')->middleware('checkAuth:master/vendor');  
         Route::get('/vendorlists',  'Master\VendorMasterController@vendorLists')->middleware('checkAuth:master/vendor');  
         Route::post('/findvendor',  'Master\VendorMasterController@findVendor');
+
+        Route::get('/upload',            'Master\VendorMasterController@upload')->middleware('checkAuth:master/vendor');
+        Route::post('/upload/save',      'Master\VendorMasterController@importVendor')->middleware('checkAuth:master/vendor');
     });
 
     Route::group(['prefix' => '/master/department'], function () {
