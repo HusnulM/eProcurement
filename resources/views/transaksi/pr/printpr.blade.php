@@ -128,6 +128,7 @@
         </tbody>
     </table>
 
+    <br>
     <table>
         <tr>
             <td>Dibuat Oleh,</td>
@@ -136,6 +137,9 @@
             <td>
                 <img src="{{ asset(Auth::user()->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
             </td>
+        </tr>
+        <tr>
+            <td>{{ getUserNameByID($prhdr->createdby) }}</td>
         </tr>
         <tr>
             <td>____________________</td>
