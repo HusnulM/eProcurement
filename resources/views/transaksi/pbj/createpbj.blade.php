@@ -159,6 +159,12 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
+                                            <label for="remark">Remark</label>
+                                            <textarea name="remark"cols="30" rows="3" class="form-control" placeholder="Remark..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
                                             <label for="attachment">Attachment</label>
                                             <input type="file" class="form-control" name="efile[]" multiple="multiple">
                                         </div>

@@ -38,24 +38,32 @@
                         <div class="row">
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    {{-- <div class="col-lg-12">
                                         <div class="form-group">
                                             <label for="vendorcode">Kode Vendor</label>
-                                            <input type="text" name="vendorcode" id="vendorcode" class="form-control" value="{{ $vendor->vendor_code }}" readonly required>
+                                            <input type="text" name="vendorcode" id="vendorcode" class="form-control" required>
+                                        </div>
+                                    </div> --}}
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="vendorname">Nama Vendor</label>
+                                            <input type="text" name="vendorname" id="vendorname" class="form-control" autocomplete="off" value="{{ $vendor->vendor_name }}" required>
+                                            <input type="hidden" name="vendorcode" id="vendorcode" class="form-control" value="{{ $vendor->vendor_code }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="vendorname">Nama Vendor</label>
-                                            <input type="text" name="vendorname" id="vendorname" class="form-control" value="{{ $vendor->vendor_name }}" autocomplete="off" required>
+                                            <label for="vendo_pt">Vendor PT</label>
+                                            <input type="text" name="vendo_pt" id="vendo_pt" class="form-control" autocomplete="off" value="{{ $vendor->vendor_pt }}" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="address">Alamat Vendor</label>
-                                            <textarea name="address" cols="30" rows="5" class="form-control">{{ $vendor->vendor_address }}</textarea>
+                                            <textarea name="address" cols="30" rows="5" class="form-control">{!! $vendor->vendor_address !!}</textarea>
                                         </div>
                                     </div>
+                                    
                                 </div>                                
                             </div>
                             <div class="col-lg-6 col-md-12 col-sm-12">
@@ -63,21 +71,49 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="telp">No. Telp</label>
-                                            <input type="text" name="telp" id="telp" class="form-control" value="{{ $vendor->vendor_telp }}" autocomplete="off">
+                                            <input type="text" name="telp" id="telp" class="form-control" autocomplete="off" value="{{ $vendor->vendor_telp }}">
                                         </div>
                                     </div>  
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="email">Email</label>
-                                            <input type="email" name="email" id="email" class="form-control" value="{{ $vendor->vendor_email }}" autocomplete="off">
+                                            <input type="email" name="email" id="email" class="form-control" autocomplete="off" value="{{ $vendor->vendor_email }}">
                                         </div>
                                     </div>  
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="contactperson">Contact Person</label>
-                                            <input type="text" name="contactperson" id="contactperson" class="form-control" value="{{ $vendor->contact_person }}" autocomplete="off">
+                                            <label for="bank_holder">Bank Holder</label>
+                                            <input type="text" name="bank_holder" id="bank_holder" class="form-control" autocomplete="off" value="{{ $vendor->bank_holder }}">
                                         </div>
                                     </div>  
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="nama_bank">Bank</label>
+                                            <input type="text" name="nama_bank" id="nama_bank" class="form-control" autocomplete="off" value="{{ $vendor->bank }}">
+                                        </div>
+                                    </div>  
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="no_rek">No. Rekening</label>
+                                            <input type="text" name="no_rek" id="no_rek" class="form-control" autocomplete="off" value="{{ $vendor->no_rek }}">
+                                        </div>
+                                    </div>  
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12">
+                                <div class="form-group">
+                                    <label for="vendor_profil">Vendor Profil</label>
+                                    <textarea name="vendor_profil" cols="30" rows="5" class="form-control">{!! $vendor->vendor_profil !!}</textarea>
+                                </div>                                
+                            </div>
+
+                            <div class="col-lg-6 col-md-12">
+                                <div class="form-group">
+                                    <label for="catatan">Catatan</label>
+                                    <textarea name="catatan" cols="30" rows="5" class="form-control">{!! $vendor->catatan !!}</textarea>
                                 </div>
                             </div>
                         </div>

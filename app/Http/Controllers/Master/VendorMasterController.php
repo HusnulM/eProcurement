@@ -50,14 +50,20 @@ class VendorMasterController extends Controller
     public function save(Request $req){
         DB::beginTransaction();
         try{
+            $kodeVendor = generateVendorCode();
             $insertData = array();
             $data = array(
-                'vendor_code'    => $req['vendorcode'],
+                'vendor_code'    => $kodeVendor,
                 'vendor_name'    => $req['vendorname'],
+                'vendor_pt'      => $req['vendo_pt'],
+                'vendor_profil'  => $req['vendor_profil'],
                 'vendor_address' => $req['address'],
                 'vendor_telp'    => $req['telp'],
                 'vendor_email'   => $req['email'],
-                'contact_person' => $req['contactperson'],
+                'bank_holder'    => $req['bank_holder'],
+                'bank'           => $req['nama_bank'],
+                'no_rek'         => $req['no_rek'],
+                'catatan'        => $req['catatan'],
                 'createdon'      => date('Y-m-d H:m:s'),
                 'createdby'      => Auth::user()->email ?? Auth::user()->username
             );
@@ -76,10 +82,15 @@ class VendorMasterController extends Controller
         try{
             DB::table('t_vendor')->where('vendor_code', $req['vendorcode'])->update([
                 'vendor_name'    => $req['vendorname'],
+                'vendor_pt'      => $req['vendo_pt'],
+                'vendor_profil'  => $req['vendor_profil'],
                 'vendor_address' => $req['address'],
                 'vendor_telp'    => $req['telp'],
                 'vendor_email'   => $req['email'],
-                'contact_person' => $req['contactperson'],
+                'bank_holder'    => $req['bank_holder'],
+                'bank'           => $req['nama_bank'],
+                'no_rek'         => $req['no_rek'],
+                'catatan'        => $req['catatan'],
             ]);
             DB::commit();
             return Redirect::to("/master/vendor")->withSuccess('Vendor updated');

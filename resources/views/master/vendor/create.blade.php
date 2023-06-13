@@ -38,12 +38,12 @@
                         <div class="row">
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    {{-- <div class="col-lg-12">
                                         <div class="form-group">
                                             <label for="vendorcode">Kode Vendor</label>
                                             <input type="text" name="vendorcode" id="vendorcode" class="form-control" required>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="vendorname">Nama Vendor</label>
@@ -52,10 +52,17 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
+                                            <label for="vendo_pt">Vendor PT</label>
+                                            <input type="text" name="vendo_pt" id="vendo_pt" class="form-control" autocomplete="off" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
                                             <label for="address">Alamat Vendor</label>
                                             <textarea name="address" cols="30" rows="5" class="form-control"></textarea>
                                         </div>
                                     </div>
+                                    
                                 </div>                                
                             </div>
                             <div class="col-lg-6 col-md-12 col-sm-12">
@@ -74,10 +81,38 @@
                                     </div>  
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="contactperson">Contact Person</label>
-                                            <input type="text" name="contactperson" id="contactperson" class="form-control" autocomplete="off">
+                                            <label for="bank_holder">Bank Holder</label>
+                                            <input type="text" name="bank_holder" id="bank_holder" class="form-control" autocomplete="off">
                                         </div>
                                     </div>  
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="nama_bank">Bank</label>
+                                            <input type="text" name="nama_bank" id="nama_bank" class="form-control" autocomplete="off">
+                                        </div>
+                                    </div>  
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="no_rek">No. Rekening</label>
+                                            <input type="text" name="no_rek" id="no_rek" class="form-control" autocomplete="off">
+                                        </div>
+                                    </div>  
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12">
+                                <div class="form-group">
+                                    <label for="vendor_profil">Vendor Profil</label>
+                                    <textarea name="vendor_profil" cols="30" rows="5" class="form-control"></textarea>
+                                </div>                                
+                            </div>
+
+                            <div class="col-lg-6 col-md-12">
+                                <div class="form-group">
+                                    <label for="catatan">Catatan</label>
+                                    <textarea name="catatan" cols="30" rows="5" class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>

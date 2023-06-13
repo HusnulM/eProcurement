@@ -119,7 +119,7 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="kodeJasa">Kode Barang / Jasa</label>
-                                            <input type="text" name="kodeJasa" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
+                                            <input type="text" name="kodeJasa" class="form-control" value="{{ $pbjhdr->kode_brg_jasa }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-12">
@@ -155,6 +155,12 @@
                                     
                                 </div>
                                 <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="remark">Remark</label>
+                                            <textarea name="remark"cols="30" rows="3" class="form-control" placeholder="Remark...">{!! $pbjhdr->remark !!}</textarea>
+                                        </div>
+                                    </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="attachment">Attachment</label>

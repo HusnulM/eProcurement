@@ -152,12 +152,18 @@
                                             <select name="project" id="find-project" class="form-control"></select>
                                         </div>
                                     </div>                      
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="checklistnum">Nomor Ceklist</label>
+                                            <input type="text" class="form-control" name="checklistnum" value="{{ $cklist->no_checklist }}" readonly>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="checklistnum">Nomor Ceklist</label>
-                                            <input type="text" class="form-control" name="checklistnum" value="{{ $cklist->no_checklist }}" readonly>
+                                            <label for="remark">Remark</label>
+                                            <textarea name="remark"cols="30" rows="3" class="form-control" placeholder="Remark..."></textarea>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">

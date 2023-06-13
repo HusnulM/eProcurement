@@ -29,10 +29,13 @@
                                 <th>No</th>
                                 <th>Kode Vendor</th>
                                 <th>Nama Vendor</th>
+                                <th>Vendor PT</th>
+                                <th>Vendor Profil</th>
                                 <th>Alamat</th>
                                 <th>No. Telephone</th>
-                                <th>Email</th>
-                                <th>Contact Person</th>
+                                <th>Bank Holder</th>
+                                <th>Bank</th>
+                                <th>No. Rekening</th>
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
@@ -73,14 +76,18 @@
                 },
                 {data: "vendor_code", className: 'uid'},
                 {data: "vendor_name", className: 'fname'},
+                {data: "vendor_pt", className: 'fname'},
+                {data: "vendor_profil", className: 'fname'},
                 {data: "vendor_address", className: 'uname'},
                 {data: "vendor_telp", className: 'uname'},
-                {data: "vendor_email", className: 'uname'},
-                {data: "contact_person", className: 'uname'},
+                {data: "bank_holder", className: 'uname'},
+                {data: "bank", className: 'uname'},
+                {data: "no_rek", className: 'uname'},
                 {"defaultContent": 
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button> 
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
-                    `
+                    `,
+                    "width": "10%"
                 }
             ]  
         });

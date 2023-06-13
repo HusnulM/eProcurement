@@ -18,342 +18,337 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-4">
-            <form action="{{ url('transaction/document/save') }}" method="post" enctype="multipart/form-data">
-                @csrf
+    <form action="{{ url('/transaction/pbj/udpate') }}" method="post" enctype="multipart/form-data">
+        @csrf
+        <div class="row">
+            <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Detail PBJ <b>[ {{ $pbjhdr->pbjnumber }} ]</b></h3>
+                            <div class="card-tools">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="tglpbj">Tanggal PBJ</label>
+                                                <input type="date" name="tglpbj" class="form-control" value="{{ $pbjhdr->tgl_pbj }}" required>
+                                                <input type="hidden" name="pbjnumber" value="{{ $pbjhdr->pbjnumber }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="requestto">Tujuan Permintaan</label>
+                                                <input type="text" name="requestto" class="form-control" value="{{ $pbjhdr->tujuan_permintaan }}" required>
+                                                <input type="hidden" name="whscode" value="{{ $pbjwhs->id }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="kepada">Kepada</label>
+                                                <!-- <input type="text" name="kepada" class="form-control"> -->
+                                                <select name="kepada" id="kepada" class="form-control" required>
+                                                    <option value="{{ $pbjhdr->kepada }}">{{ $pbjhdr->kepada }}</option>
+                                                    @foreach($department as $key => $row)
+                                                        <option value="{{ $row->department }}">{{ $row->department }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="unitdesc">Unit Desc / Code</label>
+                                                <select name="unitdesc" id="find-unitdesc" class="form-control">
+                                                    <option value="{{ $kendaraan->no_kendaraan }}">{{ $kendaraan->no_kendaraan }} - {{ $kendaraan->model_kendaraan }}</option>
+                                                </select>
+                                                <!-- <input type="text" name="unitdesc" class="form-control"> -->
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="engine">Engine Model</label>
+                                                <input type="text" name="engine" id="engine_model" class="form-control" value="{{ $pbjhdr->engine_model }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="chassis">Chassis S/N</label>
+                                                <input type="text" name="chassis" id="chassis" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="refrensi">Refrensi Permintaan</label>
+                                                <input type="text" name="refrensi" class="form-control" value="{{ $pbjhdr->reference }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="requestor">Requestor</label>
+                                                <input type="text" name="requestor" class="form-control" value="{{ Auth::user()->name }}">
+                                            </div>
+                                        </div>                                    
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="typeModel">Type / Model</label>
+                                                <input type="text" name="typeModel" id="typeModel" class="form-control" value="{{ $pbjhdr->type_model }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="user">User</label>
+                                                <!-- <input type="text" name="user" class="form-control"> -->
+                                                <select name="user" id="user" class="form-control" required>
+                                                    <option value="{{ $pbjhdr->user }}">{{ $pbjhdr->user }}</option>
+                                                    @foreach($mekanik as $key => $row)
+                                                        <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>        
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="kodeJasa">Kode Barang / Jasa</label>
+                                                <input type="text" name="kodeJasa" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="nginesn">Engine S/N</label>
+                                                <input type="text" name="nginesn" id="nginesn" class="form-control" value="{{ $pbjhdr->engine_sn }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="hmkm">HM</label>
+                                                <input type="text" name="hmkm" id="hmkm" class="form-control" value="{{ $pbjhdr->hm_km }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="km">KM</label>
+                                                <input type="text" name="km" id="km" class="form-control" value="{{ $pbjhdr->km }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="budgetcode">Budget / Cost Code</label>
+                                                <input type="text" name="budgetcode" class="form-control" value="{{ $pbjhdr->budget_cost_code }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="form-group">
+                                                <label for="no_rangka">No. Rangka</label>
+                                                <input type="text" name="no_rangka" id="no_rangka" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="form-group">
+                                                <label for="remark">Remark</label>
+                                                <textarea name="remark"cols="30" rows="3" class="form-control" placeholder="Remark...">{!! $pbjhdr->remark !!}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="form-group">
+                                                <label for="attachment">Attachment</label>
+                                                <input type="file" class="form-control" name="efile[]" multiple="multiple">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+            </div>
+            <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail PBJ <b>[ {{ $pbjhdr->pbjnumber }} ]</b></h3>
+                        
                         <div class="card-tools">
+                            {{-- <a href="{{ url('/printdoc/pbj/print/') }}/{{ $pbjhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
+                                <i class='fa fa-print'></i> Print
+                            </a> --}}
+                            <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
+                                <i class="fas fa-save"></i> Update PBJ
+                            </button>
+                            <a href="{{ url('/transaction/pbj/list') }}" class="btn btn-default btn-sm">
+                                <i class="fa fa-arrow-left"></i> Back
+                            </a>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="tglpbj">Tanggal PBJ</label>
-                                            <input type="date" name="tglpbj" class="form-control" value="{{ $pbjhdr->tgl_pbj }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="requestto">Tujuan Permintaan</label>
-                                            <input type="text" name="requestto" class="form-control" value="{{ $pbjhdr->tujuan_permintaan }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="kepada">Kepada</label>
-                                            <!-- <input type="text" name="kepada" class="form-control"> -->
-                                            <select name="kepada" id="kepada" class="form-control" required>
-                                                <option value="{{ $pbjhdr->kepada }}">{{ $pbjhdr->kepada }}</option>
-                                                @foreach($department as $key => $row)
-                                                    <option value="{{ $row->department }}">{{ $row->department }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="unitdesc">Unit Desc / Code</label>
-                                            <select name="unitdesc" id="find-unitdesc" class="form-control">
-                                                <option value="{{ $kendaraan->no_kendaraan }}">{{ $kendaraan->no_kendaraan }} - {{ $kendaraan->model_kendaraan }}</option>
-                                            </select>
-                                            <!-- <input type="text" name="unitdesc" class="form-control"> -->
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="engine">Engine Model</label>
-                                            <input type="text" name="engine" id="engine_model" class="form-control" value="{{ $pbjhdr->engine_model }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="chassis">Chassis S/N</label>
-                                            <input type="text" name="chassis" id="chassis" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="refrensi">Refrensi Permintaan</label>
-                                            <input type="text" name="refrensi" class="form-control" value="{{ $pbjhdr->reference }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="requestor">Requestor</label>
-                                            <input type="text" name="requestor" class="form-control" value="{{ Auth::user()->name }}">
-                                        </div>
+                            <div class="col-lg-12">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">PBJ Items</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
+                                            </li>
+                                        </ul>
                                     </div>                                    
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="typeModel">Type / Model</label>
-                                            <input type="text" name="typeModel" id="typeModel" class="form-control" value="{{ $pbjhdr->type_model }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="user">User</label>
-                                            <!-- <input type="text" name="user" class="form-control"> -->
-                                            <select name="user" id="user" class="form-control" required>
-                                                <option value="{{ $pbjhdr->user }}">{{ $pbjhdr->user }}</option>
-                                                @foreach($mekanik as $key => $row)
-                                                    <option value="{{ $row->nama }}">{{ $row->nama }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>        
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="kodeJasa">Kode Barang / Jasa</label>
-                                            <input type="text" name="kodeJasa" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="nginesn">Engine S/N</label>
-                                            <input type="text" name="nginesn" id="nginesn" class="form-control" value="{{ $pbjhdr->engine_sn }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="hmkm">HM</label>
-                                            <input type="text" name="hmkm" id="hmkm" class="form-control" value="{{ $pbjhdr->hm_km }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="km">KM</label>
-                                            <input type="text" name="km" id="km" class="form-control" value="{{ $pbjhdr->km }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="budgetcode">Budget / Cost Code</label>
-                                            <input type="text" name="budgetcode" class="form-control" value="{{ $pbjhdr->budget_cost_code }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12">
-                                        <div class="form-group">
-                                            <label for="no_rangka">No. Rangka</label>
-                                            <input type="text" name="no_rangka" id="no_rangka" class="form-control" value="{{ $pbjhdr->chassis_sn }}">
-                                        </div>
-                                    </div>
-                                    
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12">
-                                        <div class="form-group">
-                                            <label for="attachment">Attachment</label>
-                                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- <div class="col-lg-12">
-                                
-                                <div class="form-group">
-                                    <label for="doctitle">PBJ Number</label>
-                                    <p>{{ $pbjhdr->pbjnumber }}</p>
-                                    <input type="hidden" id="pbjNumber" value="{{ $pbjhdr->pbjnumber }}">
-                                </div>  
-                                <div class="form-group">
-                                    <label>Checklist No:</label> {{$pbjhdr->cheklistnumber}}
-                                </div>
-                                <div class="form-group">
-                                    <label>Created By:</label> {{$pbjhdr->createdby}}
-                                </div>
-                                <div class="form-group">
-                                    <label>Created Date:</label>
-                                    <p>{!! formatDateTime($pbjhdr->createdon) !!}
-                                    </p>
-                                </div>
-                            </div>   --}}
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">
-                    
-                    <div class="card-tools">
-                        <a href="{{ url('/printdoc/pbj/print/') }}/{{ $pbjhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
-                            <i class='fa fa-print'></i> Print
-                        </a>
-                        <a href="{{ url('/transaction/pbj/list') }}" class="btn btn-default btn-sm">
-                            <i class="fa fa-arrow-left"></i> Back
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card-header">
-                                <div class="row">
-                                    <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">PBJ Items</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Approval Status</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
-                                        </li>
-                                    </ul>
-                                </div>                                    
-                            </div>
 
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="tab-content" id="custom-content-above-tabContent">
-                                            <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <table id="tbl-pbj" class="table table-bordered table-hover table-striped table-sm">
-                                                            <thead>
-                                                                {{-- <th>No</th> --}}
-                                                                {{-- <th>PBJ Item</th> --}}
-                                                                <th>Part Number</th>
-                                                                {{-- <th>Description</th> --}}
-                                                                <th style="text-align:center;">Quantity</th>
-                                                                <th>Unit</th>
-                                                                <th>Figure</th>
-                                                                <th>Remark</th>
-                                                                {{-- <th></th> --}}
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach($pbjitem as $key => $row)
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="tab-content" id="custom-content-above-tabContent">
+                                                <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <table id="tbl-pbj" class="table table-bordered table-hover table-striped table-sm">
+                                                                <thead>
+                                                                    {{-- <th>No</th> --}}
+                                                                    {{-- <th>PBJ Item</th> --}}
+                                                                    <th>Part Number</th>
+                                                                    {{-- <th>Description</th> --}}
+                                                                    <th style="text-align:center;">Quantity</th>
+                                                                    <th>Unit</th>
+                                                                    <th>Figure</th>
+                                                                    <th>Remark</th>
+                                                                    {{-- <th></th> --}}
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach($pbjitem as $key => $row)
+                                                                        <tr>
+                                                                            <td>
+                                                                                {{ $row->partnumber }} - {{ $row->description }}
+                                                                                <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="{{ $row->partnumber }}" readonly>
+                                                                                <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="{{ $row->description }}" readonly>
+                                                                            </td>
+                                                                            <td style="text-align:right;">
+                                                                                {{ number_format($row->quantity,0) }}
+                                                                                <input type="hidden" name="quantity[]" value="{{ number_format($row->quantity,0) }}" class="form-control" style="text-align: right;">
+                                                                            </td>
+                                                                            <td>
+                                                                                {{ $row->unit }}
+                                                                                <input type="hidden" name="uoms[]" class="form-control" value="{{ $row->unit }}" required>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text" name="figures[]" class="form-control" value="{{ $row->figure }}" required>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text" name="remarks[]" class="form-control" value="{{ $row->remark }}" required>
+                                                                                <input type="hidden" name="pbjitem[]" class="form-control" value="{{ $row->pbjitem }}">
+                                                                            </td>
+                                                                            {{-- <td style="text-align: center;">
+                                                                                <button type="button" class="btn btn-danger btn-sm btn-delete-item" data-pbjnumber="{{ $row->pbjnumber }}" data-pbjitem="{{ $row->pbjitem }}">
+                                                                                    <i class="fa fa-trash"></i>
+                                                                                </button>
+                                                                            </td> --}}
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>                                
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <table id="tbl-approval" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                                                <thead>
+                                                                    <th>Approver Name</th>
+                                                                    <th>Approver Level</th>
+                                                                    <th>PBJ Item</th>
+                                                                    <th>Approval Status</th>
+                                                                    <th>Approve/Reject Date</th>
+                                                                    {{-- <th>Approver Note</th> --}}
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach($approvals as $key => $row)
                                                                     <tr>
+                                                                        <td>{{ $row->approver_name }}</td>
+                                                                        <td>{{ $row->approver_level }}</td>
+                                                                        <td>{{ $row->pbjitem }}</td>
+                                                                        @if($row->approval_status == "A")
+                                                                        <td style="text-align:center; background-color:green; color:white;">
+                                                                            Approved
+                                                                        </td>
+                                                                        @elseif($row->approval_status == "R")
+                                                                        <td style="text-align:center; background-color:red; color:white;">
+                                                                            Rejected
+                                                                        </td>
+                                                                        @else
+                                                                        <td style="text-align:center; background-color:yellow; color:black;">
+                                                                            Open
+                                                                        </td>
+                                                                        @endif
+                                                                        
                                                                         <td>
-                                                                            {{ $row->partnumber }} - {{ $row->description }}
-                                                                            <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="{{ $row->partnumber }}" readonly>
-                                                                            <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="{{ $row->description }}" readonly>
+                                                                            @if($row->approval_date != null)
+                                                                                <i class="fa fa-clock"></i> 
+                                                                                ({{ formatDateTime($row->approval_date) }})
+                                                                            @endif
                                                                         </td>
-                                                                        <td style="text-align:right;">
-                                                                            {{ number_format($row->quantity,0) }}
-                                                                            <input type="hidden" name="quantity[]" value="{{ number_format($row->quantity,0) }}" class="form-control" style="text-align: right;">
+                                                                        {{-- <td>{!! $row->approval_remark !!}</td> --}}
+                                                                    </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>                                                    
+                                                        </div>
+                                                    </div>
+                                                </div>   
+
+                                                <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <table class="table table-sm">
+                                                                <thead>
+                                                                    <th>No</th>
+                                                                    <th>File Name</th>
+                                                                    <th>Upload Date</th>
+                                                                    <th></th>
+                                                                </thead>
+                                                                <tbody>
+                                                                @foreach($attachments as $key => $file)
+                                                                    <tr>
+                                                                        <td>{{ $key+1 }}</td>
+                                                                        <td>
+                                                                            {{ $file->efile }}
                                                                         </td>
                                                                         <td>
-                                                                            {{ $row->unit }}
+                                                                            <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
                                                                         </td>
                                                                         <td>
-                                                                            <input type="text" name="figures[]" class="form-control" value="{{ $row->figure }}" required>
-                                                                        </td>
-                                                                        <td>
-                                                                            <input type="text" name="remarks[]" class="form-control" value="{{ $row->remark }}" required>
-                                                                        </td>
-                                                                        {{-- <td style="text-align: center;">
-                                                                            <button type="button" class="btn btn-danger btn-sm btn-delete-item" data-pbjnumber="{{ $row->pbjnumber }}" data-pbjitem="{{ $row->pbjitem }}">
-                                                                                <i class="fa fa-trash"></i>
+                                                                            <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PBJ/{{$file->efile}}#toolbar=0')">
+                                                                                <i class="fa fa-search"></i> Preview File
                                                                             </button>
-                                                                        </td> --}}
+                                                                        </td>
                                                                     </tr>
                                                                 @endforeach
-                                                            </tbody>
-                                                        </table>                                
+                                                                </tbody>
+                                                            </table>                           
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </div> 
                                             </div>
-                                            <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <table id="tbl-approval" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                                                            <thead>
-                                                                <th>Approver Name</th>
-                                                                <th>Approver Level</th>
-                                                                <th>PBJ Item</th>
-                                                                <th>Approval Status</th>
-                                                                <th>Approve/Reject Date</th>
-                                                                {{-- <th>Approver Note</th> --}}
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach($approvals as $key => $row)
-                                                                <tr>
-                                                                    <td>{{ $row->approver_name }}</td>
-                                                                    <td>{{ $row->approver_level }}</td>
-                                                                    <td>{{ $row->pbjitem }}</td>
-                                                                    @if($row->approval_status == "A")
-                                                                    <td style="text-align:center; background-color:green; color:white;">
-                                                                        Approved
-                                                                    </td>
-                                                                    @elseif($row->approval_status == "R")
-                                                                    <td style="text-align:center; background-color:red; color:white;">
-                                                                        Rejected
-                                                                    </td>
-                                                                    @else
-                                                                    <td style="text-align:center; background-color:yellow; color:black;">
-                                                                        Open
-                                                                    </td>
-                                                                    @endif
-                                                                    
-                                                                    <td>
-                                                                        @if($row->approval_date != null)
-                                                                            <i class="fa fa-clock"></i> 
-                                                                            ({{ formatDateTime($row->approval_date) }})
-                                                                        @endif
-                                                                    </td>
-                                                                    {{-- <td>{!! $row->approval_remark !!}</td> --}}
-                                                                </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>                                                    
-                                                    </div>
-                                                </div>
-                                            </div>   
-
-                                            <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <table class="table table-sm">
-                                                            <thead>
-                                                                <th>No</th>
-                                                                <th>File Name</th>
-                                                                <th>Upload Date</th>
-                                                                <th></th>
-                                                            </thead>
-                                                            <tbody>
-                                                            @foreach($attachments as $key => $file)
-                                                                <tr>
-                                                                    <td>{{ $key+1 }}</td>
-                                                                    <td>
-                                                                        {{ $file->efile }}
-                                                                    </td>
-                                                                    <td>
-                                                                        <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
-                                                                    </td>
-                                                                    <td>
-                                                                        <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PBJ/{{$file->efile}}#toolbar=0')">
-                                                                            <i class="fa fa-search"></i> Preview File
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-                                                            </tbody>
-                                                        </table>                           
-                                                    </div>
-                                                </div>
-                                            </div> 
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            
+                                
+                            </div>
                         </div>
                     </div>
                 </div>
+                    
             </div>
-                
         </div>
-    </div>
+    </form>
 </div>
 @endsection
 

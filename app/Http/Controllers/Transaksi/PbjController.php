@@ -69,6 +69,7 @@ class PbjController extends Controller
             $approvals  = DB::table('v_wo_approval')->where('wonum', $wohdr->wonum)->get();
             // $department = DB::table('v_wo_approval')->where('wonum', $prhdr->wonum)->first();
             // return $woitem;
+            // $kendaraan  = DB::table('t_kendaraan')->where('no_kendaraan', $pbjhdr->unit_desc)->first();
 
             return view('transaksi.pbj.detailwo', 
                 [
@@ -100,6 +101,7 @@ class PbjController extends Controller
                     $project = null;
                 }
                 // $pbjdept   = DB::table('t_department')->where()->firts();
+                $pbjwhs    = DB::table('t_warehouse')->where('id', $pbjitem[0]->whscode)->first();
     
                 $approvals   = DB::table('v_pbj_approval')
                 ->where('pbjnumber', $pbjhdr->pbjnumber)
@@ -117,7 +119,8 @@ class PbjController extends Controller
                         'approvals'   => $approvals,
                         'mekanik'     => $mekanik,
                         'kendaraan'   => $kendaraan,
-                        'project'     => $project
+                        'project'     => $project,
+                        'pbjwhs'      => $pbjwhs,
                     ]);
             }else{
                 $pbjitem     = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
@@ -129,7 +132,12 @@ class PbjController extends Controller
     
                 $pbjdept   = DB::table('t_department')->where('deptid', $pbjhdr->deptid)->first();
                 $pbjwhs    = DB::table('t_warehouse')->where('id', $pbjitem[0]->whscode)->first();
-    
+                
+                $project     = DB::table('t_projects')->where('idproject', $pbjhdr->idproject);
+                if(!$project){
+                    $project = null;
+                }
+
                 $approvals   = DB::table('v_pbj_approval')
                 ->where('pbjnumber', $pbjhdr->pbjnumber)
                 ->orderBy('approver_level','asc')
@@ -301,6 +309,7 @@ class PbjController extends Controller
                     'budget_cost_code'  => $req['budgetcode'],
                     'cheklistnumber'    => $req['checklistnum'] ?? null,
                     'idproject'         => $req['project'] ?? null,
+                    'remark'            => $req['remark'],
                     'createdon'         => getLocalDatabaseDateTime(),
                     'createdby'         => Auth::user()->email ?? Auth::user()->username
                 ]);
@@ -459,7 +468,8 @@ class PbjController extends Controller
                     'engine_sn'         => $req['nginesn'],
                     'hm_km'             => $req['hmkm'] ?? 0,
                     'km'                => $req['km'] ?? 0,
-                    'budget_cost_code'  => $req['budgetcode']
+                    'budget_cost_code'  => $req['budgetcode'],
+                    'remark'            => $req['remark'],
                 ]);
     
                 $parts    = $req['parts'];
