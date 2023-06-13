@@ -457,8 +457,8 @@ class PbjController extends Controller
                     'user'              => $req['user'],
                     'kode_brg_jasa'     => $req['kodeJasa'],
                     'engine_sn'         => $req['nginesn'],
-                    'hm_km'             => $req['hmkm'],
-                    'km'                => $req['km'],
+                    'hm_km'             => $req['hmkm'] ?? 0,
+                    'km'                => $req['km'] ?? 0,
                     'budget_cost_code'  => $req['budgetcode']
                 ]);
     
