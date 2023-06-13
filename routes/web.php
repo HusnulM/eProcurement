@@ -56,3 +56,5 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/stock',     'InbalController@saveInbalStock');
     });
 });
+
+Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
