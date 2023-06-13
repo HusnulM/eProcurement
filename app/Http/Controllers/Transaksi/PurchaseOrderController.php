@@ -154,7 +154,7 @@ class PurchaseOrderController extends Controller
                     'price'        => $uprice,
                     'prnum'        => $prnum[$i] ?? 0,
                     'pritem'       => $pritem[$i] ?? 0,
-                    'idproject'    => $project[$i] ?? null,
+                    'idproject'    => $project[$i] ?? 0,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
