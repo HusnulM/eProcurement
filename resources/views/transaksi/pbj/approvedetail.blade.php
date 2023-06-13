@@ -41,7 +41,7 @@
                                     <label>Checklist No:</label> {{$pbjhdr->cheklistnumber}}
                                 </div>
                                 <div class="form-group">
-                                    <label>Project:</label> {{ $project->kode_project }} - {{ $project->nama_project }}
+                                    <label>Project:</label> {{ $project->kode_project ?? '' }} - {{ $project->nama_project ?? '' }}
                                 </div>
                                 <div class="form-group">
                                     <label>Created By:</label> {{$pbjhdr->createdby}}
