@@ -962,8 +962,7 @@ function generateVendorCode(){
     if($getdata){
         DB::beginTransaction();
         try{
-            $dcnNumber = (int)$getdata->currentnum;
-            $dcnNumber = $dcnNumber + 1;
+            $dcnNumber = ($getdata->currentnum*1) + 1;
 
             DB::table('t_nriv')->where('object', 'VENDOR')->update([
                 'currentnum' => $dcnNumber
