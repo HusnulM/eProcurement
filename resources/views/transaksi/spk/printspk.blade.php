@@ -58,7 +58,7 @@
 <body> 
     <table cellspacing="0" cellpadding="0">
         <tr>
-            <td style="text-align:center; width:130px;" rowspan="3">
+            <td style="text-align:center; width:130px;" rowspan="2">
                 <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;">
             </td>
             <td style="text-align:center;">
