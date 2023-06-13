@@ -105,7 +105,7 @@
                                         <div class="form-group">
                                             <label for="user">User</label>
                                             <!-- <input type="text" name="user" class="form-control"> -->
-                                            <select name="user" id="user" class="form-control" required>
+                                            <select name="user" id="user" class="form-control">
                                                 <option value="">Pilih Mekanik</option>
                                                 @foreach($mekanik as $key => $row)
                                                     <option value="{{ $row->nama }}">{{ $row->nama }}</option>
