@@ -127,5 +127,19 @@
             @endforeach
         </tbody>
     </table>
+
+    <table>
+        <tr>
+            <td>Dibuat Oleh,</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="{{ asset(Auth::user()->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+            </td>
+        </tr>
+        <tr>
+            <td>____________________</td>
+        </tr>
+    </table>
 </body>
 </html>
