@@ -980,9 +980,9 @@ function generateVendorCode(){
         try{
             DB::table('t_nriv')->insert([
                 'object'          => 'VENDOR',
-                'fromnum'         => '3000000000',
-                'tonumber'        => '3999999999',
-                'currentnum'      => '3000000000',
+                'fromnum'         => '300000',
+                'tonumber'        => '399999',
+                'currentnum'      => '300000',
                 'nyear'           => 0,
             ]);
             DB::commit();
