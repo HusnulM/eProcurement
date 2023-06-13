@@ -61,7 +61,7 @@
             <td style="text-align:center; width:130px;" rowspan="2">
                 <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;">
             </td>
-            <td style="text-align:center; width:300px;">
+            <td style="text-align:center; width:500px;">
                 <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">WORK ORDER</h2>
                 <h4 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">{{ $prhdr->description }}</h4>
             </td>
