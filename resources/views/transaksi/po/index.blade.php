@@ -405,6 +405,9 @@
                                 <input type="hidden" name="pritem[]" id="pritem`+fCount+`" value="" class="form-control">
                             </td>
                             <td>
+                                <select name="project[]" id="find-project`+fCount+`" class="form-control"></select>
+                            </td>
+                            <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
                                     <i class="fa fa-trash"></i>
                                 </button>
@@ -417,6 +420,45 @@
                         var row_index = $(this).closest("tr").index();
                         removeItem(row_index);
                         $(this).closest("tr").remove();
+                    });
+
+                    $('#find-project'+fCount).select2({ 
+                        placeholder: 'Nama Project',
+                        width: '100%',
+                        minimumInputLength: 0,
+                        ajax: {
+                            url: base_url + '/master/project/findproject',
+                            dataType: 'json',
+                            delay: 250,
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': _token
+                            },
+                            data: function (params) {
+                                var query = {
+                                    search: params.term,
+                                    // custname: $('#find-customer').val()
+                                }
+                                return query;
+                            },
+                            processResults: function (data) {
+                                // return {
+                                //     results: response
+                                // };
+                                console.log(data)
+                                return {
+                                    results: $.map(data.data, function (item) {
+                                        return {
+                                            text: item.kode_project + ' - ' + item.nama_project,
+                                            slug: item.nama_project,
+                                            id: item.idproject,
+                                            ...item
+                                        }
+                                    })
+                                };
+                            },
+                            cache: true
+                        }
                     });
                 }
             });
