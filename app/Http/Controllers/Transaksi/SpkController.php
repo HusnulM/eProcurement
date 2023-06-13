@@ -549,16 +549,20 @@ class SpkController extends Controller
             DB::table('t_attachments')->where('doc_object', 'SPK')->where('doc_number',$prhdr->wonum)->delete();
             DB::table('t_wo_approval')->where('wonum', $prhdr->wonum)->delete();
             
+            DB::table('t_checklist_kendaraan')->where('no_checklist', $prhdr->cheklistnumber)->update([
+                'wocreated' => 'N'
+            ]);
+            
             // return $pbjdoc;
-            foreach($pbjdoc as $row){
-                DB::table('t_pbj02')
-                    ->where('pbjnumber', $row->refdoc)
-                    ->where('pbjitem', $row->refdocitem)->update([
-                        'wocreated' => 'N'
-                ]);
+            // foreach($pbjdoc as $row){
+            //     DB::table('t_pbj02')
+            //         ->where('pbjnumber', $row->refdoc)
+            //         ->where('pbjitem', $row->refdocitem)->update([
+            //             'wocreated' => 'N'
+            //     ]);
 
-                // DB::commit();
-            }
+            //     // DB::commit();
+            // }
 
             DB::commit();
             return Redirect::to("/logistic/wo/listwo")->withSuccess('WO '. $prhdr->wonum .' Berhasil dihapus');

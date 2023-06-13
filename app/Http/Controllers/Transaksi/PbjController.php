@@ -595,6 +595,20 @@ class PbjController extends Controller
         }
     }
 
+    public function deletePBJ(Request $req){
+        DB::beginTransaction();
+        try{
+
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+        }
+    }
+
     public function deletePBJItem(Request $req){
         DB::beginTransaction();
         try{
