@@ -62,7 +62,7 @@
                 <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;">
             </td>
             <td style="text-align:center; width:500px;">
-                <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">WORK ORDER</h2>
+                <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;" class="mb-0">WORK ORDER</h2>
                 <h4 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">{{ $prhdr->description }}</h4>
             </td>
         </tr>
