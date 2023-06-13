@@ -139,11 +139,11 @@
             </td>
         </tr>
         <tr>
-            <td>{{ getUserNameByID($prhdr->createdby) }}</td>
+            <td> <u> {{ getUserNameByID($prhdr->createdby) }} </u></td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td>____________________</td>
-        </tr>
+        </tr> --}}
     </table>
 </body>
 </html>
