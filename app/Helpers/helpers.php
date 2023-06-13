@@ -972,10 +972,10 @@ function generateVendorCode(){
         }catch(\Exception $e){
             DB::rollBack();
             // dd($e->getMessage());
-            return '3000000000';
+            // return '3000000000';
         }
     }else{
-        $dcnNumber = '3000000000';
+        $dcnNumber = '300000';
         DB::beginTransaction();
         try{
             DB::table('t_nriv')->insert([
@@ -990,7 +990,7 @@ function generateVendorCode(){
         }catch(\Exception $e){
             DB::rollBack();
             // dd($e->getMessage());
-            return '3000000000';
+            // return '3000000000';
         }
     }
 }
