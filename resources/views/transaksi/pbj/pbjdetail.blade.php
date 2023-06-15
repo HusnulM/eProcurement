@@ -98,7 +98,14 @@
                                         <td><label>Cost Code</label></td>
                                         <td>{{ $pbjhdr->budget_cost_code }}</td>
                                     </tr>
-
+                                    <tr>
+                                        <td><label>Periode</label></td>
+                                        <td>{{ $pbjhdr->periode }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Project</label></td>
+                                        <td>{{ $project->kode_project ?? '' }} - {{ $project->nama_project ?? '' }}</td>
+                                    </tr>
                                     <tr>
                                         <td><label>Created By</label></td>
                                         <td>{{$pbjhdr->createdby}}</td>

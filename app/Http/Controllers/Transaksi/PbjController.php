@@ -238,6 +238,12 @@ class PbjController extends Controller
             $pbjitem     = DB::table('t_pbj02')->where('pbjnumber', $pbjhdr->pbjnumber)->get();
             $department  = DB::table('t_department')->get();
             $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
+
+            $pbjProject = DB::table('t_projects')->where('idproject', $pbjhdr->idproject)->first();
+            if(!$pbjProject){
+                $pbjProject = null;
+            }
+
             $approvals   = DB::table('v_pbj_approval')
             ->where('pbjnumber', $pbjhdr->pbjnumber)
             ->orderBy('approver_level','asc')
@@ -245,11 +251,12 @@ class PbjController extends Controller
             ->get();
             return view('transaksi.pbj.pbjdetail', 
                 [
-                    'department' => $department, 
-                    'pbjhdr' => $pbjhdr, 
-                    'pbjitem' => $pbjitem,
+                    'department'    => $department, 
+                    'pbjhdr'        => $pbjhdr, 
+                    'pbjitem'       => $pbjitem,
                     'attachments'   => $attachments, 
-                    'approvals'     => $approvals
+                    'approvals'     => $approvals,
+                    'project'       => $pbjProject
                 ]);
         }else{
             return Redirect::to("/transaction/pbj")->withError('Dokumen PBJ tidak ditemukan');
@@ -310,6 +317,7 @@ class PbjController extends Controller
                     'cheklistnumber'    => $req['checklistnum'] ?? null,
                     'idproject'         => $req['project'] ?? null,
                     'remark'            => $req['remark'],
+                    'periode'           => $req['periode'],
                     'createdon'         => getLocalDatabaseDateTime(),
                     'createdby'         => Auth::user()->email ?? Auth::user()->username
                 ]);
@@ -470,6 +478,7 @@ class PbjController extends Controller
                     'km'                => $req['km'] ?? 0,
                     'budget_cost_code'  => $req['budgetcode'],
                     'remark'            => $req['remark'],
+                    'periode'           => $req['periode'],
                 ]);
     
                 $parts    = $req['parts'];

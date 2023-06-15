@@ -477,4 +477,11 @@ class PurchaseOrderController extends Controller
             // dd($e->getMessage());
         }
     }
+
+    public function sendPO(){
+        $poNumber = 'PO/20230612000001';
+        $result   = sendPurchaseOrder($poNumber);
+
+        return $result;
+    }
 }

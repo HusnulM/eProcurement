@@ -140,7 +140,11 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="budgetcode">Budget / Cost Code</label>
-                                            <input type="text" name="budgetcode" class="form-control">
+                                            {{-- <input type="text" name="budgetcode" class="form-control"> --}}
+                                            <select name="budgetcode" class="form-control">
+                                                <option value="1">1</option>
+                                                <option value="0">0</option>
+                                            </select>
                                         </div>
                                     </div>       
                                     <div class="col-lg-6 col-md-12">
@@ -148,7 +152,27 @@
                                             <label for="no_rangka">No. Rangka</label>
                                             <input type="text" name="no_rangka" id="no_rangka" class="form-control">
                                         </div>
-                                    </div>      
+                                    </div>  
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="periode">Periode</label>
+                                            <select name="periode" class="form-control">
+                                                <option value="">---</option>
+                                                <option value="Januari <?= date('Y'); ?>">Januari <?= date('Y'); ?></option>
+                                                <option value="Februari <?= date('Y'); ?>">Februari <?= date('Y'); ?></option>
+                                                <option value="Maret <?= date('Y'); ?>">Maret <?= date('Y'); ?></option>
+                                                <option value="April <?= date('Y'); ?>">April <?= date('Y'); ?></option>
+                                                <option value="Mei <?= date('Y'); ?>">Mei <?= date('Y'); ?></option>
+                                                <option value="Juni <?= date('Y'); ?>">Juni <?= date('Y'); ?></option>
+                                                <option value="Juli <?= date('Y'); ?>">Juli <?= date('Y'); ?></option>
+                                                <option value="Agustus <?= date('Y'); ?>">Agustus <?= date('Y'); ?></option>
+                                                <option value="September <?= date('Y'); ?>">September <?= date('Y'); ?></option>
+                                                <option value="Oktober <?= date('Y'); ?>">Oktober <?= date('Y'); ?></option>
+                                                <option value="November <?= date('Y'); ?>">November <?= date('Y'); ?></option>
+                                                <option value="Desember <?= date('Y'); ?>">Desember <?= date('Y'); ?></option>
+                                            </select>
+                                        </div>
+                                    </div>    
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="project">Project</label>

@@ -994,3 +994,74 @@ function generateVendorCode(){
         }
     }
 }
+
+function sendPurchaseOrder($poNumber){
+    
+    $poheader = DB::table('t_po01')->where('ponum', $poNumber)->first();
+    $vendor   = DB::table('t_vendor')->where('vendor_code', $poheader->vendor)->first();
+    $poitem   = DB::table('t_po02')->where('ponum', $poNumber)->get();
+    $attachments = DB::table('t_attachments')
+        ->where('doc_object', 'PO')
+        ->where('doc_number', $poheader->ponum)->get();
+
+    $sendData = array();
+    foreach($poitem as $row){
+        $idProject = null;
+        $project = DB::table('t_projects')->where('idproject', $row->idproject)->first();
+        if(!$project){
+            $idProject = 0;
+        }else{
+            $idProject = $project->project_id;
+        }
+        $insert = array(
+            "proyek_id"  => $idProject,
+            "item_desk"  => $row->matdesc,
+            "item_payee" => $vendor->vendor_id,
+            "item_curr"  => "IDR",
+            "pretax_rp"  => $row->price,
+            "PPN"        => $poheader->ppn,
+            "item_rp"    => $row->price,
+            "oleh"       => $row->createdby,
+            "dept"       => "10",
+            "catatan"    => "",
+            "item_rek"   => "16",
+            "item_bank"  => "16",
+            "periode"    => "2023",
+            "no_po"      => $row->ponum,
+            "attachment" => array("https://mbpeproc.my.id".$attachments[0]->pathfile)
+        );
+        array_push($sendData, $insert);
+    }
+
+    $apikey = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
+
+    $url = 'https://mahakaryabangunpersada.com/api/v1/submit/po';
+    $get_api = mbpAPI($url, $apikey, $sendData);
+
+    $response = json_decode($get_api, true);
+    $status   = $response['status'];
+    $pesan    = $response['status_message'];
+    $datajson = $response['data'];
+
+    return $response;    
+}
+
+function mbpAPI($url, $apikey, $data=array()){
+    $curl = curl_init();
+    
+    curl_setopt($curl, CURLOPT_POST, 1);
+    if ($data) curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data) );
+ 
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+        'APIKEY: '.$apikey,
+        'Content-Type: application/json',
+    ));
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+ 
+    $result = curl_exec($curl);
+    if(!$result){die("Connection Failure");}
+    curl_close($curl);
+    return $result;
+}

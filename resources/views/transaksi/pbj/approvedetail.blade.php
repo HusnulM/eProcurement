@@ -31,8 +31,96 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                
-                                <div class="form-group">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>
+                                            <label for="doctitle">PBJ Number</label>
+                                            <input type="hidden" id="pbjNumber" value="{{ $pbjhdr->pbjnumber }}">
+                                        </td>
+                                        <td>
+                                            <p>{{ $pbjhdr->pbjnumber }}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label>Tanggal PBJ</label>
+                                        </td>
+                                        <td>
+                                            {{ formatDate($pbjhdr->tgl_pbj) }}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><label>Tujuan Permintaan</label></td>
+                                        <td>{{ $pbjhdr->tujuan_permintaan }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Kepada</label></td>
+                                        <td>{{ $pbjhdr->kepada }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Unit Desc / Code</label></td>
+                                        <td>{{ $pbjhdr->unit_desc }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Engine Model</label></td>
+                                        <td>{{ $pbjhdr->engine_model }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Chassis S/N</label></td>
+                                        <td>{{ $pbjhdr->chassis_sn }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Refrensi</label></td>
+                                        <td>{{ $pbjhdr->reference }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Requestor</label></td>
+                                        <td>{{ $pbjhdr->requestor }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Type / Model</label></td>
+                                        <td>{{ $pbjhdr->type_model }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>User</label></td>
+                                        <td>{{ $pbjhdr->user }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Kode Barang / Jasa</label></td>
+                                        <td>{{ $pbjhdr->kode_brg_jasa }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Engine S/N</label></td>
+                                        <td>{{ $pbjhdr->engine_sn }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Cost Code</label></td>
+                                        <td>{{ $pbjhdr->budget_cost_code }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Periode</label></td>
+                                        <td>{{ $pbjhdr->periode }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Project</label></td>
+                                        <td>{{ $project->kode_project ?? '' }} - {{ $project->nama_project ?? '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Created By</label></td>
+                                        <td>{{$pbjhdr->createdby}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Created Date</label></td>
+                                        <td>{!! formatDateTime($pbjhdr->createdon) !!}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <textarea class="form-control" cols="30" rows="3" readonly>{!! $pbjhdr->remark !!}</textarea>
+                                        </td>
+                                    </tr>
+                                </table>
+                                {{-- <div class="form-group">
                                     <label for="doctitle">PBJ Number</label>
                                     <p>{{ $pbjhdr->pbjnumber }}</p>
                                     <input type="hidden" id="pbjNumber" value="{{ $pbjhdr->pbjnumber }}">
@@ -50,7 +138,7 @@
                                     <label>Created Date:</label>
                                     <p>{!! formatDateTime($pbjhdr->createdon) !!}
                                     </p>
-                                </div>
+                                </div> --}}
                             </div>  
                         </div>
                     </div>
