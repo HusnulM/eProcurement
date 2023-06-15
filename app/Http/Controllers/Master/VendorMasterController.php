@@ -64,6 +64,7 @@ class VendorMasterController extends Controller
                 'bank'           => $req['nama_bank'],
                 'no_rek'         => $req['no_rek'],
                 'catatan'        => $req['catatan'],
+                'vendor_id'      => $req['vendor_id'] ?? 0,
                 'createdon'      => date('Y-m-d H:m:s'),
                 'createdby'      => Auth::user()->email ?? Auth::user()->username
             );
@@ -91,6 +92,7 @@ class VendorMasterController extends Controller
                 'bank'           => $req['nama_bank'],
                 'no_rek'         => $req['no_rek'],
                 'catatan'        => $req['catatan'],
+                'vendor_id'      => $req['vendor_id'] ?? 0,
             ]);
             DB::commit();
             return Redirect::to("/master/vendor")->withSuccess('Vendor updated');

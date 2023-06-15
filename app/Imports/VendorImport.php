@@ -44,6 +44,7 @@ class VendorImport implements ToCollection, WithHeadingRow
                     'catatan'        => $row['catatan'] ?? null,
                     'vendor_email'   => $row['email'] ?? null,
                     'contact_person' => $row['contactperson'] ?? null,
+                    'vendor_id'      => $row['vendor_id'] ?? 0,
                     'createdon'      => getLocalDatabaseDateTime(),
                     'createdby'      => Auth::user()->email ?? Auth::user()->username
                 );

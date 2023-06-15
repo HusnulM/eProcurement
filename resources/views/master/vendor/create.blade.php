@@ -67,7 +67,13 @@
                             </div>
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12">
+                                    <div class="col-lg-4 col-md-12">
+                                        <div class="form-group">
+                                            <label for="telp">ID Vendor</label>
+                                            <input type="number" name="vendor_id" style="text-align: right;" class="form-control" autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8 col-md-12">
                                         <div class="form-group">
                                             <label for="telp">No. Telp</label>
                                             <input type="text" name="telp" id="telp" class="form-control" autocomplete="off">
