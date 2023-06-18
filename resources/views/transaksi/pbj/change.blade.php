@@ -261,10 +261,10 @@
                                                                                 <input type="hidden" name="uoms[]" class="form-control" value="{{ $row->unit }}" required>
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" name="figures[]" class="form-control" value="{{ $row->figure }}" required>
+                                                                                <input type="text" name="figures[]" class="form-control" value="{{ $row->figure }}">
                                                                             </td>
                                                                             <td>
-                                                                                <input type="text" name="remarks[]" class="form-control" value="{{ $row->remark }}" required>
+                                                                                <input type="text" name="remarks[]" class="form-control" value="{{ $row->remark }}">
                                                                                 <input type="hidden" name="pbjitem[]" class="form-control" value="{{ $row->pbjitem }}">
                                                                             </td>
                                                                             {{-- <td style="text-align: center;">

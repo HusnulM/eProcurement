@@ -235,10 +235,10 @@
                                                     
                                                     <td>
                                                         <input type="hidden" name="warehouse[]" value="{{ $wodata->whscode }}">
-                                                        <input type="text" name="figures[]" class="form-control" required>
+                                                        <input type="text" name="figures[]" class="form-control" >
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="remarks[]" class="form-control" required>
+                                                        <input type="text" name="remarks[]" class="form-control">
                                                         <input type="hidden" name="wonum[]" value="{{ $row->wonum }}">
                                                         <input type="hidden" name="woitem[]" value="{{ $row->woitem }}">
                                                     </td>
@@ -395,10 +395,10 @@
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
                             </td>
                             <td>
-                                <input type="text" name="figures[]" class="form-control" required>
+                                <input type="text" name="figures[]" class="form-control">
                             </td>
                             <td>
-                                <input type="text" name="remarks[]" class="form-control" required>
+                                <input type="text" name="remarks[]" class="form-control">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">

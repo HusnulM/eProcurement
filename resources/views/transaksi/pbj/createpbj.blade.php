@@ -361,10 +361,10 @@
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
                             </td>
                             <td>
-                                <input type="text" name="figures[]" class="form-control" required>
+                                <input type="text" name="figures[]" class="form-control">
                             </td>
                             <td>
-                                <input type="text" name="remarks[]" class="form-control" required>
+                                <input type="text" name="remarks[]" class="form-control">
                                 <input type="hidden" name="warehouse[]" class="form-control" value="`+ $('#find-whscode').val() +`">
                                 <input type="hidden" name="wonum[]" class="form-control">
                                 <input type="hidden" name="woitem[]" class="form-control">
