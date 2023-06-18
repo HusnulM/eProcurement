@@ -136,6 +136,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/duedatepolist',    'Transaksi\PurchaseOrderController@listDuedatePO')->middleware('checkAuth:proc/po/duedatepo');
     });
 
+    Route::group(['prefix' => '/proc/submitpo'], function () {
+        Route::get('/',               'Transaksi\SubmitPurchaseOrderController@index')->middleware('checkAuth:proc/submitpo');
+        Route::get('/polist',         'Transaksi\SubmitPurchaseOrderController@approvedPOList')->middleware('checkAuth:proc/submitpo');
+        Route::post('/getitems',      'Transaksi\SubmitPurchaseOrderController@getPoItems')->middleware('checkAuth:proc/submitpo');
+        Route::post('/submitdata',    'Transaksi\SubmitPurchaseOrderController@submitDatatoApi')->middleware('checkAuth:proc/submitpo');
+    });
+
     Route::group(['prefix' => '/approve/po'], function () {
         Route::get('/',                         'Transaksi\ApprovePurchaseOrderController@index')->middleware('checkAuth:approve/po');
         Route::post('/save',                    'Transaksi\ApprovePurchaseOrderController@save')->middleware('checkAuth:approve/po');

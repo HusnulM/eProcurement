@@ -1022,11 +1022,11 @@ function sendPurchaseOrder($poNumber){
             "PPN"        => $poheader->ppn,
             "item_rp"    => $row->price,
             "oleh"       => $row->createdby,
-            "dept"       => "10",
-            "catatan"    => "",
-            "item_rek"   => "16",
-            "item_bank"  => "16",
-            "periode"    => "2023",
+            "dept"       => $poheader->deptid,
+            "catatan"    => $poheader->note,
+            "item_rek"   => $vendor->no_rek,
+            "item_bank"  => $vendor->bank,
+            "periode"    => date('Y'),
             "no_po"      => $row->ponum,
             "attachment" => array("https://mbpeproc.my.id".$attachments[0]->pathfile)
         );
