@@ -257,7 +257,7 @@
                         
                         console.log(data)
                         if(data.status == '200'){
-                            toastr.success(response.message)
+                            toastr.info(data.data)
                         }else{
                             toastr.error(error)
                         }
