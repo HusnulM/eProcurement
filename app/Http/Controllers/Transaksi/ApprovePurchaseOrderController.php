@@ -141,6 +141,11 @@ class ApprovePurchaseOrderController extends Controller
                     'approvestat'   => 'A'
                 ]);
 
+                DB::table('t_po02')->where('ponum', $ptaNumber)->update([
+                    // 'approved_amount' => $amount,
+                    'approvestat'   => 'A'
+                ]);
+
                 $totalPricePO = getTotalPricePO($ptaNumber);
                 // return $totalPricePO;
                 DB::table('t_budget_history')->insert([

@@ -135,6 +135,8 @@ class PurchaseOrderController extends Controller
             $insertData = array();
             $count = 0;
             
+            $budgetCode  = "0";
+            $budgetPriod = null;
 
             for($i = 0; $i < sizeof($parts); $i++){
                 $qty    = $quantity[$i];
@@ -142,6 +144,15 @@ class PurchaseOrderController extends Controller
 
                 $uprice = $price[$i];
                 $uprice = str_replace(',','',$uprice);
+
+                $prdata = DB::table('v_pr_pbj')->where('prnum', $prnum[$i])->first();
+                if($prdata){
+                    $budgetCode  = $prdata->budget_cost_code ?? $req['budgetcode'];
+                    $budgetPriod = $prdata->periode ?? $req['periode'];
+                }else{
+                    $budgetCode  = $req['budgetcode'];
+                    $budgetPriod = $req['periode'];
+                }
 
                 $count = $count + 1;
                 $data = array(
@@ -155,6 +166,8 @@ class PurchaseOrderController extends Controller
                     'prnum'        => $prnum[$i] ?? 0,
                     'pritem'       => $pritem[$i] ?? 0,
                     'idproject'    => $project[$i] ?? 0,
+                    'budget_code'  => $budgetCode,
+                    'budget_period'=> $budgetPriod,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
@@ -312,6 +325,15 @@ class PurchaseOrderController extends Controller
                     $count += 1;
                 }
 
+                $prdata = DB::table('v_pr_pbj')->where('prnum', $prnum[$i])->first();
+                if($prdata){
+                    $budgetCode  = $prdata->budget_cost_code ?? $req['budgetcode'];
+                    $budgetPriod = $prdata->periode ?? $req['periode'];
+                }else{
+                    $budgetCode  = $req['budgetcode'];
+                    $budgetPriod = $req['periode'];
+                }
+
                 $data = array(
                     'ponum'        => $ptaNumber,
                     'poitem'       => $count,
@@ -322,6 +344,8 @@ class PurchaseOrderController extends Controller
                     'price'        => $uprice,
                     'prnum'        => $prnum[$i] ?? 0,
                     'pritem'       => $pritem[$i] ?? 0,
+                    'budget_code'  => $budgetCode,
+                    'budget_period'=> $budgetPriod,
                     'createdon'    => date('Y-m-d H:m:s'),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );

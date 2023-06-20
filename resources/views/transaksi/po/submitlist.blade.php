@@ -59,9 +59,9 @@
                                         <button type="button" class="btn btn-default mt-2 btn-search"> 
                                             <i class="fa fa-search"></i> Filter
                                         </button>
-                                        <button type="submit" class="btn btn-success mt-2 btn-export"> 
+                                        {{-- <button type="submit" class="btn btn-success mt-2 btn-export"> 
                                             <i class="fa fa-download"></i> Export Data
-                                        </button>
+                                        </button> --}}
                                     </div>
                                 </div>
                             </form>
@@ -76,15 +76,7 @@
                                     <th>Nomor PO</th>
                                     <th>Tanggal PO</th>
                                     <th>Vendor</th>
-                                    <th>Partnumber</th>
-                                    <th>Description</th>
-                                    <th>Quantity</th>
-                                    <th>Received Qty</th>
-                                    <th>Open Qty</th>
-                                    <th>Unit</th>
-                                    <th>Unit Price</th>
                                     <th>Department</th>
-                                    <th>Status</th>
                                     <th>Remark</th>
                                     <th></th>
                                 </thead>
@@ -152,19 +144,19 @@
                 scrollCollapse: true,
                 bDestroy: true,
                 columns: [
-                    // {
-                    //     "className":      'details-control',
-                    //     "orderable":      false,
-                    //     "searchable":     false,
-                    //     "data":           null,
-                    //     "defaultContent": '',
-                    //     "width": "30px"
-                    // },
-                    { "data": null,"sortable": false, "searchable": false,
-                        render: function (data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                    {
+                        "className":      'details-control',
+                        "orderable":      false,
+                        "searchable":     false,
+                        "data":           null,
+                        "defaultContent": '',
+                        "width": "30px"
                     },
+                    // { "data": null,"sortable": false, "searchable": false,
+                    //     render: function (data, type, row, meta) {
+                    //         return meta.row + meta.settings._iDisplayStart + 1;
+                    //     }  
+                    // },
                     {data: "ponum", className: 'uid'},
                     {data: "podat", className: 'uid',
                         render: function (data, type, row){
@@ -172,47 +164,7 @@
                         }
                     },
                     {data: "vendor_name", className: 'uid'},
-                    {data: "material", className: 'uid'},
-                    {data: "matdesc", className: 'uid'},
-                    {data: "quantity", "sortable": false,
-                        render: function (data, type, row){
-                            return ``+ row.quantity.qty1 + ``;
-                        },
-                        "className": "text-right",
-                    },
-                    {data: "grqty",  "sortable": false,
-                        render: function (data, type, row){
-                            return ``+ row.grqty.qty2 + ``;
-                        },
-                        "className": "text-right",
-                    },
-                    {data: "openqty",  "sortable": false,
-                        render: function (data, type, row){
-                            return ``+ row.openqty.qty3 + ``;
-                        },
-                        "className": "text-right",
-                    },
-                    {data: "unit"},
-                    {data: "price",  "sortable": false,
-                        render: function (data, type, row){
-                            return ``+ row.price.price1 + ``;
-                        },
-                        "className": "text-right",
-                    },
-                    {data: "deptname"},
-                    {data: "approvestat", 
-                        render: function (data, type, row){
-                            if(row.approvestat == "O"){
-                                return `Open`;
-                            }else if(row.approvestat == "A"){
-                                return `Approved`;
-                            }else if(row.approvestat == "R"){
-                                return `Rejected`;
-                            }else{
-                                return `Open`;
-                            }
-                        }
-                    },                
+                    {data: "department"},               
                     {data: "note" },
                     {"defaultContent": 
                         `
@@ -332,9 +284,9 @@
                                 <td> `+ results[i].poitem +` </td>
                                 <td> `+ results[i].material +` </td>
                                 <td> `+ results[i].matdesc +` </td>
-                                <td style="text-align:right;"> `+ results[i].quantity +` - `+ results[i].unit +` </td>
-                                <td style="text-align:right;"> `+ results[i].price +` </td>
-                                <td style="text-align:right;"> `+ results[i].price*results[i].quantity +` </td>
+                                <td style="text-align:right;"> `+ (results[i].quantity*1) +` `+ results[i].unit +` </td>
+                                <td style="text-align:right;"> `+ (results[i].price*1) +` </td>
+                                <td style="text-align:right;"> `+ (results[i].price*1)*(results[i].quantity*1) +` </td>
                             </tr>
                             `;    
                         }

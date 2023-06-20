@@ -999,7 +999,7 @@ function sendPurchaseOrder($poNumber){
     
     $poheader = DB::table('t_po01')->where('ponum', $poNumber)->first();
     $vendor   = DB::table('t_vendor')->where('vendor_code', $poheader->vendor)->first();
-    $poitem   = DB::table('t_po02')->where('ponum', $poNumber)->get();
+    $poitem   = DB::table('t_po02')->where('ponum', $poNumber)->where('approvestat', 'A')->get();
     $attachments = DB::table('t_attachments')
         ->where('doc_object', 'PO')
         ->where('doc_number', $poheader->ponum)->get();
@@ -1023,6 +1023,8 @@ function sendPurchaseOrder($poNumber){
             "item_rp"    => $row->price,
             "oleh"       => $row->createdby,
             "dept"       => $poheader->deptid,
+            "budget"     => $row->budget_code,
+            "budget_period"=> $row->budget_period,
             "catatan"    => $poheader->note,
             "item_rek"   => $vendor->no_rek,
             "item_bank"  => $vendor->bank,
