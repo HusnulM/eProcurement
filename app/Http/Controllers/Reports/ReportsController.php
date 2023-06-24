@@ -62,7 +62,7 @@ class ReportsController extends Controller
     }
     
     public function pbjList(Request $req){
-        $query = DB::table('v_rpbj');
+        $query = DB::table('v_rpbj01');
 
         if(isset($req->department)){
             if($req->department !== 'All'){
@@ -72,11 +72,11 @@ class ReportsController extends Controller
 
         if(isset($req->approvalstat)){
             if($req->approvalstat === "O"){
-                $query->where('pbj_status', 'O');
+                $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('pbj_status', 'A');                
+                $query->where('approvestat', 'A');                
             }elseif($req->approvalstat === "R"){
-                $query->where('pbj_status', 'R');                
+                $query->where('approvestat', 'R');                
             }
         }
 
@@ -94,10 +94,6 @@ class ReportsController extends Controller
         ->editColumn('quantity', function ($query){
             return [
                 'qty1' => number_format($query->quantity,0)
-             ];
-        })->editColumn('issued_qty', function ($query){
-            return [
-                'qty2' => number_format($query->issued_qty,0)
              ];
         })
         ->toJson();
@@ -215,7 +211,7 @@ class ReportsController extends Controller
     }
 
     public function woList(Request $req){
-        $query = DB::table('v_rwo');
+        $query = DB::table('v_rwo01');
 
         if(isset($req->mekanik)){
             if($req->mekanik !== 'All'){
@@ -225,11 +221,11 @@ class ReportsController extends Controller
 
         if(isset($req->approvalstat)){
             if($req->approvalstat === "O"){
-                $query->where('wo_status', 'O');
+                $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('wo_status', 'A');                
+                $query->where('approvestat', 'A');                
             }elseif($req->approvalstat === "R"){
-                $query->where('wo_status', 'R');                
+                $query->where('approvestat', 'R');                
             }
         }
 

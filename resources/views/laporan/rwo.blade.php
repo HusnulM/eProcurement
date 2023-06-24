@@ -81,7 +81,6 @@
                                     <th>Unit</th>
                                     <th>Mekanik</th>
                                     <th>Status</th>
-                                    <th>Issued</th>
                                 </thead>
                                 <tbody>
         
@@ -181,8 +180,7 @@
                                 return `Open`;
                             }
                         }
-                    },                
-                    {data: "issued" }
+                    }
                 ]  
             });
         }

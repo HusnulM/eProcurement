@@ -19,7 +19,7 @@ class WoExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
-        $query = DB::table('v_rwo');
+        $query = DB::table('v_rwo01');
 
         if(isset($req->mekanik)){
             if($req->mekanik !== 'All'){
@@ -29,11 +29,11 @@ class WoExport implements FromCollection, WithHeadings, WithMapping
 
         if(isset($req->approvalstat)){
             if($req->approvalstat === "O"){
-                $query->where('wo_status', 'O');
+                $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('wo_status', 'A');                
+                $query->where('approvestat', 'A');                
             }elseif($req->approvalstat === "R"){
-                $query->where('wo_status', 'R');                
+                $query->where('approvestat', 'R');                
             }
         }
 
@@ -62,7 +62,6 @@ class WoExport implements FromCollection, WithHeadings, WithMapping
             $row->unit,
             $row->mekanik,
             $row->wo_process,
-            $row->issued,
             $row->whsname,
             $row->refdoc,
             $row->createdon,
@@ -86,7 +85,6 @@ class WoExport implements FromCollection, WithHeadings, WithMapping
                 "Unit",
                 "Mekanik",
                 "Status",
-                "Issued",
                 "Warehouse",
                 "No. PBJ",
                 "Created Date",

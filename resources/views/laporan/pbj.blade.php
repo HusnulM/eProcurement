@@ -69,17 +69,26 @@
                     <hr>
                     <div class="row">
                         <div class="table-responsive">
-                            <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                            <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:130%;">
                                 <thead>
                                     <th>No</th>
                                     <th>Nomor PBJ</th>
                                     <th>Tanggal PBJ</th>
-                                    <th>Quantity</th>
-                                    <th>Issued Qty</th>
                                     <th>Tujuan Permintaan</th>
-                                    <th>Department</th>
-                                    <th>Status</th>
+                                    <th>Kepada</th>
+                                    <th>No. Plat</th>
+                                    <th>Requestor</th>
+                                    <th>Project</th>
+                                    {{-- <th>Department</th> --}}
+                                    <th>Mekanik</th>
+                                    <th>PBJ Item</th>
+                                    <th>Material</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Figure</th>
                                     <th>Remark</th>
+                                    <th>Approval Status</th>
                                     <!-- <th></th> -->
                                 </thead>
                                 <tbody>
@@ -153,32 +162,36 @@
                     },
                     {data: "pbjnumber", className: 'uid'},
                     {data: "tgl_pbj", className: 'uid'},
+                    {data: "tujuan_permintaan"},
+                    {data: "kepada"},
+                    {data: "unit_desc"},
+                    {data: "requestor"},
+                    {data: "nama_project"},
+                    // {data: "department"},
+                    {data: "mekanik"},
+                    {data: "pbjitem"},
+                    {data: "partnumber"},
+                    {data: "description"},
                     {data: "quantity", "sortable": false,
                         render: function (data, type, row){
                             return ``+ row.quantity.qty1 + ``;
                         },
                         "className": "text-right",
                     },
-                    {data: "issued_qty",  "sortable": false,
+                    {data: "unit"},
+                    {data: "figure" },
+                    {data: "remark" },
+                    {data: "approvestat", 
                         render: function (data, type, row){
-                            return ``+ row.issued_qty.qty2 + ``;
-                        },
-                        "className": "text-right",
-                    },
-                    {data: "tujuan_permintaan"},
-                    {data: "deptname"},
-                    {data: "pbj_status", 
-                        render: function (data, type, row){
-                            if(row.pbj_status == "O"){
+                            if(row.approvestat == "O"){
                                 return `Open`;
-                            }else if(row.pbj_status == "A"){
+                            }else if(row.approvestat == "A"){
                                 return `Approved`;
-                            }else if(row.pbj_status == "R"){
+                            }else if(row.approvestat == "R"){
                                 return `Rejected`;
                             }
                         }
-                    },                
-                    {data: "remark" }
+                    }
                 ]  
             });
         }

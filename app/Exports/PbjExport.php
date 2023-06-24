@@ -20,7 +20,7 @@ class PbjExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
-        $query = DB::table('v_rpbj');
+        $query = DB::table('v_rpbj01');
 
         if(isset($req->department)){
             if($req->department !== 'All'){
@@ -30,11 +30,11 @@ class PbjExport implements FromCollection, WithHeadings, WithMapping
 
         if(isset($req->approvalstat)){
             if($req->approvalstat === "O"){
-                $query->where('pbj_status', 'O');
+                $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('pbj_status', 'A');                
+                $query->where('approvestat', 'A');                
             }elseif($req->approvalstat === "R"){
-                $query->where('pbj_status', 'R');                
+                $query->where('approvestat', 'R');                
             }
         }
 
@@ -54,22 +54,24 @@ class PbjExport implements FromCollection, WithHeadings, WithMapping
         $fields = [
             $row->pbjnumber,
             $row->tgl_pbj,
-            $row->deptname,
             $row->tujuan_permintaan,
             $row->kepada,
             $row->unit_desc,
+            $row->requestor,
+            $row->nama_project,
             $row->engine_model,
             $row->chassis_sn,
             $row->reference,
             $row->requestor,
             $row->type_model,
-            $row->user,
+            $row->mekanik,
             $row->kode_brg_jasa,
+            $row->periode,
             $row->engine_sn,
+            $row->pbjitem,
             $row->partnumber,
             $row->description,
             $row->quantity,
-            $row->issued_qty,
             $row->unit,
             $row->figure,
             $row->remark,
@@ -83,10 +85,11 @@ class PbjExport implements FromCollection, WithHeadings, WithMapping
         return [
                 "No. PBJ",
                 "Tanggal PBJ",
-                "Department",
                 "Tujuan Permintaan",
                 "Kepada",
                 "No. Plat",
+                "Requestor",
+                "Project",
                 "Engine Model",
                 "Chassis SN",
                 "Reference",
@@ -94,11 +97,12 @@ class PbjExport implements FromCollection, WithHeadings, WithMapping
                 "Type Model",
                 "Mekanik",
                 "Kode Barang/Jasa",
+                "Periode",
                 "Engine SN",
+                "PBJ Item",
                 "Kode Item",
                 "Deskripsi",
                 "Quantity",
-                "Issued Qty",
                 "Unit",
                 "Figure",
                 "Remark",
