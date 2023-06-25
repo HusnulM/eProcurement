@@ -15,6 +15,7 @@ use App\Exports\CeklistAllExport;
 use App\Exports\StockExport;
 use App\Exports\BatchStockExport;
 use App\Exports\CostExport;
+use App\Exports\IssuedExport;
 
 class ExportDataController extends Controller
 {
@@ -48,5 +49,9 @@ class ExportDataController extends Controller
     
     public function exportCost(Request $req){
         return Excel::download(new CostExport($req), 'Laporan-Cost-WO.xlsx');
+    }
+
+    public function exportIssued(Request $req){
+        return Excel::download(new IssuedExport($req), 'Laporan-Pengeluaran-Barang.xlsx');
     }
 }

@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/issue',                    'Reports\ReportsController@issue')->middleware('checkAuth:report/issue');
         Route::get('/issuelist',                'Reports\ReportsController@issueList')->middleware('checkAuth:report/issue');
+        Route::post('/exportissued',            'ExportDataController@exportIssued')->middleware('checkAuth:report/issue');
 
         Route::get('/stock',                    'Reports\ReportsController@stock')->middleware('checkAuth:report/stock');
         Route::get('/stocklist',                'Reports\ReportsController@stockList')->middleware('checkAuth:report/stock');

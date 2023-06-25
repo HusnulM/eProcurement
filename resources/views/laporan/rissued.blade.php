@@ -1,6 +1,6 @@
 @extends('layouts/App')
 
-@section('title', 'Laporan Penerimaan PO')
+@section('title', 'Laporan Pengeluaran Barang')
 
 @section('additional-css')
 @endsection
@@ -11,7 +11,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"></h3>
+                    <h3 class="card-title">Laporan Pengeluaran Barang</h3>
                     <div class="card-tools">
                         <!-- <a href="{{ url('transaction/budgeting') }}" class="btn btn-success btn-sm btn-add-dept">
                             <i class="fas fa-plus"></i> Buat Pengajuan Budget
@@ -24,11 +24,11 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form action="{{ url('reports/documentlist/export') }}" method="post">
+                            <form action="{{ url('report/exportissued') }}" method="post">
                                 @csrf
                                 <div class="row">
                                     <div class="col-lg-2">
-                                        <label for="">Tanggal Penerimaan</label>
+                                        <label for="">Tanggal Pengeluaran</label>
                                         <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
                                     </div>
                                     <div class="col-lg-2">
@@ -141,7 +141,7 @@
                         }
                     },
                     {data: "remark", className: 'uid'},
-                    {data: "received_by", className: 'uid'},
+                    {data: "createdby", className: 'uid'},
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'uid'},
                     {data: "quantity", "sortable": false,
@@ -151,7 +151,7 @@
                         "className": "text-right",
                     },
                     {data: "unit"},
-                    {data: "pbjnumber"},
+                    {data: "wonum"},
                     {data: "whsname"}
                 ]  
             });
