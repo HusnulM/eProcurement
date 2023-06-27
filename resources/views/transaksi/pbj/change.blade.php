@@ -62,7 +62,7 @@
                                             <div class="form-group">
                                                 <label for="unitdesc">Unit Desc / Code</label>
                                                 <select name="unitdesc" id="find-unitdesc" class="form-control">
-                                                    <option value="{{ $kendaraan->no_kendaraan }}">{{ $kendaraan->no_kendaraan }} - {{ $kendaraan->model_kendaraan }}</option>
+                                                    <option value="{{ $kendaraan->no_kendaraan ?? '' }}">{{ $kendaraan->no_kendaraan ?? '' }} - {{ $kendaraan->model_kendaraan ?? '' }}</option>
                                                 </select>
                                                 <!-- <input type="text" name="unitdesc" class="form-control"> -->
                                             </div>
