@@ -31,7 +31,7 @@ class ItemMasterController extends Controller
     public function edit($id){
         $matcat = DB::table('t_materialtype')->get();
         $matuom = DB::table('t_uom')->get();
-        $materialdata = DB::table('v_material')->where('matuniqid', $id)->first();
+        $materialdata = DB::table('v_material')->where('id', $id)->first();
         // dd($id);
         $materialuom  = DB::table('t_material2')->where('material', $materialdata->material)->get();
         // dd($materialuom);
@@ -281,8 +281,8 @@ class ItemMasterController extends Controller
     public function delete($id){
         DB::beginTransaction();
         try{
-            $material = DB::table('t_material')->where('matuniqid', $id)->first();
-            DB::table('t_material')->where('matuniqid', $id)->delete();
+            $material = DB::table('t_material')->where('id', $id)->first();
+            DB::table('t_material')->where('id', $id)->delete();
             DB::table('t_material2')->where('material', $material->material)->delete();
             DB::commit();
             return Redirect::to("/master/item")->withSuccess('Material deleted');

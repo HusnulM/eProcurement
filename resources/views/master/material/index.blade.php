@@ -300,14 +300,14 @@
             var table = $('#tbl-item-master').DataTable();
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
-            window.location = base_url+"/master/item/delete/"+selected_data.matuniqid;
+            window.location = base_url+"/master/item/delete/"+selected_data.id;
         });
         $('#tbl-item-master tbody').on( 'click', '.button-edit', function () {
             var table = $('#tbl-item-master').DataTable();
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
-            window.location = base_url+"/master/item/edit/"+selected_data.matuniqid;
+            window.location = base_url+"/master/item/edit/"+selected_data.id;
         });
 
 
