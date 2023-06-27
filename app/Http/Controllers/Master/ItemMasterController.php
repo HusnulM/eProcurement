@@ -75,52 +75,57 @@ class ItemMasterController extends Controller
         DB::beginTransaction();
         try{
             $current_timestamp = Carbon::now()->timestamp;
-        
-            DB::table('t_material')->insert([
-                'material'   => $req['partnumber'],
-                'matdesc'    => $req['partname'],
-                'mattype'    => $req['itemtype'],
-                'partname'   => $req['partname'],
-                'partnumber' => $req['partnumber'],
-                'matunit'    => $req['itemunit'],
-                'matuniqid'  => $current_timestamp,
-                'createdon'  => date('Y-m-d H:m:s'),
-                'createdby'  => Auth::user()->email ?? Auth::user()->username
-            ]);            
 
-            $insertAltUom = array();
-            $altUom = array(
-                'material'  => $req['partnumber'],
-                'altuom'    => $req['itemunit'],
-                'convalt'   => '1',
-                'baseuom'   => $req['itemunit'],
-                'convbase'  => '1',
-                'createdon' => date('Y-m-d H:m:s'),
-                'createdby' => Auth::user()->email ?? Auth::user()->username
-            );
-            array_push($insertAltUom, $altUom);
-
-            if(isset($req['convuom'])){
-                $convuom    = $req['convuom'];
-                $convalue   = $req['convalue'];
-                $baseuom    = $req['baseuom'];
-                $baseuomval = $req['baseuomval'];
-                for($i = 0; $i < sizeof($convuom); $i++){
-                    $altUom = array(
-                        'material'  => $req['itemcode'],
-                        'altuom'    => $convuom[$i],
-                        'convalt'   => $convalue[$i],
-                        'baseuom'   => $baseuom[$i],
-                        'convbase'  => $baseuomval[$i],
-                        'createdon' => date('Y-m-d H:m:s'),
-                        'createdby' => Auth::user()->email ?? Auth::user()->username
-                    );
-                    array_push($insertAltUom, $altUom);
+            $checkMaterial = DB::table('t_material')->where('material', $req['partnumber'])->first();
+            if(!$checkMaterial){
+                DB::table('t_material')->insert([
+                    'material'   => $req['partnumber'],
+                    'matdesc'    => $req['partname'],
+                    'mattype'    => $req['itemtype'],
+                    'partname'   => $req['partname'],
+                    'partnumber' => $req['partnumber'],
+                    'matunit'    => $req['itemunit'],
+                    'matuniqid'  => $current_timestamp,
+                    'createdon'  => date('Y-m-d H:m:s'),
+                    'createdby'  => Auth::user()->email ?? Auth::user()->username
+                ]);            
+    
+                $insertAltUom = array();
+                $altUom = array(
+                    'material'  => $req['partnumber'],
+                    'altuom'    => $req['itemunit'],
+                    'convalt'   => '1',
+                    'baseuom'   => $req['itemunit'],
+                    'convbase'  => '1',
+                    'createdon' => date('Y-m-d H:m:s'),
+                    'createdby' => Auth::user()->email ?? Auth::user()->username
+                );
+                array_push($insertAltUom, $altUom);
+    
+                if(isset($req['convuom'])){
+                    $convuom    = $req['convuom'];
+                    $convalue   = $req['convalue'];
+                    $baseuom    = $req['baseuom'];
+                    $baseuomval = $req['baseuomval'];
+                    for($i = 0; $i < sizeof($convuom); $i++){
+                        $altUom = array(
+                            'material'  => $req['itemcode'],
+                            'altuom'    => $convuom[$i],
+                            'convalt'   => $convalue[$i],
+                            'baseuom'   => $baseuom[$i],
+                            'convbase'  => $baseuomval[$i],
+                            'createdon' => date('Y-m-d H:m:s'),
+                            'createdby' => Auth::user()->email ?? Auth::user()->username
+                        );
+                        array_push($insertAltUom, $altUom);
+                    }
                 }
+                insertOrUpdate($insertAltUom,'t_material2');
+                DB::commit();
+                return Redirect::to("/master/item")->withSuccess('New Item Master Created');
+            }else{
+                return Redirect::to("/master/item/create")->withError('Item Code '. $req['partnumber'] .' already exists');
             }
-            insertOrUpdate($insertAltUom,'t_material2');
-            DB::commit();
-            return Redirect::to("/master/item")->withSuccess('New Item Master Created');
         } catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/master/item")->withError($e->getMessage());
