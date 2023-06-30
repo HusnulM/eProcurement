@@ -68,7 +68,7 @@
                             <div class="table-responsive">
                                 <table id="tbl-item-type" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                     <thead>
-                                        <th>No</th>
+                                        <th>ID</th>
                                         <th>Item Category</th>
                                         <th style="text-align:center; width: 50px;"></th>
                                     </thead>
@@ -327,11 +327,12 @@
             // scrollX: true,
             // scrollCollapse: true,
             columns: [
-                { "data": null,"sortable": false, "searchable": false,
-                    render: function (data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
-                    }  
-                },
+                // { "data": null,"sortable": false, "searchable": false,
+                //     render: function (data, type, row, meta) {
+                //         return meta.row + meta.settings._iDisplayStart + 1;
+                //     }  
+                // },
+                {data: "id"},
                 {data: "mattypedesc"},
                 {"defaultContent": 
                     `<button class='btn btn-danger btn-sm button-itmcat-delete'> <i class='fa fa-trash'></i> DELETE</button> 
