@@ -52,5 +52,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/cost',                     'Reports\ReportsController@cost')->middleware('checkAuth:report/cost');
         Route::get('/costlist',                 'Reports\ReportsController@costList')->middleware('checkAuth:report/cost');
         Route::post('/exportcost',              'ExportDataController@exportCost')->middleware('checkAuth:report/cost');
+
+        Route::get('/cost01',                     'Reports\CostReportController@costPerKendaraan')->middleware('checkAuth:report/cost01');
+        Route::get('/cost01list',                 'Reports\CostReportController@costPerKendaraanList')->middleware('checkAuth:report/cost01');
+        Route::post('/exportcost01',              'ExportDataController@exportCostPerkendaraan')->middleware('checkAuth:report/cost01');
+
+        Route::get('/cost02',                     'Reports\CostReportController@costPerProject')->middleware('checkAuth:report/cost02');
+        Route::get('/cost02list',                 'Reports\CostReportController@costPerProjectList')->middleware('checkAuth:report/cost02');
+        Route::post('/exportcost02',              'ExportDataController@exportCostPerproject')->middleware('checkAuth:report/cost02');
     });
 });

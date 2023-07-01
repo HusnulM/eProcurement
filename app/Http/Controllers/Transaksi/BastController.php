@@ -126,13 +126,19 @@ class BastController extends Controller
                 $warehouseID = 0;
 
                 if($pbjheader->pbjtype == 1){
-                    $wodata = DB::table('t_wo01')->where('wonum', $wonum[$i])->first();
-
-                    $warehouseID = $wodata->whscode;
-    
+                    if($wonum[$i]){
+                        $wodata = DB::table('t_wo01')->where('wonum', $wonum[$i])->first();
+                        $warehouseID = $wodata->whscode;
+                    }else{
+                        $pbjdtl = DB::table('t_pbj02')
+                        ->where('pbjnumber', $pbjnum[$i])
+                        ->where('pbjitem', $pbjitm[$i])->first();
+                        $warehouseID = $pbjdtl->whscode;
+                    }
                     $latestStock = DB::table('v_inv_summary_stock')
                                    ->where('material', $parts[$i])
-                                   ->where('whsid',    $wodata->whscode)->first();
+                                   ->where('whsid',    $warehouseID)->first();
+    
                     if($latestStock){
                         if($latestStock->quantity < $qty){
                             DB::rollBack();

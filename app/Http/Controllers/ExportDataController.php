@@ -16,6 +16,8 @@ use App\Exports\StockExport;
 use App\Exports\BatchStockExport;
 use App\Exports\CostExport;
 use App\Exports\IssuedExport;
+use App\Exports\CostPerkendaraanExport;
+use App\Exports\CostPerprojectExport;
 
 class ExportDataController extends Controller
 {
@@ -53,5 +55,13 @@ class ExportDataController extends Controller
 
     public function exportIssued(Request $req){
         return Excel::download(new IssuedExport($req), 'Laporan-Pengeluaran-Barang.xlsx');
+    }
+
+    public function exportCostPerkendaraan(Request $req){
+        return Excel::download(new CostPerkendaraanExport($req), 'Laporan-Cost-Perkendaraan.xlsx');
+    }
+
+    public function exportCostPerproject(Request $req){
+        return Excel::download(new CostPerprojectExport($req), 'Laporan-Cost-Perproject.xlsx');
     }
 }
