@@ -444,6 +444,7 @@
             } 
         });    
         
+        
         $('#btn-approve-items').on('click', function(){
             var tableControl= document.getElementById('tbl-pbj');
             var _splchecked = [];
@@ -455,6 +456,7 @@
                 console.log(_splchecked)
                 var prtemchecked = {
                     "pbjitem" : _splchecked,
+                    "action" : _action,
                     "_token": _token
                 }
                 $.ajax({
@@ -505,7 +507,67 @@
             }                
         });
                 
+        $('#btn-reject-items').on('click', function(){
+            var tableControl= document.getElementById('tbl-pbj');
+            var _splchecked = [];
+            _action = 'R';
+            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+                _splchecked.push($(this).parent().next().text())
+            }).get();
+            if(_splchecked.length > 0){
+                console.log(_splchecked)
+                var prtemchecked = {
+                    "pbjitem" : _splchecked,
+                    "action" : _action,
+                    "_token": _token
+                }
+                $.ajax({
+                    url:base_url+'/approve/pbj/approveitems/{{ $pbjhdr->id }}',
+                    method:'post',
+                    data:prtemchecked,
+                    dataType:'JSON',
+                    beforeSend:function(){
+                        $('#btn-approve-items').attr('disabled','disabled');
+                    },
+                    success:function(data)
+                    {
+                        
+                    },
+                    error:function(err){
+                        // console.log(JSON.stringify(err));
+                        // showErrorMessage(JSON.stringify(err))
+                        console.log(err);
+                        toastr.error(err)
 
+                        setTimeout(function(){ 
+                            location.reload();
+                        }, 2000);
+                    }
+                }).done(function(response){
+                    console.log(response);
+                    // $('#btn-approve').attr('disabled',false);
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        if(_action === "A"){
+                            toastr.success(response.message)
+                        }else if(_action === "R"){
+                            toastr.warning(response.message)
+                        }                        
+
+                        setTimeout(function(){ 
+                            window.location.href = base_url+'/approve/pbj';
+                        }, 2000);
+                    }else{
+                        toastr.error(response.message)
+                        setTimeout(function(){ 
+                            location.reload();
+                        }, 2000);
+                    }                
+                });   
+            }else{
+                alert('No record selected ');
+            }                
+        });
 
 
         function approveDocument(_action){

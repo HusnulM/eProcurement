@@ -159,7 +159,7 @@ class SpkController extends Controller
         $query = DB::table('v_spk01');
 
         $checkObjAuth = DB::table('user_object_auth')
-                        ->where('user_object_auth', 'ALLOW_DISPLAY_ALL_DEPT')
+                        ->where('object_name', 'ALLOW_DISPLAY_ALL_DEPT')
                         ->where('object_val', 'Y')
                         ->where('userid', Auth::user()->id)
                         ->first();
