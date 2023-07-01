@@ -1004,7 +1004,8 @@ function sendPurchaseOrder($poNumber){
         ->where('doc_object', 'PO')
         ->where('doc_number', $poheader->ponum)->get();
 
-    $sendData = array();
+    $sendData   = array();
+    $insertData = array();
     foreach($poitem as $row){
         $idProject = null;
         $project = DB::table('t_projects')->where('idproject', $row->idproject)->first();
@@ -1033,7 +1034,22 @@ function sendPurchaseOrder($poNumber){
             "attachment" => array("https://mbpeproc.my.id".$attachments[0]->pathfile)
         );
         array_push($sendData, $insert);
+
+        $submitData = array(
+            'ponum'    => $row->ponum,
+            'poitem'   => $row->poitem,
+            'material' => $row->material,
+            'matdesc'  => $row->matdesc,
+            'quantity' => $row->quantity,
+            'unit'     => $row->unit,
+            'submitdate' => getLocalDatabaseDateTime(),
+            'submitby'   => Auth::user()->username
+        );
+        array_push($insertData, $submitData);
     }
+
+    insertOrUpdate($insertData,'t_log_submit_api');
+    // t_log_submit_api
 
     $apikey = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
 

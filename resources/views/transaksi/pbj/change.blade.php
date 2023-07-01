@@ -198,9 +198,16 @@
                             {{-- <a href="{{ url('/printdoc/pbj/print/') }}/{{ $pbjhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
                                 <i class='fa fa-print'></i> Print
                             </a> --}}
+                            {{-- <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
+                                <i class="fas fa-save"></i> Update PBJ
+                            </button> --}}
+                            @if($pbjhdr->pbj_status === "A")
+                                <b style="color: red;">PBJ Sudah di Approve, tidak bisa diupdate!</b>
+                            @else
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Update PBJ
                             </button>
+                            @endif
                             <a href="{{ url('/transaction/pbj/list') }}" class="btn btn-default btn-sm">
                                 <i class="fa fa-arrow-left"></i> Back
                             </a>

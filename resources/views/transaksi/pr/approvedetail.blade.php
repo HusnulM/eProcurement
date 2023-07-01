@@ -97,6 +97,8 @@
                                                     <th>Description</th>
                                                     <th style="text-align:center;">Quantity</th>
                                                     <th>Unit</th>
+                                                    <th>PBJ Number</th>
+                                                    <th>PBJ Item</th>
                                                 </thead>
                                                 <tbody>
                                                 @foreach($pritem as $key => $row)
@@ -116,6 +118,12 @@
                                                         </td>
                                                         <td>
                                                             {{ $row->unit }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $row->pbjnumber }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $row->pbjitem }}
                                                         </td>
                                                     </tr>
                                                 @endforeach
