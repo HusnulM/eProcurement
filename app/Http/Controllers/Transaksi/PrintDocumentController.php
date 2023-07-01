@@ -60,7 +60,17 @@ class PrintDocumentController extends Controller
             $query->where('prdate', $req->dateto);
         }
 
-        $query->where('createdby', Auth::user()->email);
+        $checkObjAuth = DB::table('user_object_auth')
+                        ->where('object_name', 'ALLOW_DISPLAY_ALL_DEPT')
+                        ->where('object_val', 'Y')
+                        ->where('userid', Auth::user()->id)
+                        ->first();
+        if($checkObjAuth){
+
+        }else{
+            $query->where('createdby', Auth::user()->email);
+        }
+        // $query->where('createdby', Auth::user()->email);
 
         $query->orderBy('id');
 
