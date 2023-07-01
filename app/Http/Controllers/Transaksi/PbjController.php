@@ -191,11 +191,25 @@ class PbjController extends Controller
             $params = $request->params;        
             $whereClause = $params['sac'];
         }
-        $query = DB::table('v_pbj01')
-                 ->where('createdby',Auth::user()->email)
-                //  ->where('is_active','Y')
-                //  ->where('approval_status','N')
-                 ->orderBy('id');
+
+        $checkObjAuth = DB::table('user_object_auth')
+                        ->where('user_object_auth', 'ALLOW_DISPLAY_ALL_DEPT')
+                        ->where('object_val', 'Y')
+                        ->where('userid', Auth::user()->id)
+                        ->first();
+        if($checkObjAuth){
+            $query = DB::table('v_pbj01')
+            // ->where('createdby',Auth::user()->email)
+           //  ->where('is_active','Y')
+           //  ->where('approval_status','N')
+            ->orderBy('id');
+        }else{
+            $query = DB::table('v_pbj01')
+                     ->where('createdby',Auth::user()->email)
+                    //  ->where('is_active','Y')
+                    //  ->where('approval_status','N')
+                     ->orderBy('id');
+        }
         return DataTables::queryBuilder($query)
         // ->editColumn('amount', function ($query){
         //     return [
