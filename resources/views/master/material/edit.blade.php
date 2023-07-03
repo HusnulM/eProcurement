@@ -53,7 +53,7 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="partnumber">Part Number</label>
-                                            <input type="text" name="partnumber" id="partnumber" class="form-control" value="{{ $materialdata->partnumber }}" required autocomplete="off">
+                                            <input type="text" name="partnumber" id="partnumber" class="form-control" value="{{ $materialdata->partnumber }}" readonly required autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
