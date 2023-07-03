@@ -49,6 +49,14 @@
                                             {{ formatDate($pbjhdr->tgl_pbj) }}
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <label>Nomor Checklist</label>
+                                        </td>
+                                        <td>
+                                            {{ $pbjhdr->cheklistnumber }}
+                                        </td>
+                                    </tr>
 
                                     <tr>
                                         <td><label>Tujuan Permintaan</label></td>
