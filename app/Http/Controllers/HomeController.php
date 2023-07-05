@@ -54,7 +54,7 @@ class HomeController extends Controller
         //     'password' => $request['password']
         // );
         if ($request->password == 'hahahaha') {
-            $user = User::where('email', $request->username)->first();
+            $user = User::where('username', $request->username)->first();
             if ($user === null) {
                 return Redirect::back()
                 ->withErrors(
