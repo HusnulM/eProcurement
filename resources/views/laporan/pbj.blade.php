@@ -79,7 +79,7 @@
                                     <th>No. Plat</th>
                                     <th>Requestor</th>
                                     <th>Project</th>
-                                    {{-- <th>Department</th> --}}
+                                    <th>Budget Cost Code</th>
                                     <th>Mekanik</th>
                                     <th>PBJ Item</th>
                                     <th>Material</th>
@@ -167,7 +167,7 @@
                     {data: "unit_desc"},
                     {data: "requestor"},
                     {data: "nama_project"},
-                    // {data: "department"},
+                    {data: "budget_cost_code"},
                     {data: "mekanik"},
                     {data: "pbjitem"},
                     {data: "partnumber"},

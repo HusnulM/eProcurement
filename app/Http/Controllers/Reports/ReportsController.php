@@ -164,7 +164,7 @@ class ReportsController extends Controller
     }
 
     public function prList(Request $req){
-        $query = DB::table('v_rpr');
+        $query = DB::table('v_rpr01');
 
         if(isset($req->department)){
             if($req->department !== 'All'){
