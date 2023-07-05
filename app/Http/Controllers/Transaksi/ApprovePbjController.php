@@ -186,6 +186,7 @@ class ApprovePbjController extends Controller
                 ->whereIn('pbjitem', $data['pbjitem'])
                 // ->where('approver_level', $nextApprover)
                 ->update([
+                    'is_active'       => 'N',
                     'approval_status' => 'R',
                     'approval_remark' => null,
                     'approved_by'     => Auth::user()->username,
