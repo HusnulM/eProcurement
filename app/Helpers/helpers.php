@@ -492,16 +492,23 @@ function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
     }    
 }
 
-function generatePbjNumber($tahun, $bulan, $tgl){
-    $dcnNumber = 'PBJ/'.$tahun.$bulan.$tgl;
+function generatePbjNumber($tahun, $dept, $tgl){
+
+    $department = DB::table('t_department')->where('deptid', $dept)->first();
+
+    
+    $deptid = $department->deptid;
+    // dd($deptid);
+    $dcnNumber = 'PBJ-'.$department->department.'/'.$tahun;
     // dd($dcnNumber);
     $getdata = DB::table('t_nriv_budget')
                ->where('tahun',  $tahun)
                ->where('object', 'PBJ')
-               ->where('bulan',  $bulan)
-               ->where('tanggal',  $tgl)
+               ->where('deptid',  $deptid)
+            //    ->where('tanggal',  $tgl)
             //    ->where('deptid', $dept)
                ->first();
+    // dd($getdata);
     
     if($getdata){
         DB::beginTransaction();
@@ -532,14 +539,15 @@ function generatePbjNumber($tahun, $bulan, $tgl){
             DB::table('t_nriv_budget')
             ->where('tahun',  $tahun)
             ->where('object', 'PBJ')
-            ->where('bulan',  $bulan)
-            ->where('tanggal',  $tgl)
+            ->where('deptid',  $deptid)
+            // ->where('tanggal',  $tgl)
             // ->where('deptid', $dept)
             ->update([
                 'lastnumber' => $lastnum
             ]);
 
             DB::commit();
+            // dd($dcnNumber);
             return $dcnNumber;
         }catch(\Exception $e){
             DB::rollBack();
@@ -552,17 +560,20 @@ function generatePbjNumber($tahun, $bulan, $tgl){
             DB::table('t_nriv_budget')->insert([
                 'object'          => 'PBJ',
                 'tahun'           => $tahun,
-                'bulan'           => $bulan,
-                'tanggal'         => $tgl,
+                'deptid'          => $deptid,
+                'bulan'           => date('m'),
+                'tanggal'         => '01',
                 // 'deptid'          => $dept,
                 'lastnumber'      => '1',
                 'createdon'       => date('Y-m-d H:m:s'),
                 'createdby'       => Auth::user()->email ?? Auth::user()->username
             ]);
             DB::commit();
+            // dd($dcnNumber);
             return $dcnNumber;
         }catch(\Exception $e){
             DB::rollBack();
+            dd($e);
             return null;
         }
     }   

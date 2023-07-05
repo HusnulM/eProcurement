@@ -303,7 +303,9 @@ class PbjController extends Controller
                 $bulan = substr($req['tglpbj'], 5, 2);
                 $tahun = substr($req['tglpbj'], 0, 4);
                 // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
-                $ptaNumber = generatePbjNumber($tahun, $bulan, $tgl);
+                $department = DB::table('t_department')->where('department', $req['kepada'])->first();
+
+                $ptaNumber = generatePbjNumber($tahun, $department->deptid, $tgl);
     
                 // return $ptaNumber;
     
