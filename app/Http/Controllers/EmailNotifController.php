@@ -28,7 +28,7 @@ class EmailNotifController extends Controller
                     ->where('deptid', $row->deptid)
                     ->pluck('email');    
     
-            Mail::to($mailto)->cc('husnulmub@gmail.com')->queue(new NotifPBJDueDateMail($data));
+            Mail::to($mailto)->queue(new NotifPBJDueDateMail($data));
         }
     }
 
@@ -49,7 +49,7 @@ class EmailNotifController extends Controller
                     ->where('deptid', $row->deptid)
                     ->pluck('email'); 
 
-            Mail::to($mailto)->cc('husnulmub@gmail.com')->queue(new NotifPRDueDateMail($data));
+            Mail::to($mailto)->queue(new NotifPRDueDateMail($data));
             
         }
     }
@@ -70,7 +70,7 @@ class EmailNotifController extends Controller
                         ->where('deptid', $row->deptid)
                         ->pluck('email'); 
     
-            Mail::to($mailto)->cc('husnulmub@gmail.com')->queue(new NotifPODueDateMail($data));
+            Mail::to($mailto)->queue(new NotifPODueDateMail($data));
                 
         }
     }
