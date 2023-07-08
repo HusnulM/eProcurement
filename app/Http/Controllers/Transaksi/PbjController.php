@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NotifApprovePbjMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
@@ -311,7 +313,7 @@ class PbjController extends Controller
     
                 // $amount = $req['nominal'];
                 // $amount = str_replace(',','',$amount);
-                DB::table('t_pbj01')->insert([
+                $PBJid = DB::table('t_pbj01')->insertGetId([
                     'pbjnumber'         => $ptaNumber,
                     'pbjtype'           => $req['pbjTYpe'],
                     'deptid'            => Auth::user()->deptid,
@@ -442,6 +444,22 @@ class PbjController extends Controller
                     'pbjnumber'   => $ptaNumber
                 ]);
                 DB::commit();
+
+                $approverId = DB::table('v_workflow_budget')->where('object', 'PBJ')
+                            ->where('requester', Auth::user()->id)
+                            ->where('approver_level', '1')
+                            ->pluck('approver');
+
+                $mailto = DB::table('users')
+                    ->whereIn('id', $approverId)
+                    ->pluck('email');   
+
+                $dataApprovePBJ = DB::table('v_duedate_pbj')
+                    ->where('pbjnumber', $ptaNumber)
+                    ->orderBy('id')->get();
+
+                Mail::to($mailto)->queue(new NotifApprovePbjMail($dataApprovePBJ, $PBJid, $ptaNumber));
+
                 if($req['pbjTYpe'] === "1"){
                     return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
                 }else{

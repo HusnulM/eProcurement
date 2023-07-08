@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NotifApprovePrMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
@@ -95,7 +97,7 @@ class PurchaseRequestController extends Controller
 
             // $amount = $req['nominal'];
             // $amount = str_replace(',','',$amount);
-            DB::table('t_pr01')->insert([
+            $prID = DB::table('t_pr01')->insertGetId([
                 'prnum'             => $ptaNumber,
                 'prdate'            => $req['tglreq'],
                 'deptid'            => Auth::user()->deptid,
@@ -205,6 +207,21 @@ class PurchaseRequestController extends Controller
 
             DB::commit();
             // return Redirect::to("/proc/pr")->withSuccess('PR Berhasil dibuat dengan Nomor : '. $ptaNumber);
+
+            $approverId = DB::table('v_workflow_budget')->where('object', 'PR')
+                            ->where('requester', Auth::user()->id)
+                            ->where('approver_level', '1')
+                            ->pluck('approver');
+
+            $mailto = DB::table('users')
+                    ->whereIn('id', $approverId)
+                    ->pluck('email');   
+
+            $dataApprovePBJ = DB::table('v_pr_duedate')
+                    ->where('prnum', $ptaNumber)
+                    ->orderBy('id')->get();
+
+            Mail::to($mailto)->queue(new NotifApprovePrMail($dataApprovePBJ, $prID, $ptaNumber));
 
             $result = array(
                 'msgtype' => '200',

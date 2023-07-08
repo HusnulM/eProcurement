@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NotifApprovePbjMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
 
@@ -165,9 +167,10 @@ class ApprovePbjController extends Controller
         DB::beginTransaction();
         try{
             
-            $pbjHeader = DB::table('t_pbj01')->where('id', $pbjID)->first();
-            $items = join(",",$data['pbjitem']); 
-            $ptaNumber = $pbjHeader->pbjnumber;
+            $pbjHeader  = DB::table('t_pbj01')->where('id', $pbjID)->first();
+            $pbjCreator = DB::table('users')->where('email', $pbjHeader->createdby)->first();
+            $items      = join(",",$data['pbjitem']); 
+            $ptaNumber  = $pbjHeader->pbjnumber;
             
             $pbjItemData = DB::table('t_pbj02')
             ->where('pbjnumber', $ptaNumber)
@@ -236,6 +239,20 @@ class ApprovePbjController extends Controller
                                           ->get();
                 if(sizeof($checkIsFullApprove) > 0){
                     // go to next approver    
+                    $approverId = DB::table('v_workflow_budget')->where('object', 'PBJ')
+                            ->where('requester', $pbjCreator->id)
+                            ->where('approver_level', $nextApprover)
+                            ->pluck('approver');
+
+                    $mailto = DB::table('users')
+                        ->whereIn('id', $approverId)
+                        ->pluck('email');   
+
+                    $dataApprovePBJ = DB::table('v_duedate_pbj')
+                        ->where('pbjnumber', $ptaNumber)
+                        ->orderBy('id')->get();
+
+                    Mail::to($mailto)->queue(new NotifApprovePbjMail($dataApprovePBJ, $pbjID, $ptaNumber)); 
                 }else{
                     //Full Approve
                     DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NotifApprovePrMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
 
@@ -89,6 +91,8 @@ class ApprovePurchaseRequestController extends Controller
         try{
             $ptaNumber = $req['prnum'];
 
+            $prhdr = DB::table('t_pr01')->where('prnum', $ptaNumber)->first();
+            $prUser = DB::table('users')->where('email', $prhdr->createdby)->first();
             // return $ptaNumber;
 
             // $amount = $req['amount2'];
@@ -131,7 +135,20 @@ class ApprovePurchaseRequestController extends Controller
                                       ->where('approval_status', '!=', 'A')
                                       ->get();
             if(sizeof($checkIsFullApprove) > 0){
-                // go to next approver    
+                $approverId = DB::table('v_workflow_budget')->where('object', 'PR')
+                            ->where('requester', $prUser->id)
+                            ->where('approver_level', $nextApprover)
+                            ->pluck('approver');
+
+                $mailto = DB::table('users')
+                        ->whereIn('id', $approverId)
+                        ->pluck('email');   
+
+                $dataApprovePBJ = DB::table('v_pr_duedate')
+                        ->where('prnum', $ptaNumber)
+                        ->orderBy('id')->get();
+
+                Mail::to($mailto)->queue(new NotifApprovePrMail($dataApprovePBJ, $prhdr->id, $ptaNumber));
             }else{
                 //Full Approve
                 DB::table('t_pr01')->where('prnum', $ptaNumber)->update([

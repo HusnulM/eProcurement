@@ -27,8 +27,10 @@ class EmailNotifController extends Controller
             $mailto = DB::table('users')
                     ->where('deptid', $row->deptid)
                     ->pluck('email');    
-    
-            Mail::to($mailto)->queue(new NotifPBJDueDateMail($data));
+            
+            if(sizeof($data) > 0){
+                Mail::to($mailto)->queue(new NotifPBJDueDateMail($data));
+            }
         }
     }
 
@@ -49,8 +51,9 @@ class EmailNotifController extends Controller
                     ->where('deptid', $row->deptid)
                     ->pluck('email'); 
 
-            Mail::to($mailto)->queue(new NotifPRDueDateMail($data));
-            
+            if(sizeof($data) > 0){
+                Mail::to($mailto)->queue(new NotifPRDueDateMail($data));
+            }            
         }
     }
 
@@ -69,9 +72,9 @@ class EmailNotifController extends Controller
             $mailto = DB::table('users')
                         ->where('deptid', $row->deptid)
                         ->pluck('email'); 
-    
-            Mail::to($mailto)->queue(new NotifPODueDateMail($data));
-                
+            if(sizeof($data) > 0){
+                Mail::to($mailto)->queue(new NotifPODueDateMail($data));
+            }    
         }
     }
 }
