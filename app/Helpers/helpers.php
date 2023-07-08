@@ -580,13 +580,14 @@ function generatePbjNumber($tahun, $dept, $tgl){
 }
 
 function generatePRNumber($tahun, $bulan, $tgl, $dept, $deptname){
-    $dcnNumber = 'PR-'.$deptname.'/'.$tahun.$bulan.$tgl;
+    // $dcnNumber = 'PR-'.$deptname.'/'.$tahun.$bulan.$tgl;
+    $dcnNumber = 'PR-'.$deptname.'/'.$tahun;
     // dd($dcnNumber);
     $getdata = DB::table('t_nriv_budget')
                ->where('tahun',  $tahun)
                ->where('object', 'PR')
-               ->where('bulan',  $bulan)
-               ->where('tanggal',  $tgl)
+            //    ->where('bulan',  $bulan)
+            //    ->where('tanggal',  $tgl)
                ->where('deptid', $dept)
                ->first();
     
@@ -619,8 +620,8 @@ function generatePRNumber($tahun, $bulan, $tgl, $dept, $deptname){
             DB::table('t_nriv_budget')
             ->where('tahun',  $tahun)
             ->where('object', 'PR')
-            ->where('bulan',  $bulan)
-            ->where('tanggal',  $tgl)
+            // ->where('bulan',  $bulan)
+            // ->where('tanggal',  $tgl)
             ->where('deptid', $dept)
             ->update([
                 'lastnumber' => $lastnum
