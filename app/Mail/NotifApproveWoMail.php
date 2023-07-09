@@ -7,18 +7,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NotifApproveWoMail extends Mailable
+class NotifApproveWoMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
-
+    public $data;
+    public $woid;
+    public $wonum;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($data, $woid, $wonum)
     {
-        //
+        $this->data  = $data;
+        $this->woid  = $woid;
+        $this->wonum = $wonum;
     }
 
     /**
@@ -28,6 +32,7 @@ class NotifApproveWoMail extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->subject('Approve WO '. $this->wonum)
+                    ->view('mail.approvewo');
     }
 }

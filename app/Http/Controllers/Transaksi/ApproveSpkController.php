@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NotifApproveWoMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
 
@@ -242,6 +244,7 @@ class ApproveSpkController extends Controller
         DB::beginTransaction();
         try{
             $woHeader = DB::table('t_wo01')->where('id', $woID)->first();
+            $woUser = DB::table('users')->where('email', $woHeader->createdby)->first();
             $items = join(",",$data['woitem']); 
             $ptaNumber = $woHeader->wonum;
 
@@ -314,7 +317,20 @@ class ApproveSpkController extends Controller
                                       ->where('approval_status', '!=', 'A')
                                       ->get();
             if(sizeof($checkIsFullApprove) > 0){
-                // go to next approver    
+                $approverId = DB::table('v_workflow_budget')->where('object', 'SPK')
+                            ->where('requester', $woUser->id)
+                            ->where('approver_level', $nextApprover)
+                            ->pluck('approver');
+
+                $mailto = DB::table('users')
+                        ->whereIn('id', $approverId)
+                        ->pluck('email');   
+
+                $dataApproveWO = DB::table('v_rwo01')
+                        ->where('wonum', $ptaNumber)
+                        ->orderBy('id')->get();
+
+                Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApproveWoMail($dataApproveWO, $woHeader->id, $ptaNumber));
             }else{
                 //Full Approve
                 // $tgl   = substr($req['grdate'], 8, 2);

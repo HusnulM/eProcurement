@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NotifApproveWoMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
 use PDF;
 
-class SpkController extends Controller
+class SpkController extends Controller 
 {
     public function index(){
         return view('transaksi.spk.listchecklist');
@@ -210,7 +212,7 @@ class SpkController extends Controller
 
             // $amount = $req['nominal'];
             // $amount = str_replace(',','',$amount);
-            DB::table('t_wo01')->insert([
+            $woID = DB::table('t_wo01')->insertGetId([
                 'wonum'             => $ptaNumber,
                 'wodate'            => $req['servicedate'],
                 'description'       => $req['descr'],
@@ -330,6 +332,22 @@ class SpkController extends Controller
             }
 
             DB::commit();
+
+            $approverId = DB::table('v_workflow_budget')->where('object', 'SPK')
+                            ->where('requester', Auth::user()->id)
+                            ->where('approver_level', '1')
+                            ->pluck('approver');
+
+            $mailto = DB::table('users')
+                    ->whereIn('id', $approverId)
+                    ->pluck('email');   
+
+            $dataApproveWO = DB::table('v_rwo01')
+                    ->where('wonum', $ptaNumber)
+                    ->orderBy('id')->get();
+
+            Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApproveWoMail($dataApproveWO, $woID, $ptaNumber));
+
             return Redirect::to("/logistic/wo")->withSuccess('WO Berhasil dibuat dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
             DB::rollBack();
