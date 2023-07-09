@@ -60,5 +60,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/cost02',                     'Reports\CostReportController@costPerProject')->middleware('checkAuth:report/cost02');
         Route::get('/cost02list',                 'Reports\CostReportController@costPerProjectList')->middleware('checkAuth:report/cost02');
         Route::post('/exportcost02',              'ExportDataController@exportCostPerproject')->middleware('checkAuth:report/cost02');
+
+        Route::get('/cost03',                     'Reports\CostReportController@costDetails')->middleware('checkAuth:report/cost03');
+        Route::get('/cost03list',                 'Reports\CostReportController@costDetailList')->middleware('checkAuth:report/cost03');
+        Route::post('/exportcost03',              'ExportDataController@exportCostDetail')->middleware('checkAuth:report/cost03');
     });
 });

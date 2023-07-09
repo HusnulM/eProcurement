@@ -18,6 +18,7 @@ use App\Exports\CostExport;
 use App\Exports\IssuedExport;
 use App\Exports\CostPerkendaraanExport;
 use App\Exports\CostPerprojectExport;
+use App\Exports\DetailCostExport;
 
 class ExportDataController extends Controller
 {
@@ -63,5 +64,9 @@ class ExportDataController extends Controller
 
     public function exportCostPerproject(Request $req){
         return Excel::download(new CostPerprojectExport($req), 'Laporan-Cost-Perproject.xlsx');
+    }
+
+    public function exportCostDetail(Request $req){
+        return Excel::download(new DetailCostExport($req), 'Laporan-Detail-Cost.xlsx');
     }
 }
