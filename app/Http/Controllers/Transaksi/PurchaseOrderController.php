@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NotifApprovePoMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
@@ -108,7 +110,7 @@ class PurchaseOrderController extends Controller
             // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
             $ptaNumber = generatePONumber($tahun, $bulan, $tgl);
 
-            DB::table('t_po01')->insert([
+            $poID = DB::table('t_po01')->insertGetId([
                 'ponum'             => $ptaNumber,
                 'ext_ponum'         => $ptaNumber,
                 'deptid'            => $req['department'],
@@ -256,6 +258,22 @@ class PurchaseOrderController extends Controller
             }
 
             DB::commit();
+
+            $approverId = DB::table('v_workflow_budget')->where('object', 'PO')
+                            ->where('requester', Auth::user()->id)
+                            ->where('approver_level', '1')
+                            ->pluck('approver');
+
+            $mailto = DB::table('users')
+                    ->whereIn('id', $approverId)
+                    ->pluck('email');   
+
+            $dataApprovePO = DB::table('v_po_duedate')
+                    ->where('ponum', $ptaNumber)
+                    ->orderBy('id')->get();
+
+            Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApprovePoMail($dataApprovePO, $poID, $ptaNumber));
+
             return Redirect::to("/proc/po")->withSuccess('PO Berhasil dibuat dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
             DB::rollBack();

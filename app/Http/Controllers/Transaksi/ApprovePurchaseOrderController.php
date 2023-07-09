@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NotifApprovePoMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
 
@@ -133,7 +135,21 @@ class ApprovePurchaseOrderController extends Controller
                                       ->where('approval_status', '!=', 'A')
                                       ->get();
             if(sizeof($checkIsFullApprove) > 0){
-                // go to next approver    
+                $poUser = DB::table('users')->where('email', $podata->createdby)->first();
+                $approverId = DB::table('v_workflow_budget')->where('object', 'PO')
+                                ->where('requester', $poUser->id)
+                                ->where('approver_level', $nextApprover)
+                                ->pluck('approver');
+
+                $mailto = DB::table('users')
+                        ->whereIn('id', $approverId)
+                        ->pluck('email');   
+
+                $dataApprovePO = DB::table('v_po_duedate')
+                        ->where('ponum', $ptaNumber)
+                        ->orderBy('id')->get();
+
+                Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApprovePoMail($dataApprovePO, $podata->id, $ptaNumber));
             }else{
                 //Full Approve
                 DB::table('t_po01')->where('ponum', $ptaNumber)->update([
@@ -165,6 +181,8 @@ class ApprovePurchaseOrderController extends Controller
             }
 
             DB::commit();
+
+            
 
             $result = array(
                 'msgtype' => '200',
