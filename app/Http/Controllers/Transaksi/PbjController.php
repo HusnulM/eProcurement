@@ -584,33 +584,36 @@ class PbjController extends Controller
                         insertOrUpdate($insertFiles,'t_attachments');
                     }
                 }
+
+                
+
                 // insertOrUpdate($insertFiles,'t_attachments');
     
                 //Set Approval
-                // $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
-                // if(sizeof($approval) > 0){
-                //     // foreach($pbjItems as $pbitem){
-                //     for($a = 0; $a < sizeof($pbjItems); $a++){
-                //         $insertApproval = array();
-                //         foreach($approval as $row){
-                //             $is_active = 'N';
-                //             if($row->approver_level == 1){
-                //                 $is_active = 'Y';
-                //             }
-                //             $approvals = array(
-                //                 'pbjnumber'         => $ptaNumber,
-                //                 'pbjitem'           => $pbjItems[$a]['pbjitem'],
-                //                 'approver_level'    => $row->approver_level,
-                //                 'approver'          => $row->approver,
-                //                 'requester'         => Auth::user()->id,
-                //                 'is_active'         => $is_active,
-                //                 'createdon'         => getLocalDatabaseDateTime()
-                //             );
-                //             array_push($insertApproval, $approvals);
-                //         }
-                //         insertOrUpdate($insertApproval,'t_pbj_approval');
-                //     }
-                // }    
+                $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
+                if(sizeof($approval) > 0){
+                    // foreach($pbjItems as $pbitem){
+                    for($a = 0; $a < sizeof($pbjItems); $a++){
+                        $insertApproval = array();
+                        foreach($approval as $row){
+                            $is_active = 'N';
+                            if($row->approver_level == 1){
+                                $is_active = 'Y';
+                            }
+                            $approvals = array(
+                                'pbjnumber'         => $ptaNumber,
+                                'pbjitem'           => $pbjItems[$a]['pbjitem'],
+                                'approver_level'    => $row->approver_level,
+                                'approver'          => $row->approver,
+                                'requester'         => Auth::user()->id,
+                                'is_active'         => $is_active,
+                                'createdon'         => getLocalDatabaseDateTime()
+                            );
+                            array_push($insertApproval, $approvals);
+                        }
+                        insertOrUpdate($insertApproval,'t_pbj_approval');
+                    }
+                }    
 
                 // DB::table('t_checklist_kendaraan')->where('no_checklist',$req['checklistnum'])->update([
                 //     'pbj_created' => 'Y',
