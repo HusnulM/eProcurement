@@ -592,6 +592,7 @@ class PbjController extends Controller
                 //Set Approval
                 $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
                 if(sizeof($approval) > 0){
+                    DB::table('t_pbj_approval')->where('pbjnumber', $ptaNumber)->delete();
                     // foreach($pbjItems as $pbitem){
                     for($a = 0; $a < sizeof($pbjItems); $a++){
                         $insertApproval = array();
@@ -678,6 +679,8 @@ class PbjController extends Controller
 
             if($checkBAST){
                 DB::table('t_pbj02')->where('pbjnumber', $req['pbjnumber'])->where('pbjitem', $req['pbjitem'])->delete();
+                DB::table('t_pbj_approval')->where('pbjnumber', $req['pbjnumber'])
+                                           ->where('pbjitem', $req['pbjitem'])->delete();
     
                 DB::commit();
                 $result = array(

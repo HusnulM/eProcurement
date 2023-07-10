@@ -130,17 +130,25 @@
     </table>
 
     <br>
-    <table>
+    <table class="table">
         <tr>
-            <td>Dibuat Oleh,</td>
+            <td style="width:15%;">Dibuat Oleh,</td>
+            <td style="width:500px;"></td>
+            <td style="width:15%;">Approve Oleh,</td>
         </tr>
         <tr>
             <td>
                 <img src="{{ asset(Auth::user()->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
             </td>
+            <td></td>
+            <td>
+                <img src="{{ asset($approveSign->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+            </td>
         </tr>
         <tr>
             <td> <u> {{ getUserNameByID($prhdr->createdby) }} </u></td>
+            <td></td>
+            <td><u> {{ getUserNameByID($approval->approved_by) }} </u></td>
         </tr>
         {{-- <tr>
             <td>____________________</td>

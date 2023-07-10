@@ -412,7 +412,9 @@ function getDepartmentByID($id){
 }
 
 function getUserNameByID($id){
-    $userDept = DB::table('users')->where('id', $id)->orWhere('email', $id)->first();
+    $userDept = DB::table('users')->where('id', $id)
+            ->orWhere('email', $id)
+            ->orWhere('username', $id)->first();
     return $userDept->name;
 }
 

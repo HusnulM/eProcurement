@@ -35,6 +35,8 @@
                                 <th>Kepada</th>
                                 <th>Unit Desc / Code</th>
                                 <th>Engine Model</th>
+                                <th>Created By</th>
+                                <th>Creator Dept.</th>
                                 <th></th>
                             </thead>
                             <tbody>
@@ -101,6 +103,8 @@
                 {data: "kepada"},             
                 {data: "unit_desc" },
                 {data: "engine_model"},
+                {data: "createdby"},
+                {data: "department"},
                 {"defaultContent": 
                     `
                     <button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>

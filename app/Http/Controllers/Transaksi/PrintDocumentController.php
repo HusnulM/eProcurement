@@ -84,10 +84,21 @@ class PrintDocumentController extends Controller
     }
 
     public function printpr($id){
-        $prhdr = DB::table('t_pr01')->where('id', $id)->first();
-        $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
+        $prhdr    = DB::table('t_pr01')->where('id', $id)->first();
+        $prdtl    = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
+        $approval = DB::table('t_pr_approval')
+                    ->where('prnum', $prhdr->prnum)
+                    ->orderBy('approver_level', 'DESC')
+                    ->first();
+        $approveSign = DB::table('users')->where('id', $approval->approver)->first();
 
-        $pdf = PDF::loadview('transaksi.pr.printpr', ['prhdr' => $prhdr, 'pritem' => $prdtl]);
+        $pdf = PDF::loadview('transaksi.pr.printpr', 
+            [
+                'prhdr'       => $prhdr, 
+                'pritem'      => $prdtl, 
+                'approval'    => $approval,
+                'approveSign' => $approveSign
+            ]);
         return $pdf->stream();
     }
 
