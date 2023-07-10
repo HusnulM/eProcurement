@@ -85,6 +85,7 @@ class ApproveSpkController extends Controller
 
     public function getNextApproval($dcnNum){
         $userLevel = DB::table('t_wo_approval')
+                    ->where('wonum', $dcnNum)
                     ->where('approver', Auth::user()->id)
                     ->first();
 

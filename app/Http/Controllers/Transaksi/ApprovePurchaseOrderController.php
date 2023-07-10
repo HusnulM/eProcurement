@@ -78,6 +78,7 @@ class ApprovePurchaseOrderController extends Controller
 
     public function getNextApproval($dcnNum){
         $userLevel = DB::table('t_po_approval')
+                    ->where('ponum', $dcnNum)
                     ->where('approver', Auth::user()->id)
                     ->first();
 

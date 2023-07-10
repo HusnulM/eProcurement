@@ -75,6 +75,7 @@ class ApprovePbjController extends Controller
 
     public function getNextApproval($dcnNum){
         $userLevel = DB::table('t_pbj_approval')
+                    ->where('pbjnumber', $dcnNum)
                     ->where('approver', Auth::user()->id)
                     ->first();
 
@@ -214,7 +215,7 @@ class ApprovePbjController extends Controller
                 // ->where('approver_id', Auth::user()->id)
                 ->where('approver_level',$userAppLevel->approver_level)
                 ->update([
-                    'approval_status' => $data['action'],
+                    'approval_status' => 'A',
                     // 'approval_remark' => $req['approvernote'],
                     'approval_remark' => null,
                     'approved_by'     => Auth::user()->username,
@@ -257,13 +258,13 @@ class ApprovePbjController extends Controller
                     //Full Approve
                     DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)
                     ->update([
-                        'pbj_status'   => $data['action']
+                        'pbj_status'   => 'A'
                     ]);
     
                     DB::table('t_pbj02')->where('pbjnumber', $ptaNumber)
                     ->whereIn('pbjitem', $data['pbjitem'])
                     ->update([
-                        'approvestat'   => $data['action']
+                        'approvestat'   => 'A'
                     ]);
                 }
             }
