@@ -133,7 +133,7 @@
     <table class="table">
         <tr>
             <td style="width:15%;">Dibuat Oleh,</td>
-            <td style="width:500px;"></td>
+            <td style="width:450px;"></td>
             <td style="width:15%;">Approve Oleh,</td>
         </tr>
         <tr>
