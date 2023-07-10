@@ -228,7 +228,7 @@
                 </td>
             </tr>
             <tr>
-                <td>____________________</td>
+                <td><u>{{ $lastApprover->name }}</u></td>
             </tr>
         </table>
     </div>
