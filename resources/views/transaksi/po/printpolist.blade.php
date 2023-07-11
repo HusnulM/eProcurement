@@ -190,9 +190,10 @@
                         `<button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
                          <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> View Detail</button>
                          <button class='btn btn-primary btn-sm button-change'> <i class='fa fa-edit'></i> Change</button>
+                         <button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> Delete</button>
                         `,
                         "className": "text-center",
-                        "width": "20%"
+                        "width": "23%"
                     }
                 ]  
             });
@@ -222,6 +223,13 @@
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
                 window.location = "/proc/po/change/"+selected_data.id;
+            });
+
+            $('#tbl-budget-list tbody').on( 'click', '.button-delete', function () {                
+                var table = $('#tbl-budget-list').DataTable();
+                selected_data = [];
+                selected_data = table.row($(this).closest('tr')).data();
+                window.location = "/proc/po/delete/"+selected_data.id;
             });
         }
         

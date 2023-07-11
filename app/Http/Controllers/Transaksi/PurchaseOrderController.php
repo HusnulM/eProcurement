@@ -457,27 +457,39 @@ class PurchaseOrderController extends Controller
     public function deletePOItem(Request $req){
         DB::beginTransaction();
         try{
-            $pbjdoc = DB::table('t_po02')
-                        ->where('ponum', $req['ponum'])
-                        ->where('poitem', $req['poitem'])->get();
-
-            DB::table('t_po02')->where('ponum', $req['ponum'])->where('poitem', $req['poitem'])->delete();
-            // DB::table('t_pr_approval')->where('prnum', $prhdr->prnum)->delete();
-
-            foreach($pbjdoc as $row){
-                DB::table('t_pr02')
-                    ->where('prnum', $row->prnum)
-                    ->where('pritem', $row->pritem)->update([
-                        'pocreated' => 'N'
-                ]);
+            $checkApproval = DB::table('t_po_approval')
+                            ->where('ponum', $req['ponum'])
+                            ->where('approval_status', 'A')
+                            ->first();
+            if($checkApproval){
+                $result = array(
+                    'msgtype' => '400',
+                    'message' => 'PO : '. $req['ponum'] . ' sudah di approve, tidak bisa dihapus!'
+                );
+            }else{
+                $pbjdoc = DB::table('t_po02')
+                            ->where('ponum', $req['ponum'])
+                            ->where('poitem', $req['poitem'])->get();
+    
+                DB::table('t_po02')->where('ponum', $req['ponum'])->where('poitem', $req['poitem'])->delete();
+                // DB::table('t_pr_approval')->where('prnum', $prhdr->prnum)->delete();
+    
+                foreach($pbjdoc as $row){
+                    DB::table('t_pr02')
+                        ->where('prnum', $row->prnum)
+                        ->where('pritem', $row->pritem)->update([
+                            'pocreated' => 'N'
+                    ]);
+                }
+    
+                DB::commit();
+    
+                $result = array(
+                    'msgtype' => '200',
+                    'message' => 'Item PO : '. $req['ponum'] . ' - ' . $req['poitem'] . ' berhasil dihapus'
+                );
             }
 
-            DB::commit();
-
-            $result = array(
-                'msgtype' => '200',
-                'message' => 'Item PO : '. $req['ponum'] . ' - ' . $req['poitem'] . ' berhasil dihapus'
-            );
             // return Redirect::to("/approve/pr")->withSuccess('PR dengan Nomor : '. $ptaNumber . ' berhasil di approve');
             return $result;
         } catch(\Exception $e){
@@ -496,23 +508,32 @@ class PurchaseOrderController extends Controller
         DB::beginTransaction();
         try{
             $prhdr = DB::table('t_po01')->where('id', $id)->first();
-            $pbjdoc = DB::table('t_po02')
-                        ->where('ponum', $prhdr->ponum)->get();
 
-            DB::table('t_pr01')->where('id', $id)->delete();
-            DB::table('t_attachments')->where('doc_object', 'PO')->where('doc_number',$prhdr->ponum)->delete();
-            DB::table('t_po_approval')->where('ponum', $prhdr->ponum)->delete();
-            
-            foreach($pbjdoc as $row){
-                DB::table('t_pr02')
-                    ->where('prnum', $row->prnum)
-                    ->where('pritem', $row->pritem)->update([
-                        'pocreated' => 'N'
-                ]);
+            $checkApproval = DB::table('t_po_approval')
+                            ->where('ponum', $prhdr->ponum)
+                            ->where('approval_status', 'A')
+                            ->first();
+            if($checkApproval){
+                return Redirect::to("/proc/po/listpo")->withError('PO '. $prhdr->ponum .' sudah di approve, tidak bisa dihapus!');
+            }else{
+                $pbjdoc = DB::table('t_po02')
+                            ->where('ponum', $prhdr->ponum)->get();
+    
+                DB::table('t_pr01')->where('id', $id)->delete();
+                DB::table('t_attachments')->where('doc_object', 'PO')->where('doc_number',$prhdr->ponum)->delete();
+                DB::table('t_po_approval')->where('ponum', $prhdr->ponum)->delete();
+                
+                foreach($pbjdoc as $row){
+                    DB::table('t_pr02')
+                        ->where('prnum', $row->prnum)
+                        ->where('pritem', $row->pritem)->update([
+                            'pocreated' => 'N'
+                    ]);
+                }
+    
+                DB::commit();
+                return Redirect::to("/proc/po/listpo")->withSuccess('PO '. $prhdr->ponum .' Berhasil dihapus');
             }
-
-            DB::commit();
-            return Redirect::to("/proc/po/listpo")->withSuccess('PO '. $prhdr->ponum .' Berhasil dihapus');
         }catch(\Exception $e){
             DB::rollBack();
             return Redirect::to("/proc/po/listpo")->withError($e->getMessage());
