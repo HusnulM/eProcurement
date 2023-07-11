@@ -173,7 +173,7 @@
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="project">Project</label>
-                                            <select name="project" id="find-project" class="form-control"></select>
+                                            <select name="project" id="find-project" class="form-control" required></select>
                                         </div>
                                     </div>                      
                                     <div class="col-lg-6 col-md-12">
