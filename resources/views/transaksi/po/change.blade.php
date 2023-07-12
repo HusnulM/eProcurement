@@ -59,6 +59,9 @@
                                                 <option value="{{ $pohdr->vendor }}">{{ $vendor->vendor_name }}</option>
                                             </select>
                                         </div>
+                                        <div class="form-group">
+                                            <p id="vendor_address">{{ $vendor->vendor_address }}</p>
+                                        </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
@@ -152,6 +155,9 @@
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link" id="custom-content-above-cost-tab" data-toggle="pill" href="#custom-content-above-cost" role="tab" aria-controls="custom-content-above-cost" aria-selected="false">Additional Cost</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -282,6 +288,42 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <table class="table table-sm">
+                                                                    <thead>
+                                                                        <th>No</th>
+                                                                        <th>File Name</th>
+                                                                        <th>Upload Date</th>
+                                                                        <th></th>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    @foreach($attachments as $key => $file)
+                                                                        <tr>
+                                                                            <td>{{ $key+1 }}</td>
+                                                                            <td>
+                                                                                {{ $file->efile }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
+                                                                            </td>
+                                                                            <td style="width:20%;">
+                                                                                <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PO/{{$file->efile}}#toolbar=0')">
+                                                                                    <i class="fa fa-search"></i> Preview File
+                                                                                </button>
+                                                                                <a href="{{ url('/proc/po/deleteattachment') }}/{{ $pohdr->id }}/{{ $file->id }}" class="btn btn-sm btn-danger">
+                                                                                <i class="fa fa-trash"></i> Delete
+                                                                                </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                    </tbody>
+                                                                </table>                           
+                                                            </div>
+                                                        </div>
+                                                    </div>   
                                                 </div>
                                             </div>
                                         </div>
@@ -298,6 +340,35 @@
 @endsection
 
 @section('additional-modal')
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalPreviewFile">
+    <div class="modal-dialog modal-xl">
+        <form class="form-horizontal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPreviewFileTitle">Preview Document</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="position-relative row form-group">
+                    <div class="col-lg-12" id="fileViewer">
+                        <!-- <div id="example1"></div> -->
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Close</button>
+                <a href="#" id="btnDownloadFile" class="btn btn-default btnDownloadFile" download="">
+                    <i class="fa fa-download"></i> Download Document
+                </a>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>   
+
 <div class="modal fade" id="modal-list-pr">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -386,6 +457,26 @@
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
 <script>    
+    function previewFile(files){         
+        // alert(base_url)
+        var pathfile = base_url+'/'+files;
+        if(files !== ""){
+            $('#fileViewer').html('');
+            $('#fileViewer').append(`
+                <embed src="`+ pathfile +`" frameborder="0" width="100%" height="500px">
+            
+            `);
+
+            var fileUri = pathfile;
+            fileUri = fileUri.replace("#toolbar=0", "?force=true");
+            
+            document.getElementById("btnDownloadFile").href=fileUri; 
+            $('#modalPreviewFile').modal('show');
+        } else{
+            swal("File Not Found", "", "warning");
+        }
+    }
+
     $(document).ready(function(){
         var count = 0;
         let selected_pr_items = [];
@@ -619,10 +710,10 @@
 
         $('#find-vendor').on('change', function(){
             // alert(this.value)
-            
+            $('#vendor_address').html('');
             var data = $('#find-vendor').select2('data')
             console.log(data);
-
+            $('#vendor_address').html(data[0].vendor_address);
             // alert(data[0].material);
             // $('#partdesc'+fCount).val(data[0].partname);
             // $('#partunit'+fCount).val(data[0].matunit);

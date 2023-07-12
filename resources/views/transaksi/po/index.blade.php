@@ -54,6 +54,9 @@
                                             <label for="vendor">Vendor</label>
                                             <select name="vendor" id="find-vendor" class="form-control"></select>
                                         </div>
+                                        <div class="form-group">
+                                            <p id="vendor_address"></p>
+                                        </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
@@ -562,10 +565,10 @@
 
         $('#find-vendor').on('change', function(){
             // alert(this.value)
-            
+            $('#vendor_address').html('');
             var data = $('#find-vendor').select2('data')
             console.log(data);
-
+            $('#vendor_address').html(data[0].vendor_address);
             // alert(data[0].material);
             // $('#partdesc'+fCount).val(data[0].partname);
             // $('#partunit'+fCount).val(data[0].matunit);

@@ -541,6 +541,24 @@ class PurchaseOrderController extends Controller
         }
     }
 
+    public function deleteAttachment($poID, $attachmentID){
+        DB::beginTransaction();
+        try{
+            $prhdr = DB::table('t_po01')->where('id', $poID)->first();
+            DB::table('t_attachments')->where('doc_object', 'PO')
+                    ->where('id',$attachmentID)
+                    ->where('doc_number',$prhdr->ponum)
+                    ->delete();
+            DB::commit();
+            return Redirect::to("/proc/po/change/".$poID)->withSuccess('Attachment PO '. $prhdr->ponum .' Berhasil dihapus');
+           
+        }catch(\Exception $e){
+            DB::rollBack();
+            return Redirect::to("/proc/po/change/".$poID)->withError($e->getMessage());
+            // dd($e->getMessage());
+        }
+    }
+
     public function sendPO(){
         $poNumber = 'PO/20230612000001';
         $result   = sendPurchaseOrder($poNumber);
