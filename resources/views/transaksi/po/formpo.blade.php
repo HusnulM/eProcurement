@@ -240,7 +240,7 @@
                                 @if($firstApprover->s_signfile)
                                 <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                                 @else
-                                <br><br>
+                                <br><br><br>
                                 @endif
                             @endif
                         @endif
@@ -257,7 +257,7 @@
                                 @if($secondApprover->s_signfile)
                                 <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                                 @else
-                                <br><br>
+                                <br><br><br>
                                 @endif
                             @endif
                         @endif
@@ -273,7 +273,7 @@
                                 @if($lastApprover->s_signfile)
                                     <img src="{{ asset($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                                 @else
-                                <br><br>
+                                <br><br><br>
                                 @endif
                             @endif
                         @endif
