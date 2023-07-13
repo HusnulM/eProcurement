@@ -212,11 +212,11 @@
         <br>
         <table>
             <tr>
-                <td>{{ $firstApprover->jabatan ?? '' }},</td>
-                <td style="width:200px;"></td>
-                <td>{{ $secondApprover->jabatan ?? '' }},</td>
-                <td style="width:200px;"></td>
-                <td>
+                <td style="width:250px;">{{ $firstApprover->jabatan ?? '' }},</td>
+                <td style="width:30px;"></td>
+                <td style="width:250px;">{{ $secondApprover->jabatan ?? '' }},</td>
+                <td style="width:30px;"></td>
+                <td style="width:250px;">
                     @if($lastApprover)
                     {{ $lastApprover->jabatan ?? '' }},
                     @endif
