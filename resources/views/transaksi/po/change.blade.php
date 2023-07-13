@@ -209,7 +209,7 @@
                                                                                     <input type="hidden" name="uoms[]" value="{{ $row->unit }}" class="form-control" readonly>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <input type="text" name="unitprice[]" class="form-control inputNumber" value="{{ number_format($row->price,0) }}" style="text-align:right;">
+                                                                                    <input type="text" name="unitprice[]" class="form-control inputNumber" value="{{ number_format($row->price,0) }}" style="text-align:right;" required>
                                                                                 </td>
                                                                                 <td>
                                                                                     {{ $row->prnum }}
@@ -617,7 +617,7 @@
                                 <input type="hidden" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
                             </td>
                             <td>
-                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.last_purchase_price +`" style="text-align:right;">
+                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.last_purchase_price +`" style="text-align:right;" required>
                             </td>
                             <td>
                                 <input type="text" name="prref[]" id="prref`+fCount+`" class="form-control">
@@ -807,7 +807,7 @@
                                 <input type="hidden" name="poitem[]" value="">
                             </td>
                             <td>
-                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.last_purchase_price +`">
+                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.last_purchase_price +`" required>
                             </td>
                             <td>
                                 <input type="text" name="prref[]" id="prref`+fCount+`" value="`+ selected_data.prnum +`" class="form-control">
