@@ -212,23 +212,62 @@
         <br>
         <table>
             <tr>
-                <td>Purchasing Manager,</td>
-            </tr>
-            <tr>
+                <td>{{ $firstApprover->jabatan ?? '' }},</td>
+                <td style="width:200px;"></td>
+                <td>{{ $secondApprover->jabatan ?? '' }},</td>
+                <td style="width:200px;"></td>
                 <td>
-                    @if($pohdr->approvestat == "A")
-                    {{-- <img src="{{ asset(Auth::user()->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;"> --}}
-                    @if(checkIsLocalhost())
-                    <img src="{{ public_path($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
-                    @else
-                    
-                    <img src="{{ asset($lastApprover->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                    @endif
+                    @if($lastApprover)
+                    {{ $lastApprover->jabatan ?? '' }},
                     @endif
                 </td>
             </tr>
             <tr>
-                <td><u>{{ $lastApprover->name }}</u></td>
+                <td>
+                    @if($firstApprover)
+                        @if($pohdr->approvestat == "A")
+                            @if(checkIsLocalhost())
+                            <img src="{{ public_path($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
+                            @else
+                            
+                            <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                            @endif
+                        @endif
+                    @endif
+                </td>
+                <td></td>
+                <td>
+                    @if($secondApprover)
+                        @if($pohdr->approvestat == "A")
+                            @if(checkIsLocalhost())
+                            <img src="{{ public_path($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
+                            @else
+                            
+                            <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                            @endif
+                        @endif
+                    @endif
+                </td>
+                <td></td>
+                <td>
+                    @if($lastApprover)
+                        @if($pohdr->approvestat == "A")
+                            @if(checkIsLocalhost())
+                            <img src="{{ public_path($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
+                            @else
+                            
+                            <img src="{{ asset($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                            @endif
+                        @endif
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td><u>{{ $firstApprover->name ?? '' }}</u></td>
+                <td></td>
+                <td><u>{{ $secondApprover->name ?? '' }}</u></td>
+                <td></td>
+                <td><u>{{ $lastApprover->name ?? '' }}</u></td>
             </tr>
         </table>
     </div>

@@ -72,8 +72,8 @@
                             <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                 <thead>
                                     <th>No</th>
-                                    <th>Nomor PR</th>
-                                    <th>Tanggal PR</th>
+                                    <th>Nomor PO</th>
+                                    <th>Tanggal PO</th>
                                     <!-- <th>Partnumber</th>
                                     <th>Description</th>
                                     <th>Quantity</th>

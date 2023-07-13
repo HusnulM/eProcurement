@@ -88,7 +88,7 @@ class ReportsController extends Controller
             $query->where('tgl_pbj', $req->dateto);
         }
 
-        $query->orderBy('id');
+        $query->orderBy('tgl_pbj', 'ASC'); //->orderBy('tgl_pbj', 'ASC');
 
         return DataTables::queryBuilder($query)
         ->editColumn('quantity', function ($query){

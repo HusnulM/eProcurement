@@ -204,12 +204,42 @@ class PrintDocumentController extends Controller
         $POApprover = DB::table('workflow_budget')
                 ->where('object', 'PO')
                 ->where('requester', $userPO->id)
+                ->orderBy('approver_level','ASC')
+                ->first();
+        if($POApprover){
+            $firstApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+        }
+
+        $POApprover = DB::table('workflow_budget')
+                ->where('object', 'PO')
+                ->where('requester', $userPO->id)
+                ->where('approver_level','2')
+                ->orderBy('approver_level','ASC')
+                ->first();
+
+        if($POApprover){
+            $secondApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+        }
+
+        $POApprover = DB::table('workflow_budget')
+                ->where('object', 'PO')
+                ->where('requester', $userPO->id)
+                ->where('approver_level','3')
                 ->orderBy('approver_level','DESC')
                 ->first();
 
-        $lastApprover = DB::table('users')->where('id', $POApprover->approver)->first();
+        if($POApprover){
+            $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+        }
 
-        $pdf = PDF::loadview('transaksi.po.formpo', ['pohdr' => $pohdr, 'poitem' => $podtl, 'lastApprover' => $lastApprover]);
+        $pdf = PDF::loadview('transaksi.po.formpo', 
+            [
+                'pohdr'          => $pohdr, 
+                'poitem'         => $podtl,
+                'firstApprover'  => $firstApprover ?? null, 
+                'secondApprover' => $secondApprover ?? null,
+                'lastApprover'   => $lastApprover ?? null
+            ]);
         // $pdf->setOptions(['isRemoteEnabled' => true]);
         // $pdf->setProtocol($_SERVER['DOCUMENT_ROOT']);
         // $pdf = PDF::loadview('transaksi.po.printpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
