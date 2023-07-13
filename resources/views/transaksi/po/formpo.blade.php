@@ -212,9 +212,17 @@
         <br>
         <table>
             <tr>
-                <td style="width:250px;">{{ $firstApprover->jabatan ?? '' }},</td>
+                <td style="width:250px;">
+                    @if($firstApprover)
+                    {{ $firstApprover->jabatan ?? '' }},
+                    @endif
+                </td>
                 <td style="width:30px;"></td>
-                <td style="width:250px;">{{ $secondApprover->jabatan ?? '' }},</td>
+                <td style="width:250px;">
+                    @if($secondApprover)
+                    {{ $secondApprover->jabatan ?? '' }},
+                    @endif
+                </td>
                 <td style="width:30px;"></td>
                 <td style="width:250px;">
                     @if($lastApprover)
@@ -263,11 +271,23 @@
                 </td>
             </tr>
             <tr>
-                <td><u>{{ $firstApprover->name ?? '' }}</u></td>
+                <td>
+                    @if($firstApprover)
+                    <u>{{ $firstApprover->name ?? '' }}</u>
+                    @endif
+                </td>
                 <td></td>
-                <td><u>{{ $secondApprover->name ?? '' }}</u></td>
+                <td>
+                    @if($secondApprover)
+                    <u>{{ $secondApprover->name ?? '' }}</u>
+                    @endif
+                </td>
                 <td></td>
-                <td><u>{{ $lastApprover->name ?? '' }}</u></td>
+                <td>
+                    @if($lastApprover)
+                    <u>{{ $lastApprover->name ?? '' }}</u>
+                    @endif
+                </td>
             </tr>
         </table>
     </div>
