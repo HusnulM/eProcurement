@@ -237,8 +237,11 @@
                             @if(checkIsLocalhost())
                             <img src="{{ public_path($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
                             @else
-                            
-                            <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @if($firstApprover->s_signfile)
+                                <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
+                                <br><br>
+                                @endif
                             @endif
                         @endif
                     @endif
@@ -251,7 +254,11 @@
                             <img src="{{ public_path($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
                             @else
                             
-                            <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @if($secondApprover->s_signfile)
+                                <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
+                                <br><br>
+                                @endif
                             @endif
                         @endif
                     @endif
@@ -263,8 +270,11 @@
                             @if(checkIsLocalhost())
                             <img src="{{ public_path($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
                             @else
-                            
-                            <img src="{{ asset($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @if($lastApprover->s_signfile)
+                                    <img src="{{ asset($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                                @else
+                                <br><br>
+                                @endif
                             @endif
                         @endif
                     @endif
