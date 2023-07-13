@@ -519,7 +519,7 @@ class PurchaseOrderController extends Controller
                 $pbjdoc = DB::table('t_po02')
                             ->where('ponum', $prhdr->ponum)->get();
     
-                DB::table('t_pr01')->where('id', $id)->delete();
+                DB::table('t_po01')->where('id', $id)->delete();
                 DB::table('t_attachments')->where('doc_object', 'PO')->where('doc_number',$prhdr->ponum)->delete();
                 DB::table('t_po_approval')->where('ponum', $prhdr->ponum)->delete();
                 
