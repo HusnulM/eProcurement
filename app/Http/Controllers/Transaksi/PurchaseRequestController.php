@@ -221,7 +221,7 @@ class PurchaseRequestController extends Controller
                     ->where('prnum', $ptaNumber)
                     ->orderBy('id')->get();
 
-            Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApprovePrMail($dataApprovePBJ, $prID, $ptaNumber));
+            Mail::to($mailto)->queue(new NotifApprovePrMail($dataApprovePBJ, $prID, $ptaNumber));
 
             $result = array(
                 'msgtype' => '200',

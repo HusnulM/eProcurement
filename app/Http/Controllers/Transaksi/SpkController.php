@@ -346,7 +346,7 @@ class SpkController extends Controller
                     ->where('wonum', $ptaNumber)
                     ->orderBy('id')->get();
 
-            Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApproveWoMail($dataApproveWO, $woID, $ptaNumber));
+            Mail::to($mailto)->queue(new NotifApproveWoMail($dataApproveWO, $woID, $ptaNumber));
 
             return Redirect::to("/logistic/wo")->withSuccess('WO Berhasil dibuat dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){

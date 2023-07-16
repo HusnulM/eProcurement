@@ -331,7 +331,7 @@ class ApproveSpkController extends Controller
                         ->where('wonum', $ptaNumber)
                         ->orderBy('id')->get();
 
-                Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApproveWoMail($dataApproveWO, $woHeader->id, $ptaNumber));
+                Mail::to($mailto)->queue(new NotifApproveWoMail($dataApproveWO, $woHeader->id, $ptaNumber));
             }else{
                 //Full Approve
                 // $tgl   = substr($req['grdate'], 8, 2);

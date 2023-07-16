@@ -150,7 +150,7 @@ class ApprovePurchaseOrderController extends Controller
                         ->where('ponum', $ptaNumber)
                         ->orderBy('id')->get();
 
-                Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApprovePoMail($dataApprovePO, $podata->id, $ptaNumber));
+                Mail::to($mailto)->queue(new NotifApprovePoMail($dataApprovePO, $podata->id, $ptaNumber));
             }else{
                 //Full Approve
                 DB::table('t_po01')->where('ponum', $ptaNumber)->update([

@@ -458,7 +458,7 @@ class PbjController extends Controller
                     ->where('pbjnumber', $ptaNumber)
                     ->orderBy('id')->get();
 
-                Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApprovePbjMail($dataApprovePBJ, $PBJid, $ptaNumber));
+                Mail::to($mailto)->queue(new NotifApprovePbjMail($dataApprovePBJ, $PBJid, $ptaNumber));
 
                 if($req['pbjTYpe'] === "1"){
                     return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);

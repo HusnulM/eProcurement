@@ -272,7 +272,7 @@ class PurchaseOrderController extends Controller
                     ->where('ponum', $ptaNumber)
                     ->orderBy('id')->get();
 
-            Mail::to($mailto)->bcc('husnulmub@gmail.com')->queue(new NotifApprovePoMail($dataApprovePO, $poID, $ptaNumber));
+            Mail::to($mailto)->queue(new NotifApprovePoMail($dataApprovePO, $poID, $ptaNumber));
 
             return Redirect::to("/proc/po")->withSuccess('PO Berhasil dibuat dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
