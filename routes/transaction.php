@@ -21,12 +21,12 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => '/transaction/pbj'], function () {
-        Route::get('/',             'Transaksi\PbjController@index')->middleware('checkAuth:transaction/pbj');
-        Route::post('/save',        'Transaksi\PbjController@save')->middleware('checkAuth:transaction/pbj');
-        Route::get('/list',         'Transaksi\PbjController@list')->middleware('checkAuth:transaction/pbj');
-        Route::get('/listpbj',      'Transaksi\PbjController@listPBJ')->middleware('checkAuth:transaction/pbj');  
-        Route::get('/detail/{p1}',  'Transaksi\PbjController@detailPBJ')->middleware('checkAuth:transaction/pbj');  
-        Route::get('/budgetlist',   'Transaksi\PbjController@budgetLists')->middleware('checkAuth:transaction/pbj');  
+        Route::get('/',                        'Transaksi\PbjController@index')->middleware('checkAuth:transaction/pbj');
+        Route::post('/save',                   'Transaksi\PbjController@save')->middleware('checkAuth:transaction/pbj');
+        Route::get('/list',                    'Transaksi\PbjController@list')->middleware('checkAuth:transaction/pbj/list');
+        Route::get('/listpbj',                 'Transaksi\PbjController@listPBJ')->middleware('checkAuth:transaction/pbj');  
+        Route::get('/detail/{p1}',             'Transaksi\PbjController@detailPBJ')->middleware('checkAuth:transaction/pbj');  
+        Route::get('/budgetlist',              'Transaksi\PbjController@budgetLists')->middleware('checkAuth:transaction/pbj');  
         Route::get('/print/{p1}',              'Transaksi\PrintDocumentController@printpbj')->middleware('checkAuth:transaction/pbj');  
         Route::get('/create/{p1}',             'Transaksi\PbjController@create')->middleware('checkAuth:transaction/pbj');
         Route::get('/datachecklisttidaklayak', 'Transaksi\PbjController@dataCekListTidakLayak')->middleware('checkAuth:transaction/pbj');
