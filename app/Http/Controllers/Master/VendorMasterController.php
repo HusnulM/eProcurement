@@ -31,7 +31,7 @@ class VendorMasterController extends Controller
     public function vendorLists(Request $request){
         $params = $request->params;        
         $whereClause = $params['sac'];
-        $query = DB::table('t_vendor')->orderBy('vendor_code');
+        $query = DB::table('v_vendor')->orderBy('vendor_code');
         return DataTables::queryBuilder($query)->toJson();
     }
 
