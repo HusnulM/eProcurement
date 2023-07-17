@@ -103,7 +103,7 @@
             </tr>
             <tr>
                 <td>Address</td>
-                <td>Alamat Vendor</td>
+                <td>{{ $vendor->vendor_address }}</td>
             </tr>
         </table>
     </div>
