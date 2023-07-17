@@ -150,7 +150,13 @@
             <td style="width:70px;">Chassis S/N</td>
             <td style="width:95px;">{{ $hdr->chassis_sn }}</td>
             <td style="width:100px;">Kode Barang/Jasa</td>
-            <td>{{ $hdr->kode_brg_jasa }}</td>
+            <td>
+                @if($hdr->kode_brg_jasa === '1')
+                    Budget
+                @else
+                    Non-Budget
+                @endif
+            </td>
         </tr>
 
         <tr>
