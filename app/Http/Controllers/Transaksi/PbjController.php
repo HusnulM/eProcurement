@@ -307,7 +307,8 @@ class PbjController extends Controller
                 // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
                 $department = DB::table('t_department')->where('department', $req['kepada'])->first();
 
-                $ptaNumber = generatePbjNumber($tahun, $department->deptid, $tgl);
+                // $ptaNumber = generatePbjNumber($tahun, $department->deptid, $tgl);
+                $ptaNumber = generatePbjNumber($tahun, Auth::user()->deptid, $tgl);
     
                 // return $ptaNumber;
     
