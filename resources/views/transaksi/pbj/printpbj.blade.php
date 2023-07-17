@@ -160,7 +160,7 @@
             <td style="width:95px;">{{ $hdr->hm_km }}</td>
             <td style="width:100px;">Budget/Cost Code</td>
             <td>
-                @if($hdr->kode_brg_jasa === '1')
+                @if($hdr->budget_cost_code === '1')
                     Budget
                 @else
                     Non-Budget
