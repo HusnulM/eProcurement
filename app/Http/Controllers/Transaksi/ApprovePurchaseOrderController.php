@@ -108,6 +108,7 @@ class ApprovePurchaseOrderController extends Controller
                             ->first();
 
             $podata = DB::table('t_po01')->where('ponum', $ptaNumber)->first();
+
             if($req['action'] === 'R'){
                 DB::table('t_po_approval')
                 ->where('ponum', $ptaNumber)
@@ -170,7 +171,9 @@ class ApprovePurchaseOrderController extends Controller
                                           ->where('approval_status', '!=', 'A')
                                           ->get();
                 if(sizeof($checkIsFullApprove) > 0){
+                    dd($podata);
                     $poUser = DB::table('users')->where('email', $podata->createdby)->first();
+
                     $approverId = DB::table('v_workflow_budget')->where('object', 'PO')
                                     ->where('requester', $poUser->id)
                                     ->where('approver_level', $nextApprover)
