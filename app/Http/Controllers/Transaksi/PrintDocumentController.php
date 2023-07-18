@@ -91,13 +91,15 @@ class PrintDocumentController extends Controller
                     ->orderBy('approver_level', 'DESC')
                     ->first();
         $approveSign = DB::table('users')->where('id', $approval->approver)->first();
+        $creatorSign = DB::table('users')->where('email', $prhdr->createdby)->first();
 
         $pdf = PDF::loadview('transaksi.pr.printpr', 
             [
                 'prhdr'       => $prhdr, 
                 'pritem'      => $prdtl, 
                 'approval'    => $approval,
-                'approveSign' => $approveSign
+                'approveSign' => $approveSign,
+                'creatorSign' => $creatorSign
             ]);
         return $pdf->stream();
     }

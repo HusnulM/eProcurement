@@ -138,7 +138,7 @@
         </tr>
         <tr>
             <td>
-                <img src="{{ asset(Auth::user()->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                <img src="{{ asset($creatorSign->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
             </td>
             <td></td>
             <td>
