@@ -108,87 +108,120 @@ class ApprovePurchaseOrderController extends Controller
                             ->first();
 
             $podata = DB::table('t_po01')->where('ponum', $ptaNumber)->first();
-            //Set Approval
-            DB::table('t_po_approval')
-            ->where('ponum', $ptaNumber)
-            // ->where('approver_id', Auth::user()->id)
-            ->where('approver_level',$userAppLevel->approver_level)
-            ->update([
-                'approval_status' => 'A',
-                'approval_remark' => $req['approvernote'],
-                'approved_by'     => Auth::user()->username,
-                'approval_date'   => getLocalDatabaseDateTime()
-            ]);
-
-            $nextApprover = $this->getNextApproval($ptaNumber);
-            if($nextApprover  != null){
+            if($req['action'] === 'R'){
                 DB::table('t_po_approval')
                 ->where('ponum', $ptaNumber)
-                ->where('approver_level', $nextApprover)
+                // ->where('approver_id', Auth::user()->id)
+                // ->where('approver_level',$userAppLevel->approver_level)
                 ->update([
-                    'is_active' => 'Y'
+                    'approval_status' => 'R',
+                    'approval_remark' => $req['approvernote'],
+                    'approved_by'     => Auth::user()->username,
+                    'approval_date'   => getLocalDatabaseDateTime()
                 ]);
-            }
 
-
-            $checkIsFullApprove = DB::table('t_po_approval')
-                                      ->where('ponum', $ptaNumber)
-                                      ->where('approval_status', '!=', 'A')
-                                      ->get();
-            if(sizeof($checkIsFullApprove) > 0){
-                $poUser = DB::table('users')->where('email', $podata->createdby)->first();
-                $approverId = DB::table('v_workflow_budget')->where('object', 'PO')
-                                ->where('requester', $poUser->id)
-                                ->where('approver_level', $nextApprover)
-                                ->pluck('approver');
-
-                $mailto = DB::table('users')
-                        ->whereIn('id', $approverId)
-                        ->pluck('email');   
-
-                $dataApprovePO = DB::table('v_po_duedate')
-                        ->where('ponum', $ptaNumber)
-                        ->orderBy('id')->get();
-
-                Mail::to($mailto)->queue(new NotifApprovePoMail($dataApprovePO, $podata->id, $ptaNumber));
-            }else{
-                //Full Approve
                 DB::table('t_po01')->where('ponum', $ptaNumber)->update([
                     // 'approved_amount' => $amount,
-                    'approvestat'   => 'A'
+                    'approvestat'   => 'R'
                 ]);
 
                 DB::table('t_po02')->where('ponum', $ptaNumber)->update([
                     // 'approved_amount' => $amount,
-                    'approvestat'   => 'A'
+                    'approvestat'   => 'R'
                 ]);
 
-                $totalPricePO = getTotalPricePO($ptaNumber);
-                // return $totalPricePO;
-                DB::table('t_budget_history')->insert([
-                    'deptid'        => $podata->deptid,
-                    'budget_period' => (int)date('M'),
-                    'amount'        => $totalPricePO,
-                    'budget_type'   => 'D',
-                    'note'          => 'Pembelian dengan PO '. $ptaNumber,
-                    'refnum'        => $ptaNumber,
-                    'refitem'       => null,
-                    'createdon'     => getLocalDatabaseDateTime(),
-                    'createdby'     => Auth::user()->email ?? Auth::user()->username
+                DB::table('t_po_approval')
+                    ->where('ponum', $ptaNumber)
+                    // ->where('approver_level', $nextApprover)
+                    ->update([
+                        'is_active' => 'N'
+                    ]);
+                DB::commit();
+                $result = array(
+                    'msgtype' => '200',
+                    'message' => 'PO dengan Nomor : '. $ptaNumber . ' berhasil di reject'
+                );
+            }else{
+                //Set Approval
+                DB::table('t_po_approval')
+                ->where('ponum', $ptaNumber)
+                // ->where('approver_id', Auth::user()->id)
+                ->where('approver_level',$userAppLevel->approver_level)
+                ->update([
+                    'approval_status' => 'A',
+                    'approval_remark' => $req['approvernote'],
+                    'approved_by'     => Auth::user()->username,
+                    'approval_date'   => getLocalDatabaseDateTime()
                 ]);
-                // INSERT INTO t_budget_history (deptid,budget_period,amount,budget_type,note,refnum,refitem,createdon,createdby) 
-                // VALUES(NEW.deptid,NEW.budget_period,NEW.amount,'C','Budget Allocation',NULL,NULL,NOW(),NEW.createdby)
-
+    
+                $nextApprover = $this->getNextApproval($ptaNumber);
+                if($nextApprover  != null){
+                    DB::table('t_po_approval')
+                    ->where('ponum', $ptaNumber)
+                    ->where('approver_level', $nextApprover)
+                    ->update([
+                        'is_active' => 'Y'
+                    ]);
+                }
+    
+    
+                $checkIsFullApprove = DB::table('t_po_approval')
+                                          ->where('ponum', $ptaNumber)
+                                          ->where('approval_status', '!=', 'A')
+                                          ->get();
+                if(sizeof($checkIsFullApprove) > 0){
+                    $poUser = DB::table('users')->where('email', $podata->createdby)->first();
+                    $approverId = DB::table('v_workflow_budget')->where('object', 'PO')
+                                    ->where('requester', $poUser->id)
+                                    ->where('approver_level', $nextApprover)
+                                    ->pluck('approver');
+    
+                    $mailto = DB::table('users')
+                            ->whereIn('id', $approverId)
+                            ->pluck('email');   
+    
+                    $dataApprovePO = DB::table('v_po_duedate')
+                            ->where('ponum', $ptaNumber)
+                            ->orderBy('id')->get();
+    
+                    Mail::to($mailto)->queue(new NotifApprovePoMail($dataApprovePO, $podata->id, $ptaNumber));
+                }else{
+                    //Full Approve
+                    DB::table('t_po01')->where('ponum', $ptaNumber)->update([
+                        // 'approved_amount' => $amount,
+                        'approvestat'   => 'A'
+                    ]);
+    
+                    DB::table('t_po02')->where('ponum', $ptaNumber)->update([
+                        // 'approved_amount' => $amount,
+                        'approvestat'   => 'A'
+                    ]);
+    
+                    $totalPricePO = getTotalPricePO($ptaNumber);
+                    // return $totalPricePO;
+                    DB::table('t_budget_history')->insert([
+                        'deptid'        => $podata->deptid,
+                        'budget_period' => (int)date('M'),
+                        'amount'        => $totalPricePO,
+                        'budget_type'   => 'D',
+                        'note'          => 'Pembelian dengan PO '. $ptaNumber,
+                        'refnum'        => $ptaNumber,
+                        'refitem'       => null,
+                        'createdon'     => getLocalDatabaseDateTime(),
+                        'createdby'     => Auth::user()->email ?? Auth::user()->username
+                    ]);
+                    // INSERT INTO t_budget_history (deptid,budget_period,amount,budget_type,note,refnum,refitem,createdon,createdby) 
+                    // VALUES(NEW.deptid,NEW.budget_period,NEW.amount,'C','Budget Allocation',NULL,NULL,NOW(),NEW.createdby)
+    
+                }
+    
+                DB::commit();
+    
+                $result = array(
+                    'msgtype' => '200',
+                    'message' => 'PO dengan Nomor : '. $ptaNumber . ' berhasil di approve'
+                );
             }
-
-            DB::commit();
-
-            
-
-            $result = array(
-                'msgtype' => '200',
-                'message' => 'PO dengan Nomor : '. $ptaNumber . ' berhasil di approve'
-            );
             // return Redirect::to("/approve/pr")->withSuccess('PR dengan Nomor : '. $ptaNumber . ' berhasil di approve');
             return $result;
         } catch(\Exception $e){
