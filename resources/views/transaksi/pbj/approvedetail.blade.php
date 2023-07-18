@@ -205,7 +205,7 @@
                                                         {{-- <td>{{ $key+1 }}</td> --}}
                                                         {{-- {{ $row->approval_status == 'A' ? 'background-color:green' : '' }} --}}
                                                         <td style="text-align:center;">
-                                                            @if($row->approval_status !== "A")
+                                                            @if($row->approval_status !== "A" && $row->approval_status !== "R")
                                                             <input class="filled-in checkbox" type="checkbox" id="{{ $row->pbjitem }}" name="ID[]">
                                                             <label for="{{ $row->pbjitem }}"></label>
                                                             @endif

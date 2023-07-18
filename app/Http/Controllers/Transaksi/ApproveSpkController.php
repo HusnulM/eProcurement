@@ -443,4 +443,78 @@ class ApproveSpkController extends Controller
             // return Redirect::to("/approve/budget")->withError($e->getMessage());
         }
     }
+
+    public function rejectItems(Request $data, $woID){
+        DB::beginTransaction();
+        try{
+            $woHeader = DB::table('t_wo01')->where('id', $woID)->first();
+            $woUser = DB::table('users')->where('email', $woHeader->createdby)->first();
+            $items = join(",",$data['woitem']); 
+            $ptaNumber = $woHeader->wonum;
+
+            $podata  = DB::table('t_wo01')->where('wonum', $ptaNumber)->first();
+            $woitem  = DB::table('t_wo02')->where('wonum', $ptaNumber)->whereIn('woitem', $data['woitem'])->get();
+            
+
+            $pbjItemData = DB::table('t_wo02')
+                ->where('wonum', $ptaNumber)
+                ->whereIn('woitem', $data['woitem'])->get();
+            // return $pbjItemData;
+            $userAppLevel = DB::table('t_wo_approval')
+                            ->select('approver_level')
+                            ->where('wonum', $ptaNumber)
+                            ->whereIn('woitem', $data['woitem'])
+                            ->where('approver', Auth::user()->id)
+                            ->first();
+
+            //Set Approval
+            DB::table('t_wo_approval')
+            ->where('wonum', $ptaNumber)
+            ->whereIn('woitem', $data['woitem'])
+            // ->where('approver_id', Auth::user()->id)
+            // ->where('approver_level',$userAppLevel->approver_level)
+            ->update([
+                'approval_status' => 'R',
+                // 'approval_remark' => $req['approvernote'],
+                'approval_remark' => null,
+                'approved_by'     => Auth::user()->username,
+                'approval_date'   => getLocalDatabaseDateTime()
+            ]);
+            
+            DB::table('t_wo_approval')
+            ->where('wonum', $ptaNumber)
+            ->whereIn('woitem', $data['woitem'])
+            ->update([
+                'is_active' => 'N'
+            ]);
+
+            DB::table('t_wo01')->where('wonum', $ptaNumber)
+            ->update([
+                'wo_status'   => 'R'
+            ]);
+
+            DB::table('t_wo02')->where('wonum', $ptaNumber)
+            ->whereIn('woitem', $data['woitem'])
+            ->update([
+                'approvestat'   => 'R'
+            ]);
+
+            DB::commit();
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'WO/SPK dengan Nomor : '. $ptaNumber . ' berhasil di reject',
+                'items'   => $pbjItemData
+            );
+            return $result;
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+            // return Redirect::to("/approve/budget")->withError($e->getMessage());
+        }
+    }
 }

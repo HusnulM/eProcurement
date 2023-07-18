@@ -159,6 +159,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/detail/{p1}',              'Transaksi\ApproveSpkController@approveDetail')->middleware('checkAuth:approve/spk');
 
         Route::post('/approveitems/{p1}',       'Transaksi\ApproveSpkController@approveItems')->middleware('checkAuth:approve/spk');
+        Route::post('/rejectitems/{p1}',       'Transaksi\ApproveSpkController@rejectItems')->middleware('checkAuth:approve/spk');
     });
 
     Route::group(['prefix' => '/logistic/terimapo'], function () {

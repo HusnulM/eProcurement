@@ -114,7 +114,7 @@
                                                 @foreach($pritem as $key => $row)
                                                     <tr>
                                                         <td style="text-align:center;">
-                                                            @if($row->approval_status !== "A")
+                                                            @if($row->approval_status !== "A" && $row->approval_status !== "R")
                                                             <input class="filled-in checkbox" type="checkbox" id="{{ $row->woitem }}" name="ID[]">
                                                             <label for="{{ $row->woitem }}"></label>
                                                             @endif
@@ -379,6 +379,67 @@
                     dataType:'JSON',
                     beforeSend:function(){
                         $('#btn-approve-items').attr('disabled','disabled');
+                    },
+                    success:function(data)
+                    {
+                        
+                    },
+                    error:function(err){
+                        // console.log(JSON.stringify(err));
+                        // showErrorMessage(JSON.stringify(err))
+                        console.log(err);
+                        toastr.error(err)
+
+                        // setTimeout(function(){ 
+                        //     location.reload();
+                        // }, 2000);
+                    }
+                }).done(function(response){
+                    console.log(response);
+                    // $('#btn-approve').attr('disabled',false);
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        if(_action === "A"){
+                            toastr.success(response.message)
+                        }else if(_action === "R"){
+                            toastr.success(response.message)
+                        }                        
+
+                        setTimeout(function(){ 
+                            window.location.href = base_url+'/approve/spk';
+                        }, 2000);
+                    }else{
+                        toastr.error(response.message)
+                        // setTimeout(function(){ 
+                        //     location.reload();
+                        // }, 2000);
+                    }                
+                });   
+            }else{
+                alert('No record selected ');
+            }                
+        });
+
+        $('#btn-reject-items').on('click', function(){
+            var tableControl= document.getElementById('tbl-wo-data');
+            var _splchecked = [];
+            _action = 'R';
+            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+                _splchecked.push($(this).parent().next().text())
+            }).get();
+            if(_splchecked.length > 0){
+                console.log(_splchecked)
+                var prtemchecked = {
+                    "woitem" : _splchecked,
+                    "_token": _token
+                }
+                $.ajax({
+                    url:base_url+'/approve/spk/rejectitems/{{ $prhdr->id }}',
+                    method:'post',
+                    data:prtemchecked,
+                    dataType:'JSON',
+                    beforeSend:function(){
+                        $('#btn-reject-items').attr('disabled','disabled');
                     },
                     success:function(data)
                     {
