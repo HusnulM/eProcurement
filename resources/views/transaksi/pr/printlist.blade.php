@@ -83,6 +83,7 @@
                                     <th>Remark</th>
                                     <!-- <th>PBJ Number</th>
                                     <th>PBJ Item</th> -->
+                                    <th>Created By</th>
                                     <th></th>
                                 </thead>
                                 <tbody>
@@ -185,7 +186,7 @@
                     },                
                     {data: "remark" },
                     // {data: "pbjnumber" },
-                    // {data: "pbjitem" },
+                    {data: "createdby" },
                     {"defaultContent": 
                         `
                         <button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
