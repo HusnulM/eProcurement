@@ -395,9 +395,9 @@
                     console.log(error);
                     toastr.error(error)
 
-                    setTimeout(function(){ 
-                        location.reload();
-                    }, 2000);
+                    // setTimeout(function(){ 
+                    //     location.reload();
+                    // }, 2000);
                 }
             }).done(function(response){
                 console.log(response);
