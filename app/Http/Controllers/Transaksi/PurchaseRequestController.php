@@ -298,37 +298,36 @@ class PurchaseRequestController extends Controller
 
                 if($pritem[$i]){
                     $count = $pritem[$i];
+                    $data = array(
+                        'prnum'        => $ptaNumber,
+                        'pritem'       => $count,
+                        'material'     => $parts[$i],
+                        'matdesc'      => $partdsc[$i],
+                        'quantity'     => $qty,
+                        'unit'         => $uom[$i],
+                        'pbjnumber'    => $pbjnum[$i] ?? 0,
+                        'pbjitem'      => $pbjitm[$i] ?? 0,
+                        'no_plat'      => $nopol[$i] ?? null,
+                        // 'createdon'    => getLocalDatabaseDateTime(),
+                        // 'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    );
                 }else{
                     $count += 1;
-                    // $itemExist = '0';
-                    // // return $count;
-                    // while($itemExist = '1') {
-                    //     $checkItem = DB::table('t_pr02')
-                    //                 ->where('prnum',$ptaNumber)->where('pritem', $count)->first();
-                    //                 // return $checkItem;
-                    //     if($checkItem){
-                    //         $count = $checkItem->pritem + 1;
-                    //         // $itemExist = 'true';
-                    //     }else{
-                    //         // $count += 1;
-                    //         $itemExist = '1';                            
-                    //     }
-                    // }
+                    $data = array(
+                        'prnum'        => $ptaNumber,
+                        'pritem'       => $count,
+                        'material'     => $parts[$i],
+                        'matdesc'      => $partdsc[$i],
+                        'quantity'     => $qty,
+                        'unit'         => $uom[$i],
+                        'pbjnumber'    => $pbjnum[$i] ?? 0,
+                        'pbjitem'      => $pbjitm[$i] ?? 0,
+                        'no_plat'      => $nopol[$i] ?? null,
+                        'createdon'    => getLocalDatabaseDateTime(),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    );
                 }
                 
-                $data = array(
-                    'prnum'        => $ptaNumber,
-                    'pritem'       => $count,
-                    'material'     => $parts[$i],
-                    'matdesc'      => $partdsc[$i],
-                    'quantity'     => $qty,
-                    'unit'         => $uom[$i],
-                    'pbjnumber'    => $pbjnum[$i] ?? 0,
-                    'pbjitem'      => $pbjitm[$i] ?? 0,
-                    'no_plat'      => $nopol[$i] ?? null,
-                    'createdon'    => getLocalDatabaseDateTime(),
-                    'createdby'    => Auth::user()->email ?? Auth::user()->username
-                );
                 array_push($insertData, $data);
 
                 DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
