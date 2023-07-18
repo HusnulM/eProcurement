@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Config;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
 
@@ -203,6 +204,8 @@ class UserController extends Controller
             'username' => 'required',
         ]);
 
+        $oldUserData = DB::table('users')->where('id',$request['iduser'])->first();
+        // dd($oldUserData);
         DB::beginTransaction();
         try{
             if($request['password'] != null || $request['password'] != ""){
@@ -227,6 +230,48 @@ class UserController extends Controller
                 ]);
             }
 
+            if($oldUserData->email != $request['email']){
+                DB::table('t_po01')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_po02')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_pr01')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_pr02')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_pbj01')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_pbj02')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_wo01')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_wo02')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+            }
+
             $esignfile = $request->file('esignfile');
             if($esignfile){
                 $filename  = $esignfile->getClientOriginalName();
@@ -240,6 +285,9 @@ class UserController extends Controller
             }
             
             DB::commit();
+
+            $user = User::where('username', $request['username'])->first();
+            Auth::login($user);
             return Redirect::to("/user/account")->withSuccess('User Account updated');
         }catch(\Exception $e){
             DB::rollBack();
