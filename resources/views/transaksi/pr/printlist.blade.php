@@ -83,6 +83,7 @@
                                     <th>Remark</th>
                                     <!-- <th>PBJ Number</th>
                                     <th>PBJ Item</th> -->
+                                    <th>Request By</th>
                                     <th>Created By</th>
                                     <th></th>
                                 </thead>
@@ -185,7 +186,7 @@
                         }
                     },                
                     {data: "remark" },
-                    // {data: "pbjnumber" },
+                    {data: "requestby" },
                     {data: "createdby" },
                     {"defaultContent": 
                         `
