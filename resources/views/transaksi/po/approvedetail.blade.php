@@ -381,9 +381,9 @@
                             toastr.success(response.message)
                         }                        
 
-                        setTimeout(function(){ 
-                            window.location.href = base_url+'/approve/po';
-                        }, 2000);
+                        // setTimeout(function(){ 
+                        //     window.location.href = base_url+'/approve/po';
+                        // }, 2000);
                     }else if(response.msgtype === "500"){
                         toastr.error(response.message);
                         // setTimeout(function(){ 
