@@ -386,9 +386,9 @@
                         }, 2000);
                     }else if(response.msgtype === "500"){
                         toastr.error(response.message);
-                        setTimeout(function(){ 
-                            location.reload();
-                        }, 2000);
+                        // setTimeout(function(){ 
+                        //     location.reload();
+                        // }, 2000);
                     }
                 },
                 error: function(error) {
