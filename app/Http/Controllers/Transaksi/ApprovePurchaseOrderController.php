@@ -226,6 +226,7 @@ class ApprovePurchaseOrderController extends Controller
             return $result;
         } catch(\Exception $e){
             DB::rollBack();
+            dd($e);
             $result = array(
                 'msgtype' => '500',
                 'message' => $e->getMessage()
