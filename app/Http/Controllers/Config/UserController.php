@@ -104,6 +104,7 @@ class UserController extends Controller
             'username' => 'required',
         ]);
 
+        $oldUserData = DB::table('users')->where('id',$request['iduser'])->first();
         
         DB::beginTransaction();
         try{
@@ -130,6 +131,48 @@ class UserController extends Controller
                     'username'    => $request['username'],
                     'deptid'      => $request['department'],
                     'jabatanid'   => $request['jabatan']
+                ]);
+            }
+
+            if($oldUserData->email != $request['email']){
+                DB::table('t_po01')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_po02')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_pr01')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_pr02')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_pbj01')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_pbj02')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_wo01')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
+                ]);
+
+                DB::table('t_wo02')->where('createdby', $oldUserData->email)
+                ->update([
+                    'createdby' => $request['email']
                 ]);
             }
 
