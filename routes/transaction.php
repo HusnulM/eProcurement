@@ -17,7 +17,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save',        'Transaksi\BudgetingController@save')->middleware('checkAuth:transaction/budgeting');
         Route::get('/list',         'Transaksi\BudgetingController@list')->middleware('checkAuth:transaction/budgeting');  
         Route::get('/budgetlist',   'Transaksi\BudgetingController@budgetLists')->middleware('checkAuth:transaction/budgeting');  
-        
+    });
+
+    Route::group(['prefix' => '/cancel/approve'], function () {
+
     });
 
     Route::group(['prefix' => '/transaction/pbj'], function () {
