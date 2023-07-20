@@ -156,14 +156,16 @@ class PurchaseOrderController extends Controller
                     $budgetPriod = $req['periode'];
                 }
 
-                if($project){
-                    $checkProject = DB::table('t_projects')->where('idproject', $project[$i])->first();
-                    if($checkProject){
-                        $IDProject = $project[$i];
-                    }else{
-                        $IDProject = 0;
-                    }
-                }
+                // if($project){
+                //     if($project[$i]){
+                //         $checkProject = DB::table('t_projects')->where('idproject', $project[$i])->first();
+                //         if($checkProject){
+                //             $IDProject = $project[$i];
+                //         }else{
+                //             $IDProject = 0;
+                //         }
+                //     }
+                // }
 
                 $count = $count + 1;
                 $data = array(
@@ -176,7 +178,7 @@ class PurchaseOrderController extends Controller
                     'price'        => $uprice,
                     'prnum'        => $prnum[$i] ?? 0,
                     'pritem'       => $pritem[$i] ?? 0,
-                    'idproject'    => $IDProject,
+                    'idproject'    => $project[$i] ?? 0,
                     'budget_code'  => $budgetCode,
                     'budget_period'=> $budgetPriod,
                     'createdon'    => date('Y-m-d H:m:s'),
