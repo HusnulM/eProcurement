@@ -139,7 +139,7 @@ class PurchaseOrderController extends Controller
             
             $budgetCode  = "0";
             $budgetPriod = null;
-
+            $IDProject   = 0;
             for($i = 0; $i < sizeof($parts); $i++){
                 $qty    = $quantity[$i];
                 $qty    = str_replace(',','',$qty);
@@ -156,6 +156,15 @@ class PurchaseOrderController extends Controller
                     $budgetPriod = $req['periode'];
                 }
 
+                if($project){
+                    $checkProject = DB::table('t_projects')->where('idproject', $project[$i])->first();
+                    if($checkProject){
+                        $IDProject = $project[$i];
+                    }else{
+                        $IDProject = 0;
+                    }
+                }
+
                 $count = $count + 1;
                 $data = array(
                     'ponum'        => $ptaNumber,
@@ -167,7 +176,7 @@ class PurchaseOrderController extends Controller
                     'price'        => $uprice,
                     'prnum'        => $prnum[$i] ?? 0,
                     'pritem'       => $pritem[$i] ?? 0,
-                    'idproject'    => $project[$i] ?? 0,
+                    'idproject'    => $IDProject,
                     'budget_code'  => $budgetCode,
                     'budget_period'=> $budgetPriod,
                     'createdon'    => date('Y-m-d H:m:s'),
@@ -184,6 +193,7 @@ class PurchaseOrderController extends Controller
                     'last_purchase_price' => $uprice
                 ]);
             }
+            // return $insertData;
             insertOrUpdate($insertData,'t_po02');
 
             if(isset($req['costname'])){
