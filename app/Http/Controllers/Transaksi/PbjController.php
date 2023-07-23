@@ -103,7 +103,12 @@ class PbjController extends Controller
                     $project = null;
                 }
                 // $pbjdept   = DB::table('t_department')->where()->firts();
-                $pbjwhs    = DB::table('t_warehouse')->where('id', $pbjitem[0]->whscode)->first();
+
+                if(sizeof($pbjitem) > 0){
+                    $pbjwhs    = DB::table('t_warehouse')->where('id', $pbjitem[0]->whscode)->first();
+                }else{
+                    $pbjwhs = 0;
+                }
     
                 $approvals   = DB::table('v_pbj_approval')
                 ->where('pbjnumber', $pbjhdr->pbjnumber)
@@ -116,7 +121,7 @@ class PbjController extends Controller
                     [
                         'department'  => $department, 
                         'pbjhdr'      => $pbjhdr, 
-                        'pbjitem'     => $pbjitem,
+                        'pbjitem'     => $pbjitem ?? null,
                         'attachments' => $attachments, 
                         'approvals'   => $approvals,
                         'mekanik'     => $mekanik,
@@ -133,7 +138,12 @@ class PbjController extends Controller
                 $kendaraan  = DB::table('t_kendaraan')->where('no_kendaraan', $pbjhdr->unit_desc)->first();
     
                 $pbjdept   = DB::table('t_department')->where('deptid', $pbjhdr->deptid)->first();
-                $pbjwhs    = DB::table('t_warehouse')->where('id', $pbjitem[0]->whscode)->first();
+
+                if(sizeof($pbjitem) > 0){
+                    $pbjwhs    = DB::table('t_warehouse')->where('id', $pbjitem[0]->whscode)->first();
+                }else{
+                    $pbjwhs = 0;
+                }
                 
                 $project     = DB::table('t_projects')->where('idproject', $pbjhdr->idproject);
                 if(!$project){
@@ -151,7 +161,7 @@ class PbjController extends Controller
                     [
                         'department'  => $department, 
                         'pbjhdr'      => $pbjhdr, 
-                        'pbjitem'     => $pbjitem,
+                        'pbjitem'     => $pbjitem ?? null,
                         'attachments' => $attachments, 
                         'approvals'   => $approvals,
                         'mekanik'     => $mekanik,

@@ -48,8 +48,8 @@
                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="currency">Warehouse</label>                                            
-                                            <select name="whscode" id="find-whscode" class="form-control" readonly>
-                                                <option value="{{ $pbjwhs->id }}">{{ $pbjwhs->whsname }}</option>
+                                            <select name="whscode" id="find-whscode" class="form-control" required>
+                                                <option value="{{ $pbjwhs->id ?? '' }}">{{ $pbjwhs->whsname ?? '' }}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -714,44 +714,44 @@
             });
         });
 
-        // $('#find-whscode').select2({ 
-        //     placeholder: 'Ketik Nama Gudang',
-        //     width: '100%',
-        //     minimumInputLength: 0,
-        //     ajax: {
-        //         url: base_url + '/master/warehouse/findwhs',
-        //         dataType: 'json',
-        //         delay: 250,
-        //         method: 'POST',
-        //         headers: {
-        //             'X-CSRF-TOKEN': _token
-        //         },
-        //         data: function (params) {
-        //             var query = {
-        //                 search: params.term,
-        //                 // custname: $('#find-customer').val()
-        //             }
-        //             return query;
-        //         },
-        //         processResults: function (data) {
-        //             // return {
-        //             //     results: response
-        //             // };
-        //             console.log(data)
-        //             return {
-        //                 results: $.map(data.data, function (item) {
-        //                     return {
-        //                         text: item.whsname,
-        //                         slug: item.whsname,
-        //                         id: item.whscode,
-        //                         ...item
-        //                     }
-        //                 })
-        //             };
-        //         },
-        //         cache: true
-        //     }
-        // }); 
+        $('#find-whscode').select2({ 
+            placeholder: 'Ketik Nama Gudang',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/master/warehouse/findwhs',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.whsname,
+                                slug: item.whsname,
+                                id: item.whscode,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        }); 
     });
 </script>
 @endsection
