@@ -413,6 +413,7 @@ class ApproveSpkController extends Controller
 
                 DB::table('t_wo01')->where('wonum', $ptaNumber)
                 ->update([
+                    'approvestat' => 'A',
                     'wo_status'   => 'A'
                 ]);
 

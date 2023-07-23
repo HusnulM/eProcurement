@@ -216,4 +216,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listdatabast',     'Transaksi\BastController@listDataBast')->middleware('checkAuth:logistic/bast');
         Route::get('/detail/{p}',       'Transaksi\BastController@detailBAST')->middleware('checkAuth:logistic/bast');
     });
+
+    Route::group(['prefix' => '/cancel/approve'], function () {
+        Route::get('/wo',  'Transaksi\CancelApprovalController@cancelApproveWO')->middleware('checkAuth:cancel/approve/wo');
+        Route::get('/pr',  'Transaksi\CancelApprovalController@cancelApprovePR')->middleware('checkAuth:cancel/approve/pr');
+        Route::get('/po',  'Transaksi\CancelApprovalController@cancelApprovePO')->middleware('checkAuth:cancel/approve/po');
+        Route::get('/pbj', 'Transaksi\CancelApprovalController@cancelApprovePBJ')->middleware('checkAuth:cancel/approve/pbj');
+
+        Route::get('/wo/approvedlist',  'Transaksi\CancelApprovalController@listApprovedWO')->middleware('checkAuth:cancel/approve/wo');
+    });
+    
 });

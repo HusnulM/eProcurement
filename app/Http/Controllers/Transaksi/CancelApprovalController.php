@@ -24,4 +24,19 @@ class CancelApprovalController extends Controller
     public function cancelApprovePBJ(){
         return view('transaksi.cancelapprove.cancelpbj');
     }
+
+    public function listApprovedWO(Request $request){
+        if(isset($request->params)){
+            $params = $request->params;        
+            $whereClause = $params['sac'];
+        }
+        $query = DB::table('t_wo01')
+                 ->select('id','wonum','wodate','description','schedule_type')
+                 ->distinct()
+                 ->where('pbj_created','N')
+                 ->where('approvestat','A')
+                 ->orderBy('id');
+        return DataTables::queryBuilder($query)
+        ->toJson();
+    }
 }
