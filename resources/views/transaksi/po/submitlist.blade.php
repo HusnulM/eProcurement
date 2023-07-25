@@ -296,6 +296,12 @@
                     
                     console.log(data)
                     if(data.status == '200'){
+                        var rText = data.data;
+                        if(rText.includes('Failed')){
+
+                        }else{
+                            loadDocument('');
+                        }
                         toastr.info(data.data)
                     }else{
                         toastr.error(error)

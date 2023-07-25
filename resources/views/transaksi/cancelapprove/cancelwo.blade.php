@@ -69,6 +69,9 @@
     }
 
     $(document).ready(function(){
+
+        let _token   = $('meta[name="csrf-token"]').attr('content');
+
         $("#tbl-pr-list").DataTable({
             serverSide: true,
             ajax: {
@@ -96,11 +99,11 @@
                 {data: "schedule_type"},      
                 {"defaultContent": 
                     `
-                    <button class='btn btn-success btn-sm button-reset-approval'> <i class='fa fa-search'></i> Reset Approval</button>
-                    <button class='btn btn-success btn-sm button-delete'> <i class='fa fa-trash'></i> Delete</button>
+                    <button class='btn btn-default btn-sm button-reset-approval'> <i class='fa fa-search'></i> Reset Approval</button>
+                    <button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> Delete</button>
                     `,
                     "className": "text-center",
-                    "width": "10%"
+                    "width": "15%"
                 }
             ]  
         });
@@ -110,7 +113,40 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
-            window.location = base_url+"/approve/spk/detail/"+selected_data.id;
+            // window.location = base_url+"/approve/spk/detail/"+selected_data.id;
+
+            $.ajax({
+                url: base_url+'/cancel/approve/wo/reset/'+selected_data.id,
+                type:"POST",
+                data:{
+                    _token: _token
+                },
+                success:function(response){
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        toastr.success(response.message)
+
+                        setTimeout(function(){ 
+                            window.location.href = base_url+'/cancel/approve/wo';
+                        }, 2000);
+                    }else if(response.msgtype === "500"){
+                        toastr.error(response.message);
+                        setTimeout(function(){ 
+                            location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    toastr.error(error)
+
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
+                }
+            }).done(function(response){
+                console.log(response);
+            });
         });
 
         $('#tbl-pr-list tbody').on( 'click', '.button-delete', function () {
@@ -118,7 +154,39 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
-            // window.location = base_url+"/approve/spk/detail/"+selected_data.id;
+            
+            $.ajax({
+                url: base_url+'/cancel/approve/wo/delete/'+selected_data.id,
+                type:"POST",
+                data:{
+                    _token: _token
+                },
+                success:function(response){
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        toastr.success(response.message)
+
+                        setTimeout(function(){ 
+                            window.location.href = base_url+'/cancel/approve/wo';
+                        }, 2000);
+                    }else if(response.msgtype === "500"){
+                        toastr.error(response.message);
+                        setTimeout(function(){ 
+                            location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    toastr.error(error)
+
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
+                }
+            }).done(function(response){
+                console.log(response);
+            });
         });
 
         $('.inputNumber').on('change', function(){
