@@ -202,7 +202,11 @@
                     <td></td>
                     <td style="text-align:center;">{{ $secondApprover->jabatan ?? '' }},</td>
                     <td></td>
-                    <td style="text-align:center;">{{ $thirdApprover->jabatan ?? '' }},</td>
+                    <td style="text-align:center;">
+                        @if($thirdApprover)
+                        {{ $thirdApprover->jabatan ?? '' }},
+                        @endif
+                    </td>
                     <td></td>
                 </tr>
                 <tr>
@@ -219,8 +223,10 @@
                     </td>
                     <td></td>
                     <td>
+                        @if($thirdApprover)
                         @if($hdr->pbj_status == 'A')
                         <img src="{{ asset($thirdApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                        @endif
                         @endif
                     </td>
                     <td></td>
@@ -243,7 +249,11 @@
                     <td></td>
                     <td style="text-align:center;">{{ $secondApprover->name ?? '' }}</td>
                     <td></td>
-                    <td style="text-align:center;">{{ $thirdApprover->name ?? '' }}</td>
+                    <td style="text-align:center;">
+                        @if($thirdApprover)
+                        {{ $thirdApprover->name ?? '' }}
+                        @endif
+                    </td>
                     <td></td>
                 </tr>
                 <tfoot>
