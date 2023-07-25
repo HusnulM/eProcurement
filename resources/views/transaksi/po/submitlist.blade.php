@@ -20,7 +20,19 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">List Approved Purchase Order</h3>
+                    
+
+                    <div class="row">
+                        <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Approved PO</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="custom-content-above-approval-tab" data-toggle="pill" href="#custom-content-above-approval" role="tab" aria-controls="custom-content-above-approval" aria-selected="false">Submitted PO</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- <h3 class="card-title">List Approved Purchase Order</h3> -->
                     <div class="card-tools">
                         <!-- <a href="{{ url('transaction/budgeting') }}" class="btn btn-success btn-sm btn-add-dept">
                             <i class="fas fa-plus"></i> Buat Pengajuan Budget
@@ -33,59 +45,77 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <form action="{{ url('report/exportpo') }}" method="post">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-lg-2">
-                                        <label for="">Tanggal PO</label>
-                                        <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
+                            <div class="tab-content" id="custom-content-above-tabContent">
+
+                                <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <form action="{{ url('report/exportpo') }}" method="post">
+                                                @csrf
+                                                <div class="row">
+                                                    <div class="col-lg-2">
+                                                        <label for="">Tanggal PO</label>
+                                                        <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <label for="">-</label>
+                                                        <input type="date" class="form-control" name="dateto" id="dateto" value="{{ $_GET['dateto'] ?? '' }}">
+                                                    </div>
+                                                    
+                                                    <div class="col-lg-2">
+                                                        <label for="">Department</label>
+                                                        <select name="department" id="department" class="form-control">
+                                                            <option value="All">All</option>
+                                                            @foreach($department as $key => $row)
+                                                                <option value="{{ $row->deptid }}">{{ $row->department }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-3" style="text-align:center;">
+                                                        <br>
+                                                        <button type="button" class="btn btn-default mt-2 btn-search"> 
+                                                            <i class="fa fa-search"></i> Filter
+                                                        </button>
+                                                        {{-- <button type="submit" class="btn btn-success mt-2 btn-export"> 
+                                                            <i class="fa fa-download"></i> Export Data
+                                                        </button> --}}
+                                                    </div>
+                                                </div>
+                                            </form>                                            
+                                        </div>
                                     </div>
-                                    <div class="col-lg-2">
-                                        <label for="">-</label>
-                                        <input type="date" class="form-control" name="dateto" id="dateto" value="{{ $_GET['dateto'] ?? '' }}">
-                                    </div>
-                                    
-                                    <div class="col-lg-2">
-                                        <label for="">Department</label>
-                                        <select name="department" id="department" class="form-control">
-                                            <option value="All">All</option>
-                                            @foreach($department as $key => $row)
-                                                <option value="{{ $row->deptid }}">{{ $row->department }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3" style="text-align:center;">
-                                        <br>
-                                        <button type="button" class="btn btn-default mt-2 btn-search"> 
-                                            <i class="fa fa-search"></i> Filter
-                                        </button>
-                                        {{-- <button type="submit" class="btn btn-success mt-2 btn-export"> 
-                                            <i class="fa fa-download"></i> Export Data
-                                        </button> --}}
+                                    <hr>
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                                <thead>
+                                                    <th>No</th>
+                                                    <th>Nomor PO</th>
+                                                    <th>Tanggal PO</th>
+                                                    <th>Vendor</th>
+                                                    <th>Department</th>
+                                                    <th>Remark</th>
+                                                    <th></th>
+                                                </thead>
+                                                <tbody>
+                        
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </form>
+
+                                <!-- Tab 2 -->
+                                <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
+                                    <div class="row">
+                                        
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
-                    <hr>
-                    <div class="row">
-                        <div class="table-responsive">
-                            <table id="tbl-budget-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                                <thead>
-                                    <th>No</th>
-                                    <th>Nomor PO</th>
-                                    <th>Tanggal PO</th>
-                                    <th>Vendor</th>
-                                    <th>Department</th>
-                                    <th>Remark</th>
-                                    <th></th>
-                                </thead>
-                                <tbody>
-        
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
