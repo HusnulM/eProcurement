@@ -240,8 +240,8 @@
                         <hr>
                     </td>
                     <td></td>
-                    <td>
-                        <hr>
+                    <td>@if($thirdApprover)
+                        <hr>@endif
                     </td>
                 </tr>
                 <tr>
