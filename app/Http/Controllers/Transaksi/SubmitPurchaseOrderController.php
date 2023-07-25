@@ -32,6 +32,7 @@ class SubmitPurchaseOrderController extends Controller
             $query->where('podat', $req->dateto);
         }
 
+        $query->where('submitted', 'N');
         $query->orderBy('id');
 
         return DataTables::queryBuilder($query)
@@ -52,6 +53,34 @@ class SubmitPurchaseOrderController extends Controller
         //         'price1' => number_format($query->price,0)
         //     ];
         // })
+        ->editColumn('podat', function ($query){
+            return [
+                'podat1' => \Carbon\Carbon::parse($query->podat)->format('d-m-Y')
+             ];
+        })
+        ->toJson();
+    }
+
+    public function submittedPO(Request $req){
+        $query = DB::table('v_submit_po');
+
+        if(isset($req->department)){
+            if($req->department !== 'All'){
+                $query->where('deptid', $req->department);
+            }
+        }
+
+        if(isset($req->datefrom) && isset($req->dateto)){
+            $query->whereBetween('podat', [$req->datefrom, $req->dateto]);
+        }elseif(isset($req->datefrom)){
+            $query->where('podat', $req->datefrom);
+        }elseif(isset($req->dateto)){
+            $query->where('podat', $req->dateto);
+        }
+        $query->where('submitted', 'Y');
+        $query->orderBy('id');
+
+        return DataTables::queryBuilder($query)
         ->editColumn('podat', function ($query){
             return [
                 'podat1' => \Carbon\Carbon::parse($query->podat)->format('d-m-Y')

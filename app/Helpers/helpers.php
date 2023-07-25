@@ -1014,10 +1014,13 @@ function sendPurchaseOrder($poNumber){
     $poheader = DB::table('t_po01')->where('ponum', $poNumber)->first();
     $vendor   = DB::table('t_vendor')->where('vendor_code', $poheader->vendor)->first();
     $poitem   = DB::table('t_po02')->where('ponum', $poNumber)->where('approvestat', 'A')->get();
-    $attachments = DB::table('t_attachments')
+    $attachments = DB::table('v_attachments')
+        ->select('fileurl')
         ->where('doc_object', 'PO')
         ->where('doc_number', $poheader->ponum)->get();
-
+    
+    // return $attachments;    
+    
     $sendData   = array();
     $insertData = array();
     foreach($poitem as $row){
@@ -1045,7 +1048,7 @@ function sendPurchaseOrder($poNumber){
             "item_bank"  => $vendor->bank,
             "periode"    => date('Y'),
             "no_po"      => $row->ponum,
-            "attachment" => array("https://mbpeproc.my.id".$attachments[0]->pathfile)
+            "attachment" => array($attachments)
         );
         array_push($sendData, $insert);
 
@@ -1061,20 +1064,23 @@ function sendPurchaseOrder($poNumber){
         );
         array_push($insertData, $submitData);
     }
-
-    insertOrUpdate($insertData,'t_log_submit_api');
+    // return sendData;
+    
     // t_log_submit_api
 
-    $apikey = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
-
-    $url = 'https://mahakaryabangunpersada.com/api/v1/submit/po';
+    $apikey  = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
+    $url     = 'https://mahakaryabangunpersada.com/api/v1/submit/po';
     $get_api = mbpAPI($url, $apikey, $sendData);
 
     $response = json_decode($get_api, true);
     $status   = $response['status'];
     $pesan    = $response['status_message'];
     $datajson = $response['data'];
+    if(str_contains($datajson,'Failed')){
 
+    }else{
+        insertOrUpdate($insertData,'t_log_submit_api');
+    }
     return $response;    
 }
 

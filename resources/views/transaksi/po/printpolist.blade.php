@@ -184,6 +184,7 @@
                         }
                     },                
                     {data: "note" },
+                    // {data: "approvestat" },
                     // {data: "pbjnumber" },
                     // {data: "pbjitem" },
                     {"defaultContent": 

@@ -108,7 +108,56 @@
                                 <!-- Tab 2 -->
                                 <div class="tab-pane fade" id="custom-content-above-approval" role="tabpanel" aria-labelledby="custom-content-above-approval-tab">
                                     <div class="row">
-                                        
+                                        <div class="col-lg-12">
+                                            <form action="{{ url('report/exportpo') }}" method="post">
+                                                @csrf
+                                                <div class="row">
+                                                    <div class="col-lg-2">
+                                                        <label for="">Tanggal PO</label>
+                                                        <input type="date" class="form-control" name="datefrom" id="datefrom2" value="{{ $_GET['datefrom'] ?? '' }}">
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <label for="">-</label>
+                                                        <input type="date" class="form-control" name="dateto" id="dateto2" value="{{ $_GET['dateto'] ?? '' }}">
+                                                    </div>
+                                                    
+                                                    <div class="col-lg-2">
+                                                        <label for="">Department</label>
+                                                        <select name="department" id="department2" class="form-control">
+                                                            <option value="All">All</option>
+                                                            @foreach($department as $key => $row)
+                                                                <option value="{{ $row->deptid }}">{{ $row->department }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-3" style="text-align:center;">
+                                                        <br>
+                                                        <button type="button" class="btn btn-default mt-2 btn-search-submit"> 
+                                                            <i class="fa fa-search"></i> Filter
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>                                            
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table id="tbl-submitted-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
+                                                <thead>
+                                                    <th>No</th>
+                                                    <th>Nomor PO</th>
+                                                    <th>Tanggal PO</th>
+                                                    <th>Vendor</th>
+                                                    <th>Department</th>
+                                                    <th>Remark</th>
+                                                    <th></th>
+                                                </thead>
+                                                <tbody>
+                        
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -150,11 +199,17 @@
     $(document).ready(function(){
 
         $('.btn-search').on('click', function(){
-            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&department='+$('#department').val()+'&approvalstat='+$('#approvalStatus').val();
+            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&department='+$('#department').val();
             loadDocument(param);
         });
 
+        $('.btn-search-submit').on('click', function(){
+            var param = '?datefrom='+ $('#datefrom2').val() +'&dateto='+ $('#dateto2').val()+'&department='+$('#department2').val();
+            loadSubmittedPO(param);
+        });
+
         loadDocument('');
+        loadSubmittedPO('');
 
         function loadDocument(_params){
             $("#tbl-budget-list").DataTable({
@@ -169,10 +224,11 @@
                 },
                 buttons: false,
                 searching: true,
-                scrollY: 500,
-                scrollX: true,
-                scrollCollapse: true,
+                // scrollY: 500,
+                // scrollX: true,
+                // scrollCollapse: true,
                 bDestroy: true,
+                // sScrollXInner: "100%",
                 columns: [
                     {
                         "className":      'details-control',
@@ -214,12 +270,53 @@
                 var d = row.data();
                 console.log(d)
                 console.log(row.child.isShown())
+                // if ( row.child.isShown() ) {
+                //     row.child.hide();
+                //     tr.removeClass('shown');
+                // }else{
+                // }
+                $.ajax({
+                    url: base_url+'/proc/submitpo/submitdata',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data:{
+                        ponum: d.ponum,
+                        _token: _token
+                    },
+                    dataType: 'json',
+                    cache:false,
+                    success: function(result){
+                    },
+                    error: function(err){
+                        console.log(err)
+                    }
+                }).done(function(data){
+                    
+                    console.log(data)
+                    if(data.status == '200'){
+                        toastr.info(data.data)
+                    }else{
+                        toastr.error(error)
+                    }
+                });
+            });
+
+            $('#tbl-budget-list tbody').on('click', 'tr td.details-control', function () {
+                let _token   = $('meta[name="csrf-token"]').attr('content');
+                var tabledata = $('#tbl-budget-list').DataTable();
+                var tr = $(this).closest('tr');
+                var row = tabledata.row( tr );
+                var d = row.data();
+                console.log(d)
+                console.log(row.child.isShown())
                 if ( row.child.isShown() ) {
                     row.child.hide();
                     tr.removeClass('shown');
                 }else{
                     $.ajax({
-                        url: base_url+'/proc/submitpo/submitdata',
+                        url: base_url+'/proc/submitpo/getitems',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -237,19 +334,146 @@
                         }
                     }).done(function(data){
                         
-                        console.log(data)
-                        if(data.status == '200'){
-                            toastr.info(data.data)
-                        }else{
-                            toastr.error(error)
+                        if ( row.child.isShown() ) {
+                            row.child.hide();
+                            tr.removeClass('shown');
+                        }
+                        else {
+                            row.child( format(row.data(), data) ).show();
+                            tr.addClass('shown');
                         }
                     });
                 }
+
+                function format ( d, results ) {
+                    // console.log(results)
+                    var tdStyle = '';
+                    var appStat = '';
+                    var appNote = '';
+                    var appDate = '';
+                    var appBy   = '';
+                    
+                    var html = '';
+                    html = `<table class="table table-bordered table-hover table-striped table-sm">
+                        <thead>
+                                <th>Line Item</th>
+                                <th>Kode Barang</th>
+                                <th>Nama Barang</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total Price</th>
+                        </thead>
+                        <tbody>`;
+                        for(var i = 0; i < results.length; i++){         
+                            html +=`
+                            <tr style="background-color:gray; color:white;">
+                                <td> `+ results[i].poitem +` </td>
+                                <td> `+ results[i].material +` </td>
+                                <td> `+ results[i].matdesc +` </td>
+                                <td style="text-align:right;"> `+ (results[i].quantity*1) +` `+ results[i].unit +` </td>
+                                <td style="text-align:right;"> `+ (results[i].price*1) +` </td>
+                                <td style="text-align:right;"> `+ (results[i].price*1)*(results[i].quantity*1) +` </td>
+                            </tr>
+                            `;    
+                        }
+
+                    html +=`</tbody>
+                            </table>`;
+                    return html;
+                } 
+            });
+        }
+
+        function loadSubmittedPO(_params){
+            $("#tbl-submitted-list").DataTable({
+                serverSide: true,
+                ajax: {
+                    url: base_url+'/proc/submitpo/submittedpolist'+_params,
+                    data: function (data) {
+                        data.params = {
+                            sac: "sac"
+                        }
+                    }
+                },
+                buttons: false,
+                searching: true,
+                // scrollY: 500,
+                // scrollX: true,
+                // scrollCollapse: true,
+                bDestroy: true,
+                // sScrollXInner: "100%",
+                columns: [
+                    {
+                        "className":      'details-control',
+                        "orderable":      false,
+                        "searchable":     false,
+                        "data":           null,
+                        "defaultContent": '',
+                        "width": "30px"
+                    },
+                    // { "data": null,"sortable": false, "searchable": false,
+                    //     render: function (data, type, row, meta) {
+                    //         return meta.row + meta.settings._iDisplayStart + 1;
+                    //     }  
+                    // },
+                    {data: "ponum", className: 'uid'},
+                    {data: "podat", className: 'uid',
+                        render: function (data, type, row){
+                            return ``+ row.podat.podat1 + ``;
+                        }
+                    },
+                    {data: "vendor_name", className: 'uid'},
+                    {data: "department"},               
+                    {data: "note" },
+                    {"defaultContent": 
+                        `
+                        <button class='btn btn-success btn-sm button-submit-po'> <i class='fa fa-search'></i> Re-Submit PO</button>
+                        `,
+                        "className": "text-center",
+                        "width": "10%"
+                    }
+                ]  
             });
 
-            $('#tbl-budget-list tbody').on('click', 'tr td.details-control', function () {
+            $('#tbl-submitted-list tbody').on('click', '.button-resubmit-po', function () {
                 let _token   = $('meta[name="csrf-token"]').attr('content');
-                var tabledata = $('#tbl-budget-list').DataTable();
+                var tabledata = $('#tbl-submitted-list').DataTable();
+                var tr = $(this).closest('tr');
+                var row = tabledata.row( tr );
+                var d = row.data();
+                console.log(d)
+                console.log(row.child.isShown())
+                $.ajax({
+                    url: base_url+'/proc/submitpo/submitdata',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data:{
+                        ponum: d.ponum,
+                        _token: _token
+                    },
+                    dataType: 'json',
+                    cache:false,
+                    success: function(result){
+                    },
+                    error: function(err){
+                        console.log(err)
+                    }
+                }).done(function(data){
+                    
+                    console.log(data)
+                    if(data.status == '200'){
+                        toastr.info(data.data)
+                    }else{
+                        toastr.error(error)
+                    }
+                });
+            });
+
+            $('#tbl-submitted-list tbody').on('click', 'tr td.details-control', function () {
+                let _token   = $('meta[name="csrf-token"]').attr('content');
+                var tabledata = $('#tbl-submitted-list').DataTable();
                 var tr = $(this).closest('tr');
                 var row = tabledata.row( tr );
                 var d = row.data();

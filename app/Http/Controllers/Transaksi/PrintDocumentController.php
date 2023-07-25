@@ -116,8 +116,57 @@ class PrintDocumentController extends Controller
         if(!$project){
             $project = null;
         }
+
+        $pbjUser = DB::table('users')->where('email', $prhdr->createdby)->first();
+
+        $PBJApprover = DB::table('workflow_budget')
+                ->where('object', 'PBJ')
+                ->where('requester', $pbjUser->id)
+                ->where('approver_level', 1)
+                ->orderBy('approver_level','ASC')
+                ->first();
+        if($PBJApprover){
+            $firstApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+        }else{
+            $firstApprover = null;
+        }
+
+        $PBJApprover = DB::table('workflow_budget')
+                ->where('object', 'PBJ')
+                ->where('requester', $pbjUser->id)
+                ->where('approver_level', 2)
+                ->orderBy('approver_level','ASC')
+                ->first();
+        if($PBJApprover){
+            $secondApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+        }else{
+            $secondApprover = null;
+        }
+
+        $PBJApprover = DB::table('workflow_budget')
+                ->where('object', 'PBJ')
+                ->where('requester', $pbjUser->id)
+                ->where('approver_level', 3)
+                ->orderBy('approver_level','ASC')
+                ->first();
+        if($PBJApprover){
+            $thirdApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+        }else{
+            $thirdApprover = null;
+        }
+
         // $customPaper = array(0,0,567.00,283.80);
-        $pdf = PDF::loadview('transaksi.pbj.printpbj', ['hdr' => $prhdr, 'item' => $prdtl, 'logo' => $logo, 'project' => $project])->setPaper('A5','landscape');
+        $pdf = PDF::loadview('transaksi.pbj.printpbj', 
+            [
+                'hdr'     => $prhdr, 
+                'item'    => $prdtl, 
+                'logo'    => $logo, 
+                'project' => $project,
+                'firstApprover'  => $firstApprover,
+                'secondApprover' => $secondApprover,
+                'thirdApprover'  => $thirdApprover
+            ]
+            )->setPaper('A5','landscape');
         // $pdf = ('P','mm','A5');
         $pdf->render();
         return $pdf->stream();

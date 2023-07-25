@@ -144,6 +144,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => '/proc/submitpo'], function () {
         Route::get('/',               'Transaksi\SubmitPurchaseOrderController@index')->middleware('checkAuth:proc/submitpo');
         Route::get('/polist',         'Transaksi\SubmitPurchaseOrderController@approvedPOList')->middleware('checkAuth:proc/submitpo');
+        Route::get('/submittedpolist','Transaksi\SubmitPurchaseOrderController@submittedPO')->middleware('checkAuth:proc/submitpo');
         Route::post('/getitems',      'Transaksi\SubmitPurchaseOrderController@getPoItems')->middleware('checkAuth:proc/submitpo');
         Route::post('/submitdata',    'Transaksi\SubmitPurchaseOrderController@submitDatatoApi')->middleware('checkAuth:proc/submitpo');
     });

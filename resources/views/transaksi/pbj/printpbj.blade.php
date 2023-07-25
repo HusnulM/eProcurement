@@ -198,11 +198,11 @@
         <div id="left" style="width:400px;" class="tbl-footer">
             <table width="100%;">
                 <tr>
-                    <td style="text-align:center;">Diminta oleh :</td>
+                    <td style="text-align:center;">{{ $firstApprover->jabatan ?? '' }},</td>
                     <td></td>
-                    <td style="text-align:center;">Diverifikasi oleh :</td>
+                    <td style="text-align:center;">{{ $secondApprover->jabatan ?? '' }},</td>
                     <td></td>
-                    <td style="text-align:center;">Disetujui oleh :</td>
+                    <td style="text-align:center;">{{ $thirdApprover->jabatan ?? '' }},</td>
                     <td></td>
                 </tr>
                 <tr>
@@ -217,23 +217,32 @@
                 </tr>
                 <tr>
                     <td>
+                        @if($hdr->pbj_status == 'A')
+                        <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                        @endif
                         <hr>
                     </td>
                     <td></td>
                     <td>
+                        @if($hdr->pbj_status == 'A')
+                        <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                        @endif
                         <hr>
                     </td>
                     <td></td>
                     <td>
+                        @if($hdr->pbj_status == 'A')
+                        <img src="{{ asset($thirdApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                        @endif
                         <hr>
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align:center;">Requestor / User</td>
+                    <td style="text-align:center;">{{ $firstApprover->name ?? '' }}</td>
                     <td></td>
-                    <td style="text-align:center;">Planner / Controller</td>
+                    <td style="text-align:center;">{{ $secondApprover->name ?? '' }}</td>
                     <td></td>
-                    <td style="text-align:center;">Project Manager</td>
+                    <td style="text-align:center;">{{ $thirdApprover->name ?? '' }}</td>
                     <td></td>
                 </tr>
                 <tfoot>
