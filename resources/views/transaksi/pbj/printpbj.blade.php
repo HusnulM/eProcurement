@@ -207,33 +207,34 @@
                 </tr>
                 <tr>
                     <td>
-                        <br><br>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
                         @if($hdr->pbj_status == 'A')
                         <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                         @endif
-                        <hr>
                     </td>
                     <td></td>
                     <td>
                         @if($hdr->pbj_status == 'A')
                         <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                         @endif
-                        <hr>
                     </td>
                     <td></td>
                     <td>
                         @if($hdr->pbj_status == 'A')
                         <img src="{{ asset($thirdApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                         @endif
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <hr>
+                    </td>
+                    <td></td>
+                    <td>
+                        <hr>
+                    </td>
+                    <td></td>
+                    <td>
                         <hr>
                     </td>
                 </tr>
