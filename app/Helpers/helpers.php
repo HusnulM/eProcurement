@@ -1024,7 +1024,7 @@ function sendPurchaseOrder($poNumber){
     $sendData   = array();
     $insertData = array();
     foreach($poitem as $row){
-        $idProject = null;
+        $idProject = 0;
         $project = DB::table('t_projects')->where('idproject', $row->idproject)->first();
         if(!$project){
             $idProject = 0;
@@ -1064,9 +1064,7 @@ function sendPurchaseOrder($poNumber){
         );
         array_push($insertData, $submitData);
     }
-    // return sendData;
-    
-    // t_log_submit_api
+    return $sendData;
 
     $apikey  = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
     $url     = 'https://mahakaryabangunpersada.com/api/v1/submit/po';
