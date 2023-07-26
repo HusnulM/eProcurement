@@ -435,7 +435,7 @@
                     {data: "note" },
                     {"defaultContent": 
                         `
-                        <button class='btn btn-success btn-sm button-submit-po'> <i class='fa fa-search'></i> Re-Submit PO</button>
+                        <button class='btn btn-success btn-sm button-resubmit-po'> <i class='fa fa-search'></i> Re-Submit PO</button>
                         `,
                         "className": "text-center",
                         "width": "10%"
