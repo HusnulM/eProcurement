@@ -7,28 +7,27 @@ use Illuminate\Http\Request;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
 
-class CancelApprovalController extends Controller
+class CancelApprovePbjController extends Controller
 {
     public function index(){
-        return view('transaksi.cancelapprove.cancelwo');
+        return view('transaksi.cancelapprove.cancelpbj');
     }
 
-    public function listApprovedWO(Request $request){
+    public function listPBJ(Request $request){
         if(isset($request->params)){
             $params = $request->params;        
             $whereClause = $params['sac'];
         }
-        $query = DB::table('t_wo01')
+        $query = DB::table('t_pbj01')
                  ->select('id','wonum','wodate','description','schedule_type')
                  ->distinct()
                  ->where('pbj_created','N')
-                //  ->where('approvestat','A')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)
         ->toJson();
     }
 
-    public function resetApproveWO($id){
+    public function resetApprovePBJ($id){
         DB::beginTransaction();
         try{
             $wodata = DB::table('t_wo01')->where('id', $id)->first();
@@ -76,7 +75,7 @@ class CancelApprovalController extends Controller
         }
     }
 
-    public function deleteWO($id){
+    public function deletePBJ($id){
         DB::beginTransaction();
         try{
             $wodata = DB::table('t_wo01')->where('id', $id)->first();
