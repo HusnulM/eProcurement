@@ -1032,23 +1032,23 @@ function sendPurchaseOrder($poNumber){
             $idProject = $project->kode_project;
         }
         $insert = array(
-            "proyek_id"  => $idProject,
-            "item_desk"  => $row->matdesc,
-            "item_payee" => $vendor->vendor_id,
-            "item_curr"  => "IDR",
-            "pretax_rp"  => $row->price,
-            "PPN"        => $poheader->ppn,
-            "item_rp"    => $row->price,
-            "oleh"       => $row->createdby,
-            "dept"       => $poheader->deptid,
-            "budget"     => $row->budget_code,
-            "budget_period"=> $row->budget_period,
-            "catatan"    => $poheader->note,
-            "item_rek"   => $vendor->no_rek,
-            "item_bank"  => $vendor->bank,
-            "periode"    => date('Y'),
-            "no_po"      => $row->ponum,
-            "attachment" => $attachments
+            "proyek_id"     => $idProject,
+            "item_desk"     => $row->matdesc,
+            "item_payee"    => $vendor->vendor_id,
+            "item_curr"     => "IDR",
+            "pretax_rp"     => $row->price,
+            "PPN"           => $poheader->ppn,
+            "item_rp"       => $row->price,
+            "oleh"          => $row->createdby,
+            "dept"          => $poheader->deptid,
+            "budget"        => $row->budget_code,
+            "budget_period" => $row->budget_period ?? "",
+            "catatan"       => $poheader->note,
+            "item_rek"      => $vendor->no_rek,
+            "item_bank"     => $vendor->bank,
+            "periode"       => date('Y'),
+            "no_po"         => $row->ponum,
+            "attachment"    => $attachments
         );
         array_push($sendData, $insert);
 
@@ -1064,7 +1064,8 @@ function sendPurchaseOrder($poNumber){
         );
         array_push($insertData, $submitData);
     }
-    // return $sendData;
+
+    // echo json_encode($sendData);
 
     $apikey  = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
     $url     = 'https://mahakaryabangunpersada.com/api/v1/submit/po';
@@ -1074,9 +1075,7 @@ function sendPurchaseOrder($poNumber){
     $status   = $response['status'];
     $pesan    = $response['status_message'];
     $datajson = $response['data'];
-    if(str_contains($datajson,'Failed')){
-
-    }else{
+    if(str_contains($datajson,'Succeed')){
         insertOrUpdate($insertData,'t_log_submit_api');
         DB::table('t_po01')->where('ponum', $poNumber)->update([
             'submitted' => 'Y'
