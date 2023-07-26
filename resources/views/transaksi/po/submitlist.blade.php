@@ -301,7 +301,9 @@
                             toastr.info(data.data)
                         }else{
                             toastr.info(data.data)
-                            loadDocument('');
+                            // var row_index = $(this).closest("tr").index();
+                            tr.remove();
+                            // loadDocument('');
                         }
                     }else{
                         toastr.error(error)
