@@ -1065,7 +1065,7 @@ function sendPurchaseOrder($poNumber){
         array_push($insertData, $submitData);
     }
 
-    // echo json_encode($sendData);
+    return $sendData;
 
     $apikey  = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
     $url     = 'https://mahakaryabangunpersada.com/api/v1/submit/po';
