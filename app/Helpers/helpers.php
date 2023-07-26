@@ -1029,7 +1029,7 @@ function sendPurchaseOrder($poNumber){
         if(!$project){
             $idProject = 0;
         }else{
-            $idProject = $project->project_id;
+            $idProject = $project->kode_project;
         }
         $insert = array(
             "proyek_id"  => $idProject,
