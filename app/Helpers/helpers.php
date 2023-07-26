@@ -1080,6 +1080,9 @@ function sendPurchaseOrder($poNumber){
 
     }else{
         insertOrUpdate($insertData,'t_log_submit_api');
+        DB::table('t_po01')->where('ponum', $poNumber)->update([
+            'submitted' => 'Y'
+        ]);
     }
     return $response;    
 }

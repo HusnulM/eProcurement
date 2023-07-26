@@ -298,11 +298,11 @@
                     if(data.status == '200'){
                         var rText = data.data;
                         if(rText.includes('Failed')){
-
+                            toastr.info(data.data)
                         }else{
+                            toastr.info(data.data)
                             loadDocument('');
                         }
-                        toastr.info(data.data)
                     }else{
                         toastr.error(error)
                     }
