@@ -1017,7 +1017,7 @@ function sendPurchaseOrder($poNumber){
     $attachments = DB::table('v_attachments')
         ->select('fileurl')
         ->where('doc_object', 'PO')
-        ->where('doc_number', $poheader->ponum)->get();
+        ->where('doc_number', $poheader->ponum)->pluck('fileurl');
     
     // return $attachments;    
     
@@ -1048,7 +1048,7 @@ function sendPurchaseOrder($poNumber){
             "item_bank"  => $vendor->bank,
             "periode"    => date('Y'),
             "no_po"      => $row->ponum,
-            "attachment" => array($attachments)
+            "attachment" => $attachments
         );
         array_push($sendData, $insert);
 
