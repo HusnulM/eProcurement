@@ -1044,8 +1044,8 @@ function sendPurchaseOrder($poNumber){
             "budget"        => $row->budget_code,
             "budget_period" => $row->budget_period ?? "",
             "catatan"       => $poheader->note,
-            "item_rek"      => $vendor->no_rek,
-            "item_bank"     => $vendor->bank,
+            "item_rek"      => $vendor->vendor_id, //$vendor->no_rek, Pak ada sedikit update untuk array yang dikirim pak
+            "item_bank"     => $vendor->vendor_id, //$vendor->bank, Item_bank dan item_rek disamakan dengan item_payee pak
             "periode"       => date('Y'),
             "no_po"         => $row->ponum,
             "attachment"    => $attachments
