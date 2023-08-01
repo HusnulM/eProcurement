@@ -19,9 +19,9 @@ class CancelApprovePbjController extends Controller
             $whereClause = $params['sac'];
         }
         $query = DB::table('t_pbj01')
-                 ->select('id','wonum','wodate','description','schedule_type')
+                 ->select('id','pbjnumber', 'tgl_pbj','tujuan_permintaan','kepada','unit_desc','engine_model')
                  ->distinct()
-                 ->where('pbj_created','N')
+                 ->where('bast_created','N')
                  ->orderBy('id');
         return DataTables::queryBuilder($query)
         ->toJson();
@@ -30,24 +30,27 @@ class CancelApprovePbjController extends Controller
     public function resetApprovePBJ($id){
         DB::beginTransaction();
         try{
-            $wodata = DB::table('t_wo01')->where('id', $id)->first();
+            $wodata = DB::table('t_pbj01')->where('id', $id)->first();
             if($wodata){
-                DB::table('t_wo01')->where('id', $id)->update([
-                    'approvestat' => 'O',
-                    'wo_status'   => 'O'
+                DB::table('t_pbj01')->where('id', $id)->update([
+                    'pbj_status'   => 'N'
                 ]);
 
-                $firstApproval = DB::table('t_wo_approval')
-                        ->where('wonum', $wodata->wonum)
+                DB::table('t_pbj02')->where('pbjnumber', $wodata->pbjnumber)->update([
+                    'approvestat'   => 'N'
+                ]);
+
+                $firstApproval = DB::table('t_pbj_approval')
+                        ->where('pbjnumber', $wodata->pbjnumber)
                         ->orderBy('approver_level', 'ASC')
                         ->first();
 
-                DB::table('t_wo_approval')->where('wonum', $wodata->wonum)->update([
+                DB::table('t_pbj_approval')->where('pbjnumber', $wodata->pbjnumber)->update([
                     'approval_status' => 'N',
                     'is_active'       => 'N'
                 ]);
 
-                DB::table('t_wo_approval')->where('wonum', $wodata->wonum)
+                DB::table('t_pbj_approval')->where('pbjnumber', $wodata->pbjnumber)
                 ->where('approver_level', $firstApproval->approver_level)
                 ->update([
                     'is_active' => 'Y'
@@ -56,12 +59,12 @@ class CancelApprovePbjController extends Controller
                 
                 $result = array(
                     'msgtype' => '200',
-                    'message' => 'Approval WO'. $wodata->wonum . ' berhasil direset'
+                    'message' => 'Approval PBJ'. $wodata->pbjnumber . ' berhasil direset'
                 );
             }else{
                 $result = array(
                     'msgtype' => '500',
-                    'message' => 'WO tidak ditemukan'
+                    'message' => 'PBJ tidak ditemukan'
                 );
             }
             return $result;
@@ -78,21 +81,28 @@ class CancelApprovePbjController extends Controller
     public function deletePBJ($id){
         DB::beginTransaction();
         try{
-            $wodata = DB::table('t_wo01')->where('id', $id)->first();
+            $wodata = DB::table('t_pbj01')->where('id', $id)->first();
             if($wodata){
-                DB::table('t_wo01')->where('id', $id)->delete();
-                DB::table('t_wo02')->where('wonum', $wodata->wonum)->delete();
-                DB::table('t_wo_approval')->where('wonum', $wodata->wonum)->delete();
-                DB::commit();
-
-                $result = array(
-                    'msgtype' => '200',
-                    'message' => 'WO'. $wodata->wonum . ' berhasil dihapus'
-                );
+                if($wodata->bast_created === 'Y'){
+                    $result = array(
+                        'msgtype' => '500',
+                        'message' => 'PBJ '. $wodata->pbjnumber . ' tidak bisa dihapus, sudah dibuat BAST'
+                    );
+                }else{
+                    DB::table('t_pbj01')->where('id', $id)->delete();
+                    DB::table('t_pbj02')->where('pbjnumber', $wodata->pbjnumber)->delete();
+                    DB::table('t_pbj_approval')->where('pbjnumber', $wodata->pbjnumber)->delete();
+                    DB::commit();
+    
+                    $result = array(
+                        'msgtype' => '200',
+                        'message' => 'PBJ '. $wodata->pbjnumber . ' berhasil dihapus'
+                    );
+                }
             }else{
                 $result = array(
                     'msgtype' => '500',
-                    'message' => 'WO tidak ditemukan'
+                    'message' => 'PBJ tidak ditemukan'
                 );
             }
             return $result;

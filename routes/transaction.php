@@ -223,11 +223,22 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/wo/reset/{p1}',  'Transaksi\CancelApprovalController@resetApproveWO')->middleware('checkAuth:cancel/approve/wo');
         Route::post('/wo/delete/{p1}', 'Transaksi\CancelApprovalController@deleteWO')->middleware('checkAuth:cancel/approve/wo');
 
-        Route::get('/pbj', 'Transaksi\CancelApprovePbjController@index')->middleware('checkAuth:cancel/approve/pbj');
-        Route::get('/pr',  'Transaksi\CancelApprovePrController@index')->middleware('checkAuth:cancel/approve/pr');
-        Route::get('/po',  'Transaksi\CancelApprovePoController@index')->middleware('checkAuth:cancel/approve/po');
+        Route::get('/pbj',              'Transaksi\CancelApprovePbjController@index')->middleware('checkAuth:cancel/approve/pbj');
+        Route::post('/pbj/reset/{p1}',  'Transaksi\CancelApprovePbjController@resetApprovePBJ')->middleware('checkAuth:cancel/approve/pbj');
+        Route::post('/pbj/delete/{p1}', 'Transaksi\CancelApprovePbjController@deletePBJ')->middleware('checkAuth:cancel/approve/pbj');
+
+        Route::get('/pr',              'Transaksi\CancelApprovePrController@index')->middleware('checkAuth:cancel/approve/pr');
+        Route::post('/pr/reset/{p1}',  'Transaksi\CancelApprovePrController@resetApprovePR')->middleware('checkAuth:cancel/approve/pr');
+        Route::post('/pr/delete/{p1}', 'Transaksi\CancelApprovePrController@deletePR')->middleware('checkAuth:cancel/approve/pr');
+
+        Route::get('/po',              'Transaksi\CancelApprovePoController@index')->middleware('checkAuth:cancel/approve/po');
+        Route::post('/po/reset/{p1}',  'Transaksi\CancelApprovePoController@resetApprovePO')->middleware('checkAuth:cancel/approve/po');
+        Route::post('/po/delete/{p1}', 'Transaksi\CancelApprovePoController@deletePO')->middleware('checkAuth:cancel/approve/po');
 
         Route::get('/wo/approvedlist',  'Transaksi\CancelApprovalController@listApprovedWO')->middleware('checkAuth:cancel/approve/wo');
+        Route::get('/pbj/list',         'Transaksi\CancelApprovePbjController@listPBJ')->middleware('checkAuth:cancel/approve/pbj');
+        Route::get('/pr/list',          'Transaksi\CancelApprovePrController@listPR')->middleware('checkAuth:cancel/approve/pr');
+        Route::get('/po/list',          'Transaksi\CancelApprovePoController@listPR')->middleware('checkAuth:cancel/approve/po');
     });
     
 });
