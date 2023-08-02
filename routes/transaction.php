@@ -238,7 +238,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/wo/approvedlist',  'Transaksi\CancelApprovalController@listApprovedWO')->middleware('checkAuth:cancel/approve/wo');
         Route::get('/pbj/list',         'Transaksi\CancelApprovePbjController@listPBJ')->middleware('checkAuth:cancel/approve/pbj');
         Route::get('/pr/list',          'Transaksi\CancelApprovePrController@listPR')->middleware('checkAuth:cancel/approve/pr');
-        Route::get('/po/list',          'Transaksi\CancelApprovePoController@listPR')->middleware('checkAuth:cancel/approve/po');
+        Route::get('/po/list',          'Transaksi\CancelApprovePoController@listPO')->middleware('checkAuth:cancel/approve/po');
     });
     
 });

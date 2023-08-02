@@ -19,18 +19,22 @@ class PrintDocumentController extends Controller
     public function prdetail($id){
         $department = DB::table('t_department')->get();
         $prhdr = DB::table('t_pr01')->where('id', $id)->first();
-        $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
-        $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
-        $approvals   = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
-        // return $attachments;
-        return view('transaksi.pr.prdetail', 
-            [
-                'department'    => $department, 
-                'prhdr'         => $prhdr, 
-                'pritem'        => $prdtl, 
-                'attachments'   => $attachments, 
-                'approvals'     => $approvals
-            ]);
+        if(!$prhdr){
+            return Redirect::to("/proc/pr/listpr")->withError("PR tidak ditemukan!");
+        }else{
+            $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
+            $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
+            $approvals   = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
+            // return $attachments;
+            return view('transaksi.pr.prdetail', 
+                [
+                    'department'    => $department, 
+                    'prhdr'         => $prhdr, 
+                    'pritem'        => $prdtl, 
+                    'attachments'   => $attachments, 
+                    'approvals'     => $approvals
+                ]);
+        }
     }
 
     public function printprlist(Request $req){
@@ -229,6 +233,9 @@ class PrintDocumentController extends Controller
     public function podetail($id){
         $department  = DB::table('t_department')->get();
         $pohdr       = DB::table('v_rpo')->where('id', $id)->first();
+        if(!$pohdr){
+            return Redirect::to("/proc/po/listpo")->withError("PO tidak ditemukan!");
+        }
         $podtl       = DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
         $costs       = DB::table('t_po03')->where('ponum', $pohdr->ponum)->get();
         $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $pohdr->ponum)->get();

@@ -18,7 +18,9 @@ class CancelApprovePrController extends Controller
             $params = $request->params;        
             $whereClause = $params['sac'];
         }
-        $query = DB::table('t_pr01')
+        $query = DB::table('v_rpr01')
+                 ->select('id', 'prnum', 'prdate', 'requestby', 'deptname')
+                 ->distinct()
                  ->orderBy('id');
         return DataTables::queryBuilder($query)
         ->toJson();
@@ -52,7 +54,7 @@ class CancelApprovePrController extends Controller
                 
                 $result = array(
                     'msgtype' => '200',
-                    'message' => 'Approval PR'. $wodata->prnum . ' berhasil direset'
+                    'message' => 'Approval PR '. $wodata->prnum . ' berhasil direset'
                 );
             }else{
                 $result = array(
