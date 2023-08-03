@@ -44,7 +44,7 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="email">Email</label>
-                                            <input type="email" name="email" id="email" class="form-control" value="{{ $datauser->email }}" required>
+                                            <input type="email" name="email" id="email" class="form-control" value="{{ $datauser->email }}" required readonly>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
