@@ -101,7 +101,7 @@ class UserController extends Controller
     public function update(Request $request){
         $validated = $request->validate([
             'email'    => 'required|max:255',
-            'name'     => 'required',
+            // 'name'     => 'required',
             'username' => 'required',
         ]);
 
@@ -119,7 +119,7 @@ class UserController extends Controller
     
                 DB::table('users')->where('id',$request['iduser'])->update([
                     'name'        => $request['name'],
-                    'email'       => $request['email'],
+                    // 'email'       => $request['email'],
                     'username'    => $request['username'],
                     'password'    => $password,
                     'deptid'      => $request['department'],
@@ -128,7 +128,7 @@ class UserController extends Controller
             }else{
                 DB::table('users')->where('id',$request['iduser'])->update([
                     'name'        => $request['name'],
-                    'email'       => $request['email'],
+                    // 'email'       => $request['email'],
                     'username'    => $request['username'],
                     'deptid'      => $request['department'],
                     'jabatanid'   => $request['jabatan']
@@ -200,7 +200,7 @@ class UserController extends Controller
     public function accountSave(Request $request){
         $validated = $request->validate([
             'email'    => 'required|max:255',
-            'name'     => 'required',
+            // 'name'     => 'required',
             'username' => 'required',
         ]);
 
@@ -218,14 +218,14 @@ class UserController extends Controller
     
                 DB::table('users')->where('id',$request['iduser'])->update([
                     'name'        => $request['name'],
-                    'email'       => $request['email'],
+                    // 'email'       => $request['email'],
                     'username'    => $request['username'],
                     'password'    => $password
                 ]);
             }else{
                 DB::table('users')->where('id',$request['iduser'])->update([
                     'name'        => $request['name'],
-                    'email'       => $request['email'],
+                    // 'email'       => $request['email'],
                     'username'    => $request['username']
                 ]);
             }
