@@ -125,7 +125,7 @@ class PrintDocumentController extends Controller
 
         $PBJApprover = DB::table('workflow_budget')
                 ->where('object', 'PBJ')
-                ->where('requester', $pbjUser->id)
+                ->where('requester', $pbjUser->id ?? null)
                 ->where('approver_level', 1)
                 ->orderBy('approver_level','ASC')
                 ->first();
@@ -137,7 +137,7 @@ class PrintDocumentController extends Controller
 
         $PBJApprover = DB::table('workflow_budget')
                 ->where('object', 'PBJ')
-                ->where('requester', $pbjUser->id)
+                ->where('requester', $pbjUser->id ?? null)
                 ->where('approver_level', 2)
                 ->orderBy('approver_level','ASC')
                 ->first();
@@ -149,7 +149,7 @@ class PrintDocumentController extends Controller
 
         $PBJApprover = DB::table('workflow_budget')
                 ->where('object', 'PBJ')
-                ->where('requester', $pbjUser->id)
+                ->where('requester', $pbjUser->id ?? null)
                 ->where('approver_level', 3)
                 ->orderBy('approver_level','ASC')
                 ->first();
