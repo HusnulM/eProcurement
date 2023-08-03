@@ -210,13 +210,13 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td>
+                    <td style="text-align: center;">
                         @if($hdr->pbj_status == 'A')
                         <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                         @endif
                     </td>
                     <td></td>
-                    <td>
+                    <td style="text-align: center;">
                         @if($secondApprover)
                         @if($hdr->pbj_status == 'A')
                         <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
@@ -224,7 +224,7 @@
                         @endif
                     </td>
                     <td></td>
-                    <td>
+                    <td style="text-align: center;">
                         @if($thirdApprover)
                         @if($hdr->pbj_status == 'A')
                         <img src="{{ asset($thirdApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
