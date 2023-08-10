@@ -78,6 +78,7 @@
                                     <th>Description</th>
                                     <th>Quantity</th>
                                     <th>Unit</th> -->
+                                    <th>Total Price</th>
                                     <th>Department</th>
                                     <th>Status</th>
                                     <th>Remark</th>
@@ -160,7 +161,7 @@
                             return ``+ row.podat.podat1 + ``;
                         }
                     },
-                    // {data: "material", className: 'uid'},
+                    {data: "totalprice", "className": "text-right"},
                     // {data: "matdesc", className: 'uid'},
                     // {data: "quantity", "sortable": false,
                     //     render: function (data, type, row){
