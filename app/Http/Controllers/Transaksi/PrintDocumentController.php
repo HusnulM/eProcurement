@@ -227,6 +227,11 @@ class PrintDocumentController extends Controller
                 'podat1' => \Carbon\Carbon::parse($query->podat)->format('d-m-Y')
              ];
         })
+        ->editColumn('totalprice', function ($query){
+            return [
+                'total' => number_format($query->totalprice, 0)
+             ];
+        })
         ->toJson();
     }
 

@@ -161,7 +161,11 @@
                             return ``+ row.podat.podat1 + ``;
                         }
                     },
-                    {data: "totalprice", "className": "text-right"},
+                    {data: "totalprice", "className": "text-right",
+                        render: function (data, type, row){
+                            return ``+ row.totalprice.total + ``;
+                        }
+                    },
                     // {data: "matdesc", className: 'uid'},
                     // {data: "quantity", "sortable": false,
                     //     render: function (data, type, row){
