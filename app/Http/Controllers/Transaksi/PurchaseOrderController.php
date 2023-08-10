@@ -121,6 +121,7 @@ class PurchaseOrderController extends Controller
                 'ppn'               => $req['ppn'] ?? 0,
                 'currency'          => $req['currency'],
                 'tf_top'            => $req['termofpayment'] ?? null,
+                'approvestat'       => 'O',
                 'createdon'         => date('Y-m-d H:m:s'),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);
