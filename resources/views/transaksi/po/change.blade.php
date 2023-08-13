@@ -202,7 +202,7 @@
                                                                                     <input type="hidden" name="partdesc[]" class="form-control" value="{{ $row->matdesc }}">
                                                                                 </td>
                                                                                 <td>
-                                                                                    <input type="text" name="quantity[]" class="form-control inputNumber" value="{{ number_format($row->quantity,0) }}" style="text-align:right;" required>
+                                                                                    <input type="text" name="quantity[]" class="form-control inputNumber" value="{{ number_format($row->quantity,3) }}" style="text-align:right;" required>
                                                                                 </td>
                                                                                 <td>
                                                                                     {{ $row->unit }}

@@ -170,7 +170,7 @@
                         @endif                
                     </td>
                     <td style="text-align:right;">
-                        {{ number_format($row->quantity*$row->price, 0, ',', '.') }}            
+                        {{ number_format($row->quantity*$row->price, 3, ',', '.') }}            
                     </td>
                 </tr>
 

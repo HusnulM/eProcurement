@@ -137,7 +137,7 @@
                                                                             <tr>
                                                                                 <td>{{ $row->material }}</td>
                                                                                 <td>{{ $row->matdesc }}</td>
-                                                                                <td>{{ number_format($row->quantity, 0, ',', '.') }}</td>
+                                                                                <td>{{ number_format($row->quantity, 3, ',', '.') }}</td>
                                                                                 <td>{{ $row->unit }}</td>
                                                                                 <td>{{ number_format($row->price, 0, ',', '.') }}</td>
                                                                                 <td>{{ $row->prnum }}</td>
