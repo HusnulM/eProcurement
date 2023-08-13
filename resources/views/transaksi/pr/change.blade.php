@@ -146,7 +146,7 @@
                                                                                 <input type="hidden" class="form-control" name="matdesc[]" value="{{ $row->matdesc }}">
                                                                             </td>
                                                                             <td style="text-align:right;">
-                                                                                <input type="text" class="form-control" value="{{ number_format($row->quantity,0) }}" name="quantity[]" style="text-align:right;">
+                                                                                <input type="text" class="form-control" value="{{ number_format($row->quantity,3) }}" name="quantity[]" style="text-align:right;">
                                                                             </td>
                                                                             <td>
                                                                                 {{ $row->unit }}

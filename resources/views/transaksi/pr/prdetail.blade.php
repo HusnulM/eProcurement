@@ -129,7 +129,7 @@
                                                                                 <!-- <input type="text" class="form-control" value="{{ $row->matdesc }}"> -->
                                                                             </td>
                                                                             <td style="text-align:right;">
-                                                                            {{ number_format($row->quantity, 0, ',', '.') }}
+                                                                            {{ number_format($row->quantity, 3, ',', '.') }}
                                                                                 <!-- <input type="text" class="form-control" value="{{ $row->quantity }}" style="text-align:right;"> -->
                                                                             </td>
                                                                             <td>
