@@ -288,7 +288,7 @@
                                                                             <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="{{ $row->description }}" readonly>
                                                                         </td>
                                                                         <td style="text-align:right;">
-                                                                            <input type="text" name="quantity[]" value="{{ number_format($row->quantity,0) }}" class="form-control" style="text-align: right;">
+                                                                            <input type="text" name="quantity[]" value="{{ number_format($row->quantity,3) }}" class="form-control" style="text-align: right;">
                                                                         </td>
                                                                         <td>
                                                                             {{ $row->unit }}

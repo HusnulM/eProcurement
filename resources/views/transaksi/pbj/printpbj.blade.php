@@ -185,7 +185,7 @@
                 <td>{{ $key+1 }}</td>
                 <td>{{ $row->partnumber }}</td>
                 <td>{{ $row->description }}</td>
-                <td style="text-align:right;">{{ number_format($row->quantity, 0) }}</td>
+                <td style="text-align:right;">{{ number_format($row->quantity, 3) }}</td>
                 <td>{{ $row->unit }}</td>
                 <td>{{ $row->figure }}</td>
                 <td>{{ $row->remark }}</td>
