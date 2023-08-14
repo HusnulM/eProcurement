@@ -119,7 +119,7 @@
     $(document).ready(function(){
 
         $('.btn-search').on('click', function(){
-            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&department='+$('#department').val()+'&approvalstat='+$('#approvalStatus').val();
+            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&department='+$('#department').val()+'&pbjstatus='+$('#approvalStatus').val();
             loadDocument(param);
         });
 
