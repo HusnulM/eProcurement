@@ -69,6 +69,7 @@
                                     <th>Tanggal PBJ</th>
                                     <th>Nomor PBJ</th>
                                     <th>Status PBJ</th>
+                                    <th>Next Approver</th>
                                     <th>Tanggal PR</th>
                                     <th>No. PR</th>
                                     <th>Status PR</th>
@@ -155,6 +156,7 @@
                     },
                     {data: "pbjnumber", className: 'uid'},
                     {data: "pbjstatus"},
+                    {data: "pbjnextapproved"},
                     {data: "prdate",
                         // render: function (data, type, row){
                         //     return ``+ row.prdate.prdate1 + ``;
