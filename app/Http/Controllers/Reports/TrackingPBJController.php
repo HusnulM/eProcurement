@@ -16,7 +16,7 @@ class TrackingPBJController extends Controller
         return view('laporan.trackingpbj', ['department' => $department]);
     }
 
-    public function getData(){
+    public function getData(Request $req){
         $query = DB::table('v_pbj_tracking');
         //->select('id','prnum','prdate','approvestat','requestby','remark','deptname','createdby')->distinct();
 
