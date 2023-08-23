@@ -177,6 +177,14 @@
                                             </select>
                                         </div>
                                     </div> 
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="project">Project</label>
+                                            <select name="project" id="find-project" class="form-control" required>
+                                                <option value="{{ $project->idproject ?? '' }}">{{ $project->nama_project ?? '' }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12">
@@ -505,6 +513,7 @@
 
     $(document).ready(function () { 
         // $('#tbl-pbj').DataTable();
+        let _token   = $('meta[name="csrf-token"]').attr('content');
 
         $('#btn-approve').on('click', function(){
             $('#btn-approve').prop('disabled', true);
@@ -519,7 +528,7 @@
         });
 
         function approveDocument(_action){
-            let _token   = $('meta[name="csrf-token"]').attr('content');
+            // let _token   = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
                 url: base_url+'/approve/pbj/save',
                 type:"POST",
@@ -556,7 +565,7 @@
 
         var count = 0;
 
-        let _token   = $('meta[name="csrf-token"]').attr('content');
+        // let _token   = $('meta[name="csrf-token"]').attr('content');
         let selected_items = [];
         var fCount = 0;
 
@@ -752,6 +761,45 @@
                 cache: true
             }
         }); 
+
+        $('#find-project').select2({ 
+            placeholder: 'Nama Project',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/master/project/findproject',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.kode_project + ' - ' + item.nama_project,
+                                slug: item.nama_project,
+                                id: item.idproject,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
     });
 </script>
 @endsection

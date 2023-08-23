@@ -98,7 +98,7 @@ class PbjController extends Controller
                 $mekanik     = DB::table('t_mekanik')->get();
                 $cklist      = DB::table('v_checklist_kendaraan')->where('no_checklist', $pbjhdr->cheklistnumber)->first();
                 $kendaraan   = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
-                $project     = DB::table('t_projects')->where('idproject', $pbjhdr->idproject);
+                $project     = DB::table('t_projects')->where('idproject', $pbjhdr->idproject)->first();
                 if(!$project){
                     $project = null;
                 }
@@ -145,7 +145,7 @@ class PbjController extends Controller
                     $pbjwhs = 0;
                 }
                 
-                $project     = DB::table('t_projects')->where('idproject', $pbjhdr->idproject);
+                $project     = DB::table('t_projects')->where('idproject', $pbjhdr->idproject)->first();
                 if(!$project){
                     $project = null;
                 }
@@ -526,6 +526,7 @@ class PbjController extends Controller
                     'budget_cost_code'  => $req['budgetcode'],
                     'remark'            => $req['remark'],
                     'periode'           => $req['periode'],
+                    'idproject'         => $req['project'],
                 ]);
     
                 $parts    = $req['parts'];
