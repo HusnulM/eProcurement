@@ -14,9 +14,9 @@
                 <h3 class="card-title">Upload Material</h3>
                 <div class="card-tools">
                     <!-- <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                        <i class="fas fa-minus"></i>
+                        <i class="fas fa-minus"></i> /excel/Template Upload Material.xlsx
                     </button> -->
-                    <a href="/excel/Template Upload Material.xlsx" target="_blank" class="btn btn-primary btn-sm"> 
+                    <a href="{{ url('master/item/exporttemplate') }}" target="_blank" class="btn btn-primary btn-sm"> 
                         <i class="fa fa-download"></i> Download Template
                     </a>
 

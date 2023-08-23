@@ -29,6 +29,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/upload/save',      'Master\ItemMasterController@importMaterial')->middleware('checkAuth:master/item');
 
         Route::post('/findpartnumber', 'Master\ItemMasterController@findPartnumber');
+
+        Route::get('/exporttemplate',          'Master\ItemMasterController@downloadTemplate')->middleware('checkAuth:master/item');
     });
 
     Route::group(['prefix' => '/master/vendor'], function () {

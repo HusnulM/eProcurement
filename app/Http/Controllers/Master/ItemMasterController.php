@@ -10,6 +10,8 @@ use Validator,Redirect,Response;
 use App\Imports\MaterialImport;
 use App\Models\Material;
 
+use App\Exports\TemplateItemExport;
+
 use Excel;
 
 class ItemMasterController extends Controller
@@ -339,5 +341,9 @@ class ItemMasterController extends Controller
         } else {
             return Redirect::to("/master/item")->withError('Error');
         }
+    }
+
+    public function downloadTemplate(Request $req){
+        return Excel::download(new TemplateItemExport($req), 'Template-Upload-Item-Master.xlsx');
     }
 }
