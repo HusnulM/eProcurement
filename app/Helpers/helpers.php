@@ -1033,12 +1033,12 @@ function sendPurchaseOrder($poNumber){
         }
         $insert = array(
             "proyek_id"     => $idProject,
-            "item_desk"     => $row->matdesc,
+            "item_desk"     => $row->matdesc. '. '. $row->quantity . $row->unit . ' @'.$row->price,
             "item_payee"    => $vendor->vendor_id,
             "item_curr"     => "IDR",
-            "pretax_rp"     => $row->price,
+            "pretax_rp"     => $row->price*$row->quantity,
             "PPN"           => $poheader->ppn,
-            "item_rp"       => $row->price,
+            "item_rp"       => ($row->price*$row->quantity)+(($row->price*$row->quantity)*($poheader->ppn/100)),
             "oleh"          => $row->createdby,
             "dept"          => $poheader->deptid,
             "budget"        => $row->budget_code,
