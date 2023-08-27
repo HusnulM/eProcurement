@@ -74,6 +74,7 @@
                                     <th>No</th>
                                     <th>Nomor PO</th>
                                     <th>Tanggal PO</th>
+                                    <th>Vendor</th>
                                     <!-- <th>Partnumber</th>
                                     <th>Description</th>
                                     <th>Quantity</th>
@@ -161,6 +162,7 @@
                             return ``+ row.podat.podat1 + ``;
                         }
                     },
+                    {data: "vendor_name", className: 'uid'},
                     {data: "totalprice", "className": "text-right",
                         render: function (data, type, row){
                             return ``+ row.totalprice.total + ``;
