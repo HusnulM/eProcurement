@@ -53,7 +53,7 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="tglreq">Tanggal Request</label>
-                                            <input type="date" name="tglreq" class="form-control" required>
+                                            <input type="date" name="tglreq" class="form-control" required value="{{ $prhdr->prdate }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
