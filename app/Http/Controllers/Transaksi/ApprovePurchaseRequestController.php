@@ -23,6 +23,10 @@ class ApprovePurchaseRequestController extends Controller
             $department  = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->first();
             $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
 
+            $pbjNumber = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->pluck('pbjnumber');
+            $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
+                              ->whereIn('doc_number', $pbjNumber)->get();
+
             $isApprovedbyUser = DB::table('v_pr_approval')
                     ->where('prnum',    $prhdr->prnum)
                     ->where('approver', Auth::user()->id)
@@ -36,7 +40,8 @@ class ApprovePurchaseRequestController extends Controller
                     'approvals'        => $approvals, 
                     'department'       => $department,
                     'attachments'      => $attachments,
-                    'isApprovedbyUser' => $isApprovedbyUser
+                    'isApprovedbyUser' => $isApprovedbyUser,
+                    'pbjAttachments'   => $pbjAttachments
                 ]);
         }else{
             return Redirect::to("/approve/pr")->withError('Dokumen PR tidak ditemukan');

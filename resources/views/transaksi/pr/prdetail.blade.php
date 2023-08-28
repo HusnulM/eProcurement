@@ -198,6 +198,7 @@
                                                                 <table class="table table-sm">
                                                                     <thead>
                                                                         <th>No</th>
+                                                                        <th>Object</th>
                                                                         <th>File Name</th>
                                                                         <th>Upload Date</th>
                                                                         <th></th>
@@ -207,6 +208,9 @@
                                                                         <tr>
                                                                             <td>{{ $key+1 }}</td>
                                                                             <td>
+                                                                                {{ $file->doc_object }}
+                                                                            </td>
+                                                                            <td>
                                                                                 {{ $file->efile }}
                                                                             </td>
                                                                             <td>
@@ -214,6 +218,25 @@
                                                                             </td>
                                                                             <td>
                                                                                 <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PR/{{$file->efile}}#toolbar=0')">
+                                                                                    <i class="fa fa-search"></i> Preview File
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                    @foreach($pbjAttachments as $key => $file)
+                                                                        <tr>
+                                                                            <td>{{ $key+1 }}</td>
+                                                                            <td>
+                                                                                {{ $file->doc_object }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{ $file->efile }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
+                                                                            </td>
+                                                                            <td>
+                                                                                <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PBJ/{{$file->efile}}#toolbar=0')">
                                                                                     <i class="fa fa-search"></i> Preview File
                                                                                 </button>
                                                                             </td>

@@ -25,14 +25,19 @@ class PrintDocumentController extends Controller
             $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
             $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
             $approvals   = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
+
+            $pbjNumber = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->pluck('pbjnumber');
+            $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
+                              ->whereIn('doc_number', $pbjNumber)->get();
             // return $attachments;
             return view('transaksi.pr.prdetail', 
                 [
-                    'department'    => $department, 
-                    'prhdr'         => $prhdr, 
-                    'pritem'        => $prdtl, 
-                    'attachments'   => $attachments, 
-                    'approvals'     => $approvals
+                    'department'     => $department, 
+                    'prhdr'          => $prhdr, 
+                    'pritem'         => $prdtl, 
+                    'attachments'    => $attachments, 
+                    'approvals'      => $approvals,
+                    'pbjAttachments' => $pbjAttachments
                 ]);
         }
     }
@@ -246,6 +251,13 @@ class PrintDocumentController extends Controller
         $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $pohdr->ponum)->get();
         $approvals   = DB::table('v_po_approval')->where('ponum', $pohdr->ponum)->get();
 
+        $prNumber = DB::table('t_po02')->where('ponum', $pohdr->ponum)->pluck('prnum');
+        $prAttachments = DB::table('t_attachments')->where('doc_object','PR')
+                              ->whereIn('doc_number', $prNumber)->get();
+        
+        $pbjNumber = DB::table('t_pr02')->whereIn('prnum', $prNumber)->pluck('pbjnumber');
+        $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
+                              ->whereIn('doc_number', $pbjNumber)->get();
 
         return view('transaksi.po.podetail', 
             [
@@ -254,7 +266,9 @@ class PrintDocumentController extends Controller
                 'poitem'        => $podtl,
                 'costs'         => $costs,
                 'attachments'   => $attachments, 
-                'approvals'     => $approvals
+                'approvals'     => $approvals,
+                'prAttachments' => $prAttachments,
+                'pbjAttachments' => $pbjAttachments
             ]);
     }
 
