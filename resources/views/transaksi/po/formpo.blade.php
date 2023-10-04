@@ -1,4 +1,4 @@
-<?php 
+<?php
     $imagePath = public_path();
     $imagePath = str_replace("main/public","",$imagePath);
 ?>
@@ -78,10 +78,10 @@
             height:auto;
             margin-left: 10px;
         }
-            
+
     </style>
 </head>
-<body> 
+<body>
     <div class="leftbox">
         {{-- <img src="{{ public_path($logo->setting_value ?? '') }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;"> --}}
         @if(checkIsLocalhost())
@@ -127,8 +127,8 @@
                 <td>{{ $pohdr->tf_top }}</td>
             </tr>
         </table>
-    </div> 
-    
+    </div>
+
     <div>
         <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <p>
@@ -145,9 +145,9 @@
                 <th style="text-align:right;">Total Price</th>
             </thead>
             <tbody>
-                <?php 
+                <?php
                     $totalPrice = 0;
-                    $totalPPN   = 0; 
+                    $totalPPN   = 0;
                 ?>
                 @foreach($poitem as $key => $row)
                 <tr>
@@ -159,7 +159,7 @@
                         {{ number_format($row->quantity, 0, ',', '.') }}
                         @else
                         {{ number_format($row->quantity, 3, ',', '.') }}
-                        @endif                
+                        @endif
                     </td>
                     <td style="text-align:center;">{{ $row->unit }}</td>
                     <td style="text-align:right;">
@@ -167,25 +167,35 @@
                         {{ number_format($row->price, 0, ',', '.') }}
                         @else
                         {{ number_format($row->price, 3, ',', '.') }}
-                        @endif                
+                        @endif
                     </td>
                     <td style="text-align:right;">
-                        {{ number_format($row->quantity*$row->price, 3, ',', '.') }}            
+                        {{ number_format($row->quantity*$row->price, 3, ',', '.') }}
                     </td>
                 </tr>
 
-                <?php 
-                    $totalPrice = $totalPrice + ($row->quantity*$row->price); 
+                <?php
+                    $totalPrice = $totalPrice + ($row->quantity*$row->price);
                 ?>
                 @endforeach
 
-                <?php 
+                <?php
                     if($pohdr->ppn > 0){
                         $totalPPN   = $totalPrice * ($pohdr->ppn / 100);
                     }
                 ?>
             </tbody>
             <tfoot>
+                <tr>
+                    <td colspan="6" style="text-align:right;">
+                        <b> Subtotal</b>
+                    </td>
+                    <td style="text-align:right;">
+                        <b>
+                            {{ number_format($totalPrice, 0, ',', '.') }}
+                        </b>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="6" style="text-align:right;">
                         <b> PPN</b>
@@ -235,7 +245,7 @@
                     @if($firstApprover)
                         @if($pohdr->approvestat == "A")
                             @if(checkIsLocalhost())
-                            <img src="{{ public_path($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
+                            <img src="{{ public_path($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                             @else
                                 @if($firstApprover->s_signfile)
                                 <img src="{{ asset($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
@@ -251,9 +261,9 @@
                     @if($secondApprover)
                         @if($pohdr->approvestat == "A")
                             @if(checkIsLocalhost())
-                            <img src="{{ public_path($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
+                            <img src="{{ public_path($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                             @else
-                            
+
                                 @if($secondApprover->s_signfile)
                                 <img src="{{ asset($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                                 @else
@@ -268,7 +278,7 @@
                     @if($lastApprover)
                         @if($pohdr->approvestat == "A")
                             @if(checkIsLocalhost())
-                            <img src="{{ public_path($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">                    
+                            <img src="{{ public_path($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                             @else
                                 @if($lastApprover->s_signfile)
                                     <img src="{{ asset($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
