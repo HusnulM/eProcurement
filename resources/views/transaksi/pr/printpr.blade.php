@@ -142,7 +142,11 @@
             </td>
             <td></td>
             <td>
+                @if($approveSign->s_signfile)
                 <img src="{{ asset($approveSign->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                @else
+                <br>
+                @endif
             </td>
         </tr>
         <tr>
