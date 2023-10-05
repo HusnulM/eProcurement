@@ -148,7 +148,7 @@
         <tr>
             <td> <u> {{ getUserNameByID($prhdr->createdby) }} </u></td>
             <td></td>
-            <td><u> {{ getUserNameByID($approval->approved_by) }} </u></td>
+            <td><u> {{ getUserNameByID($approval->approved_by ?? '') }} </u></td>
         </tr>
         {{-- <tr>
             <td>____________________</td>
