@@ -65,7 +65,7 @@
                 <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">PURCHASE REQUISITION</h2>
             </td>
         </tr>
-    </table> 
+    </table>
     <table border="0" cellspacing="0" cellpadding="0" class="customers" style="margin-bottom: 20px !important;">
         <tr>
             <td style="width:120px;">PR Number</td>
@@ -121,7 +121,7 @@
                 @else
                 {{ number_format($row->quantity, 3, ',', '.') }}
                 @endif
-                
+
                 </td>
                 <td style="text-align:center;">{{ $row->unit }}</td>
             </tr>
@@ -142,7 +142,7 @@
             </td>
             <td></td>
             <td>
-                <img src="{{ asset($approveSign->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                <img src="{{ asset($approveSign->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
             </td>
         </tr>
         <tr>

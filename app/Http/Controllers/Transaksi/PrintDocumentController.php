@@ -14,7 +14,7 @@ class PrintDocumentController extends Controller
     public function prlist(){
         $department = DB::table('t_department')->get();
         return view('transaksi.pr.printlist', ['department' => $department]);
-    }   
+    }
 
     public function prdetail($id){
         $department = DB::table('t_department')->get();
@@ -30,12 +30,12 @@ class PrintDocumentController extends Controller
             $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
                               ->whereIn('doc_number', $pbjNumber)->get();
             // return $attachments;
-            return view('transaksi.pr.prdetail', 
+            return view('transaksi.pr.prdetail',
                 [
-                    'department'     => $department, 
-                    'prhdr'          => $prhdr, 
-                    'pritem'         => $prdtl, 
-                    'attachments'    => $attachments, 
+                    'department'     => $department,
+                    'prhdr'          => $prhdr,
+                    'pritem'         => $prdtl,
+                    'attachments'    => $attachments,
                     'approvals'      => $approvals,
                     'pbjAttachments' => $pbjAttachments
                 ]);
@@ -55,9 +55,9 @@ class PrintDocumentController extends Controller
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');         
+                $query->where('approvestat', 'R');
             }
         }
 
@@ -95,17 +95,24 @@ class PrintDocumentController extends Controller
     public function printpr($id){
         $prhdr    = DB::table('t_pr01')->where('id', $id)->first();
         $prdtl    = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
+
         $approval = DB::table('t_pr_approval')
                     ->where('prnum', $prhdr->prnum)
+                    ->where('approval_status', 'A')
                     ->orderBy('approver_level', 'DESC')
                     ->first();
-        $approveSign = DB::table('users')->where('id', $approval->approver)->first();
+        if($approval){
+            $approveSign = DB::table('users')->where('id', $approval->approver)->first();
+        }else{
+            $approveSign = null;
+        }
+
         $creatorSign = DB::table('users')->where('email', $prhdr->createdby)->first();
 
-        $pdf = PDF::loadview('transaksi.pr.printpr', 
+        $pdf = PDF::loadview('transaksi.pr.printpr',
             [
-                'prhdr'       => $prhdr, 
-                'pritem'      => $prdtl, 
+                'prhdr'       => $prhdr,
+                'pritem'      => $prdtl,
                 'approval'    => $approval,
                 'approveSign' => $approveSign,
                 'creatorSign' => $creatorSign
@@ -165,11 +172,11 @@ class PrintDocumentController extends Controller
         }
 
         // $customPaper = array(0,0,567.00,283.80);
-        $pdf = PDF::loadview('transaksi.pbj.printpbj', 
+        $pdf = PDF::loadview('transaksi.pbj.printpbj',
             [
-                'hdr'     => $prhdr, 
-                'item'    => $prdtl, 
-                'logo'    => $logo, 
+                'hdr'     => $prhdr,
+                'item'    => $prdtl,
+                'logo'    => $logo,
                 'project' => $project,
                 'firstApprover'  => $firstApprover,
                 'secondApprover' => $secondApprover,
@@ -199,9 +206,9 @@ class PrintDocumentController extends Controller
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');
             }
         }
 
@@ -254,18 +261,18 @@ class PrintDocumentController extends Controller
         $prNumber = DB::table('t_po02')->where('ponum', $pohdr->ponum)->pluck('prnum');
         $prAttachments = DB::table('t_attachments')->where('doc_object','PR')
                               ->whereIn('doc_number', $prNumber)->get();
-        
+
         $pbjNumber = DB::table('t_pr02')->whereIn('prnum', $prNumber)->pluck('pbjnumber');
         $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
                               ->whereIn('doc_number', $pbjNumber)->get();
 
-        return view('transaksi.po.podetail', 
+        return view('transaksi.po.podetail',
             [
-                'department'    => $department, 
-                'pohdr'         => $pohdr, 
+                'department'    => $department,
+                'pohdr'         => $pohdr,
                 'poitem'        => $podtl,
                 'costs'         => $costs,
-                'attachments'   => $attachments, 
+                'attachments'   => $attachments,
                 'approvals'     => $approvals,
                 'prAttachments' => $prAttachments,
                 'pbjAttachments' => $pbjAttachments
@@ -309,12 +316,12 @@ class PrintDocumentController extends Controller
             $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
         }
 
-        $pdf = PDF::loadview('transaksi.po.formpo', 
+        $pdf = PDF::loadview('transaksi.po.formpo',
             [
-                'pohdr'          => $pohdr, 
+                'pohdr'          => $pohdr,
                 'poitem'         => $podtl,
                 'vendor'         => $vendor,
-                'firstApprover'  => $firstApprover ?? null, 
+                'firstApprover'  => $firstApprover ?? null,
                 'secondApprover' => $secondApprover ?? null,
                 'lastApprover'   => $lastApprover ?? null
             ]);
@@ -339,9 +346,9 @@ class PrintDocumentController extends Controller
             $attachments = DB::table('t_attachments')->where('doc_object', 'SPK')->where('doc_number', $wohdr->wonum)->get();
             // return $woitem;
 
-            return view('transaksi.spk.printdetail', 
+            return view('transaksi.spk.printdetail',
                 [
-                    'spkhdr'      => $wohdr, 
+                    'spkhdr'      => $wohdr,
                     'spkitems'    => $woitem,
                     'mekanik'     => $mekanik,
                     'warehouse'   => $warehouse,
