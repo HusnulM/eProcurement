@@ -15,9 +15,10 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
-    <form action="{{ url('transaction/pbj/save') }}" method="post" enctype="multipart/form-data">
+    <!-- <form id="form-pbj-data" action="{{ url('transaction/pbj/save') }}" method="post" enctype="multipart/form-data"> -->
+    <form id="form-pbj-data" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -25,7 +26,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Pembuatan PBJ</h3>
                         <div class="card-tools">
-                            <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
+                            <button type="submit" class="btn btn-primary btn-sm btn-submit">
                                 <i class="fas fa-save"></i> Simpan PBJ
                             </button>
                             <a href="{{ url('/transaction/pbj/list') }}" class="btn btn-success btn-sm">
@@ -91,7 +92,7 @@
                                             <label for="requestor">Requestor</label>
                                             <input type="text" name="requestor" class="form-control" value="{{ Auth::user()->name }}">
                                         </div>
-                                    </div>                                    
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="typeModel">Type / Model</label>
@@ -109,7 +110,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>        
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="kodeJasa">Kode Barang / Jasa</label>
@@ -146,7 +147,7 @@
                                             <input type="text" name="no_rangka" id="no_rangka" class="form-control">
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12">
@@ -226,8 +227,8 @@
                             <th></th>
                         </thead>
                         <tbody></tbody>
-                    </table>  
-                </div> 
+                    </table>
+                </div>
             </div>
         </div>
         <div class="modal-footer justify-content-between">
@@ -240,8 +241,9 @@
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
+<script>
     $(document).ready(function(){
+
         var count = 0;
 
         let _token   = $('meta[name="csrf-token"]').attr('content');
@@ -265,7 +267,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'fname'},
@@ -274,7 +276,7 @@
                     {data: "whsname", className: 'fname'},
                     {data: "quantity", className: 'fname'},
                     {data: "unit", className: 'fname'},
-                    {"defaultContent": 
+                    {"defaultContent":
                         "<button type='button' class='btn btn-primary btn-sm button-add-material'> <i class='fa fa-plus'></i> Add</button>"
                     }
                 ],
@@ -318,7 +320,7 @@
                             </td>
                         </tr>
                     `);
-    
+
                     $('#btnRemove'+fCount).on('click', function(e){
                         e.preventDefault();
                         var row_index = $(this).closest("tr").index();
@@ -336,13 +338,13 @@
                 }else{
                     return false;
                 }
-            }); 
+            });
         }
 
         function removeItem(index){
             selected_items.splice(index, 1);
         }
-            
+
 
         $('.btn-add-pbj-item').on('click', function(){
             loadMaterial();
@@ -393,7 +395,7 @@
         //         }
         //     });
 
-        //     $('#find-part'+fCount).select2({ 
+        //     $('#find-part'+fCount).select2({
         //         placeholder: 'Type Part Number',
         //         width: '100%',
         //         minimumInputLength: 0,
@@ -434,7 +436,7 @@
 
         //     $('#find-part'+fCount).on('change', function(){
         //         // alert(this.value)
-                
+
         //         var data = $('#find-part'+fCount).select2('data')
         //         console.log(data);
 
@@ -452,7 +454,7 @@
                 searchField.focus();
             }
         });
-        $('#find-unitdesc').select2({ 
+        $('#find-unitdesc').select2({
             placeholder: 'Type Unit Desc / Code',
             width: '100%',
             minimumInputLength: 0,
@@ -523,7 +525,7 @@
                 if(theEvent.preventDefault) theEvent.preventDefault();
             }
         }
-        
+
         function formatNumber(num) {
             return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
         }
@@ -538,15 +540,54 @@
             sisa     		  = split[0].length % 3,
             rupiah     		  = split[0].substr(0, sisa),
             ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-        
+
             if(ribuan){
                 separator = sisa ? ',' : '';
                 rupiah += separator + ribuan.join(',');
             }
-        
+
             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
         }
+
+        $('#form-pbj-data').on('submit', function(event){
+            event.preventDefault();
+            
+            var formData = new FormData(this);
+            console.log($(this).serialize());
+            $.ajax({
+                url:base_url+'/transaction/pbj/save',
+                method:'post',
+                data:formData,
+                dataType:'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend:function(){
+                    $('.btn-submit').attr('disabled',true);
+                },
+                success:function(data)
+                {
+                    console.log(data);
+                },
+                error:function(err){
+                    showErrorMessage(JSON.stringify(err))
+                }
+            }).done(function(result){
+                if(result.msgtype === "200"){
+                    toastr.success(result.message);
+                    $(".btn-submit").attr("disabled", false);
+
+                    setTimeout(function(){ 
+                        location.reload();
+                    }, 2000);
+                }else if(result.msgtype === "400"){
+                    toastr.error(result.message)          
+                    $(".btn-submit").attr("disabled", false);  
+                }
+            });
+        });
+            
     });
 </script>
 @endsection

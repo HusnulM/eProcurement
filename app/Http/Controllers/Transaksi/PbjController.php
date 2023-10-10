@@ -473,25 +473,46 @@ class PbjController extends Controller
 
                 Mail::to($mailto)->queue(new NotifApprovePbjMail($dataApprovePBJ, $PBJid, $ptaNumber));
 
-                if($req['pbjTYpe'] === "1"){
-                    return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
-                }else{
-                    return Redirect::to("/transaction/pbjtanpawo")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
-                }
+                $result = array(
+                    'msgtype' => '200',
+                    'message' => 'PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber
+                );
+                return $result;
+                // if($req['pbjTYpe'] === "1"){
+                //     // return Redirect::to("/transaction/pbj")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
+
+                // }else{
+                //     // return Redirect::to("/transaction/pbjtanpawo")->withSuccess('PBJ Berhasil dibuat dengan Nomor : '. $ptaNumber);
+                // }
             }else{
-                if($req['pbjTYpe'] === "1"){
-                    return Redirect::to("/transaction/pbj")->withError('PBJ Item Belum di Pilih');
-                }else{
-                    return Redirect::to("/transaction/pbjtanpawo")->withError('PBJ Item Belum di Pilih');
-                }
+                $result = array(
+                    'msgtype' => '400',
+                    'message' => 'PBJ Item Belum di Pilih'
+                );
+                return $result;
+                // if($req['pbjTYpe'] === "1"){
+                //     // return Redirect::to("/transaction/pbj")->withError('PBJ Item Belum di Pilih');
+                // }else{
+                //     // return Redirect::to("/transaction/pbjtanpawo")->withError('PBJ Item Belum di Pilih');
+                //     $result = array(
+                //         'msgtype' => '400',
+                //         'message' => 'PBJ dengan Nomor : '. $ptaNumber . ' berhasil di approve'
+                //     );
+                //     return $result;
+                // }
             }
         } catch(\Exception $e){
             DB::rollBack();
-            if($req['pbjTYpe'] === "1"){
-                return Redirect::to("/transaction/pbj")->withError($e->getMessage());
-            }else{
-                return Redirect::to("/transaction/pbjtanpawo")->withError($e->getMessage());
-            }
+            $result = array(
+                'msgtype' => '400',
+                'message' => $e->getMessage()
+            );
+            return $result;
+            // if($req['pbjTYpe'] === "1"){
+            //     // return Redirect::to("/transaction/pbj")->withError($e->getMessage());
+            // }else{
+            //     return Redirect::to("/transaction/pbjtanpawo")->withError($e->getMessage());
+            // }
         }
     }
 
