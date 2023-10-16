@@ -33,11 +33,11 @@ class ApprovePurchaseRequestController extends Controller
                     ->where('is_active', 'Y')
                     ->first();
 
-            return view('transaksi.pr.approvedetail', 
-                [   
-                    'prhdr'            => $prhdr, 
-                    'pritem'           => $items, 
-                    'approvals'        => $approvals, 
+            return view('transaksi.pr.approvedetail',
+                [
+                    'prhdr'            => $prhdr,
+                    'pritem'           => $items,
+                    'approvals'        => $approvals,
                     'department'       => $department,
                     'attachments'      => $attachments,
                     'isApprovedbyUser' => $isApprovedbyUser,
@@ -49,9 +49,9 @@ class ApprovePurchaseRequestController extends Controller
     }
 
     public function ApprovalList(Request $request){
-        
+
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_pr_approval')
@@ -114,7 +114,7 @@ class ApprovePurchaseRequestController extends Controller
                             ->first();
 
             //Set Approval
-            
+
             if($req['action'] === 'A'){
                 DB::table('t_pr_approval')
                 ->where('prnum', $ptaNumber)
@@ -144,15 +144,15 @@ class ApprovePurchaseRequestController extends Controller
                                 ->where('requester', $prUser->id)
                                 ->where('approver_level', $nextApprover)
                                 ->pluck('approver');
-    
+
                     $mailto = DB::table('users')
                             ->whereIn('id', $approverId)
-                            ->pluck('email');   
-    
+                            ->pluck('email');
+
                     $dataApprovePBJ = DB::table('v_pr_duedate')
                             ->where('prnum', $ptaNumber)
                             ->orderBy('id')->get();
-    
+
                     Mail::to($mailto)->queue(new NotifApprovePrMail($dataApprovePBJ, $prhdr->id, $ptaNumber));
                 }else{
                     //Full Approve
@@ -200,6 +200,142 @@ class ApprovePurchaseRequestController extends Controller
             );
             return $result;
             // return Redirect::to("/approve/pr")->withError($e->getMessage());
+        }
+    }
+
+    public function approveItems(Request $data){
+        DB::beginTransaction();
+        try{
+            // return $data;
+            $prID       = $data['prnum'];
+            $pbjHeader  = DB::table('t_pr01')->where('id', $prID)->first();
+            $pbjCreator = DB::table('users')->where('email', $pbjHeader->createdby)->first();
+            $items      = join(",",$data['pritem']);
+            $ptaNumber  = $pbjHeader->prnum;
+
+            $pbjItemData = DB::table('t_pr02')
+            ->where('prnum', $ptaNumber)
+            ->whereIn('pritem', $data['pritem'])->get();
+            // return $pbjItemData;
+            $userAppLevel = DB::table('t_pr_approval')
+            ->select('approver_level')
+            ->where('prnum', $ptaNumber)
+            ->whereIn('pritem', $data['pritem'])
+            ->where('approver', Auth::user()->id)
+            ->first();
+
+            // return $userAppLevel;
+
+            if($data['action'] === 'R'){
+                DB::table('t_pr_approval')
+                ->where('prnumber', $ptaNumber)
+                ->whereIn('pritem', $data['pritem'])
+                // ->where('approver_level', $nextApprover)
+                ->update([
+                    'is_active'       => 'N',
+                    'approval_status' => 'R',
+                    'approval_remark' => 'Level '. $userAppLevel->approver_level . ' Rejected',
+                    'approved_by'     => Auth::user()->username,
+                    'approval_date'   => getLocalDatabaseDateTime()
+                ]);
+
+                DB::table('t_pr01')->where('prnum', $ptaNumber)
+                    ->update([
+                        'approvestat'   => $data['action']
+                    ]);
+
+                DB::table('t_pr02')->where('pbjnumber', $ptaNumber)
+                    ->whereIn('pritem', $data['pritem'])
+                    ->update([
+                        'approvestat'   => $data['action']
+                ]);
+            }else{
+                //Set Approval
+                DB::table('t_pr_approval')
+                ->where('prnum', $ptaNumber)
+                ->whereIn('pritem', $data['pritem'])
+                ->where('approver_level',$userAppLevel->approver_level)
+                ->update([
+                    'approval_status' => 'A',
+                    // 'approval_remark' => $req['approvernote'],
+                    'approval_remark' => 'Level '. $userAppLevel->approver_level . ' Approved',
+                    'approved_by'     => Auth::user()->username,
+                    'approval_date'   => getLocalDatabaseDateTime()
+                ]);
+
+                $nextApprover = $this->getNextApproval($ptaNumber);
+                if($nextApprover  != null){
+                    DB::table('t_pr_approval')
+                    ->where('prnum', $ptaNumber)
+                    ->whereIn('pritem', $data['pritem'])
+                    ->where('approver_level', $nextApprover)
+                    ->update([
+                        'is_active' => 'Y'
+                    ]);
+                }
+
+                $checkIsFullApprove = DB::table('t_pr_approval')
+                                          ->where('prnum', $ptaNumber)
+                                          ->whereIn('pritem', $data['pritem'])
+                                          ->where('approval_status', '!=', 'A')
+                                          ->get();
+                // return $checkIsFullApprove;
+                if(sizeof($checkIsFullApprove) > 0){
+                    // go to next approver
+                    $approverId = DB::table('v_workflow_budget')->where('object', 'PR')
+                            ->where('requester', $pbjCreator->id)
+                            ->where('approver_level', $nextApprover)
+                            ->pluck('approver');
+
+                    $mailto = DB::table('users')
+                        ->whereIn('id', $approverId)
+                        ->pluck('email');
+
+                    $dataApprovePBJ = DB::table('v_pr_duedate')
+                            ->where('prnum', $ptaNumber)
+                            ->whereIn('pritem', $data['pritem'])
+                            ->orderBy('id')->get();
+
+                    Mail::to($mailto)->queue(new NotifApprovePrMail($dataApprovePBJ, $pbjHeader->id, $ptaNumber));
+                }else{
+                    //Full Approve
+                    DB::table('t_pr01')->where('prnum', $ptaNumber)
+                    ->update([
+                        'approvestat'   => 'A'
+                    ]);
+
+                    DB::table('t_pr02')
+                    ->where('prnum', $ptaNumber)
+                    ->whereIn('pritem', $data['pritem'])
+                    ->update([
+                        'approvestat'   => 'A'
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            if($data['action'] === 'A'){
+                $result = array(
+                    'msgtype' => '200',
+                    'message' => 'PR dengan Nomor : '. $ptaNumber . ' berhasil di approve'
+                );
+            }elseif($data['action'] === 'R'){
+                $result = array(
+                    'msgtype' => '200',
+                    'message' => 'PR dengan Nomor : '. $ptaNumber . ' berhasil di reject'
+                );
+            }
+            return $result;
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+            // return Redirect::to("/approve/budget")->withError($e->getMessage());
         }
     }
 }

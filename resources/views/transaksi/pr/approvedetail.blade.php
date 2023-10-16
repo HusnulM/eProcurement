@@ -31,12 +31,12 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                
+
                                 <div class="form-group">
                                     <label for="doctitle">PR Number</label>
                                     <p>{{ $prhdr->prnum }}</p>
                                     <input type="hidden" id="prNumber" value="{{ $prhdr->prnum }}">
-                                </div>  
+                                </div>
                                 <div class="form-group">
                                     <label>Requestor:</label> {{$prhdr->requestby}}
                                 </div>
@@ -53,7 +53,7 @@
                                     <p>{!! $prhdr->remark !!}
                                     </p>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -91,7 +91,11 @@
                                         <div class="col-lg-12">
                                             <table id="tbl-pr-data" class="table table-bordered table-hover table-striped table-sm">
                                                 <thead>
-                                                    <th>No</th>
+                                                    {{-- <th>No</th> --}}
+                                                    <th style="text-align:center;">
+                                                        <input type="checkbox" id="checkAll" class="filled-in" />
+                                                        <label for="checkAll"></label>
+                                                    </th>
                                                     <th>PR Item</th>
                                                     <th>Part Number</th>
                                                     <th>Description</th>
@@ -103,7 +107,13 @@
                                                 <tbody>
                                                 @foreach($pritem as $key => $row)
                                                     <tr>
-                                                        <td>{{ $key+1 }}</td>
+                                                        {{-- <td>{{ $key+1 }}</td> --}}
+                                                        <td style="text-align:center;">
+                                                            @if($row->approvestat !== "A" && $row->approvestat !== "R")
+                                                            <input class="filled-in checkbox" type="checkbox" id="{{ $row->pritem }}" name="ID[]">
+                                                            <label for="{{ $row->pritem }}"></label>
+                                                            @endif
+                                                        </td>
                                                         <td>
                                                             {{ $row->pritem }}
                                                         </td>
@@ -128,6 +138,17 @@
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
+                                                <tfoot>
+                                                    <td colspan="8" style="text-align: right;">
+                                                        <button type="button" class="btn btn-success pull-right ml-1 btn-sm" id="btn-approve-items">
+                                                            <i class="fa fa-check"></i> APPROVE
+                                                        </button>
+
+                                                        <button type="button" class="btn btn-danger pull-right btn-sm" id="btn-reject-items">
+                                                            <i class="fa fa-xmark"></i> REJECT
+                                                        </button>
+                                                    </td>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>
@@ -161,7 +182,7 @@
                                                             Open
                                                         </td>
                                                         @endif
-                                                        
+
                                                         <td>
                                                             @if($row->approval_date != null)
                                                                 <i class="fa fa-clock"></i>
@@ -172,10 +193,10 @@
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
-                                            </table>                                                    
+                                            </table>
                                         </div>
                                     </div>
-                                    @if($isApprovedbyUser)
+                                    {{-- @if($isApprovedbyUser)
                                         @if($isApprovedbyUser->approval_status <> "A")
                                         <div class="row">
                                             <div class="col-lg-12">
@@ -197,9 +218,9 @@
                                             </div>
                                         </div>
                                         @endif
-                                    @endif
-                                </div>   
-                                
+                                    @endif --}}
+                                </div>
+
                                 <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -231,7 +252,7 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
-                                                
+
                                                 @foreach($pbjAttachments as $key => $file)
                                                     <tr>
                                                         <td>{{ $key+1 }}</td>
@@ -251,18 +272,18 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
-                                                
+
                                                 </tbody>
-                                            </table>                           
+                                            </table>
                                         </div>
                                     </div>
-                                </div>   
-                            </div>   
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-                
+
         </div>
     </div>
 </div>
@@ -283,7 +304,7 @@
                 <div class="position-relative row form-group">
                     <div class="col-lg-12" id="fileViewer">
                         <!-- <div id="example1"></div> -->
-                        
+
                     </div>
                 </div>
             </div>
@@ -296,7 +317,7 @@
         </div>
         </form>
     </div>
-</div>   
+</div>
 @endsection
 
 @section('additional-js')
@@ -306,27 +327,29 @@
 <!-- <script src="https://cdn.scaleflex.it/plugins/filerobot-image-editor/3/filerobot-image-editor.min.js"></script> -->
 
 <script type="text/javascript">
-    function previewFile(files){         
+    function previewFile(files){
         // alert(base_url)
         var pathfile = base_url+'/'+files;
         if(files !== ""){
             $('#fileViewer').html('');
             $('#fileViewer').append(`
                 <embed src="`+ pathfile +`" frameborder="0" width="100%" height="500px">
-            
+
             `);
 
             var fileUri = pathfile;
             fileUri = fileUri.replace("#toolbar=0", "?force=true");
-            
-            document.getElementById("btnDownloadFile").href=fileUri; 
+
+            document.getElementById("btnDownloadFile").href=fileUri;
             $('#modalPreviewFile').modal('show');
         } else{
             swal("File Not Found", "", "warning");
         }
     }
 
-    $(document).ready(function () { 
+    $(document).ready(function () {
+        let _token   = $('meta[name="csrf-token"]').attr('content');
+
         $('#tbl-pr-data').DataTable();
 
         $('#btn-approve').on('click', function(){
@@ -341,8 +364,20 @@
             approveDocument('R');
         });
 
+        $('#checkAll').click(function(){
+            if(this.checked){
+                $('.checkbox').each(function(){
+                    this.checked = true;
+                });
+            }else{
+                $('.checkbox').each(function(){
+                    this.checked = false;
+                });
+            }
+        });
+
         function approveDocument(_action){
-            let _token   = $('meta[name="csrf-token"]').attr('content');
+
             $.ajax({
                 url: base_url+'/approve/pr/save',
                 type:"POST",
@@ -359,9 +394,9 @@
                             toastr.success(response.message)
                         }else if(_action === "R"){
                             toastr.success(response.message)
-                        }                        
+                        }
 
-                        setTimeout(function(){ 
+                        setTimeout(function(){
                             window.location.href = base_url+'/approve/pr';
                         }, 2000);
                     }
@@ -370,7 +405,7 @@
                     console.log(error);
                     toastr.error(error)
 
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         location.reload();
                     }, 2000);
                 }
@@ -378,6 +413,131 @@
                 console.log(response);
             });
         }
+
+        $('#btn-approve-items').on('click', function(){
+            var tableControl= document.getElementById('tbl-pr-data');
+            var _splchecked = [];
+            _action = 'A';
+            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+                _splchecked.push($(this).parent().next().text())
+            }).get();
+            if(_splchecked.length > 0){
+                console.log(_splchecked)
+                var prtemchecked = {
+                    "prnum"  : {{ $prhdr->id }},
+                    "pritem" : _splchecked,
+                    "action" : _action,
+                    "_token": _token
+                }
+                $.ajax({
+                    url:base_url+'/approve/pr/approveitems',
+                    method:'post',
+                    data:prtemchecked,
+                    dataType:'JSON',
+                    beforeSend:function(){
+                        $('#btn-approve-items').attr('disabled','disabled');
+                    },
+                    success:function(data)
+                    {
+
+                    },
+                    error:function(err){
+                        // console.log(JSON.stringify(err));
+                        // showErrorMessage(JSON.stringify(err))
+                        console.log(err);
+                        toastr.error(err)
+
+                        // setTimeout(function(){
+                        //     location.reload();
+                        // }, 2000);
+                    }
+                }).done(function(response){
+                    console.log(response);
+                    // $('#btn-approve').attr('disabled',false);
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        if(_action === "A"){
+                            toastr.success(response.message)
+                        }else if(_action === "R"){
+                            toastr.success(response.message)
+                        }
+
+                        setTimeout(function(){
+                            window.location.href = base_url+'/approve/pr';
+                        }, 2000);
+                    }else{
+                        toastr.error(response.message)
+                        // setTimeout(function(){
+                        //     location.reload();
+                        // }, 2000);
+                    }
+                });
+            }else{
+                alert('No record selected ');
+            }
+        });
+
+        $('#btn-reject-items').on('click', function(){
+            var tableControl= document.getElementById('tbl-pr-data');
+            var _splchecked = [];
+            _action = 'R';
+            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+                _splchecked.push($(this).parent().next().text())
+            }).get();
+            if(_splchecked.length > 0){
+                console.log(_splchecked)
+                var prtemchecked = {
+                    "pritem" : _splchecked,
+                    "action" : _action,
+                    "_token": _token
+                }
+                $.ajax({
+                    url:base_url+'/approve/pbj/approveitems/{{ $prhdr->id }}',
+                    method:'post',
+                    data:prtemchecked,
+                    dataType:'JSON',
+                    beforeSend:function(){
+                        $('#btn-approve-items').attr('disabled','disabled');
+                    },
+                    success:function(data)
+                    {
+
+                    },
+                    error:function(err){
+                        // console.log(JSON.stringify(err));
+                        // showErrorMessage(JSON.stringify(err))
+                        console.log(err);
+                        toastr.error(err)
+
+                        setTimeout(function(){
+                            location.reload();
+                        }, 2000);
+                    }
+                }).done(function(response){
+                    console.log(response);
+                    // $('#btn-approve').attr('disabled',false);
+                    console.log(response);
+                    if(response.msgtype === "200"){
+                        if(_action === "A"){
+                            toastr.success(response.message)
+                        }else if(_action === "R"){
+                            toastr.warning(response.message)
+                        }
+
+                        setTimeout(function(){
+                            window.location.href = base_url+'/approve/pr';
+                        }, 2000);
+                    }else{
+                        toastr.error(response.message)
+                        setTimeout(function(){
+                            location.reload();
+                        }, 2000);
+                    }
+                });
+            }else{
+                alert('No record selected ');
+            }
+        });
     });
 </script>
 @endsection

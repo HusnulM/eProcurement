@@ -28,7 +28,7 @@ class PurchaseRequestController extends Controller
 
     public function listDuedatePR(Request $request){
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_pr_duedate')
@@ -57,19 +57,19 @@ class PurchaseRequestController extends Controller
         $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
         $approvals   = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
         // return $attachments;
-        return view('transaksi.pr.change', 
+        return view('transaksi.pr.change',
             [
-                'department'    => $department, 
-                'prhdr'         => $prhdr, 
-                'pritem'        => $prdtl, 
-                'attachments'   => $attachments, 
+                'department'    => $department,
+                'prhdr'         => $prhdr,
+                'pritem'        => $prdtl,
+                'attachments'   => $attachments,
                 'approvals'     => $approvals
             ]);
     }
 
     public function listApprovedPbj(Request $request){
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_pbj02')
@@ -78,7 +78,7 @@ class PurchaseRequestController extends Controller
                  ->where('openqty', '>', 0)
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
-    }    
+    }
 
     public function save(Request $req){
         // return $req;
@@ -117,7 +117,9 @@ class PurchaseRequestController extends Controller
             $project  = $req['project'];
 
             $insertData = array();
-            $count = 0;            
+            $count = 0;
+
+            $prItems = array();
 
             for($i = 0; $i < sizeof($parts); $i++){
                 $qty    = $quantity[$i];
@@ -138,8 +140,9 @@ class PurchaseRequestController extends Controller
                     'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->email ?? Auth::user()->username
                 );
-                
+
                 array_push($insertData, $data);
+                array_push($prItems, $data);
 
                 DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
                 ->update([
@@ -153,7 +156,7 @@ class PurchaseRequestController extends Controller
             if(isset($req['efile'])){
                 $files = $req['efile'];
                 $insertFiles = array();
-    
+
                 foreach ($files as $efile) {
                     $filename = $efile->getClientOriginalName();
                     $upfiles = array(
@@ -165,9 +168,9 @@ class PurchaseRequestController extends Controller
                         'createdby'  => Auth::user()->username ?? Auth::user()->email
                     );
                     array_push($insertFiles, $upfiles);
-    
-                    $efile->move('files/PR/', $filename);  
-                    // $efile->move(public_path().'/files/PR/', $filename);  
+
+                    $efile->move('files/PR/', $filename);
+                    // $efile->move(public_path().'/files/PR/', $filename);
                 }
                 if(sizeof($insertFiles) > 0){
                     insertOrUpdate($insertFiles,'t_attachments');
@@ -178,23 +181,26 @@ class PurchaseRequestController extends Controller
             //Set Approval
             $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){
-                $insertApproval = array();
-                foreach($approval as $row){
-                    $is_active = 'N';
-                    if($row->approver_level == 1){
-                        $is_active = 'Y';
+                for($a = 0; $a < sizeof($prItems); $a++){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $is_active = 'N';
+                        if($row->approver_level == 1){
+                            $is_active = 'Y';
+                        }
+                        $approvals = array(
+                            'prnum'             => $ptaNumber,
+                            'pritem'            => $prItems[$a]['pritem'],
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $row->approver,
+                            'requester'         => Auth::user()->id,
+                            'is_active'         => $is_active,
+                            'createdon'         => getLocalDatabaseDateTime()
+                        );
+                        array_push($insertApproval, $approvals);
                     }
-                    $approvals = array(
-                        'prnum'             => $ptaNumber,
-                        'approver_level'    => $row->approver_level,
-                        'approver'          => $row->approver,
-                        'requester'         => Auth::user()->id,
-                        'is_active'         => $is_active,
-                        'createdon'         => getLocalDatabaseDateTime()
-                    );
-                    array_push($insertApproval, $approvals);
+                    insertOrUpdate($insertApproval,'t_pr_approval');
                 }
-                insertOrUpdate($insertApproval,'t_pr_approval');
             }else{
                 DB::rollBack();
                 $result = array(
@@ -215,7 +221,7 @@ class PurchaseRequestController extends Controller
 
             $mailto = DB::table('users')
                     ->whereIn('id', $approverId)
-                    ->pluck('email');   
+                    ->pluck('email');
 
             $dataApprovePBJ = DB::table('v_pr_duedate')
                     ->where('prnum', $ptaNumber)
@@ -259,7 +265,7 @@ class PurchaseRequestController extends Controller
 
             $checkApproval = DB::table('v_pr_approval')
                 ->where('prnum', $ptaNumber)->where('approval_status', 'A')->first();
-            
+
             if($checkApproval){
                 $result = array(
                     'msgtype' => '500',
@@ -290,7 +296,8 @@ class PurchaseRequestController extends Controller
             $pritem   = $req['pritem'];
 
             $insertData = array();
-            $count = 0;            
+            $prItems    = array();
+            $count      = 0;
 
             for($i = 0; $i < sizeof($parts); $i++){
                 $qty    = $quantity[$i];
@@ -327,8 +334,9 @@ class PurchaseRequestController extends Controller
                         'createdby'    => Auth::user()->email ?? Auth::user()->username
                     );
                 }
-                
+
                 array_push($insertData, $data);
+                array_push($prItems, $data);
 
                 DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
                 ->update([
@@ -343,7 +351,7 @@ class PurchaseRequestController extends Controller
             if(isset($req['efile']) && $req['efile'][0] != null){
                 $files = $req['efile'];
                 $insertFiles = array();
-    
+
                 foreach ($files as $efile) {
                     $filename = $efile->getClientOriginalName();
                     $upfiles = array(
@@ -355,9 +363,9 @@ class PurchaseRequestController extends Controller
                         'createdby'  => Auth::user()->username ?? Auth::user()->email
                     );
                     array_push($insertFiles, $upfiles);
-    
-                    $efile->move('files/PR/', $filename);  
-                    // $efile->move(public_path().'/files/PR/', $filename);  
+
+                    $efile->move('files/PR/', $filename);
+                    // $efile->move(public_path().'/files/PR/', $filename);
                 }
                 if(sizeof($insertFiles) > 0){
                     insertOrUpdate($insertFiles,'t_attachments');
@@ -369,23 +377,26 @@ class PurchaseRequestController extends Controller
             $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){
                 DB::table('t_pr_approval')->where('prnum', $ptaNumber)->delete();
-                $insertApproval = array();
-                foreach($approval as $row){
-                    $is_active = 'N';
-                    if($row->approver_level == 1){
-                        $is_active = 'Y';
+                for($a = 0; $a < sizeof($prItems); $a++){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $is_active = 'N';
+                        if($row->approver_level == 1){
+                            $is_active = 'Y';
+                        }
+                        $approvals = array(
+                            'prnum'             => $ptaNumber,
+                            'pritem'            => $prItems[$a]['pritem'],
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $row->approver,
+                            'requester'         => Auth::user()->id,
+                            'is_active'         => $is_active,
+                            'createdon'         => getLocalDatabaseDateTime()
+                        );
+                        array_push($insertApproval, $approvals);
                     }
-                    $approvals = array(
-                        'prnum'             => $ptaNumber,
-                        'approver_level'    => $row->approver_level,
-                        'approver'          => $row->approver,
-                        'requester'         => Auth::user()->id,
-                        'is_active'         => $is_active,
-                        'createdon'         => getLocalDatabaseDateTime()
-                    );
-                    array_push($insertApproval, $approvals);
+                    insertOrUpdate($insertApproval,'t_pr_approval');
                 }
-                insertOrUpdate($insertApproval,'t_pr_approval');
             }else{
                 DB::rollBack();
                 $result = array(
@@ -424,15 +435,15 @@ class PurchaseRequestController extends Controller
 
             $checkApproval = DB::table('v_pr_approval')
                         ->where('prnum', $prhdr->prnum)->where('approval_status', 'A')->first();
-                        
+
             if($checkApproval){
                 return Redirect::to("/proc/pr/listpr")->withError('PR : '. $prhdr->prnum . ' sudah di approve, data tidak bisa dihapus');
             }
-                        
+
             DB::table('t_pr01')->where('id', $id)->delete();
             DB::table('t_attachments')->where('doc_object', 'PR')->where('doc_number',$prhdr->prnum)->delete();
             DB::table('t_pr_approval')->where('prnum', $prhdr->prnum)->delete();
-            
+
             // return $pbjdoc;
             foreach($pbjdoc as $row){
                 DB::table('t_pbj02')
@@ -458,7 +469,7 @@ class PurchaseRequestController extends Controller
         try{
             $checkApproval = DB::table('v_pr_approval')
                 ->where('prnum', $req['prnum'])->where('approval_status', 'A')->first();
-            
+
             if($checkApproval){
                 $result = array(
                     'msgtype' => '500',

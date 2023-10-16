@@ -15,8 +15,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => '/transaction/budgeting'], function () {
         Route::get('/',             'Transaksi\BudgetingController@index')->middleware('checkAuth:transaction/budgeting');
         Route::post('/save',        'Transaksi\BudgetingController@save')->middleware('checkAuth:transaction/budgeting');
-        Route::get('/list',         'Transaksi\BudgetingController@list')->middleware('checkAuth:transaction/budgeting');  
-        Route::get('/budgetlist',   'Transaksi\BudgetingController@budgetLists')->middleware('checkAuth:transaction/budgeting');  
+        Route::get('/list',         'Transaksi\BudgetingController@list')->middleware('checkAuth:transaction/budgeting');
+        Route::get('/budgetlist',   'Transaksi\BudgetingController@budgetLists')->middleware('checkAuth:transaction/budgeting');
     });
 
     Route::group(['prefix' => '/cancel/approve'], function () {
@@ -27,10 +27,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/',                        'Transaksi\PbjController@index')->middleware('checkAuth:transaction/pbj');
         Route::post('/save',                   'Transaksi\PbjController@save');//->middleware('checkAuth:transaction/pbj');
         Route::get('/list',                    'Transaksi\PbjController@list')->middleware('checkAuth:transaction/pbj/list');
-        Route::get('/listpbj',                 'Transaksi\PbjController@listPBJ');//->middleware('checkAuth:transaction/pbj');  
-        Route::get('/detail/{p1}',             'Transaksi\PbjController@detailPBJ');//->middleware('checkAuth:transaction/pbj');  
-        Route::get('/budgetlist',              'Transaksi\PbjController@budgetLists');//->middleware('checkAuth:transaction/pbj');  
-        Route::get('/print/{p1}',              'Transaksi\PrintDocumentController@printpbj');//->middleware('checkAuth:transaction/pbj');  
+        Route::get('/listpbj',                 'Transaksi\PbjController@listPBJ');//->middleware('checkAuth:transaction/pbj');
+        Route::get('/detail/{p1}',             'Transaksi\PbjController@detailPBJ');//->middleware('checkAuth:transaction/pbj');
+        Route::get('/budgetlist',              'Transaksi\PbjController@budgetLists');//->middleware('checkAuth:transaction/pbj');
+        Route::get('/print/{p1}',              'Transaksi\PrintDocumentController@printpbj');//->middleware('checkAuth:transaction/pbj');
         Route::get('/create/{p1}',             'Transaksi\PbjController@create');//->middleware('checkAuth:transaction/pbj');
         Route::get('/datachecklisttidaklayak', 'Transaksi\PbjController@dataCekListTidakLayak');//->middleware('checkAuth:transaction/pbj');
         Route::get('/tidaklayak/detail/{p1}',  'Transaksi\ChecklistKendaraanController@detailCekListTidakLayak');//->middleware('checkAuth:transaction/pbj');
@@ -40,7 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/listopenwo', 'Transaksi\PbjController@listOpenWO');//->middleware('checkAuth:transaction/pbj');
 
         Route::get('/wo/detail/{p1}',      'Transaksi\PbjController@detailWO');//->middleware('checkAuth:transaction/pbj');
-        
+
     });
 
     Route::post('/transaction/pbj/deleteitem',          'Transaksi\PbjController@deletePBJItem');
@@ -53,7 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/pbj/duedatepbj',      'Transaksi\PbjController@duedatepbj')->middleware('checkAuth:pbj/duedatepbj');
     Route::get('/pbj/duedatepbjlist',  'Transaksi\PbjController@listDuedatePBJ')->middleware('checkAuth:pbj/duedatepbj');
-    
+
 
     Route::group(['prefix' => '/datachecklistkendaraan'], function () {
         Route::get('/',                 'Transaksi\ChecklistKendaraanController@ViewdataCekList')->middleware('checkAuth:datachecklistkendaraan');
@@ -81,14 +81,14 @@ Route::group(['middleware' => 'auth'], function () {
         // Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
     });
 
-    
+
 
     Route::group(['prefix' => '/approve/pbj'], function () {
         Route::get('/',                         'Transaksi\ApprovePbjController@index')->middleware('checkAuth:approve/pbj');
         Route::post('/save',                    'Transaksi\ApprovePbjController@save')->middleware('checkAuth:approve/pbj');
         Route::get('/approvelist',              'Transaksi\ApprovePbjController@pbjApprovalList')->middleware('checkAuth:approve/pbj');
         Route::get('/detail/{p1}',              'Transaksi\ApprovePbjController@approveDetail')->middleware('checkAuth:approve/pbj');
-        
+
         Route::post('/approveitems/{p1}',       'Transaksi\ApprovePbjController@approveItems')->middleware('checkAuth:approve/pbj');
     });
 
@@ -97,12 +97,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save',           'Transaksi\PurchaseRequestController@save')->middleware('checkAuth:proc/pr');
         Route::post('/update/{p1}',    'Transaksi\PurchaseRequestController@update')->middleware('checkAuth:proc/pr');
 
-        Route::get('/listpr',          'Transaksi\PurchaseRequestController@listPR')->middleware('checkAuth:proc/pr');  
+        Route::get('/listpr',          'Transaksi\PurchaseRequestController@listPR')->middleware('checkAuth:proc/pr');
         Route::get('/printlist',       'Transaksi\PrintDocumentController@printprlist')->middleware('checkAuth:proc/pr');
-        Route::get('/print/{p1}',      'Transaksi\PrintDocumentController@printpr')->middleware('checkAuth:proc/pr'); 
+        Route::get('/print/{p1}',      'Transaksi\PrintDocumentController@printpr')->middleware('checkAuth:proc/pr');
         Route::get('/listapprovedpbj', 'Transaksi\PurchaseRequestController@listApprovedPbj')->middleware('checkAuth:proc/pr');
-        Route::get('/detail/{p1}',     'Transaksi\PrintDocumentController@prdetail')->middleware('checkAuth:proc/pr');   
-        
+        Route::get('/detail/{p1}',     'Transaksi\PrintDocumentController@prdetail')->middleware('checkAuth:proc/pr');
+
         Route::get('/change/{p1}',      'Transaksi\PurchaseRequestController@changePR')->middleware('checkAuth:proc/pr');
         Route::post('/deleteitem',      'Transaksi\PurchaseRequestController@deletePRItem')->middleware('checkAuth:proc/pr');
         Route::get('/delete/{p1}',      'Transaksi\PurchaseRequestController@deletePR')->middleware('checkAuth:proc/pr');
@@ -116,17 +116,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save',                    'Transaksi\ApprovePurchaseRequestController@save')->middleware('checkAuth:approve/pr');
         Route::get('/approvelist',              'Transaksi\ApprovePurchaseRequestController@ApprovalList')->middleware('checkAuth:approve/pr');
         Route::get('/detail/{p1}',              'Transaksi\ApprovePurchaseRequestController@approveDetail')->middleware('checkAuth:approve/pr');
+
+        Route::post('/approveitems',            'Transaksi\ApprovePurchaseRequestController@approveItems')->middleware('checkAuth:approve/pr');
     });
 
     Route::group(['prefix' => '/proc/po'], function () {
         Route::get('/',               'Transaksi\PurchaseOrderController@index')->middleware('checkAuth:proc/po');
         Route::post('/save',          'Transaksi\PurchaseOrderController@save')->middleware('checkAuth:proc/po');
-        Route::get('/listpo',         'Transaksi\PurchaseOrderController@listPO')->middleware('checkAuth:proc/po');  
-        // Route::get('/budgetlist',   'Transaksi\PurchaseRequestController@budgetLists')->middleware('checkAuth:proc/pr');  
+        Route::get('/listpo',         'Transaksi\PurchaseOrderController@listPO')->middleware('checkAuth:proc/po');
+        // Route::get('/budgetlist',   'Transaksi\PurchaseRequestController@budgetLists')->middleware('checkAuth:proc/pr');
 
-        Route::get('/print/{p1}',     'Transaksi\PrintDocumentController@printpo')->middleware('checkAuth:proc/po');   
-        Route::get('/detail/{p1}',    'Transaksi\PrintDocumentController@podetail')->middleware('checkAuth:proc/po');   
-        Route::get('/printlist',      'Transaksi\PrintDocumentController@printpolist')->middleware('checkAuth:proc/po'); 
+        Route::get('/print/{p1}',     'Transaksi\PrintDocumentController@printpo')->middleware('checkAuth:proc/po');
+        Route::get('/detail/{p1}',    'Transaksi\PrintDocumentController@podetail')->middleware('checkAuth:proc/po');
+        Route::get('/printlist',      'Transaksi\PrintDocumentController@printpolist')->middleware('checkAuth:proc/po');
 
         Route::get('/listapprovedpr', 'Transaksi\PurchaseOrderController@getApprovedPR')->middleware('checkAuth:proc/po');
 
@@ -185,8 +187,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/process',         'Transaksi\SpkController@processWO')->middleware('checkAuth:logistic/wo');
         Route::get('/listwo',          'Transaksi\SpkController@listwoview')->middleware('checkAuth:logistic/wo');
         Route::get('/listdatawo',      'Transaksi\SpkController@listdatawo'); //->middleware('checkAuth:logistic/wo');
-        Route::get('/detail/{p1}',     'Transaksi\SpkController@wodetail')->middleware('checkAuth:logistic/wo');   
-        Route::get('/print/{p1}',      'Transaksi\PrintDocumentController@printwo')->middleware('checkAuth:logistic/wo');  
+        Route::get('/detail/{p1}',     'Transaksi\SpkController@wodetail')->middleware('checkAuth:logistic/wo');
+        Route::get('/print/{p1}',      'Transaksi\PrintDocumentController@printwo')->middleware('checkAuth:logistic/wo');
         Route::post('/save',           'Transaksi\SpkController@save')->middleware('checkAuth:logistic/wo');
 
         // Route::get('/print/{p1}',   'Transaksi\PrintDocumentController@printwo')->middleware('checkAuth:printdoc/wo');
@@ -202,7 +204,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/deleteitem',      'Transaksi\SpkController@deleteWOItem')->middleware('checkAuth:logistic/wo');
         Route::get('/delete/{p1}',      'Transaksi\SpkController@deleteWO')->middleware('checkAuth:logistic/wo');
 
-        
+
     });
     // logistic/terimapo
 
@@ -240,5 +242,5 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/pr/list',          'Transaksi\CancelApprovePrController@listPR')->middleware('checkAuth:cancel/approve/pr');
         Route::get('/po/list',          'Transaksi\CancelApprovePoController@listPO')->middleware('checkAuth:cancel/approve/po');
     });
-    
+
 });
