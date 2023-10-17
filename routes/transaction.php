@@ -156,6 +156,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/save',                    'Transaksi\ApprovePurchaseOrderController@save')->middleware('checkAuth:approve/po');
         Route::get('/approvelist',              'Transaksi\ApprovePurchaseOrderController@ApprovalList')->middleware('checkAuth:approve/po');
         Route::get('/detail/{p1}',              'Transaksi\ApprovePurchaseOrderController@approveDetail')->middleware('checkAuth:approve/po');
+
+        Route::post('/approveitems',            'Transaksi\ApprovePurchaseOrderController@approveItems')->middleware('checkAuth:approve/po');
     });
 
     Route::group(['prefix' => '/approve/spk'], function () {

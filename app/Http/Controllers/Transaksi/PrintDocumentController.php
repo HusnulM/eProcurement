@@ -256,7 +256,8 @@ class PrintDocumentController extends Controller
         $podtl       = DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
         $costs       = DB::table('t_po03')->where('ponum', $pohdr->ponum)->get();
         $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $pohdr->ponum)->get();
-        $approvals   = DB::table('v_po_approval')->where('ponum', $pohdr->ponum)->get();
+        $approvals   = DB::table('v_po_approval_v2')
+                        ->where('ponum', $pohdr->ponum)->get();
 
         $prNumber = DB::table('t_po02')->where('ponum', $pohdr->ponum)->pluck('prnum');
         $prAttachments = DB::table('t_attachments')->where('doc_object','PR')
@@ -328,7 +329,13 @@ class PrintDocumentController extends Controller
         // $pdf->setOptions(['isRemoteEnabled' => true]);
         // $pdf->setProtocol($_SERVER['DOCUMENT_ROOT']);
         // $pdf = PDF::loadview('transaksi.po.printpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
-        return $pdf->stream();
+        // return $pdf->stream();
+        $filename = $pohdr->ponum;
+        $filename = str_replace('/', '-', $filename);
+        $content = $pdf->output();
+        file_put_contents('files/Document/'.$filename.'.pdf', $content);
+        return "Ok";
+        // return $pdf->save('files/Document/'.$pohdr->ponum.'.pdf');
     }
 
     public function wolist(Request $req){

@@ -15,7 +15,7 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <form action="{{ url('proc/po/save') }}" method="post">
         @csrf
@@ -23,12 +23,12 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail Purchase Order</h3>
+                        <h3 class="card-title">Detail Purchase Order <b>{{ $pohdr->ponum }}</b></h3>
                         <div class="card-tools">
                             <!-- <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan Purchase Order
                             </button> -->
-                            <a href="{{ url('/proc/po/print/') }}/{{ $pohdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
+                            <a href="{{ url('/proc/po/print/') }}/{{ $pohdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'>
                                 <i class='fa fa-print'></i> Print
                             </a>
                             <a href="{{ url('/proc/po/listpo') }}" class="btn btn-default btn-sm">
@@ -73,7 +73,7 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="currency">Currency</label>                                            
+                                            <label for="currency">Currency</label>
                                             <select name="currency" id="currency" class="form-control">
                                                 <option value="{{ $pohdr->currency }}">{{ $pohdr->currency }}</option>
                                                 <option value="USD">USD - US Dollar</option>
@@ -113,7 +113,7 @@
                                                         <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
                                                     </li>
                                                 </ul>
-                                            </div>                                    
+                                            </div>
                                         </div>
 
                                         <div class="card-body">
@@ -144,7 +144,7 @@
                                                                             </tr>
                                                                         @endforeach
                                                                         </tbody>
-                                                                    </table>                              
+                                                                    </table>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -153,6 +153,7 @@
                                                                 <div class="col-lg-12">
                                                                     <table id="tbl-approval" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                                                         <thead>
+                                                                            <th>PO Item</th>
                                                                             <th>Approver Name</th>
                                                                             <th>Approver Level</th>
                                                                             <th>Approval Status</th>
@@ -162,6 +163,7 @@
                                                                         <tbody>
                                                                             @foreach($approvals as $key => $row)
                                                                             <tr>
+                                                                                <td>{{ $row->poitem }}</td>
                                                                                 <td>{{ $row->approver_name }}</td>
                                                                                 <td>{{ $row->approver_level }}</td>
                                                                                 @if($row->approval_status == "A")
@@ -177,10 +179,10 @@
                                                                                     Open
                                                                                 </td>
                                                                                 @endif
-                                                                                
+
                                                                                 <td>
                                                                                     @if($row->approval_date != null)
-                                                                                        <i class="fa fa-clock"></i> 
+                                                                                        <i class="fa fa-clock"></i>
                                                                                         ({{ formatDateTime($row->approval_date) }})
                                                                                     @endif
                                                                                 </td>
@@ -188,10 +190,10 @@
                                                                             </tr>
                                                                             @endforeach
                                                                         </tbody>
-                                                                    </table>                                                    
+                                                                    </table>
                                                                 </div>
                                                             </div>
-                                                        </div>   
+                                                        </div>
 
                                                         <div class="tab-pane fade" id="custom-content-above-cost" role="tabpanel" aria-labelledby="custom-content-above-cost-tab">
                                                             <div class="row">
@@ -309,10 +311,10 @@
                                                                             </tr>
                                                                         @endforeach
                                                                         </tbody>
-                                                                    </table>                           
+                                                                    </table>
                                                                 </div>
                                                             </div>
-                                                        </div> 
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -356,14 +358,14 @@
                                 <th>Department</th>
                                 <th>Remark</th>
                                 <th style="width:50px; text-align:center;">
-                                    
+
                                 </th>
                             </thead>
                             <tbody>
 
                             </tbody>
-                        </table>  
-                    </div> 
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -388,7 +390,7 @@
                 <div class="position-relative row form-group">
                     <div class="col-lg-12" id="fileViewer">
                         <!-- <div id="example1"></div> -->
-                        
+
                     </div>
                 </div>
             </div>
@@ -401,26 +403,26 @@
         </div>
         </form>
     </div>
-</div>   
+</div>
 @endsection
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
-    function previewFile(files){         
+<script>
+    function previewFile(files){
         // alert(base_url)
         var pathfile = base_url+'/'+files;
         if(files !== ""){
             $('#fileViewer').html('');
             $('#fileViewer').append(`
                 <embed src="`+ pathfile +`" frameborder="0" width="100%" height="500px">
-            
+
             `);
 
             var fileUri = pathfile;
             fileUri = fileUri.replace("#toolbar=0", "?force=true");
-            
-            document.getElementById("btnDownloadFile").href=fileUri; 
+
+            document.getElementById("btnDownloadFile").href=fileUri;
             $('#modalPreviewFile').modal('show');
         } else{
             swal("File Not Found", "", "warning");
@@ -434,7 +436,7 @@
         $('.btn-add-po-item-based-pr').on('click', function(){
             loadListPR();
             $('#modal-list-pr').modal('show');
-        });        
+        });
 
         var fCount = 0;
 
@@ -470,7 +472,7 @@
                 </tr>
             `);
 
-            
+
 
             $('.btnRemove').on('click', function(e){
                 e.preventDefault();
@@ -486,7 +488,7 @@
                 }
             });
 
-            $('#find-part'+fCount).select2({ 
+            $('#find-part'+fCount).select2({
                 placeholder: 'Type Part Number',
                 width: '100%',
                 minimumInputLength: 0,
@@ -527,7 +529,7 @@
 
             $('#find-part'+fCount).on('change', function(){
                 // alert(this.value)
-                
+
                 var data = $('#find-part'+fCount).select2('data')
                 console.log(data);
 
@@ -553,7 +555,7 @@
                     if(theEvent.preventDefault) theEvent.preventDefault();
                 }
             }
-            
+
             function formatNumber(num) {
                 return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
             }
@@ -568,14 +570,14 @@
                 sisa     		  = split[0].length % 3,
                 rupiah     		  = split[0].substr(0, sisa),
                 ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-            
+
                 if(ribuan){
                     separator = sisa ? ',' : '';
                     rupiah += separator + ribuan.join(',');
                 }
-            
+
                 rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+                return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
             }
         });
 
@@ -587,7 +589,7 @@
                 searchField.focus();
             }
         });
-        $('#find-vendor').select2({ 
+        $('#find-vendor').select2({
             placeholder: 'Type Vendor Name',
             width: '100%',
             minimumInputLength: 0,
@@ -628,7 +630,7 @@
 
         $('#find-vendor').on('change', function(){
             // alert(this.value)
-            
+
             var data = $('#find-vendor').select2('data')
             console.log(data);
 
@@ -660,25 +662,25 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "prnum", className: 'uid'},
                     {data: "prdate", className: 'uid'},
                     {data: "material"},
                     {data: "matdesc"},
                     {data: "quantity", "className": "text-right",},
-                    {data: "unit"},      
+                    {data: "unit"},
                     {data: "requestby"},
-                    {data: "department"},      
-                    {data: "remark"},      
-                    {"defaultContent": 
+                    {data: "department"},
+                    {data: "remark"},
+                    {"defaultContent":
                         `
                         <button class='btn btn-success btn-sm button-add-pbj-to-pritem'> <i class="fa fa-plus"></i></button>
                         `,
                         "className": "text-center",
                         "width": "10%"
                     }
-                ]  
+                ]
             });
 
             $('#tbl-pr-list tbody').on( 'click', '.button-add-pbj-to-pritem', function () {
@@ -725,7 +727,7 @@
                 `);
 
                 checkTabledata();
-                
+
                 $('.btnRemove').on('click', function(e){
                     e.preventDefault();
                     $(this).closest("tr").remove();
@@ -745,14 +747,14 @@
                     sisa     		  = split[0].length % 3,
                     rupiah     		  = split[0].substr(0, sisa),
                     ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-                
+
                     if(ribuan){
                         separator = sisa ? ',' : '';
                         rupiah += separator + ribuan.join(',');
                     }
-                
+
                     rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                    return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+                    return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
                 }
 
                 function validate(evt) {
@@ -782,7 +784,7 @@
             //gets rows of table
             var rowLength = oTable.rows.length;
 
-            //loops through rows    
+            //loops through rows
             for (i = 0; i < rowLength; i++){
                 //gets cells of current row
                 var oCells = oTable.rows.item(i).cells;

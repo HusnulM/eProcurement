@@ -288,7 +288,7 @@ class ApprovePurchaseRequestController extends Controller
 
                 $checkIsFullApprove = DB::table('t_pr_approval')
                                           ->where('prnum', $ptaNumber)
-                                          ->whereIn('pritem', $data['pritem'])
+                                        //   ->whereIn('pritem', $data['pritem'])
                                           ->where('approval_status', '!=', 'A')
                                           ->get();
                 // return $checkIsFullApprove;

@@ -495,7 +495,7 @@
                     "_token": _token
                 }
                 $.ajax({
-                    url:base_url+'/approve/pbj/approveitems/{{ $prhdr->id }}',
+                    url:base_url+'/approve/pr/approveitems',
                     method:'post',
                     data:prtemchecked,
                     dataType:'JSON',

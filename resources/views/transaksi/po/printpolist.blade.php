@@ -1,11 +1,11 @@
 @extends('layouts/App')
 
-@section('title', 'Print PO')
+@section('title', 'List PO')
 
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -19,7 +19,7 @@
                         <!-- <a href="{{ url('/master/department/create') }}" class="btn btn-success btn-sm">
                             <i class="fas fa-plus"></i> Create Department
                         </a> -->
-                        <a href="{{ url('/proc/po') }}" class='btn btn-default btn-sm'> 
+                        <a href="{{ url('/proc/po') }}" class='btn btn-default btn-sm'>
                             <i class='fa fa-arrow-left'></i> Back
                         </a>
                     </div>
@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="col-lg-4" style="text-align:right;">
                                         <br>
-                                        <button type="button" class="btn btn-default mt-2 btn-search"> 
+                                        <button type="button" class="btn btn-default mt-2 btn-search">
                                             <i class="fa fa-search"></i> Filter
                                         </button>
                                     </div>
@@ -88,7 +88,7 @@
                                     <th></th>
                                 </thead>
                                 <tbody>
-        
+
                                 </tbody>
                             </table>
                         </div>
@@ -154,7 +154,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "ponum", className: 'uid'},
                     {data: "podat", className: 'uid',
@@ -177,7 +177,7 @@
                     // },
                     // {data: "unit"},
                     {data: "deptname"},
-                    {data: "approvestat", 
+                    {data: "approvestat",
                         render: function (data, type, row){
                             if(row.approvestat == "O"){
                                 return `Open`;
@@ -189,12 +189,12 @@
                                 return `Open`;
                             }
                         }
-                    },                
+                    },
                     {data: "note" },
                     // {data: "approvestat" },
                     // {data: "pbjnumber" },
                     // {data: "pbjitem" },
-                    {"defaultContent": 
+                    {"defaultContent":
                         `<button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
                          <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> View Detail</button>
                          <button class='btn btn-primary btn-sm button-change'> <i class='fa fa-edit'></i> Change</button>
@@ -203,10 +203,10 @@
                         "className": "text-center",
                         "width": "23%"
                     }
-                ]  
+                ]
             });
 
-            $('#tbl-budget-list tbody').on( 'click', '.button-print', function () {                
+            $('#tbl-budget-list tbody').on( 'click', '.button-print', function () {
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
@@ -219,28 +219,28 @@
                 // }
             });
 
-            $('#tbl-budget-list tbody').on( 'click', '.button-detail', function () {                
+            $('#tbl-budget-list tbody').on( 'click', '.button-detail', function () {
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
                 window.location = "/proc/po/detail/"+selected_data.id;
             });
 
-            $('#tbl-budget-list tbody').on( 'click', '.button-change', function () {                
+            $('#tbl-budget-list tbody').on( 'click', '.button-change', function () {
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
                 window.location = "/proc/po/change/"+selected_data.id;
             });
 
-            $('#tbl-budget-list tbody').on( 'click', '.button-delete', function () {                
+            $('#tbl-budget-list tbody').on( 'click', '.button-delete', function () {
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
                 window.location = "/proc/po/delete/"+selected_data.id;
             });
         }
-        
+
 
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');
@@ -252,14 +252,14 @@
             sisa     		  = split[0].length % 3,
             rupiah     		  = split[0].substr(0, sisa),
             ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-        
+
             if(ribuan){
                 separator = sisa ? ',' : '';
                 rupiah += separator + ribuan.join(',');
             }
-        
+
             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
         }
     });
 </script>
