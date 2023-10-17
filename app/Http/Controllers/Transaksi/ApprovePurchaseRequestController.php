@@ -18,16 +18,24 @@ class ApprovePurchaseRequestController extends Controller
     public function approveDetail($id){
         $prhdr = DB::table('t_pr01')->where('id', $id)->first();
         if($prhdr){
-            $items       = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
-            $approvals   = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
-            $department  = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->first();
+            $items       = DB::table('v_pr_approval_v2')
+                            ->select('id','prnum', 'pritem', 'prdate', 'requestby', 'material', 'matdesc', 'quantity', 'unit', 'pbjnumber', 'pbjitem', 'approval_status')
+                            ->distinct()
+                            ->where('prnum', $prhdr->prnum)
+                            ->where('approver', Auth::user()->id)
+                            ->get();
+            $approvals   = DB::table('v_pr_approval_v2')
+                            ->where('prnum', $prhdr->prnum)
+                            ->where('approver', Auth::user()->id)
+                            ->get();
+            $department  = DB::table('v_pr_approval_v2')->where('prnum', $prhdr->prnum)->first();
             $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
 
             $pbjNumber = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->pluck('pbjnumber');
             $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
                               ->whereIn('doc_number', $pbjNumber)->get();
 
-            $isApprovedbyUser = DB::table('v_pr_approval')
+            $isApprovedbyUser = DB::table('v_pr_approval_v2')
                     ->where('prnum',    $prhdr->prnum)
                     ->where('approver', Auth::user()->id)
                     ->where('is_active', 'Y')
@@ -54,7 +62,9 @@ class ApprovePurchaseRequestController extends Controller
             $params = $request->params;
             $whereClause = $params['sac'];
         }
-        $query = DB::table('v_pr_approval')
+        $query = DB::table('v_pr_approval_v2')
+                 ->select('id','prnum', 'prdate','requestby','department')
+                 ->distinct()
                  ->where('approver',Auth::user()->id)
                  ->where('is_active','Y')
                  ->where('approval_status','N')
@@ -213,9 +223,11 @@ class ApprovePurchaseRequestController extends Controller
             $items      = join(",",$data['pritem']);
             $ptaNumber  = $pbjHeader->prnum;
 
-            $pbjItemData = DB::table('t_pr02')
+            $pbjItemData = DB::table('v_pr_approval_v2')
             ->where('prnum', $ptaNumber)
-            ->whereIn('pritem', $data['pritem'])->get();
+            ->whereIn('pritem', $data['pritem'])
+            ->where('approver', Auth::user()->id)
+            ->get();
             // return $pbjItemData;
             $userAppLevel = DB::table('t_pr_approval')
             ->select('approver_level')

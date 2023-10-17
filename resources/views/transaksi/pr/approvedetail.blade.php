@@ -109,7 +109,7 @@
                                                     <tr>
                                                         {{-- <td>{{ $key+1 }}</td> --}}
                                                         <td style="text-align:center;">
-                                                            @if($row->approvestat !== "A" && $row->approvestat !== "R")
+                                                            @if($row->approval_status !== "A" && $row->approval_status !== "R")
                                                             <input class="filled-in checkbox" type="checkbox" id="{{ $row->pritem }}" name="ID[]">
                                                             <label for="{{ $row->pritem }}"></label>
                                                             @endif
@@ -158,6 +158,7 @@
                                         <div class="col-lg-12">
                                             <table id="tbl-approval" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                                 <thead>
+                                                    <th>PR Item</th>
                                                     <th>Approver Name</th>
                                                     <th>Approver Level</th>
                                                     <th>Approval Status</th>
@@ -167,6 +168,7 @@
                                                 <tbody>
                                                     @foreach($approvals as $key => $row)
                                                     <tr>
+                                                        <td>{{ $row->pritem }}</td>
                                                         <td>{{ $row->approver_name }}</td>
                                                         <td>{{ $row->approver_level }}</td>
                                                         @if($row->approval_status == "A")
@@ -467,9 +469,9 @@
                         }, 2000);
                     }else{
                         toastr.error(response.message)
-                        // setTimeout(function(){
-                        //     location.reload();
-                        // }, 2000);
+                        setTimeout(function(){
+                            location.reload();
+                        }, 2000);
                     }
                 });
             }else{
@@ -487,6 +489,7 @@
             if(_splchecked.length > 0){
                 console.log(_splchecked)
                 var prtemchecked = {
+                    "prnum"  : {{ $prhdr->id }},
                     "pritem" : _splchecked,
                     "action" : _action,
                     "_token": _token
