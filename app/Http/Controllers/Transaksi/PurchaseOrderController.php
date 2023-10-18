@@ -384,7 +384,8 @@ class PurchaseOrderController extends Controller
                     'budget_code'  => $budgetCode,
                     'budget_period'=> $budgetPriod,
                     'createdon'    => date('Y-m-d H:m:s'),
-                    'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    'createdby'    => $pohdr->createdby,
+                    // Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertData, $data);
                 array_push($poItems, $data);
@@ -457,7 +458,8 @@ class PurchaseOrderController extends Controller
             }
 
             //Set Approval
-            $approval = DB::table('v_workflow_budget')->where('object', 'PO')->where('requester', Auth::user()->id)->get();
+            $creator = DB::table('users')->where('email', $pohdr->createdby)->first();
+            $approval = DB::table('v_workflow_budget')->where('object', 'PO')->where('requester', $creator->id)->get();
             if(sizeof($approval) > 0){
                 DB::table('t_po_approval')->where('ponum', $ptaNumber)->delete();
                 for($a = 0; $a < sizeof($poItems); $a++){
@@ -472,7 +474,7 @@ class PurchaseOrderController extends Controller
                             'poitem'            => $poItems[$a]['poitem'],
                             'approver_level'    => $row->approver_level,
                             'approver'          => $row->approver,
-                            'requester'         => Auth::user()->id,
+                            'requester'         => $creator->id,
                             'is_active'         => $is_active,
                             'createdon'         => getLocalDatabaseDateTime()
                         );
