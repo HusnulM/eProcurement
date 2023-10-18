@@ -90,7 +90,7 @@ class PurchaseOrderController extends Controller
             $whereClause = $params['sac'];
         }
         $deptid= $params['deptid'];
-        $query = DB::table('v_approved_pr')
+        $query = DB::table('v_approved_prv2')
                 //  ->where('pocreated', 'N')
                  ->where('openqty', '>', 0)
                  ->orderBy('id');
