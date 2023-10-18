@@ -329,12 +329,12 @@ class PrintDocumentController extends Controller
         // $pdf->setOptions(['isRemoteEnabled' => true]);
         // $pdf->setProtocol($_SERVER['DOCUMENT_ROOT']);
         // $pdf = PDF::loadview('transaksi.po.printpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
-        // return $pdf->stream();
-        $filename = $pohdr->ponum;
-        $filename = str_replace('/', '-', $filename);
-        $content = $pdf->output();
-        file_put_contents('files/Document/'.$filename.'.pdf', $content);
-        return "Ok";
+        return $pdf->stream();
+        // $filename = $pohdr->ponum;
+        // $filename = str_replace('/', '-', $filename);
+        // $content = $pdf->output();
+        // file_put_contents('files/Document/'.$filename.'.pdf', $content);
+        // return "Ok";
         // return $pdf->save('files/Document/'.$pohdr->ponum.'.pdf');
     }
 
