@@ -83,12 +83,12 @@ class ApprovePurchaseRequestController extends Controller
     }
 
     public function getNextApproval($dcnNum){
-        $userLevel = DB::table('t_pr_approval')
+        $userLevel = DB::table('t_pr_approvalv2')
                     ->where('prnum', $dcnNum)
                     ->where('approver', Auth::user()->id)
                     ->first();
 
-        $nextApproval = DB::table('t_pr_approval')
+        $nextApproval = DB::table('t_pr_approvalv2')
                         ->where('prnum', $dcnNum)
                         ->where('approver_level', '>', $userLevel->approver_level)
                         ->orderBy('approver_level', 'ASC')
@@ -117,7 +117,7 @@ class ApprovePurchaseRequestController extends Controller
             //     'approved_amount' => $amount,
             // ]);
 
-            $userAppLevel = DB::table('t_pr_approval')
+            $userAppLevel = DB::table('t_pr_approvalv2')
                             ->select('approver_level')
                             ->where('prnum', $ptaNumber)
                             ->where('approver', Auth::user()->id)
@@ -126,7 +126,7 @@ class ApprovePurchaseRequestController extends Controller
             //Set Approval
 
             if($req['action'] === 'A'){
-                DB::table('t_pr_approval')
+                DB::table('t_pr_approvalv2')
                 ->where('prnum', $ptaNumber)
                 // ->where('approver_id', Auth::user()->id)
                 ->where('approver_level',$userAppLevel->approver_level)
@@ -138,14 +138,14 @@ class ApprovePurchaseRequestController extends Controller
                 ]);
                 $nextApprover = $this->getNextApproval($ptaNumber);
                 if($nextApprover  != null){
-                    DB::table('t_pr_approval')
+                    DB::table('t_pr_approvalv2')
                     ->where('prnum', $ptaNumber)
                     ->where('approver_level', $nextApprover)
                     ->update([
                         'is_active' => 'Y'
                     ]);
                 }
-                $checkIsFullApprove = DB::table('t_pr_approval')
+                $checkIsFullApprove = DB::table('t_pr_approvalv2')
                                           ->where('prnum', $ptaNumber)
                                           ->where('approval_status', '!=', 'A')
                                           ->get();
@@ -176,7 +176,7 @@ class ApprovePurchaseRequestController extends Controller
                     'message' => 'PR dengan Nomor : '. $ptaNumber . ' berhasil di approve'
                 );
             }else{
-                DB::table('t_pr_approval')
+                DB::table('t_pr_approvalv2')
                 ->where('prnum', $ptaNumber)
                 // ->where('approver_id', Auth::user()->id)
                 // ->where('approver_level',$userAppLevel->approver_level)
@@ -229,7 +229,7 @@ class ApprovePurchaseRequestController extends Controller
             ->where('approver', Auth::user()->id)
             ->get();
             // return $pbjItemData;
-            $userAppLevel = DB::table('t_pr_approval')
+            $userAppLevel = DB::table('t_pr_approvalv2')
             ->select('approver_level')
             ->where('prnum', $ptaNumber)
             ->whereIn('pritem', $data['pritem'])
@@ -239,7 +239,7 @@ class ApprovePurchaseRequestController extends Controller
             // return $userAppLevel;
 
             if($data['action'] === 'R'){
-                DB::table('t_pr_approval')
+                DB::table('t_pr_approvalv2')
                 ->where('prnumber', $ptaNumber)
                 ->whereIn('pritem', $data['pritem'])
                 // ->where('approver_level', $nextApprover)
@@ -263,7 +263,7 @@ class ApprovePurchaseRequestController extends Controller
                 ]);
             }else{
                 //Set Approval
-                DB::table('t_pr_approval')
+                DB::table('t_pr_approvalv2')
                 ->where('prnum', $ptaNumber)
                 ->whereIn('pritem', $data['pritem'])
                 ->where('approver_level',$userAppLevel->approver_level)
@@ -277,7 +277,7 @@ class ApprovePurchaseRequestController extends Controller
 
                 $nextApprover = $this->getNextApproval($ptaNumber);
                 if($nextApprover  != null){
-                    DB::table('t_pr_approval')
+                    DB::table('t_pr_approvalv2')
                     ->where('prnum', $ptaNumber)
                     ->whereIn('pritem', $data['pritem'])
                     ->where('approver_level', $nextApprover)
@@ -286,7 +286,7 @@ class ApprovePurchaseRequestController extends Controller
                     ]);
                 }
 
-                $checkIsFullApprove = DB::table('t_pr_approval')
+                $checkIsFullApprove = DB::table('t_pr_approvalv2')
                                           ->where('prnum', $ptaNumber)
                                         //   ->whereIn('pritem', $data['pritem'])
                                           ->where('approval_status', '!=', 'A')
@@ -354,7 +354,7 @@ class ApprovePurchaseRequestController extends Controller
     public function reGenerateApproval(){
         DB::beginTransaction();
         try{
-            // $oldPO = DB::table('t_pr_approval')->where('pritem', 0)->limit(40)->get();
+            // $oldPO = DB::table('t_pr_approvalv2')->where('pritem', 0)->limit(40)->get();
             $pohdr    = DB::table('t_pr01')->get();
 
             foreach($pohdr as $po){
@@ -366,7 +366,7 @@ class ApprovePurchaseRequestController extends Controller
                             ->where('object', 'PR')
                             ->where('requester', $creator->id)->get();
 
-                DB::table('t_pr_approval')->where('prnum', $ptaNumber)->delete();
+                DB::table('t_pr_approvalv2')->where('prnum', $ptaNumber)->delete();
                 for($a = 0; $a < sizeof($poItems); $a++){
                     $insertApproval = array();
                     foreach($approval as $row){
@@ -385,7 +385,7 @@ class ApprovePurchaseRequestController extends Controller
                         );
                         array_push($insertApproval, $approvals);
                     }
-                    insertOrUpdate($insertApproval,'t_pr_approval');
+                    insertOrUpdate($insertApproval,'t_pr_approvalv2');
                 }
 
                 DB::commit();

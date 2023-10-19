@@ -96,7 +96,7 @@ class PrintDocumentController extends Controller
         $prhdr    = DB::table('t_pr01')->where('id', $id)->first();
         $prdtl    = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
 
-        $approval = DB::table('t_pr_approval')
+        $approval = DB::table('t_pr_approvalv2')
                     ->where('prnum', $prhdr->prnum)
                     ->where('approval_status', 'A')
                     ->orderBy('approver_level', 'DESC')

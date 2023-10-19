@@ -55,7 +55,7 @@ class PurchaseRequestController extends Controller
         $prhdr = DB::table('t_pr01')->where('id', $id)->first();
         $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->where('isdeleted', 'N')->get();
         $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
-        $approvals   = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
+        $approvals   = DB::table('v_pr_approval_v2')->where('prnum', $prhdr->prnum)->get();
         // return $attachments;
         return view('transaksi.pr.change',
             [
@@ -199,7 +199,7 @@ class PurchaseRequestController extends Controller
                         );
                         array_push($insertApproval, $approvals);
                     }
-                    insertOrUpdate($insertApproval,'t_pr_approval');
+                    insertOrUpdate($insertApproval,'t_pr_approvalv2');
                 }
             }else{
                 DB::rollBack();
@@ -376,7 +376,7 @@ class PurchaseRequestController extends Controller
             //Set Approval
             $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
             if(sizeof($approval) > 0){
-                DB::table('t_pr_approval')->where('prnum', $ptaNumber)->delete();
+                DB::table('t_pr_approvalv2')->where('prnum', $ptaNumber)->delete();
                 for($a = 0; $a < sizeof($prItems); $a++){
                     $insertApproval = array();
                     foreach($approval as $row){
@@ -395,7 +395,7 @@ class PurchaseRequestController extends Controller
                         );
                         array_push($insertApproval, $approvals);
                     }
-                    insertOrUpdate($insertApproval,'t_pr_approval');
+                    insertOrUpdate($insertApproval,'t_pr_approvalv2');
                 }
             }else{
                 DB::rollBack();
@@ -433,7 +433,7 @@ class PurchaseRequestController extends Controller
             $pbjdoc = DB::table('t_pr02')
                         ->where('prnum', $prhdr->prnum)->get();
 
-            $checkApproval = DB::table('v_pr_approval')
+            $checkApproval = DB::table('v_pr_approval_v2')
                         ->where('prnum', $prhdr->prnum)->where('approval_status', 'A')->first();
 
             if($checkApproval){
@@ -442,7 +442,7 @@ class PurchaseRequestController extends Controller
 
             DB::table('t_pr01')->where('id', $id)->delete();
             DB::table('t_attachments')->where('doc_object', 'PR')->where('doc_number',$prhdr->prnum)->delete();
-            DB::table('t_pr_approval')->where('prnum', $prhdr->prnum)->delete();
+            DB::table('t_pr_approvalv2')->where('prnum', $prhdr->prnum)->delete();
 
             // return $pbjdoc;
             foreach($pbjdoc as $row){
@@ -467,8 +467,10 @@ class PurchaseRequestController extends Controller
     public function deletePRItem(Request $req){
         DB::beginTransaction();
         try{
-            $checkApproval = DB::table('v_pr_approval')
-                ->where('prnum', $req['prnum'])->where('approval_status', 'A')->first();
+            $checkApproval = DB::table('v_pr_approval_v2')
+                ->where('prnum', $req['prnum'])
+                ->where('approval_status', 'A')
+                ->first();
 
             if($checkApproval){
                 $result = array(
@@ -487,8 +489,8 @@ class PurchaseRequestController extends Controller
             //     'isdeleted' => 'Y'
             // ]);
             DB::table('t_pr02')->where('prnum', $req['prnum'])->where('pritem', $req['pritem'])->delete();
-            // DB::table('t_pr_approval')->where('prnum', $req['prnum']); //->where('pritem', $req['pritem'])->delete();
-            // DB::table('t_pr_approval')->where('prnum', $prhdr->prnum)->delete();
+            // DB::table('t_pr_approvalv2')->where('prnum', $req['prnum']); //->where('pritem', $req['pritem'])->delete();
+            // DB::table('t_pr_approvalv2')->where('prnum', $prhdr->prnum)->delete();
 
             foreach($pbjdoc as $row){
                 DB::table('t_pbj02')
