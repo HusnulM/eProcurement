@@ -378,7 +378,7 @@ class ApprovePurchaseRequestController extends Controller
                             'is_active'         => $po->is_active,
                             'createdon'         => $po->createdon,
                             'approval_remark'   => $po->approval_remark,
-                            'approval_date'     => $po->approval_date,
+                            'approval_date'     => $po->approval_date ?? null,
                             'approved_by'       => $po->approved_by
                         );
                         array_push($insertApproval, $approvals);
