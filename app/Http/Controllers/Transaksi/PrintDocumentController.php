@@ -24,7 +24,7 @@ class PrintDocumentController extends Controller
         }else{
             $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
             $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
-            $approvals   = DB::table('v_pr_approval')->where('prnum', $prhdr->prnum)->get();
+            $approvals   = DB::table('v_pr_approval_v2')->where('prnum', $prhdr->prnum)->get();
 
             $pbjNumber = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->pluck('pbjnumber');
             $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
