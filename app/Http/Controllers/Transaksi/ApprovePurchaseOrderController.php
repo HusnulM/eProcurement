@@ -421,7 +421,7 @@ class ApprovePurchaseOrderController extends Controller
     public function reGenerateApproval(){
         DB::beginTransaction();
         try{
-            $oldPO = DB::table('t_po_approval')->where('poitem', 0)->limit(50)->get();
+            $oldPO = DB::table('t_po_approval')->where('poitem', 0)->get();
             // return $oldPO;
             foreach($oldPO as $po){
                 $ptaNumber = $po->ponum;
