@@ -379,7 +379,8 @@ class ApprovePurchaseRequestController extends Controller
                             'createdon'         => $po->createdon,
                             'approval_remark'   => $po->approval_remark,
                             'approval_date'     => $po->approval_date ?? getLocalDatabaseDateTime(),
-                            'approved_by'       => $po->approved_by
+                            'approved_by'       => $po->approved_by,
+                            'approval_status'   => $pohdr->approvestat,
                         );
                         array_push($insertApproval, $approvals);
                     }
