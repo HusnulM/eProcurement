@@ -417,4 +417,53 @@ class ApprovePurchaseOrderController extends Controller
             // return Redirect::to("/approve/pr")->withError($e->getMessage());
         }
     }
+
+    public function reGenerateApproval(){
+        DB::beginTransaction();
+        try{
+            $oldPO = DB::table('t_po_approval')->where('poitem', 0)->get();
+            // return $oldPO;
+            foreach($oldPO as $po){
+                $ptaNumber = $po->ponum;
+                // return $ptaNumber;
+                $pohdr    = DB::table('t_po01')->where('ponum', $ptaNumber)->first();
+                $poItems  = DB::table('t_po02')->where('ponum', $ptaNumber)->get();
+                $creator  = DB::table('users')->where('email', $pohdr->createdby)->first();
+                $approval = DB::table('v_workflow_budget')
+                            ->where('object', 'PO')
+                            ->where('requester', $creator->id)->get();
+
+                // return $poItems;
+
+                DB::table('t_po_approval')->where('ponum', $ptaNumber)->delete();
+                for($a = 0; $a < sizeof($poItems); $a++){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $approvals = array(
+                            'ponum'             => $ptaNumber,
+                            'poitem'            => $poItems[$a]->poitem,
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $po->approver,
+                            'requester'         => $po->requester,
+                            'is_active'         => $po->is_active,
+                            'createdon'         => $po->createdon,
+                            'approval_remark'   => $po->approval_remark,
+                            'approval_date'     => $po->approval_date,
+                            'approved_by'       => $po->approved_by
+                        );
+                        array_push($insertApproval, $approvals);
+                    }
+                    insertOrUpdate($insertApproval,'t_po_approval');
+                }
+
+                DB::commit();
+            }
+
+            return "Success";
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
 }

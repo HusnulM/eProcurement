@@ -350,4 +350,50 @@ class ApprovePurchaseRequestController extends Controller
             // return Redirect::to("/approve/budget")->withError($e->getMessage());
         }
     }
+
+    public function reGenerateApproval(){
+        DB::beginTransaction();
+        try{
+            $oldPO = DB::table('t_pr_approval')->where('pritem', 0)->get();
+            foreach($oldPO as $po){
+                $ptaNumber = $po->prnum;
+
+                $pohdr    = DB::table('t_pr01')->where('prnum', $ptaNumber)->first();
+                $poItems  = DB::table('t_pr02')->get();
+                $creator  = DB::table('users')->where('email', $pohdr->createdby)->first();
+                $approval = DB::table('v_workflow_budget')
+                            ->where('object', 'PR')
+                            ->where('requester', $creator->id)->get();
+
+                DB::table('t_pr_approval')->where('prnum', $ptaNumber)->delete();
+                for($a = 0; $a < sizeof($poItems); $a++){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $approvals = array(
+                            'prnum'             => $ptaNumber,
+                            'pritem'            => $poItems[$a]->pritem,
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $po->approver,
+                            'requester'         => $po->requester,
+                            'is_active'         => $po->is_active,
+                            'createdon'         => $po->createdon,
+                            'approval_remark'   => $po->approval_remark,
+                            'approval_date'     => $po->approval_date,
+                            'approved_by'       => $po->approved_by
+                        );
+                        array_push($insertApproval, $approvals);
+                    }
+                    insertOrUpdate($insertApproval,'t_pr_approval');
+                }
+
+                DB::commit();
+            }
+
+            return "Success";
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
 }
