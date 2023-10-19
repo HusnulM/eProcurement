@@ -354,12 +354,13 @@ class ApprovePurchaseRequestController extends Controller
     public function reGenerateApproval(){
         DB::beginTransaction();
         try{
-            $oldPO = DB::table('t_pr_approval')->where('pritem', 0)->limit(40)->get();
-            foreach($oldPO as $po){
+            // $oldPO = DB::table('t_pr_approval')->where('pritem', 0)->limit(40)->get();
+            $pohdr    = DB::table('t_pr01')->get();
+
+            foreach($pohdr as $po){
                 $ptaNumber = $po->prnum;
 
-                $pohdr    = DB::table('t_pr01')->where('prnum', $ptaNumber)->first();
-                $poItems  = DB::table('t_pr02')->get();
+                $poItems  = DB::table('t_pr02')->where('prnum', $ptaNumber)->get();
                 $creator  = DB::table('users')->where('email', $pohdr->createdby)->first();
                 $approval = DB::table('v_workflow_budget')
                             ->where('object', 'PR')
@@ -380,7 +381,7 @@ class ApprovePurchaseRequestController extends Controller
                             'approval_remark'   => $po->approval_remark,
                             'approval_date'     => $po->approval_date ?? getLocalDatabaseDateTime(),
                             'approved_by'       => $po->approved_by,
-                            'approval_status'   => $pohdr->approvestat,
+                            'approval_status'   => $po->approvestat,
                         );
                         array_push($insertApproval, $approvals);
                     }
