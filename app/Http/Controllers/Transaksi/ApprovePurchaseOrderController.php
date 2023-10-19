@@ -421,7 +421,7 @@ class ApprovePurchaseOrderController extends Controller
     public function reGenerateApproval(){
         DB::beginTransaction();
         try{
-            $oldPO = DB::table('t_po_approval')->where('poitem', 0)->get();
+            $oldPO = DB::table('t_po_approval')->where('poitem', 0)->limit(50)->get();
             // return $oldPO;
             foreach($oldPO as $po){
                 $ptaNumber = $po->ponum;
@@ -448,7 +448,7 @@ class ApprovePurchaseOrderController extends Controller
                             'is_active'         => $po->is_active,
                             'createdon'         => $po->createdon,
                             'approval_remark'   => $po->approval_remark,
-                            'approval_date'     => $po->approval_date,
+                            'approval_date'     => $po->approval_date ?? getLocalDatabaseDateTime(),
                             'approved_by'       => $po->approved_by
                         );
                         array_push($insertApproval, $approvals);
