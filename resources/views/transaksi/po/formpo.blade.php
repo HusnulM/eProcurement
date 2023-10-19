@@ -137,12 +137,14 @@
         <table id="items">
             <thead>
                 <th>No</th>
-                <th style="width:120px;">Part Number</th>
-                <th style="width:300px;">Description</th>
+                <th style="width:90px;">Part Number</th>
+                <th style="width:180px;">Description</th>
                 <th style="text-align:right;">Quantity</th>
                 <th style="text-align:center;">Unit</th>
                 <th style="text-align:right;">Unit Price</th>
                 <th style="text-align:right;">Total Price</th>
+                <th>PR Number</th>
+                <th>PBJ Remark</th>
             </thead>
             <tbody>
                 <?php
@@ -172,6 +174,8 @@
                     <td style="text-align:right;">
                         {{ number_format($row->quantity*$row->price, 3, ',', '.') }}
                     </td>
+                    <td>{{ $row->prnum }}</td>
+                    <td>{{ $row->remarkpbj }}</td>
                 </tr>
 
                 <?php
@@ -187,7 +191,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="6" style="text-align:right;">
+                    <td colspan="8" style="text-align:right;">
                         <b> Subtotal</b>
                     </td>
                     <td style="text-align:right;">
@@ -197,7 +201,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="6" style="text-align:right;">
+                    <td colspan="8" style="text-align:right;">
                         <b> PPN</b>
                     </td>
                     <td style="text-align:right;">
@@ -207,7 +211,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="6" style="text-align:right;">
+                    <td colspan="8" style="text-align:right;">
                         <b> Grand Total</b>
                     </td>
                     <td style="text-align:right;">

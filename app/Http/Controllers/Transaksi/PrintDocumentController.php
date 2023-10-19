@@ -282,7 +282,7 @@ class PrintDocumentController extends Controller
 
     public function printpo($id){
         $pohdr = DB::table('v_rpo')->where('id', $id)->first();
-        $podtl = DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
+        $podtl = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
         $vendor = DB::table('t_vendor')->where('vendor_code', $pohdr->vendor)->first();
         $userPO = DB::table('users')->where('email', $pohdr->createdby)->first();
 
