@@ -104,10 +104,13 @@
     <table id="items">
         <thead>
             <th>No</th>
-            <th style="width:120px;">Part Number</th>
-            <th style="width:300px;">Description</th>
+            <th style="width:100px;">Part Number</th>
+            <th style="width:200px;">Description</th>
             <th style="text-align:right;">Quantity</th>
             <th style="text-align:center;">Unit</th>
+            <th>PBJ Number</th>
+            <th>PBJ Remark</th>
+            <th>Periode Budget</th>
         </thead>
         <tbody>
             @foreach($pritem as $key => $row)
@@ -124,6 +127,9 @@
 
                 </td>
                 <td style="text-align:center;">{{ $row->unit }}</td>
+                <td>{{ $row->pbjnumber }}</td>
+                <td>{{ $row->remarkpbj }}</td>
+                <td>{{ $row->periode }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -158,9 +164,6 @@
                 @endif
             </td>
         </tr>
-        {{-- <tr>
-            <td>____________________</td>
-        </tr> --}}
     </table>
 </body>
 </html>

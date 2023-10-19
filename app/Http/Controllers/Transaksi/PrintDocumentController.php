@@ -94,7 +94,7 @@ class PrintDocumentController extends Controller
 
     public function printpr($id){
         $prhdr    = DB::table('t_pr01')->where('id', $id)->first();
-        $prdtl    = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
+        $prdtl    = DB::table('v_form_pr_dtl')->where('prnum', $prhdr->prnum)->get();
 
         $approval = DB::table('t_pr_approvalv2')
                     ->where('prnum', $prhdr->prnum)
