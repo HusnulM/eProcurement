@@ -354,14 +354,64 @@ class ApprovePurchaseRequestController extends Controller
     public function reGenerateApproval(){
         DB::beginTransaction();
         try{
-            // $oldPO = DB::table('t_pr_approvalv2')->where('pritem', 0)->limit(40)->get();
-            $pohdr    = DB::table('t_pr01')->get();
+            $oldPO = DB::table('t_pr_approvalv2')->where('pritem', 0)->get();
             // return $pohdr;
+            foreach($oldPO as $po){
+                $ptaNumber = $po->prnum;
+                // return $ptaNumber;
+                $pohdr    = DB::table('t_pr01')->where('prnum', $ptaNumber)->first();
+                $poItems  = DB::table('t_pr02')->where('prnum', $ptaNumber)->get();
+                $creator  = DB::table('users')->where('email',  $pohdr->createdby)->first();
+                $approval = DB::table('v_workflow_budget')
+                            ->where('object', 'PR')
+                            ->where('requester', $creator->id)->get();
+
+                // return $approval;
+                DB::table('t_pr_approvalv2')->where('prnum', $ptaNumber)->delete();
+                for($a = 0; $a < sizeof($poItems); $a++){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        // $appby = DB::table('users')->where('id', $row->approver)->first();
+                        $approvals = array(
+                            'prnum'             => $ptaNumber,
+                            'pritem'            => $poItems[$a]->pritem,
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $po->approver,
+                            'requester'         => $po->requester,
+                            'is_active'         => $po->is_active,
+                            'createdon'         => $po->createdon,
+                            'approval_remark'   => $po->approval_remark,
+                            'approval_date'     => $po->approval_date ?? getLocalDatabaseDateTime(),
+                            'approved_by'       => $po->approved_by,
+                            'approval_status'   => $po->approval_status ?? $pohdr->approvestat
+                        );
+                        array_push($insertApproval, $approvals);
+                    }
+                    insertOrUpdate($insertApproval,'t_pr_approvalv2');
+                }
+
+                DB::commit();
+            }
+
+            return "Success";
+        }
+        catch(\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    public function reGenerateOldApproval(){
+        DB::beginTransaction();
+        try{
+            $oldPO = DB::table('t_pr_approvalv2')->pluck('prnum');
+            // return $pohdr;
+            $pohdr    = DB::table('t_pr01')->whereNotIn('prnum', $oldPO)->get();
             foreach($pohdr as $po){
                 $ptaNumber = $po->prnum;
                 // return $ptaNumber;
                 $poItems  = DB::table('t_pr02')->where('prnum', $ptaNumber)->get();
-                $creator  = DB::table('users')->where('email', $po->createdby)->first();
+                $creator  = DB::table('users')->where('email',  $po->createdby)->first();
                 $approval = DB::table('v_workflow_budget')
                             ->where('object', 'PR')
                             ->where('requester', $creator->id)->get();
@@ -380,10 +430,10 @@ class ApprovePurchaseRequestController extends Controller
                             'requester'         => $row->requester,
                             'is_active'         => 'Y',
                             'createdon'         => $po->createdon,
-                            'approval_remark'   => null,
+                            'approval_remark'   => 'Approved',
                             'approval_date'     => $po->createdon ?? getLocalDatabaseDateTime(),
-                            'approved_by'       => $appby->username ?? null,
-                            'approval_status'   => $po->approvestat,
+                            'approved_by'       => $appby->username,
+                            'approval_status'   => $po->approvestat
                         );
                         array_push($insertApproval, $approvals);
                     }
