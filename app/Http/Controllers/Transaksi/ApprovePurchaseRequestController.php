@@ -356,31 +356,33 @@ class ApprovePurchaseRequestController extends Controller
         try{
             // $oldPO = DB::table('t_pr_approvalv2')->where('pritem', 0)->limit(40)->get();
             $pohdr    = DB::table('t_pr01')->get();
-
+            // return $pohdr;
             foreach($pohdr as $po){
                 $ptaNumber = $po->prnum;
-
+                // return $ptaNumber;
                 $poItems  = DB::table('t_pr02')->where('prnum', $ptaNumber)->get();
                 $creator  = DB::table('users')->where('email', $po->createdby)->first();
                 $approval = DB::table('v_workflow_budget')
                             ->where('object', 'PR')
                             ->where('requester', $creator->id)->get();
 
+                // return $approval;
                 DB::table('t_pr_approvalv2')->where('prnum', $ptaNumber)->delete();
                 for($a = 0; $a < sizeof($poItems); $a++){
                     $insertApproval = array();
                     foreach($approval as $row){
+                        $appby = DB::table('users')->where('id', $row->approver)->first();
                         $approvals = array(
                             'prnum'             => $ptaNumber,
                             'pritem'            => $poItems[$a]->pritem,
                             'approver_level'    => $row->approver_level,
-                            'approver'          => $po->approver,
-                            'requester'         => $po->requester,
-                            'is_active'         => $po->is_active,
+                            'approver'          => $row->approver,
+                            'requester'         => $row->requester,
+                            'is_active'         => 'Y',
                             'createdon'         => $po->createdon,
-                            'approval_remark'   => $po->approval_remark,
-                            'approval_date'     => $po->approval_date ?? getLocalDatabaseDateTime(),
-                            'approved_by'       => $po->approved_by,
+                            'approval_remark'   => null,
+                            'approval_date'     => $po->createdon ?? getLocalDatabaseDateTime(),
+                            'approved_by'       => $appby->username ?? null,
                             'approval_status'   => $po->approvestat,
                         );
                         array_push($insertApproval, $approvals);
