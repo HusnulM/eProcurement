@@ -361,7 +361,7 @@ class ApprovePurchaseRequestController extends Controller
                 $ptaNumber = $po->prnum;
 
                 $poItems  = DB::table('t_pr02')->where('prnum', $ptaNumber)->get();
-                $creator  = DB::table('users')->where('email', $pohdr->createdby)->first();
+                $creator  = DB::table('users')->where('email', $po->createdby)->first();
                 $approval = DB::table('v_workflow_budget')
                             ->where('object', 'PR')
                             ->where('requester', $creator->id)->get();
