@@ -262,7 +262,10 @@ class PrintDocumentController extends Controller
         $costs       = DB::table('t_po03')->where('ponum', $pohdr->ponum)->get();
         $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $pohdr->ponum)->get();
         $approvals   = DB::table('v_po_approval_v2')
-                        ->where('ponum', $pohdr->ponum)->get();
+                        ->where('ponum', $pohdr->ponum)
+                        ->orderBy('approver_level', 'ASC')
+                        ->orderBy('poitem', 'ASC')
+                        ->get();
 
         $prNumber = DB::table('t_po02')->where('ponum', $pohdr->ponum)->pluck('prnum');
         $prAttachments = DB::table('t_attachments')->where('doc_object','PR')
