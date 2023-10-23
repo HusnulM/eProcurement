@@ -113,6 +113,7 @@ class PrintDocumentController extends Controller
             [
                 'prhdr'       => $prhdr,
                 'pritem'      => $prdtl,
+                'project'     => $prdtl[0]->nmproject,
                 'approval'    => $approval,
                 'approveSign' => $approveSign,
                 'creatorSign' => $creatorSign

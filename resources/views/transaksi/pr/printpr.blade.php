@@ -99,6 +99,11 @@
                 @endif
             </td>
         </tr>
+        <tr>
+            <td>Project</td>
+            <td>:</td>
+            <td>{{ $project }}</td>
+        </tr>
     </table>
     <!-- <br> -->
     <table id="items">
