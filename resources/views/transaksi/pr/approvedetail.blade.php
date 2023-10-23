@@ -352,7 +352,7 @@
     $(document).ready(function () {
         let _token   = $('meta[name="csrf-token"]').attr('content');
 
-        $('#tbl-pr-data').DataTable();
+        // $('#tbl-pr-data').DataTable();
 
         $('#btn-approve').on('click', function(){
             $('#btn-approve').prop('disabled', true);

@@ -24,7 +24,11 @@ class PrintDocumentController extends Controller
         }else{
             $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->get();
             $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
-            $approvals   = DB::table('v_pr_approval_v2')->where('prnum', $prhdr->prnum)->get();
+            $approvals   = DB::table('v_pr_approval_v2')
+                           ->where('prnum', $prhdr->prnum)
+                           ->orderBy('approver_level', 'ASC')
+                           ->orderBy('pritem', 'ASC')
+                           ->get();
 
             $pbjNumber = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->pluck('pbjnumber');
             $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
@@ -254,7 +258,7 @@ class PrintDocumentController extends Controller
         if(!$pohdr){
             return Redirect::to("/proc/po/listpo")->withError("PO tidak ditemukan!");
         }
-        $podtl       = DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
+        $podtl       = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
         $costs       = DB::table('t_po03')->where('ponum', $pohdr->ponum)->get();
         $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $pohdr->ponum)->get();
         $approvals   = DB::table('v_po_approval_v2')

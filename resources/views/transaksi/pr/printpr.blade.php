@@ -102,7 +102,7 @@
         <tr>
             <td>Project</td>
             <td>:</td>
-            <td>{{ $project }}</td>
+            <td>{{ $project ?? '' }}</td>
         </tr>
     </table>
     <!-- <br> -->

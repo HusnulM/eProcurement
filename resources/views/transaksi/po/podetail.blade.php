@@ -130,7 +130,12 @@
                                                                             <th>Quantity</th>
                                                                             <th>Unit</th>
                                                                             <th>Unit Price</th>
-                                                                            <th>PR Reference</th>
+                                                                            <th>PBJ Number</th>
+                                                                            <th>PR Number</th>
+                                                                            <th>Periode Budget</th>
+                                                                            <th>Cost Code</th>
+                                                                            <th>Project</th>
+                                                                            <th>Remark PBJ</th>
                                                                         </thead>
                                                                         <tbody id="tbl-pbj-body">
                                                                         @foreach($poitem as $key => $row)
@@ -140,7 +145,12 @@
                                                                                 <td>{{ number_format($row->quantity, 3, ',', '.') }}</td>
                                                                                 <td>{{ $row->unit }}</td>
                                                                                 <td>{{ number_format($row->price, 0, ',', '.') }}</td>
+                                                                                <td>{{ $row->pbjnumber }}</td>
                                                                                 <td>{{ $row->prnum }}</td>
+                                                                                <td>{{ $row->periode }}</td>
+                                                                                <td>{{ $row->budget_cost_code }}</td>
+                                                                                <td>{{ $row->nama_project }}</td>
+                                                                                <td>{{ $row->remarkpbj }}</td>
                                                                             </tr>
                                                                         @endforeach
                                                                         </tbody>
