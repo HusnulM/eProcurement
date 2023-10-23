@@ -15,7 +15,7 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <form action="{{ url('proc/po/save') }}" method="post" enctype="multipart/form-data">
         @csrf
@@ -77,7 +77,7 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="currency">Currency</label>                                            
+                                            <label for="currency">Currency</label>
                                             <select name="currency" id="currency" class="form-control">
                                                 <option value="IDR">IDR - Indonesian Rupiah</option>
                                                 <option value="USD">USD - US Dollar</option>
@@ -113,7 +113,7 @@
                                                 <option value="Desember <?= date('Y'); ?>">Desember <?= date('Y'); ?></option>
                                             </select>
                                         </div>
-                                    </div>    
+                                    </div>
                                     <!-- <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="department">Department</label>
@@ -160,7 +160,7 @@
                                                 <div class="tab-content" id="custom-content-above-tabContent">
                                                     <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                                                         <div class="row">
-                                                            
+
                                                             <div class="col-lg-12">
                                                                 <table id="tbl-po-item" class="table table-sm">
                                                                     <thead>
@@ -181,7 +181,7 @@
                                                                         </th>
                                                                     </thead>
                                                                     <tbody id="tbl-pbj-body">
-                        
+
                                                                     </tbody>
                                                                     <!-- <tfoot>
                                                                         <tr>
@@ -226,6 +226,44 @@
                                                                     </thead>
                                                                     <tbody id="tbl-cost-body">
 
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <input type="checkbox" id="isPOSolar" class="filled-in"/>
+                                                                <label for="isPOSolar">PO Solar?</label>
+                                                                <input type="hidden" name="poSolarInd" id="poSolarInd">
+                                                            </div>
+                                                            <div class="col-lg-12" id="inforPoSolar" style="display: none;">
+                                                                <table class="table table-sm">
+                                                                    <thead>
+                                                                        <th>Cost Component</th>
+                                                                        <th>Cost Amount</th>
+                                                                    </thead>
+                                                                    <tbody id="tbl-cost-body">
+                                                                        <tr>
+                                                                            <td>PBBKB ( % )</td>
+                                                                            <td>
+                                                                                <input type="text" class="form-control" name="solarpbbkb">
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>OAT ( % )</td>
+                                                                            <td>
+                                                                                <input type="text" class="form-control" name="solaroat">
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>PPN OAT ( % )</td>
+                                                                            <td>
+                                                                                <select name="ppnoat" id="ppnoat" class="form-control form-sm">
+                                                                                    <option value="0">---</option>
+                                                                                    <option value="11">11 %</option>
+                                                                                </select>
+                                                                            </td>
+                                                                        </tr>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
@@ -277,15 +315,15 @@
                                     <th>Remark</th>
                                     <th>Project</th>
                                     <th style="width:50px; text-align:center;">
-                                        
+
                                     </th>
                                 </thead>
                                 <tbody>
-    
+
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -321,8 +359,8 @@
                             <th></th>
                         </thead>
                         <tbody></tbody>
-                    </table>  
-                </div> 
+                    </table>
+                </div>
             </div>
         </div>
         <div class="modal-footer justify-content-between">
@@ -335,7 +373,7 @@
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
+<script>
     $(document).ready(function(){
         var count = 0;
         let selected_pr_items = [];
@@ -345,17 +383,35 @@
         $('.btn-add-po-item-based-pr').on('click', function(){
             loadListPR();
             $('#modal-list-pr').modal('show');
-        });     
-        
+        });
+
+        var poSolarChecked = '';
+        $('#isPOSolar').on('change', function(){
+            if(poSolarChecked === ''){
+                poSolarChecked = 'X'
+            }else{
+                poSolarChecked = ''
+            }
+
+            if(poSolarChecked === 'X'){
+                $('#inforPoSolar').show();
+                $('#poSolarInd').val('1');
+            }else{
+                $('#inforPoSolar').hide();
+                $('#poSolarInd').val('0');
+            }
+        });
+
+
         $('#btn-add-cost').on('click', function(){
             count = count + 1;
             $('#tbl-cost-body').append(`
                 <tr>
                     <td>
-                        <input type="text" name="costname[]" class="form-control" required>    
+                        <input type="text" name="costname[]" class="form-control" required>
                     </td>
                     <td>
-                        <input type="text" name="costvalue[]" class="form-control" required>    
+                        <input type="text" name="costvalue[]" class="form-control" required>
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm" id="btnRemoveCost`+count+`">
@@ -388,7 +444,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'fname'},
@@ -397,7 +453,7 @@
                     // {data: "whsname", className: 'fname'},
                     // {data: "quantity", className: 'fname'},
                     {data: "matunit", className: 'fname'},
-                    {"defaultContent": 
+                    {"defaultContent":
                         "<button type='button' class='btn btn-primary btn-sm button-add-material'> <i class='fa fa-plus'></i> Add</button>"
                     }
                 ],
@@ -422,7 +478,7 @@
                                 <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
-                            
+
                             <td>
                                 <input type="text" name="quantity[]" class="form-control inputNumber" required>
                             </td>
@@ -447,7 +503,7 @@
                             </td>
                         </tr>
                     `);
-    
+
                     $('#btnRemove'+fCount).on('click', function(e){
                         e.preventDefault();
                         var row_index = $(this).closest("tr").index();
@@ -455,7 +511,7 @@
                         $(this).closest("tr").remove();
                     });
 
-                    $('#find-project'+fCount).select2({ 
+                    $('#find-project'+fCount).select2({
                         placeholder: 'Nama Project',
                         width: '100%',
                         minimumInputLength: 0,
@@ -504,7 +560,7 @@
                 }else{
                     return false;
                 }
-            }); 
+            });
         }
 
         function removeItem(index){
@@ -524,7 +580,7 @@
                 searchField.focus();
             }
         });
-        $('#find-vendor').select2({ 
+        $('#find-vendor').select2({
             placeholder: 'Type Vendor Name',
             width: '100%',
             minimumInputLength: 0,
@@ -597,7 +653,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "prnum", className: 'uid'},
                     {data: "prdate", className: 'uid'},
@@ -606,23 +662,23 @@
                     {data: "quantity", "className": "text-right"},
                     {data: "poqty", "className": "text-right"},
                     {data: "openqty", "className": "text-right"},
-                    {data: "unit"},      
+                    {data: "unit"},
                     {data: "requestby"},
-                    {data: "department"},      
-                    {data: "no_plat"},      
+                    {data: "department"},
+                    {data: "no_plat"},
                     {data: "remark"},
-                    {data: "nama_project"},      
-                    {"defaultContent": 
+                    {data: "nama_project"},
+                    {"defaultContent":
                         `
                         <button class='btn btn-success btn-sm button-add-pbj-to-pritem'> <i class="fa fa-plus"></i></button>
                         `,
                         "className": "text-center",
                         "width": "10%"
                     }
-                ]  
+                ]
             });
 
-            
+
 
             function checkPRSelected(prNum, prItem) {
                 return selected_pr_items.some(function(el) {
@@ -631,7 +687,7 @@
                     }else{
                         return false;
                     }
-                }); 
+                });
             }
 
             function removePrItem(index){
@@ -680,9 +736,9 @@
                             </td>
                         </tr>
                     `);
-    
+
                     checkTabledata();
-                    
+
                     $('#inputQty'+fCount).on('change', function(){
                         var _data = $(this).data();
                         let openQty = _data.openqty;
@@ -703,34 +759,34 @@
                         removePrItem(row_index);
                         $(this).closest("tr").remove();
                     });
-    
+
                     $('.inputNumber').on('change', function(){
                         this.value = formatRupiah(this.value,'');
                     });
-    
+
                     $('.inputNumber').on('keypress', function(e){
                         validate(e);
                     });
-    
+
                     function formatRupiah(angka, prefix){
                         var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
                         split   		  = number_string.split('.'),
                         sisa     		  = split[0].length % 3,
                         rupiah     		  = split[0].substr(0, sisa),
                         ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-                    
+
                         if(ribuan){
                             separator = sisa ? ',' : '';
                             rupiah += separator + ribuan.join(',');
                         }
-                    
+
                         rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
                     }
-    
+
                     function validate(evt) {
                         var theEvent = evt || window.event;
-    
+
                         // Handle paste
                         if (theEvent.type === 'paste') {
                             key = event.clipboardData.getData('text/plain');
@@ -756,7 +812,7 @@
             //gets rows of table
             var rowLength = oTable.rows.length;
 
-            //loops through rows    
+            //loops through rows
             for (i = 0; i < rowLength; i++){
                 //gets cells of current row
                 var oCells = oTable.rows.item(i).cells;

@@ -126,6 +126,10 @@
                 <td>Term of Payment</td>
                 <td>{{ $pohdr->tf_top }}</td>
             </tr>
+            <tr>
+                <td>PO Remark</td>
+                <td>{{ $pohdr->note }}</td>
+            </tr>
         </table>
     </div>
 
