@@ -18,12 +18,17 @@ class ApprovePbjController extends Controller
     public function approveDetail($id){
         $pbjhdr = DB::table('t_pbj01')->where('id', $id)->first();
         if($pbjhdr){
-            $pbjitem = DB::table('v_pbj03')->where('pbjnumber', $pbjhdr->pbjnumber)->where('approver', Auth::user()->id)->get();
+            $pbjitem = DB::table('v_pbj03')
+                        ->where('pbjnumber', $pbjhdr->pbjnumber)
+                        ->where('approver', Auth::user()->id)
+                        ->get();
+
             $approvals = DB::table('v_pbj_approval')
                 ->where('pbjnumber', $pbjhdr->pbjnumber)
                 ->orderBy('approver_level','asc')
                 ->orderBy('pbjitem', 'asc')
                 ->get();
+
             $attachments = DB::table('t_attachments')->where('doc_object','PBJ')->where('doc_number', $pbjhdr->pbjnumber)->get();
 
             $isApprovedbyUser = DB::table('v_pbj_approval')
@@ -36,8 +41,8 @@ class ApprovePbjController extends Controller
             if(!$pbjProject){
                 $pbjProject = null;
             }
-            return view('transaksi.pbj.approvedetail', ['pbjhdr' => $pbjhdr, 'pbjitem' => $pbjitem, 
-                'approvals' => $approvals, 
+            return view('transaksi.pbj.approvedetail', ['pbjhdr' => $pbjhdr, 'pbjitem' => $pbjitem,
+                'approvals' => $approvals,
                 'isApprovedbyUser' => $isApprovedbyUser,
                 'attachments'      => $attachments,
                 'project'          => $pbjProject
@@ -48,9 +53,9 @@ class ApprovePbjController extends Controller
     }
 
     public function pbjApprovalList(Request $request){
-        
+
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_pbj_approval')
@@ -140,7 +145,7 @@ class ApprovePbjController extends Controller
                                       ->where('approval_status', '!=', 'A')
                                       ->get();
             if(sizeof($checkIsFullApprove) > 0){
-                // go to next approver    
+                // go to next approver
             }else{
                 //Full Approve
                 DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->update([
@@ -167,12 +172,12 @@ class ApprovePbjController extends Controller
     public function approveItems(Request $data, $pbjID){
         DB::beginTransaction();
         try{
-            
+
             $pbjHeader  = DB::table('t_pbj01')->where('id', $pbjID)->first();
             $pbjCreator = DB::table('users')->where('email', $pbjHeader->createdby)->first();
-            $items      = join(",",$data['pbjitem']); 
+            $items      = join(",",$data['pbjitem']);
             $ptaNumber  = $pbjHeader->pbjnumber;
-            
+
             $pbjItemData = DB::table('t_pbj02')
             ->where('pbjnumber', $ptaNumber)
             ->whereIn('pbjitem', $data['pbjitem'])->get();
@@ -183,7 +188,7 @@ class ApprovePbjController extends Controller
             ->whereIn('pbjitem', $data['pbjitem'])
             ->where('approver', Auth::user()->id)
             ->first();
-            
+
             if($data['action'] === 'R'){
                 DB::table('t_pbj_approval')
                 ->where('pbjnumber', $ptaNumber)
@@ -201,7 +206,7 @@ class ApprovePbjController extends Controller
                     ->update([
                         'pbj_status'   => $data['action']
                     ]);
-    
+
                 DB::table('t_pbj02')->where('pbjnumber', $ptaNumber)
                     ->whereIn('pbjitem', $data['pbjitem'])
                     ->update([
@@ -221,7 +226,7 @@ class ApprovePbjController extends Controller
                     'approved_by'     => Auth::user()->username,
                     'approval_date'   => getLocalDatabaseDateTime()
                 ]);
-    
+
                 $nextApprover = $this->getNextApproval($ptaNumber);
                 if($nextApprover  != null){
                     DB::table('t_pbj_approval')
@@ -232,14 +237,14 @@ class ApprovePbjController extends Controller
                         'is_active' => 'Y'
                     ]);
                 }
-    
+
                 $checkIsFullApprove = DB::table('t_pbj_approval')
                                           ->where('pbjnumber', $ptaNumber)
                                           ->whereIn('pbjitem', $data['pbjitem'])
                                           ->where('approval_status', '!=', 'A')
                                           ->get();
                 if(sizeof($checkIsFullApprove) > 0){
-                    // go to next approver    
+                    // go to next approver
                     $approverId = DB::table('v_workflow_budget')->where('object', 'PBJ')
                             ->where('requester', $pbjCreator->id)
                             ->where('approver_level', $nextApprover)
@@ -247,20 +252,20 @@ class ApprovePbjController extends Controller
 
                     $mailto = DB::table('users')
                         ->whereIn('id', $approverId)
-                        ->pluck('email');   
+                        ->pluck('email');
 
                     $dataApprovePBJ = DB::table('v_duedate_pbj')
                         ->where('pbjnumber', $ptaNumber)
                         ->orderBy('id')->get();
 
-                    Mail::to($mailto)->queue(new NotifApprovePbjMail($dataApprovePBJ, $pbjID, $ptaNumber)); 
+                    Mail::to($mailto)->queue(new NotifApprovePbjMail($dataApprovePBJ, $pbjID, $ptaNumber));
                 }else{
                     //Full Approve
                     DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)
                     ->update([
                         'pbj_status'   => 'A'
                     ]);
-    
+
                     DB::table('t_pbj02')->where('pbjnumber', $ptaNumber)
                     ->whereIn('pbjitem', $data['pbjitem'])
                     ->update([
