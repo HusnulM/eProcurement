@@ -18,39 +18,51 @@ class ApprovePurchaseRequestController extends Controller
     public function approveDetail($id){
         $prhdr = DB::table('t_pr01')->where('id', $id)->first();
         if($prhdr){
-            $items       = DB::table('v_pr_approval_v2')
-                            ->select('id','prnum', 'pritem', 'prdate', 'requestby', 'material', 'matdesc', 'quantity', 'unit', 'pbjnumber', 'pbjitem', 'approval_status')
-                            ->distinct()
-                            ->where('prnum', $prhdr->prnum)
-                            ->where('approver', Auth::user()->id)
-                            ->get();
-            $approvals   = DB::table('v_pr_approval_v2')
-                            ->where('prnum', $prhdr->prnum)
-                            ->where('approver', Auth::user()->id)
-                            ->get();
-            $department  = DB::table('v_pr_approval_v2')->where('prnum', $prhdr->prnum)->first();
-            $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
+            $checkAllowApprove = DB::table('v_pr_approval_v2')
+            ->where('prnum', $prhdr->prnum)
+            ->where('approver', Auth::user()->id)
+            ->first();
 
-            $pbjNumber = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->pluck('pbjnumber');
-            $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
-                              ->whereIn('doc_number', $pbjNumber)->get();
+            if($checkAllowApprove){
+                $items       = DB::table('v_pr_approval_v2')
+                                ->select('id','prnum', 'pritem', 'prdate', 'requestby', 'material', 'matdesc', 'quantity', 'unit', 'pbjnumber', 'pbjitem', 'approval_status')
+                                ->distinct()
+                                ->where('prnum', $prhdr->prnum)
+                                ->where('approver', Auth::user()->id)
+                                ->get();
+                $approvals   = DB::table('v_pr_approval_v2')
+                                ->where('prnum', $prhdr->prnum)
+                                // ->where('approver', Auth::user()->id)
+                                ->orderBy('approver_level', 'ASC')
+                                ->orderBy('pritem', 'ASC')
+                                ->get();
+                $department  = DB::table('v_pr_approval_v2')->where('prnum', $prhdr->prnum)->first();
+                $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
 
-            $isApprovedbyUser = DB::table('v_pr_approval_v2')
-                    ->where('prnum',    $prhdr->prnum)
-                    ->where('approver', Auth::user()->id)
-                    ->where('is_active', 'Y')
-                    ->first();
+                $pbjNumber = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->pluck('pbjnumber');
+                $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
+                                  ->whereIn('doc_number', $pbjNumber)->get();
 
-            return view('transaksi.pr.approvedetail',
-                [
-                    'prhdr'            => $prhdr,
-                    'pritem'           => $items,
-                    'approvals'        => $approvals,
-                    'department'       => $department,
-                    'attachments'      => $attachments,
-                    'isApprovedbyUser' => $isApprovedbyUser,
-                    'pbjAttachments'   => $pbjAttachments
-                ]);
+                $isApprovedbyUser = DB::table('v_pr_approval_v2')
+                        ->where('prnum',    $prhdr->prnum)
+                        ->where('approver', Auth::user()->id)
+                        ->where('is_active', 'Y')
+                        ->first();
+
+                return view('transaksi.pr.approvedetail',
+                    [
+                        'prhdr'            => $prhdr,
+                        'pritem'           => $items,
+                        'approvals'        => $approvals,
+                        'department'       => $department,
+                        'attachments'      => $attachments,
+                        'isApprovedbyUser' => $isApprovedbyUser,
+                        'pbjAttachments'   => $pbjAttachments
+                    ]);
+            }else{
+                return Redirect::to("/approve/pr")->withError('Anda tidak di izinkan melakukan approve PR '. $prhdr->prnum);
+            }
+
         }else{
             return Redirect::to("/approve/pr")->withError('Dokumen PR tidak ditemukan');
         }

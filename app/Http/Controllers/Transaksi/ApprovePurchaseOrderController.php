@@ -18,50 +18,69 @@ class ApprovePurchaseOrderController extends Controller
     public function approveDetail($id){
         $prhdr = DB::table('v_po01')->where('id', $id)->first();
         if($prhdr){
-            $items       = DB::table('v_po_approval_v2')
+            $checkAllowApprove = DB::table('v_po_approval_v2')
                             ->where('ponum', $prhdr->ponum)
                             ->where('approver',Auth::user()->id)
-                            ->get();
-            $costs       = DB::table('t_po03')->where('ponum', $prhdr->ponum)->get();
-            $approvals   = DB::table('v_po_approval_v2')
-                            ->where('ponum', $prhdr->ponum)
-                            ->get();
-            $department  = DB::table('v_po_approval')->where('ponum', $prhdr->ponum)->first();
-            $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $prhdr->ponum)->get();
+                            ->first();
+            if($checkAllowApprove){
+                $items       = DB::table('v_po_approval_v2')
+                                ->where('ponum', $prhdr->ponum)
+                                ->where('approver',Auth::user()->id)
+                                ->get();
 
-            $purchases = DB::table('v_po02')
-            ->where('ponum', $prhdr->ponum)
-            ->sum('totalprice');
+                $costs       = DB::table('t_po03')
+                                ->where('ponum', $prhdr->ponum)
+                                ->get();
 
-            $prNumber = DB::table('t_po02')->where('ponum', $prhdr->ponum)->pluck('prnum');
-            $prAttachments = DB::table('t_attachments')->where('doc_object','PR')
-                              ->whereIn('doc_number', $prNumber)->get();
+                $approvals   = DB::table('v_po_approval_v2')
+                                ->where('ponum', $prhdr->ponum)
+                                ->get();
 
-            $pbjNumber = DB::table('t_pr02')->whereIn('prnum', $prNumber)->pluck('pbjnumber');
-            $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
-                              ->whereIn('doc_number', $pbjNumber)->get();
+                $department  = DB::table('v_po_approval')
+                                ->where('ponum', $prhdr->ponum)
+                                ->first();
 
-            // return $purchases;
+                $attachments = DB::table('t_attachments')
+                                ->where('doc_object','PO')
+                                ->where('doc_number', $prhdr->ponum)
+                                ->get();
 
-            $isApprovedbyUser = DB::table('v_po_approval')
-                    ->where('ponum',    $prhdr->ponum)
-                    ->where('approver', Auth::user()->id)
-                    ->where('is_active', 'Y')
-                    ->first();
+                $purchases = DB::table('v_po02')
+                ->where('ponum', $prhdr->ponum)
+                ->sum('totalprice');
 
-            return view('transaksi.po.approvedetail',
-                [
-                    'prhdr'     => $prhdr,
-                    'pritem'    => $items,
-                    'costs'     => $costs,
-                    'approvals' => $approvals,
-                    'department'=> $department,
-                    'isApprovedbyUser' => $isApprovedbyUser,
-                    'totalprice'       => $purchases,
-                    'attachments'      => $attachments,
-                    'prAttachments'    => $prAttachments,
-                    'pbjAttachments'   => $pbjAttachments
-                ]);
+                $prNumber = DB::table('t_po02')->where('ponum', $prhdr->ponum)->pluck('prnum');
+                $prAttachments = DB::table('t_attachments')->where('doc_object','PR')
+                                  ->whereIn('doc_number', $prNumber)->get();
+
+                $pbjNumber = DB::table('t_pr02')->whereIn('prnum', $prNumber)->pluck('pbjnumber');
+                $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
+                                  ->whereIn('doc_number', $pbjNumber)->get();
+
+                // return $purchases;
+
+                $isApprovedbyUser = DB::table('v_po_approval')
+                        ->where('ponum',    $prhdr->ponum)
+                        ->where('approver', Auth::user()->id)
+                        ->where('is_active', 'Y')
+                        ->first();
+
+                return view('transaksi.po.approvedetail',
+                    [
+                        'prhdr'     => $prhdr,
+                        'pritem'    => $items,
+                        'costs'     => $costs,
+                        'approvals' => $approvals,
+                        'department'=> $department,
+                        'isApprovedbyUser' => $isApprovedbyUser,
+                        'totalprice'       => $purchases,
+                        'attachments'      => $attachments,
+                        'prAttachments'    => $prAttachments,
+                        'pbjAttachments'   => $pbjAttachments
+                    ]);
+            }else{
+                return Redirect::to("/approve/po")->withError('Anda tidak di izinkan melakukan approve PO '. $prhdr->ponum);
+            }
         }else{
             return Redirect::to("/approve/po")->withError('Dokumen PO tidak ditemukan');
         }
