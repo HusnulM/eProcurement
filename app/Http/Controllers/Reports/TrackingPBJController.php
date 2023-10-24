@@ -17,7 +17,7 @@ class TrackingPBJController extends Controller
     }
 
     public function getData(Request $req){
-        $query = DB::table('v_pbj_tracking');
+        $query = DB::table('v_pbj_trackingv2');
         //->select('id','prnum','prdate','approvestat','requestby','remark','deptname','createdby')->distinct();
 
         if(isset($req->department)){
@@ -30,9 +30,9 @@ class TrackingPBJController extends Controller
             if($req->pbjstatus === "O"){
                 $query->where('pbjstatus', 'Open');
             }elseif($req->pbjstatus === "A"){
-                $query->where('pbjstatus', 'Approved');                
+                $query->where('pbjstatus', 'Approved');
             }elseif($req->pbjstatus === "R"){
-                $query->where('pbjstatus', 'Rejected');         
+                $query->where('pbjstatus', 'Rejected');
             }
         }
 
