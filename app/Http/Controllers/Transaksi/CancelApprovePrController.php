@@ -15,7 +15,7 @@ class CancelApprovePrController extends Controller
 
     public function listPR(Request $request){
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_rpr01')
@@ -35,7 +35,7 @@ class CancelApprovePrController extends Controller
                     'approvestat'   => 'N'
                 ]);
 
-                $firstApproval = DB::table('t_pr_approval')
+                $firstApproval = DB::table('t_pr_approvalv2')
                         ->where('prnum', $wodata->prnum)
                         ->orderBy('approver_level', 'ASC')
                         ->first();
@@ -51,7 +51,7 @@ class CancelApprovePrController extends Controller
                     'is_active' => 'Y'
                 ]);
                 DB::commit();
-                
+
                 $result = array(
                     'msgtype' => '200',
                     'message' => 'Approval PR '. $wodata->prnum . ' berhasil direset'
@@ -80,7 +80,7 @@ class CancelApprovePrController extends Controller
             if($wodata){
                 DB::table('t_pr01')->where('id', $id)->delete();
                 DB::table('t_pr02')->where('prnum', $wodata->prnum)->delete();
-                DB::table('t_pr_approval')->where('prnum', $wodata->prnum)->delete();
+                DB::table('t_pr_approvalv2')->where('prnum', $wodata->prnum)->delete();
                 DB::commit();
 
                 $result = array(
