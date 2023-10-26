@@ -5,7 +5,7 @@
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -33,7 +33,7 @@
                                 <th></th>
                             </thead>
                             <tbody>
-    
+
                             </tbody>
                         </table>
                     </div>
@@ -71,7 +71,7 @@
     $(document).ready(function(){
 
         let _token   = $('meta[name="csrf-token"]').attr('content');
-        
+
         $("#tbl-pr-list").DataTable({
             serverSide: true,
             ajax: {
@@ -91,28 +91,29 @@
                 { "data": null,"sortable": false, "searchable": false,
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
-                    }  
+                    }
                 },
                 {data: "prnum", className: 'uid'},
                 {data: "prdate", className: 'uid'},
                 {data: "requestby"},
-                {data: "deptname"},      
-                {"defaultContent": 
+                {data: "deptname"},
+                {"defaultContent":
                     `<button class='btn btn-default btn-sm button-reset-approval'> <i class='fa fa-search'></i> Reset Approval</button>
                     <button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> Delete</button>
                     `,
                     "className": "text-center",
                     "width": "15%"
                 }
-            ]  
+            ]
         });
 
         $('#tbl-pr-list tbody').on( 'click', '.button-reset-approval', function () {
             var table = $('#tbl-pr-list').DataTable();
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
-            console.log(selected_data)
-            
+            console.log(selected_data);
+            console.log(base_url)
+
             $.ajax({
                 url: base_url+'/cancel/approve/pr/reset/'+selected_data.id,
                 type:"POST",
@@ -124,12 +125,12 @@
                     if(response.msgtype === "200"){
                         toastr.success(response.message)
 
-                        setTimeout(function(){ 
+                        setTimeout(function(){
                             window.location.href = base_url+'/cancel/approve/pr';
                         }, 2000);
                     }else if(response.msgtype === "500"){
                         toastr.error(response.message);
-                        setTimeout(function(){ 
+                        setTimeout(function(){
                             location.reload();
                         }, 2000);
                     }
@@ -138,7 +139,7 @@
                     console.log(error);
                     toastr.error(error)
 
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         location.reload();
                     }, 2000);
                 }
@@ -152,7 +153,7 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
-            
+
             $.ajax({
                 url: base_url+'/cancel/approve/pr/delete/'+selected_data.id,
                 type:"POST",
@@ -164,12 +165,12 @@
                     if(response.msgtype === "200"){
                         toastr.success(response.message)
 
-                        setTimeout(function(){ 
+                        setTimeout(function(){
                             window.location.href = base_url+'/cancel/approve/pr';
                         }, 2000);
                     }else if(response.msgtype === "500"){
                         toastr.error(response.message);
-                        setTimeout(function(){ 
+                        setTimeout(function(){
                             location.reload();
                         }, 2000);
                     }
@@ -178,7 +179,7 @@
                     console.log(error);
                     toastr.error(error)
 
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         location.reload();
                     }, 2000);
                 }
@@ -197,14 +198,14 @@
             sisa     		  = split[0].length % 3,
             rupiah     		  = split[0].substr(0, sisa),
             ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-        
+
             if(ribuan){
                 separator = sisa ? ',' : '';
                 rupiah += separator + ribuan.join(',');
             }
-        
+
             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
         }
     });
 </script>
