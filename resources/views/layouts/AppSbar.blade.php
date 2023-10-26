@@ -38,7 +38,7 @@
     }
   </style> -->
   <script>
-    var base_url = '{{ getbaseurl() }}'
+    var base_url = '{{ getbaseurl() }}';
     // var base_url = window.location.origin;
     // var xurl = window.location.origin;
     // alert(base_url)
@@ -112,11 +112,11 @@
         <form id="logout-form" method="post" action="{{ url('logout') }}">
           @csrf
           <a href="javascript:{}" class="nav-link" onclick="document.getElementById('logout-form').submit();" title="Logout">
-            <i class="fa fa-solid fa-power-off"></i> 
+            <i class="fa fa-solid fa-power-off"></i>
           </a>
         </form>
       </li>
-      
+
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -172,7 +172,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <input type="password" class="form-control" name="password" autocomplete="new-password">
-                </div> 
+                </div>
             </div>
         </div>
         <div class="modal-footer justify-content-between">
@@ -238,7 +238,7 @@
       // alert('tes')
       $('#modal-change-pass').modal('show');
     });
-    setTimeout(function(){ 
+    setTimeout(function(){
       $('.msgAlert').hide();
     }, 4000);
   });
