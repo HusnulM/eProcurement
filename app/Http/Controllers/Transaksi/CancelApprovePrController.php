@@ -40,12 +40,12 @@ class CancelApprovePrController extends Controller
                         ->orderBy('approver_level', 'ASC')
                         ->first();
 
-                DB::table('t_pr_approval')->where('prnum', $wodata->prnum)->update([
+                DB::table('t_pr_approvalv2')->where('prnum', $wodata->prnum)->update([
                     'approval_status' => 'N',
                     'is_active'       => 'N'
                 ]);
 
-                DB::table('t_pr_approval')->where('prnum', $wodata->prnum)
+                DB::table('t_pr_approvalv2')->where('prnum', $wodata->prnum)
                 ->where('approver_level', $firstApproval->approver_level)
                 ->update([
                     'is_active' => 'Y'
