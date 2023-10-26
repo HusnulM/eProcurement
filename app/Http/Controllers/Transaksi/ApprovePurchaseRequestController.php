@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
+use PDF;
 
 class ApprovePurchaseRequestController extends Controller
 {
@@ -334,6 +335,8 @@ class ApprovePurchaseRequestController extends Controller
                     ->update([
                         'approvestat'   => 'A'
                     ]);
+
+                    $this->generateAttachment($pbjHeader->id);
                 }
             }
 
@@ -460,6 +463,60 @@ class ApprovePurchaseRequestController extends Controller
         catch(\Exception $e){
             DB::rollBack();
             return $e->getMessage();
+        }
+    }
+
+    public function generateAttachment($id){
+        $prhdr    = DB::table('t_pr01')->where('id', $id)->first();
+        $prdtl    = DB::table('v_form_pr_dtl')->where('prnum', $prhdr->prnum)->get();
+
+        $approval = DB::table('t_pr_approvalv2')
+                    ->where('prnum', $prhdr->prnum)
+                    ->where('approval_status', 'A')
+                    ->orderBy('approver_level', 'DESC')
+                    ->first();
+        if($approval){
+            $approveSign = DB::table('users')->where('id', $approval->approver)->first();
+        }else{
+            $approveSign = null;
+        }
+
+        $creatorSign = DB::table('users')->where('email', $prhdr->createdby)->first();
+
+        $pdf = PDF::loadview('transaksi.pr.printpr',
+            [
+                'prhdr'       => $prhdr,
+                'pritem'      => $prdtl,
+                'project'     => $prdtl[0]->nmproject,
+                'approval'    => $approval,
+                'approveSign' => $approveSign,
+                'creatorSign' => $creatorSign
+            ]);
+        // return $pdf->stream();
+
+        $filename = $prhdr->prnum;
+        $filename = str_replace('/', '-', $filename);
+        $content = $pdf->output();
+        file_put_contents('files/PR/'.$filename.'.pdf', $content);
+
+        DB::beginTransaction();
+        try{
+            $insertFiles = array();
+            $upfiles = array(
+                'doc_object' => 'PR',
+                'doc_number' => $prhdr->prnum,
+                'efile'      => $filename.'.pdf',
+                'pathfile'   => '/files/PR/'. $filename.'.pdf',
+                'createdon'  => getLocalDatabaseDateTime(),
+                'createdby'  => Auth::user()->username ?? Auth::user()->email
+            );
+            array_push($insertFiles, $upfiles);
+            insertOrUpdate($insertFiles,'t_attachments');
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            dd($e);
+            // return Redirect::to("/proc/po")->withError($e->getMessage());
         }
     }
 }

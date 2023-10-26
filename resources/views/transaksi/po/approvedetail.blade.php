@@ -84,7 +84,7 @@
                         </ul>
                     </div>
                     <div class="card-tools">
-                        <a href="{{ url('/approve/pbj') }}" class="btn btn-default btn-sm">
+                        <a href="{{ url('/approve/po') }}" class="btn btn-default btn-sm">
                             <i class="fa fa-arrow-left"></i> Back
                         </a>
                     </div>

@@ -122,6 +122,7 @@ class PurchaseOrderController extends Controller
                 'currency'          => $req['currency'],
                 'tf_top'            => $req['termofpayment'] ?? null,
                 'approvestat'       => 'O',
+                'is_posolar'        => $req['poSolarInd'],
                 'createdon'         => date('Y-m-d H:m:s'),
                 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);
@@ -219,6 +220,51 @@ class PurchaseOrderController extends Controller
                     array_push($insertData, $costdata);
                 }
                 insertOrUpdate($insertData,'t_po03');
+            }
+
+            if($req['poSolarInd'] === "1"){
+
+                $insertData = array();
+                if(isset($req['solarpbbkb'])){
+                    $costdata = array(
+                        'ponum'        => $ptaNumber,
+                        'costname'     => 'PBBKB',
+                        'costvalue'    => $req['solarpbbkb'],
+                        'is_posolar'   => 'Y',
+                        'createdon'    => date('Y-m-d H:m:s'),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    );
+                    array_push($insertData, $costdata);
+                    insertOrUpdate($insertData,'t_po03');
+                }
+
+                $insertData = array();
+                if(isset($req['solaroat'])){
+                    $costdata = array(
+                        'ponum'        => $ptaNumber,
+                        'costname'     => 'OAT',
+                        'costvalue'    => $req['solaroat'],
+                        'is_posolar'   => 'Y',
+                        'createdon'    => date('Y-m-d H:m:s'),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    );
+                    array_push($insertData, $costdata);
+                    insertOrUpdate($insertData,'t_po03');
+                }
+
+                $insertData = array();
+                if(isset($req['ppnoat'])){
+                    $costdata = array(
+                        'ponum'        => $ptaNumber,
+                        'costname'     => 'PPN OAT',
+                        'costvalue'    => $req['ppnoat'],
+                        'is_posolar'   => 'Y',
+                        'createdon'    => date('Y-m-d H:m:s'),
+                        'createdby'    => Auth::user()->email ?? Auth::user()->username
+                    );
+                    array_push($insertData, $costdata);
+                    insertOrUpdate($insertData,'t_po03');
+                }
             }
 
             //Insert Attachments | t_attachments

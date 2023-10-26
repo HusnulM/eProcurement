@@ -84,7 +84,7 @@
         #center{margin:0 auto;width:100px;}
     </style>
 </head>
-<body> 
+<body>
     <!-- <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">PERMINTAAN BARANG / JASA</h2> -->
     <table border="0" cellspacing="0" cellpadding="0" id="items">
         <tr>
@@ -119,7 +119,7 @@
             <td>{{ $project->nama_project ?? '' }}</td>
         </tr>
     </table>
-    
+
     <table border="0" cellspacing="0" cellpadding="0" id="items" style="margin-top:5px;">
         <tr>
             <td style="width:130px;">Tujuan Permintaan</td>
@@ -281,6 +281,6 @@
         </div>
     </div>
     <!-- <br> -->
-    
+
 </body>
 </html>

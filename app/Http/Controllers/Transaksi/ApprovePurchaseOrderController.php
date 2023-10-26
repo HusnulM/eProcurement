@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
+use PDF;
 
 class ApprovePurchaseOrderController extends Controller
 {
@@ -263,6 +264,7 @@ class ApprovePurchaseOrderController extends Controller
                     // INSERT INTO t_budget_history (deptid,budget_period,amount,budget_type,note,refnum,refitem,createdon,createdby)
                     // VALUES(NEW.deptid,NEW.budget_period,NEW.amount,'C','Budget Allocation',NULL,NULL,NOW(),NEW.createdby)
 
+                    $this->generateAttachment($podata->id);
                 }
 
                 DB::commit();
@@ -419,6 +421,8 @@ class ApprovePurchaseOrderController extends Controller
 
                 DB::commit();
 
+                $this->generateAttachment($podata->id);
+
                 $result = array(
                     'msgtype' => '200',
                     'message' => 'PO dengan Nomor : '. $ptaNumber . ' berhasil di approve'
@@ -488,5 +492,80 @@ class ApprovePurchaseOrderController extends Controller
             DB::rollBack();
             return $e->getMessage();
         }
+    }
+
+    public function generateAttachment($id){
+        $pohdr = DB::table('v_rpo')->where('id', $id)->first();
+        $podtl = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
+        $vendor = DB::table('t_vendor')->where('vendor_code', $pohdr->vendor)->first();
+        $userPO = DB::table('users')->where('email', $pohdr->createdby)->first();
+
+        $POApprover = DB::table('workflow_budget')
+                ->where('object', 'PO')
+                ->where('requester', $userPO->id)
+                ->orderBy('approver_level','ASC')
+                ->first();
+        if($POApprover){
+            $firstApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+        }
+
+        $POApprover = DB::table('workflow_budget')
+                ->where('object', 'PO')
+                ->where('requester', $userPO->id)
+                ->where('approver_level','2')
+                ->orderBy('approver_level','ASC')
+                ->first();
+
+        if($POApprover){
+            $secondApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+        }
+
+        $POApprover = DB::table('workflow_budget')
+                ->where('object', 'PO')
+                ->where('requester', $userPO->id)
+                ->where('approver_level','3')
+                ->orderBy('approver_level','DESC')
+                ->first();
+
+        if($POApprover){
+            $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+        }
+
+        $pdf = PDF::loadview('transaksi.po.formpo',
+            [
+                'pohdr'          => $pohdr,
+                'poitem'         => $podtl,
+                'vendor'         => $vendor,
+                'firstApprover'  => $firstApprover ?? null,
+                'secondApprover' => $secondApprover ?? null,
+                'lastApprover'   => $lastApprover ?? null
+            ]);
+
+        $filename = $pohdr->ponum;
+        $filename = str_replace('/', '-', $filename);
+        $content = $pdf->output();
+        file_put_contents('files/PO/'.$filename.'.pdf', $content);
+
+        DB::beginTransaction();
+        try{
+            $insertFiles = array();
+            $upfiles = array(
+                'doc_object' => 'PO',
+                'doc_number' => $pohdr->ponum,
+                'efile'      => $filename.'.pdf',
+                'pathfile'   => '/files/PO/'. $filename.'.pdf',
+                'createdon'  => getLocalDatabaseDateTime(),
+                'createdby'  => Auth::user()->username ?? Auth::user()->email
+            );
+            array_push($insertFiles, $upfiles);
+            insertOrUpdate($insertFiles,'t_attachments');
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            dd($e);
+            // return Redirect::to("/proc/po")->withError($e->getMessage());
+        }
+        // return "Ok";
+        // return $pdf->save('files/Document/'.$pohdr->ponum.'.pdf');
     }
 }

@@ -234,7 +234,7 @@
                                                             <div class="col-lg-12">
                                                                 <input type="checkbox" id="isPOSolar" class="filled-in"/>
                                                                 <label for="isPOSolar">PO Solar?</label>
-                                                                <input type="hidden" name="poSolarInd" id="poSolarInd">
+                                                                <input type="hidden" name="poSolarInd" id="poSolarInd" value="N">
                                                             </div>
                                                             <div class="col-lg-12" id="inforPoSolar" style="display: none;">
                                                                 <table class="table table-sm">
@@ -246,11 +246,14 @@
                                                                         <tr>
                                                                             <td>PBBKB ( % )</td>
                                                                             <td>
-                                                                                <input type="text" class="form-control" name="solarpbbkb">
+                                                                                <select name="solarpbbkb" id="solarpbbkb" class="form-control form-sm">
+                                                                                    <option value="0">---</option>
+                                                                                    <option value="7.5">7.5 %</option>
+                                                                                </select>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td>OAT ( % )</td>
+                                                                            <td>OAT</td>
                                                                             <td>
                                                                                 <input type="text" class="form-control" name="solaroat">
                                                                             </td>
@@ -395,10 +398,10 @@
 
             if(poSolarChecked === 'X'){
                 $('#inforPoSolar').show();
-                $('#poSolarInd').val('1');
+                $('#poSolarInd').val('Y');
             }else{
                 $('#inforPoSolar').hide();
-                $('#poSolarInd').val('0');
+                $('#poSolarInd').val('N');
             }
         });
 

@@ -75,9 +75,9 @@ function generateBatchNumber(){
             $lastnum = ($getdata->current_number*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = date('Y').date('m').$lastnum; 
+                $dcnNumber = date('Y').date('m').$lastnum;
             }else{
-                $dcnNumber = date('Y').date('m'). $leadingZero . $lastnum; 
+                $dcnNumber = date('Y').date('m'). $leadingZero . $lastnum;
             }
 
             DB::table('dcn_nriv')->where('year',$getdata->year)->where('month', date('m'))
@@ -134,9 +134,9 @@ function generateDcnNumber($doctype){
             $lastnum = ($getdata->current_number*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $lastnum; 
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $lastnum;
             }else{
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $leadingZero . $lastnum; 
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $leadingZero . $lastnum;
             }
 
             DB::table('dcn_nriv')->where('year',$getdata->year)->where('object',$doctype)->update([
@@ -167,7 +167,7 @@ function generateDcnNumber($doctype){
             return null;
         }
     }
-    
+
 }
 
 function generateCheckListNumber($tahun, $bulan){
@@ -195,9 +195,9 @@ function generateCheckListNumber($tahun, $bulan){
             $lastnum = ($getdata->current_number*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2). $bulan .'-'. $lastnum; 
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2). $bulan .'-'. $lastnum;
             }else{
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2). $bulan .'-'. $leadingZero . $lastnum; 
+                $dcnNumber = $doctype . '-' . substr($getdata->year,2). $bulan .'-'. $leadingZero . $lastnum;
             }
 
             DB::table('dcn_nriv')->where('year', $tahun)->where('month', $bulan)->where('object','CKL')->update([
@@ -428,7 +428,7 @@ function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
                ->where('tanggal',  $tgl)
                ->where('deptid', $dept)
                ->first();
-    
+
     if($getdata){
         DB::beginTransaction();
         try{
@@ -448,9 +448,9 @@ function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
             $lastnum = ($getdata->lastnumber*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum; 
+                $dcnNumber = $dcnNumber. $lastnum;
             }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
             }
 
             // dd($leadingZero);
@@ -491,14 +491,14 @@ function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
             DB::rollBack();
             return null;
         }
-    }    
+    }
 }
 
 function generatePbjNumber($tahun, $dept, $tgl){
 
     $department = DB::table('t_department')->where('deptid', $dept)->first();
 
-    
+
     $deptid = $department->deptid;
     // dd($deptid);
     $dcnNumber = 'PBJ-'.$department->department.'/'.$tahun;
@@ -511,7 +511,7 @@ function generatePbjNumber($tahun, $dept, $tgl){
             //    ->where('deptid', $dept)
                ->first();
     // dd($getdata);
-    
+
     if($getdata){
         DB::beginTransaction();
         try{
@@ -531,9 +531,9 @@ function generatePbjNumber($tahun, $dept, $tgl){
             $lastnum = ($getdata->lastnumber*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum; 
+                $dcnNumber = $dcnNumber. $lastnum;
             }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
             }
 
             // dd($leadingZero);
@@ -578,7 +578,7 @@ function generatePbjNumber($tahun, $dept, $tgl){
             dd($e);
             return null;
         }
-    }   
+    }
 }
 
 function generatePRNumber($tahun, $bulan, $tgl, $dept, $deptname){
@@ -592,7 +592,7 @@ function generatePRNumber($tahun, $bulan, $tgl, $dept, $deptname){
             //    ->where('tanggal',  $tgl)
                ->where('deptid', $dept)
                ->first();
-    
+
     if($getdata){
         DB::beginTransaction();
         try{
@@ -612,9 +612,9 @@ function generatePRNumber($tahun, $bulan, $tgl, $dept, $deptname){
             $lastnum = ($getdata->lastnumber*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum; 
+                $dcnNumber = $dcnNumber. $lastnum;
             }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
             }
 
             // dd($leadingZero);
@@ -655,7 +655,7 @@ function generatePRNumber($tahun, $bulan, $tgl, $dept, $deptname){
             DB::rollBack();
             return null;
         }
-    }   
+    }
 }
 
 function generatePONumber($tahun, $bulan, $tgl){
@@ -668,7 +668,7 @@ function generatePONumber($tahun, $bulan, $tgl){
                ->where('tanggal',  $tgl)
             //    ->where('deptid', $dept)
                ->first();
-    
+
     if($getdata){
         DB::beginTransaction();
         try{
@@ -688,9 +688,9 @@ function generatePONumber($tahun, $bulan, $tgl){
             $lastnum = ($getdata->lastnumber*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum; 
+                $dcnNumber = $dcnNumber. $lastnum;
             }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
             }
 
             // dd($leadingZero);
@@ -731,7 +731,7 @@ function generatePONumber($tahun, $bulan, $tgl){
             DB::rollBack();
             return null;
         }
-    }   
+    }
 }
 
 function generateGRPONumber($tahun, $bulan){
@@ -744,7 +744,7 @@ function generateGRPONumber($tahun, $bulan){
             //    ->where('tanggal',  $tgl)
             //    ->where('deptid', $dept)
                ->first();
-    
+
     if($getdata){
         DB::beginTransaction();
         try{
@@ -764,9 +764,9 @@ function generateGRPONumber($tahun, $bulan){
             $lastnum = ($getdata->lastnumber*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum; 
+                $dcnNumber = $dcnNumber. $lastnum;
             }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
             }
 
             // dd($leadingZero);
@@ -809,7 +809,7 @@ function generateGRPONumber($tahun, $bulan){
             // dd($e->getMessage());
             return null;
         }
-    }   
+    }
 }
 
 function generateIssueNumber($tahun, $bulan){
@@ -822,7 +822,7 @@ function generateIssueNumber($tahun, $bulan){
             //    ->where('tanggal',  $tgl)
             //    ->where('deptid', $dept)
                ->first();
-    
+
     if($getdata){
         DB::beginTransaction();
         try{
@@ -842,9 +842,9 @@ function generateIssueNumber($tahun, $bulan){
             $lastnum = ($getdata->lastnumber*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum; 
+                $dcnNumber = $dcnNumber. $lastnum;
             }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
             }
 
             // dd($leadingZero);
@@ -887,7 +887,7 @@ function generateIssueNumber($tahun, $bulan){
             // dd($e->getMessage());
             return null;
         }
-    }   
+    }
 }
 
 function generateWONumber($tahun, $bulan){
@@ -900,7 +900,7 @@ function generateWONumber($tahun, $bulan){
             //    ->where('tanggal',  $tgl)
             //    ->where('deptid', $dept)
                ->first();
-    
+
     if($getdata){
         DB::beginTransaction();
         try{
@@ -920,9 +920,9 @@ function generateWONumber($tahun, $bulan){
             $lastnum = ($getdata->lastnumber*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum; 
+                $dcnNumber = $dcnNumber. $lastnum;
             }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum; 
+                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
             }
 
             // dd($leadingZero);
@@ -965,7 +965,7 @@ function generateWONumber($tahun, $bulan){
             // dd($e->getMessage());
             return null;
         }
-    } 
+    }
 }
 
 function generateVendorCode(){
@@ -1010,17 +1010,37 @@ function generateVendorCode(){
 }
 
 function sendPurchaseOrder($poNumber){
-    
+
     $poheader = DB::table('t_po01')->where('ponum', $poNumber)->first();
     $vendor   = DB::table('t_vendor')->where('vendor_code', $poheader->vendor)->first();
     $poitem   = DB::table('t_po02')->where('ponum', $poNumber)->where('approvestat', 'A')->get();
+
+    $prNumber      = DB::table('t_po02')->where('ponum', $poheader->ponum)->pluck('prnum');
+    $pbjNumber     = DB::table('t_pr02')->whereIn('prnum', $prNumber)->pluck('pbjnumber');
+
     $attachments = DB::table('v_attachments')
-        ->select('fileurl')
-        ->where('doc_object', 'PO')
-        ->where('doc_number', $poheader->ponum)->pluck('fileurl');
-    
-    // return $attachments;    
-    
+                    ->select('fileurl')
+                    // ->whereIn('doc_object', ['PO','PR', 'PBJ'])
+                    ->where('doc_number', $poheader->ponum)
+                    ->orWhereIn('doc_number', $prNumber)
+                    ->orWhereIn('doc_number', $pbjNumber)
+                    ->pluck('fileurl');
+
+    // $prAttachments = DB::table('v_attachments')
+    //                 ->select('fileurl')
+    //                 ->where('doc_object','PR')
+    //                 ->whereIn('doc_number', $prNumber)->pluck('fileurl');
+
+    // $pbjAttachments = DB::table('v_attachments')
+    //                 ->select('fileurl')
+    //                 ->where('doc_object','PBJ')
+    //                 ->whereIn('doc_number', $pbjNumber)->pluck('fileurl');
+
+    // $attachments = $prAttachments;
+    // array_push($attachments, $pbjAttachments);
+
+    // return $attachments;
+
     $sendData   = array();
     $insertData = array();
     foreach($poitem as $row){
@@ -1081,15 +1101,15 @@ function sendPurchaseOrder($poNumber){
             'submitted' => 'Y'
         ]);
     }
-    return $response;    
+    return $response;
 }
 
 function mbpAPI($url, $apikey, $data=array()){
     $curl = curl_init();
-    
+
     curl_setopt($curl, CURLOPT_POST, 1);
     if ($data) curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data) );
- 
+
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_HTTPHEADER, array(
         'APIKEY: '.$apikey,
@@ -1097,7 +1117,7 @@ function mbpAPI($url, $apikey, $data=array()){
     ));
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
- 
+
     $result = curl_exec($curl);
     if(!$result){die("Connection Failure");}
     curl_close($curl);

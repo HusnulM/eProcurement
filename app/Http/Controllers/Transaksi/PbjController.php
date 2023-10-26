@@ -28,12 +28,12 @@ class PbjController extends Controller
             $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $wodata->cheklistnumber)->first();
             $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
             $warehouse  = DB::table('t_warehouse')->where('id', $wodata->whscode)->first();
-            return view('transaksi.pbj.create', 
+            return view('transaksi.pbj.create',
                 [
                     'wodata'     => $wodata,
-                    'mekanik'    => $mekanik, 
-                    'department' => $department, 
-                    'cklist'     => $cklist, 
+                    'mekanik'    => $mekanik,
+                    'department' => $department,
+                    'cklist'     => $cklist,
                     'kendaraan'  => $kendaraan,
                     'woitems'    => $woitems,
                     'warehouse'  => $warehouse
@@ -43,13 +43,13 @@ class PbjController extends Controller
         }
     }
 
-    public function createWithoueWO(){        
+    public function createWithoueWO(){
         $mekanik    = DB::table('t_mekanik')->get();
         $department = DB::table('t_department')->get();
         $kendaraan  = DB::table('t_kendaraan')->get();
-        return view('transaksi.pbj.createpbj', 
+        return view('transaksi.pbj.createpbj',
             [
-                'mekanik'    => $mekanik, 
+                'mekanik'    => $mekanik,
                 'department' => $department,
                 'kendaraan'  => $kendaraan
             ]);
@@ -73,15 +73,15 @@ class PbjController extends Controller
             // return $woitem;
             // $kendaraan  = DB::table('t_kendaraan')->where('no_kendaraan', $pbjhdr->unit_desc)->first();
 
-            return view('transaksi.pbj.detailwo', 
+            return view('transaksi.pbj.detailwo',
                 [
-                    'prhdr'       => $wohdr, 
+                    'prhdr'       => $wohdr,
                     'pritem'      => $woitem,
                     // 'mekanik'     => $mekanik,
                     'warehouse'   => $warehouse,
                     // 'kendaraan'   => $kendaraan,
                     'attachments' => $attachments,
-                    'approvals'   => $approvals, 
+                    'approvals'   => $approvals,
                 ]);
         }else{
             return Redirect::to("/transaction/pbj")->withError('Data SPK/Work Order tidak ditemukan');
@@ -109,20 +109,20 @@ class PbjController extends Controller
                 }else{
                     $pbjwhs = 0;
                 }
-    
+
                 $approvals   = DB::table('v_pbj_approval')
                 ->where('pbjnumber', $pbjhdr->pbjnumber)
                 ->orderBy('approver_level','asc')
                 ->orderBy('pbjitem', 'asc')
                 ->get();
-    
+
                 // return $pbjhdr;
-                return view('transaksi.pbj.change', 
+                return view('transaksi.pbj.change',
                     [
-                        'department'  => $department, 
-                        'pbjhdr'      => $pbjhdr, 
+                        'department'  => $department,
+                        'pbjhdr'      => $pbjhdr,
                         'pbjitem'     => $pbjitem ?? null,
-                        'attachments' => $attachments, 
+                        'attachments' => $attachments,
                         'approvals'   => $approvals,
                         'mekanik'     => $mekanik,
                         'kendaraan'   => $kendaraan,
@@ -136,7 +136,7 @@ class PbjController extends Controller
                 $mekanik     = DB::table('t_mekanik')->get();
                 // $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $pbjhdr->cheklistnumber)->first();
                 $kendaraan  = DB::table('t_kendaraan')->where('no_kendaraan', $pbjhdr->unit_desc)->first();
-    
+
                 $pbjdept   = DB::table('t_department')->where('deptid', $pbjhdr->deptid)->first();
 
                 if(sizeof($pbjitem) > 0){
@@ -144,7 +144,7 @@ class PbjController extends Controller
                 }else{
                     $pbjwhs = 0;
                 }
-                
+
                 $project     = DB::table('t_projects')->where('idproject', $pbjhdr->idproject)->first();
                 if(!$project){
                     $project = null;
@@ -155,14 +155,14 @@ class PbjController extends Controller
                 ->orderBy('approver_level','asc')
                 ->orderBy('pbjitem', 'asc')
                 ->get();
-    
+
                 // return $pbjhdr;
-                return view('transaksi.pbj.changePbj', 
+                return view('transaksi.pbj.changePbj',
                     [
-                        'department'  => $department, 
-                        'pbjhdr'      => $pbjhdr, 
+                        'department'  => $department,
+                        'pbjhdr'      => $pbjhdr,
                         'pbjitem'     => $pbjitem ?? null,
-                        'attachments' => $attachments, 
+                        'attachments' => $attachments,
                         'approvals'   => $approvals,
                         'mekanik'     => $mekanik,
                         'kendaraan'   => $kendaraan,
@@ -184,13 +184,13 @@ class PbjController extends Controller
     public function listOpenWO(){
         $query = DB::table('v_wo_to_pbj')
                  ->where('wo_status', 'A')
-                 ->orderBy('id');
+                 ->orderBy('id', 'DESC');
         return DataTables::queryBuilder($query)->toJson();
     }
 
     public function dataCekListTidakLayak(Request $request){
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_checklist_kendaraan')->where('hasil_pemeriksaan','TIDAK LAYAK')->where('pbj_created', 'N')
@@ -200,7 +200,7 @@ class PbjController extends Controller
 
     public function listPBJ(Request $request){
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
 
@@ -214,13 +214,13 @@ class PbjController extends Controller
             // ->where('createdby',Auth::user()->email)
            //  ->where('is_active','Y')
            //  ->where('approval_status','N')
-            ->orderBy('id');
+            ->orderBy('id', 'DESC');
         }else{
             $query = DB::table('v_pbj01')
                      ->where('createdby',Auth::user()->email)
                     //  ->where('is_active','Y')
                     //  ->where('approval_status','N')
-                     ->orderBy('id');
+                     ->orderBy('id', 'DESC');
         }
         return DataTables::queryBuilder($query)
         // ->editColumn('amount', function ($query){
@@ -237,7 +237,7 @@ class PbjController extends Controller
 
     public function listDuedatePBJ(Request $request){
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_duedate_pbj')
@@ -277,12 +277,12 @@ class PbjController extends Controller
             ->orderBy('approver_level','asc')
             ->orderBy('pbjitem', 'asc')
             ->get();
-            return view('transaksi.pbj.pbjdetail', 
+            return view('transaksi.pbj.pbjdetail',
                 [
-                    'department'    => $department, 
-                    'pbjhdr'        => $pbjhdr, 
+                    'department'    => $department,
+                    'pbjhdr'        => $pbjhdr,
                     'pbjitem'       => $pbjitem,
-                    'attachments'   => $attachments, 
+                    'attachments'   => $attachments,
                     'approvals'     => $approvals,
                     'project'       => $pbjProject
                 ]);
@@ -292,7 +292,7 @@ class PbjController extends Controller
     }
 
     public function budgetLists(Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
         $query = DB::table('t_budget')->orderBy('id');
         return DataTables::queryBuilder($query)
@@ -321,9 +321,9 @@ class PbjController extends Controller
 
                 // $ptaNumber = generatePbjNumber($tahun, $department->deptid, $tgl);
                 $ptaNumber = generatePbjNumber($tahun, Auth::user()->deptid, $tgl);
-    
+
                 // return $ptaNumber;
-    
+
                 // $amount = $req['nominal'];
                 // $amount = str_replace(',','',$amount);
                 $PBJid = DB::table('t_pbj01')->insertGetId([
@@ -352,7 +352,7 @@ class PbjController extends Controller
                     'createdon'         => getLocalDatabaseDateTime(),
                     'createdby'         => Auth::user()->email ?? Auth::user()->username
                 ]);
-    
+
                 $parts    = $req['parts'];
                 $partdsc  = $req['partdesc'];
                 $quantity = $req['quantity'];
@@ -362,14 +362,14 @@ class PbjController extends Controller
                 $wonum    = $req['wonum'];
                 $woitem   = $req['woitem'];
                 $whscode  = $req['warehouse'];
-    
+
                 $insertData = array();
                 $pbjItems   = array();
                 $count = 0;
                 for($i = 0; $i < sizeof($parts); $i++){
                     $qty    = $quantity[$i];
                     $qty    = str_replace(',','',$qty);
-                    
+
                     $count = $count + 1;
                     $data = array(
                         'pbjnumber'    => $ptaNumber,
@@ -398,13 +398,13 @@ class PbjController extends Controller
                 DB::table('t_wo02')->where('wonum', $req['woNumber'])->update([
                     'pbj_created' => 'Y'
                 ]);
-                
+
                 // return $pbjItems;
                 //Insert Attachments | t_attachments
                 if(isset($req['efile'])){
                     $files = $req['efile'];
                     $insertFiles = array();
-        
+
                     foreach ($files as $efile) {
                         $filename = $efile->getClientOriginalName();
                         $upfiles = array(
@@ -416,16 +416,16 @@ class PbjController extends Controller
                             'createdby'  => Auth::user()->username ?? Auth::user()->email
                         );
                         array_push($insertFiles, $upfiles);
-        
-                        // $efile->move(public_path().'/files/PBJ/', $filename);  
-                        $efile->move('files/PBJ/', $filename);  
+
+                        // $efile->move(public_path().'/files/PBJ/', $filename);
+                        $efile->move('files/PBJ/', $filename);
                     }
                     if(sizeof($insertFiles) > 0){
                         insertOrUpdate($insertFiles,'t_attachments');
                     }
                 }
                 // insertOrUpdate($insertFiles,'t_attachments');
-    
+
                 //Set Approval
                 $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
                 if(sizeof($approval) > 0){
@@ -450,7 +450,7 @@ class PbjController extends Controller
                         }
                         insertOrUpdate($insertApproval,'t_pbj_approval');
                     }
-                }    
+                }
 
                 DB::table('t_checklist_kendaraan')->where('no_checklist',$req['checklistnum'])->update([
                     'pbj_created' => 'Y',
@@ -465,7 +465,7 @@ class PbjController extends Controller
 
                 $mailto = DB::table('users')
                     ->whereIn('id', $approverId)
-                    ->pluck('email');   
+                    ->pluck('email');
 
                 $dataApprovePBJ = DB::table('v_duedate_pbj')
                     ->where('pbjnumber', $ptaNumber)
@@ -521,14 +521,14 @@ class PbjController extends Controller
         DB::beginTransaction();
         try{
             if(isset($req['parts'])){
-               
+
                 $ptaNumber = $req['pbjnumber'];
-    
+
                 // return $ptaNumber;
-    
+
                 // $amount = $req['nominal'];
                 // $amount = str_replace(',','',$amount);
-                DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->update([                    
+                DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->update([
                     'deptid'            => Auth::user()->deptid,
                     'tgl_pbj'           => $req['tglpbj'],
                     'tujuan_permintaan' => $req['requestto'],
@@ -549,7 +549,7 @@ class PbjController extends Controller
                     'periode'           => $req['periode'],
                     'idproject'         => $req['project'],
                 ]);
-    
+
                 $parts    = $req['parts'];
                 $partdsc  = $req['partdesc'];
                 $quantity = $req['quantity'];
@@ -567,7 +567,7 @@ class PbjController extends Controller
                 for($i = 0; $i < sizeof($parts); $i++){
                     $qty    = $quantity[$i];
                     $qty    = str_replace(',','',$qty);
-                    
+
                     if($pbjitem[$i]){
                         $count = $pbjitem[$i];
                     }else{
@@ -593,13 +593,13 @@ class PbjController extends Controller
                     array_push($pbjItems, $data);
                 }
                 insertOrUpdate($insertData,'t_pbj02');
-                
+
                 // return $pbjItems;
                 //Insert Attachments | t_attachments
                 if(isset($req['efile'])){
                     $files = $req['efile'];
                     $insertFiles = array();
-        
+
                     foreach ($files as $efile) {
                         $filename = $efile->getClientOriginalName();
                         $upfiles = array(
@@ -611,19 +611,19 @@ class PbjController extends Controller
                             'createdby'  => Auth::user()->username ?? Auth::user()->email
                         );
                         array_push($insertFiles, $upfiles);
-        
-                        // $efile->move(public_path().'/files/PBJ/', $filename);  
-                        $efile->move('files/PBJ/', $filename);  
+
+                        // $efile->move(public_path().'/files/PBJ/', $filename);
+                        $efile->move('files/PBJ/', $filename);
                     }
                     if(sizeof($insertFiles) > 0){
                         insertOrUpdate($insertFiles,'t_attachments');
                     }
                 }
 
-                
+
 
                 // insertOrUpdate($insertFiles,'t_attachments');
-    
+
                 //Set Approval
                 $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
                 if(sizeof($approval) > 0){
@@ -649,7 +649,7 @@ class PbjController extends Controller
                         }
                         insertOrUpdate($insertApproval,'t_pbj_approval');
                     }
-                }    
+                }
 
                 // DB::table('t_checklist_kendaraan')->where('no_checklist',$req['checklistnum'])->update([
                 //     'pbj_created' => 'Y',
@@ -668,7 +668,7 @@ class PbjController extends Controller
                 // }else{
                 //     return Redirect::to("/transaction/pbjtanpawo")->withError('PBJ Item Belum di Pilih');
                 // }
-                
+
             }
         } catch(\Exception $e){
             DB::rollBack();
@@ -698,7 +698,7 @@ class PbjController extends Controller
                 ->where('pbjnumber', $req['pbjnumber'])
                 ->where('pbjitem', $req['pbjitem'])
                 ->where('approval_status', 'A')->first();
-            
+
             if($checkApproval){
                 $result = array(
                     'msgtype' => '500',
@@ -716,7 +716,7 @@ class PbjController extends Controller
                 DB::table('t_pbj02')->where('pbjnumber', $req['pbjnumber'])->where('pbjitem', $req['pbjitem'])->delete();
                 DB::table('t_pbj_approval')->where('pbjnumber', $req['pbjnumber'])
                                            ->where('pbjitem', $req['pbjitem'])->delete();
-    
+
                 DB::commit();
                 $result = array(
                     'msgtype' => '200',
@@ -729,7 +729,7 @@ class PbjController extends Controller
                     'message' => 'Item PBJ : '. $req['prnum'] . ' - ' . $req['pbjitem'] . ' sudah dibuat BAST'
                 );
             }
-            
+
             // return Redirect::to("/approve/pr")->withSuccess('PR dengan Nomor : '. $ptaNumber . ' berhasil di approve');
             return $result;
         } catch(\Exception $e){

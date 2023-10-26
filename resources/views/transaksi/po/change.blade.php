@@ -288,6 +288,45 @@
                                                                 </table>
                                                             </div>
                                                         </div>
+
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <input type="checkbox" id="isPOSolar" class="filled-in"/>
+                                                                <label for="isPOSolar">PO Solar?</label>
+                                                                <input type="hidden" name="poSolarInd" id="poSolarInd" value="0">
+                                                            </div>
+                                                            <div class="col-lg-12" id="inforPoSolar" style="display: none;">
+                                                                <table class="table table-sm">
+                                                                    <thead>
+                                                                        <th>Cost Component</th>
+                                                                        <th>Cost Amount</th>
+                                                                    </thead>
+                                                                    <tbody id="tbl-cost-body">
+                                                                        <tr>
+                                                                            <td>PBBKB ( % )</td>
+                                                                            <td>
+                                                                                <input type="text" class="form-control" name="solarpbbkb">
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>OAT ( % )</td>
+                                                                            <td>
+                                                                                <input type="text" class="form-control" name="solaroat">
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>PPN OAT ( % )</td>
+                                                                            <td>
+                                                                                <select name="ppnoat" id="ppnoat" class="form-control form-sm">
+                                                                                    <option value="0">---</option>
+                                                                                    <option value="11">11 %</option>
+                                                                                </select>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
                                                     <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
+use PDF;
 
 class ApprovePbjController extends Controller
 {
@@ -151,6 +152,8 @@ class ApprovePbjController extends Controller
                 DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->update([
                     'pbj_status'   => 'A'
                 ]);
+
+                // $this->generateAttachment($pbjID);
             }
 
             DB::commit();
@@ -271,6 +274,8 @@ class ApprovePbjController extends Controller
                     ->update([
                         'approvestat'   => 'A'
                     ]);
+
+                    $this->generateAttachment($pbjID);
                 }
             }
 
@@ -299,6 +304,95 @@ class ApprovePbjController extends Controller
             );
             return $result;
             // return Redirect::to("/approve/budget")->withError($e->getMessage());
+        }
+    }
+
+    public function generateAttachment($id){
+        $prhdr = DB::table('t_pbj01')->where('id', $id)->first();
+        $prdtl = DB::table('t_pbj02')->where('pbjnumber', $prhdr->pbjnumber)->get();
+        $logo = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
+        $project = DB::table('t_projects')->where('idproject', $prhdr->idproject)->first();
+        if(!$project){
+            $project = null;
+        }
+
+        $pbjUser = DB::table('users')->where('email', $prhdr->createdby)->first();
+
+        $PBJApprover = DB::table('workflow_budget')
+                ->where('object', 'PBJ')
+                ->where('requester', $pbjUser->id ?? null)
+                ->where('approver_level', 1)
+                ->orderBy('approver_level','ASC')
+                ->first();
+        if($PBJApprover){
+            $firstApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+        }else{
+            $firstApprover = null;
+        }
+
+        $PBJApprover = DB::table('workflow_budget')
+                ->where('object', 'PBJ')
+                ->where('requester', $pbjUser->id ?? null)
+                ->where('approver_level', 2)
+                ->orderBy('approver_level','ASC')
+                ->first();
+        if($PBJApprover){
+            $secondApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+        }else{
+            $secondApprover = null;
+        }
+
+        $PBJApprover = DB::table('workflow_budget')
+                ->where('object', 'PBJ')
+                ->where('requester', $pbjUser->id ?? null)
+                ->where('approver_level', 3)
+                ->orderBy('approver_level','ASC')
+                ->first();
+        if($PBJApprover){
+            $thirdApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+        }else{
+            $thirdApprover = null;
+        }
+
+        // $customPaper = array(0,0,567.00,283.80);
+        $pdf = PDF::loadview('transaksi.pbj.printpbj',
+            [
+                'hdr'     => $prhdr,
+                'item'    => $prdtl,
+                'logo'    => $logo,
+                'project' => $project,
+                'firstApprover'  => $firstApprover,
+                'secondApprover' => $secondApprover,
+                'thirdApprover'  => $thirdApprover
+            ]
+            )->setPaper('A5','landscape');
+        // $pdf = ('P','mm','A5');
+        $pdf->render();
+        // return $pdf->stream();
+
+        $filename = $prhdr->pbjnumber;
+        $filename = str_replace('/', '-', $filename);
+        $content = $pdf->output();
+        file_put_contents('files/PBJ/'.$filename.'.pdf', $content);
+
+        DB::beginTransaction();
+        try{
+            $insertFiles = array();
+            $upfiles = array(
+                'doc_object' => 'PBJ',
+                'doc_number' => $prhdr->pbjnumber,
+                'efile'      => $filename.'.pdf',
+                'pathfile'   => '/files/PBJ/'. $filename.'.pdf',
+                'createdon'  => getLocalDatabaseDateTime(),
+                'createdby'  => Auth::user()->username ?? Auth::user()->email
+            );
+            array_push($insertFiles, $upfiles);
+            insertOrUpdate($insertFiles,'t_attachments');
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            dd($e);
+            // return Redirect::to("/proc/po")->withError($e->getMessage());
         }
     }
 }
