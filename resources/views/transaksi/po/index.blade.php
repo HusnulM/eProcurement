@@ -52,7 +52,7 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="vendor">Vendor</label>
-                                            <select name="vendor" id="find-vendor" class="form-control"></select>
+                                            <select name="vendor" id="find-vendor" class="form-control" required></select>
                                         </div>
                                         <div class="form-group">
                                             <p id="vendor_address"></p>

@@ -55,7 +55,7 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="vendor">Vendor</label>
-                                            <select name="vendor" id="find-vendor" class="form-control">
+                                            <select name="vendor" id="find-vendor" class="form-control" required>
                                                 <option value="{{ $pohdr->vendor }}">{{ $vendor->vendor_name }}</option>
                                             </select>
                                         </div>
