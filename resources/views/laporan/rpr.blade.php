@@ -28,7 +28,7 @@
                                 @csrf
                                 <div class="row">
                                     <div class="col-lg-2">
-                                        <label for="">Tanggal PO</label>
+                                        <label for="">Tanggal PR</label>
                                         <input type="date" class="form-control" name="datefrom" id="datefrom" value="{{ $_GET['datefrom'] ?? '' }}">
                                     </div>
                                     <div class="col-lg-2">
