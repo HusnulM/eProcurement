@@ -11,7 +11,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"></h3>
+                    <h3 class="card-title">List Purchase Order</h3>
                     <div class="card-tools">
                         <!-- <a href="{{ url('transaction/budgeting') }}" class="btn btn-success btn-sm btn-add-dept">
                             <i class="fas fa-plus"></i> Buat Pengajuan Budget
