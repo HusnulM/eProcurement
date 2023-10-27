@@ -5,7 +5,7 @@
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -55,10 +55,10 @@
                                     </div>
                                     <div class="col-lg-3" style="text-align:center;">
                                         <br>
-                                        <button type="button" class="btn btn-default mt-2 btn-search"> 
+                                        <button type="button" class="btn btn-default mt-2 btn-search">
                                             <i class="fa fa-search"></i> Filter
                                         </button>
-                                        <button type="submit" class="btn btn-success mt-2 btn-export"> 
+                                        <button type="submit" class="btn btn-success mt-2 btn-export">
                                             <i class="fa fa-download"></i> Export Data
                                         </button>
                                     </div>
@@ -85,9 +85,10 @@
                                     <th>Department</th>
                                     <th>Status</th>
                                     <th>Remark</th>
+                                    <th>PR Number</th>
                                 </thead>
                                 <tbody>
-        
+
                                 </tbody>
                             </table>
                         </div>
@@ -153,7 +154,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "ponum", className: 'uid'},
                     {data: "podat", className: 'uid',
@@ -190,7 +191,7 @@
                         "className": "text-right",
                     },
                     {data: "deptname"},
-                    {data: "approvestat", 
+                    {data: "approvestat",
                         render: function (data, type, row){
                             if(row.approvestat == "O"){
                                 return `Open`;
@@ -202,12 +203,13 @@
                                 return `Open`;
                             }
                         }
-                    },                
-                    {data: "note" }
-                ]  
+                    },
+                    {data: "note" },
+                    {data: "prnum" }
+                ]
             });
         }
-        
+
 
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');
@@ -219,14 +221,14 @@
             sisa     		  = split[0].length % 3,
             rupiah     		  = split[0].substr(0, sisa),
             ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-        
+
             if(ribuan){
                 separator = sisa ? ',' : '';
                 rupiah += separator + ribuan.join(',');
             }
-        
+
             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
         }
     });
 </script>
