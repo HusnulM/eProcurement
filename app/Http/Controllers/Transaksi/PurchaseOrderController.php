@@ -110,22 +110,44 @@ class PurchaseOrderController extends Controller
             // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
             $ptaNumber = generatePONumber($tahun, $bulan, $tgl);
 
-            $poID = DB::table('t_po01')->insertGetId([
-                'ponum'             => $ptaNumber,
-                'ext_ponum'         => $ptaNumber,
-                'deptid'            => $req['department'],
-                'podat'             => $req['tglreq'],
-                'delivery_date'     => $req['deldate'],
-                'vendor'            => $req['vendor'],
-                'note'              => $req['remark'],
-                'ppn'               => $req['ppn'] ?? 0,
-                'currency'          => $req['currency'],
-                'tf_top'            => $req['termofpayment'] ?? null,
-                'approvestat'       => 'O',
-                'is_posolar'        => $req['poSolarInd'],
-                'createdon'         => date('Y-m-d H:m:s'),
-                'createdby'         => Auth::user()->email ?? Auth::user()->username
-            ]);
+            if($req['poSolarInd'] === 'Y'){
+                $poID = DB::table('t_po01')->insertGetId([
+                    'ponum'             => $ptaNumber,
+                    'ext_ponum'         => $ptaNumber,
+                    'deptid'            => $req['department'],
+                    'podat'             => $req['tglreq'],
+                    'delivery_date'     => $req['deldate'],
+                    'vendor'            => $req['vendor'],
+                    'note'              => $req['remark'],
+                    'ppn'               => $req['ppn'] ?? 0,
+                    'currency'          => $req['currency'],
+                    'tf_top'            => $req['termofpayment'] ?? null,
+                    'approvestat'       => 'O',
+                    'is_posolar'        => $req['poSolarInd'],
+                    'solar_pbbkb'       => $req['solarpbbkb'],
+                    'solar_oat'         => $req['solaroat'],
+                    'solar_ppn_oat'     => $req['ppnoat'],
+                    'createdon'         => date('Y-m-d H:m:s'),
+                    'createdby'         => Auth::user()->email ?? Auth::user()->username
+                ]);
+            }else{
+                $poID = DB::table('t_po01')->insertGetId([
+                    'ponum'             => $ptaNumber,
+                    'ext_ponum'         => $ptaNumber,
+                    'deptid'            => $req['department'],
+                    'podat'             => $req['tglreq'],
+                    'delivery_date'     => $req['deldate'],
+                    'vendor'            => $req['vendor'],
+                    'note'              => $req['remark'],
+                    'ppn'               => $req['ppn'] ?? 0,
+                    'currency'          => $req['currency'],
+                    'tf_top'            => $req['termofpayment'] ?? null,
+                    'approvestat'       => 'O',
+                    'is_posolar'        => $req['poSolarInd'],
+                    'createdon'         => date('Y-m-d H:m:s'),
+                    'createdby'         => Auth::user()->email ?? Auth::user()->username
+                ]);
+            }
 
             $parts    = $req['parts'];
             $partdsc  = $req['partdesc'];
@@ -222,50 +244,50 @@ class PurchaseOrderController extends Controller
                 insertOrUpdate($insertData,'t_po03');
             }
 
-            if($req['poSolarInd'] === "1"){
+            // if($req['poSolarInd'] === "1"){
 
-                $insertData = array();
-                if(isset($req['solarpbbkb'])){
-                    $costdata = array(
-                        'ponum'        => $ptaNumber,
-                        'costname'     => 'PBBKB',
-                        'costvalue'    => $req['solarpbbkb'],
-                        'is_posolar'   => 'Y',
-                        'createdon'    => date('Y-m-d H:m:s'),
-                        'createdby'    => Auth::user()->email ?? Auth::user()->username
-                    );
-                    array_push($insertData, $costdata);
-                    insertOrUpdate($insertData,'t_po03');
-                }
+            //     $insertData = array();
+            //     if(isset($req['solarpbbkb'])){
+            //         $costdata = array(
+            //             'ponum'        => $ptaNumber,
+            //             'costname'     => 'PBBKB',
+            //             'costvalue'    => $req['solarpbbkb'],
+            //             'is_posolar'   => 'Y',
+            //             'createdon'    => date('Y-m-d H:m:s'),
+            //             'createdby'    => Auth::user()->email ?? Auth::user()->username
+            //         );
+            //         array_push($insertData, $costdata);
+            //         insertOrUpdate($insertData,'t_po03');
+            //     }
 
-                $insertData = array();
-                if(isset($req['solaroat'])){
-                    $costdata = array(
-                        'ponum'        => $ptaNumber,
-                        'costname'     => 'OAT',
-                        'costvalue'    => $req['solaroat'],
-                        'is_posolar'   => 'Y',
-                        'createdon'    => date('Y-m-d H:m:s'),
-                        'createdby'    => Auth::user()->email ?? Auth::user()->username
-                    );
-                    array_push($insertData, $costdata);
-                    insertOrUpdate($insertData,'t_po03');
-                }
+            //     $insertData = array();
+            //     if(isset($req['solaroat'])){
+            //         $costdata = array(
+            //             'ponum'        => $ptaNumber,
+            //             'costname'     => 'OAT',
+            //             'costvalue'    => $req['solaroat'],
+            //             'is_posolar'   => 'Y',
+            //             'createdon'    => date('Y-m-d H:m:s'),
+            //             'createdby'    => Auth::user()->email ?? Auth::user()->username
+            //         );
+            //         array_push($insertData, $costdata);
+            //         insertOrUpdate($insertData,'t_po03');
+            //     }
 
-                $insertData = array();
-                if(isset($req['ppnoat'])){
-                    $costdata = array(
-                        'ponum'        => $ptaNumber,
-                        'costname'     => 'PPN OAT',
-                        'costvalue'    => $req['ppnoat'],
-                        'is_posolar'   => 'Y',
-                        'createdon'    => date('Y-m-d H:m:s'),
-                        'createdby'    => Auth::user()->email ?? Auth::user()->username
-                    );
-                    array_push($insertData, $costdata);
-                    insertOrUpdate($insertData,'t_po03');
-                }
-            }
+            //     $insertData = array();
+            //     if(isset($req['ppnoat'])){
+            //         $costdata = array(
+            //             'ponum'        => $ptaNumber,
+            //             'costname'     => 'PPN OAT',
+            //             'costvalue'    => $req['ppnoat'],
+            //             'is_posolar'   => 'Y',
+            //             'createdon'    => date('Y-m-d H:m:s'),
+            //             'createdby'    => Auth::user()->email ?? Auth::user()->username
+            //         );
+            //         array_push($insertData, $costdata);
+            //         insertOrUpdate($insertData,'t_po03');
+            //     }
+            // }
 
             //Insert Attachments | t_attachments
             if(isset($req['efile'])){
@@ -369,16 +391,37 @@ class PurchaseOrderController extends Controller
                 return $result;
             }
 
-            DB::table('t_po01')->where('id', $poid)->update([
-                'deptid'            => $req['department'],
-                'podat'             => $req['tglreq'],
-                'delivery_date'     => $req['deldate'],
-                'vendor'            => $req['vendor'],
-                'note'              => $req['remark'],
-                'ppn'               => $req['ppn'] ?? 0,
-                'currency'          => $req['currency'],
-                'tf_top'            => $req['termofpayment'] ?? null,
-            ]);
+            if($req['poSolarInd'] === 'Y'){
+                DB::table('t_po01')->where('id', $poid)->update([
+                    'deptid'            => $req['department'],
+                    'podat'             => $req['tglreq'],
+                    'delivery_date'     => $req['deldate'],
+                    'vendor'            => $req['vendor'],
+                    'note'              => $req['remark'],
+                    'ppn'               => $req['ppn'] ?? 0,
+                    'currency'          => $req['currency'],
+                    'tf_top'            => $req['termofpayment'] ?? null,
+                    'is_posolar'        => $req['poSolarInd'],
+                    'solar_pbbkb'       => $req['solarpbbkb'],
+                    'solar_oat'         => $req['solaroat'],
+                    'solar_ppn_oat'     => $req['ppnoat'],
+                ]);
+            }else{
+                DB::table('t_po01')->where('id', $poid)->update([
+                    'deptid'            => $req['department'],
+                    'podat'             => $req['tglreq'],
+                    'delivery_date'     => $req['deldate'],
+                    'vendor'            => $req['vendor'],
+                    'note'              => $req['remark'],
+                    'ppn'               => $req['ppn'] ?? 0,
+                    'currency'          => $req['currency'],
+                    'tf_top'            => $req['termofpayment'] ?? null,
+                    'is_posolar'        => $req['poSolarInd'],
+                    'solar_pbbkb'       => 0,
+                    'solar_oat'         => 0,
+                    'solar_ppn_oat'     => 0,
+                ]);
+            }
 
             $parts    = $req['parts'];
             $partdsc  = $req['partdesc'];

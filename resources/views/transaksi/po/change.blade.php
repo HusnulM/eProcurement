@@ -23,7 +23,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Purchase Order [{{ $pohdr->ponum }}]</h3>
+                        <h3 class="card-title">Change Purchase Order <b>[{{ $pohdr->ponum }}]</b></h3>
                         <div class="card-tools">
                             <a href="{{ url('/proc/po/listpo') }}" class='btn btn-default btn-sm btn-update-pr'>
                                 <i class='fa fa-arrow-left'></i> Back
@@ -291,11 +291,11 @@
 
                                                         <div class="row">
                                                             <div class="col-lg-12">
-                                                                <input type="checkbox" id="isPOSolar" class="filled-in"/>
+                                                                <input type="checkbox" id="isPOSolar" class="filled-in" {{ $pohdr->is_posolar == 'Y' ? 'checked' : '' }}/>
                                                                 <label for="isPOSolar">PO Solar?</label>
                                                                 <input type="hidden" name="poSolarInd" id="poSolarInd" value="0">
                                                             </div>
-                                                            <div class="col-lg-12" id="inforPoSolar" style="display: none;">
+                                                            <div class="col-lg-12" id="inforPoSolar" style="{{ $pohdr->is_posolar == 'Y' ? '' : 'display: none;' }}">
                                                                 <table class="table table-sm">
                                                                     <thead>
                                                                         <th>Cost Component</th>
@@ -305,19 +305,24 @@
                                                                         <tr>
                                                                             <td>PBBKB ( % )</td>
                                                                             <td>
-                                                                                <input type="text" class="form-control" name="solarpbbkb">
+                                                                                <select name="solarpbbkb" id="solarpbbkb" class="form-control form-sm">
+                                                                                    <option value="{{ $pohdr->solar_pbbkb }}">{{ $pohdr->solar_pbbkb }} %</option>
+                                                                                    <option value="0">---</option>
+                                                                                    <option value="7.5">7.5 %</option>
+                                                                                </select>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>OAT ( % )</td>
                                                                             <td>
-                                                                                <input type="text" class="form-control" name="solaroat">
+                                                                                <input type="text" class="form-control" name="solaroat" value="{{ $pohdr->solar_oat }}">
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>PPN OAT ( % )</td>
                                                                             <td>
                                                                                 <select name="ppnoat" id="ppnoat" class="form-control form-sm">
+                                                                                    <option value="{{ $pohdr->solar_ppn_oat }}">{{ $pohdr->solar_ppn_oat }} %</option>
                                                                                     <option value="0">---</option>
                                                                                     <option value="11">11 %</option>
                                                                                 </select>
@@ -522,6 +527,27 @@
         let selected_pr_items = [];
         let selected_items    = [];
         let _token   = $('meta[name="csrf-token"]').attr('content');
+
+        var poSolarChecked = '';
+        @if($pohdr->is_posolar == 'Y')
+            poSolarChecked = 'X';
+        @endif
+
+        $('#isPOSolar').on('change', function(){
+            if(poSolarChecked === ''){
+                poSolarChecked = 'X'
+            }else{
+                poSolarChecked = ''
+            }
+
+            if(poSolarChecked === 'X'){
+                $('#inforPoSolar').show();
+                $('#poSolarInd').val('Y');
+            }else{
+                $('#inforPoSolar').hide();
+                $('#poSolarInd').val('N');
+            }
+        });
 
         $('.btn-delete-po-item').on('click', function(){
             var _adata = $(this).data();

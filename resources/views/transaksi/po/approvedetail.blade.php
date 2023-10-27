@@ -263,6 +263,48 @@
                                             </table>
                                         </div>
                                     </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <input type="checkbox" id="isPOSolar" class="filled-in" readonly {{ $prhdr->is_posolar == 'Y' ? 'checked' : '' }} />
+                                            <label for="isPOSolar">PO Solar?</label>
+                                            <input type="hidden" name="poSolarInd" id="poSolarInd" value="0">
+                                        </div>
+                                        <div class="col-lg-12" id="inforPoSolar" style="{{ $prhdr->is_posolar == 'Y' ? '' : 'display: none;' }}">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <th>Cost Component</th>
+                                                    <th>Cost Amount</th>
+                                                </thead>
+                                                <tbody id="tbl-cost-body">
+                                                    <tr>
+                                                        <td>PBBKB ( % )</td>
+                                                        <td>
+                                                            <select name="solarpbbkb" id="solarpbbkb" class="form-control form-sm" readonly>
+                                                                <option value="{{ $prhdr->solar_pbbkb }}">{{ $prhdr->solar_pbbkb }} %</option>
+
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>OAT ( % )</td>
+                                                        <td>
+                                                            <input type="text" class="form-control" name="solaroat" value="{{ $prhdr->solar_oat }}" readonly>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>PPN OAT ( % )</td>
+                                                        <td>
+                                                            <select name="ppnoat" id="ppnoat" class="form-control form-sm" readonly>
+                                                                <option value="{{ $prhdr->solar_ppn_oat }}">{{ $prhdr->solar_ppn_oat }} %</option>
+
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
