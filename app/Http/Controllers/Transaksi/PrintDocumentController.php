@@ -290,7 +290,14 @@ class PrintDocumentController extends Controller
 
     public function printpo($id){
         $pohdr = DB::table('v_rpo')->where('id', $id)->first();
-        $podtl = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
+        if($pohdr->is_posolar === 'Y'){
+            $podtl = DB::table('v_po_solar_items')->where('ponum', $pohdr->ponum)->first();
+        }else{
+            $podtl = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
+        }
+
+        // return $podtl;
+
         $vendor = DB::table('t_vendor')->where('vendor_code', $pohdr->vendor)->first();
         $userPO = DB::table('users')->where('email', $pohdr->createdby)->first();
 
@@ -325,7 +332,8 @@ class PrintDocumentController extends Controller
             $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
         }
 
-        $pdf = PDF::loadview('transaksi.po.formpo',
+        if($pohdr->is_posolar === 'Y'){
+            $pdf = PDF::loadview('transaksi.po.formposolar',
             [
                 'pohdr'          => $pohdr,
                 'poitem'         => $podtl,
@@ -334,6 +342,17 @@ class PrintDocumentController extends Controller
                 'secondApprover' => $secondApprover ?? null,
                 'lastApprover'   => $lastApprover ?? null
             ]);
+        }else{
+            $pdf = PDF::loadview('transaksi.po.formpo',
+            [
+                'pohdr'          => $pohdr,
+                'poitem'         => $podtl,
+                'vendor'         => $vendor,
+                'firstApprover'  => $firstApprover ?? null,
+                'secondApprover' => $secondApprover ?? null,
+                'lastApprover'   => $lastApprover ?? null
+            ]);
+        }
         // $pdf->setOptions(['isRemoteEnabled' => true]);
         // $pdf->setProtocol($_SERVER['DOCUMENT_ROOT']);
         // $pdf = PDF::loadview('transaksi.po.printpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
