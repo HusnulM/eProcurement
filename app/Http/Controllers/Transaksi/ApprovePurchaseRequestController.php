@@ -183,6 +183,11 @@ class ApprovePurchaseRequestController extends Controller
                         // 'approved_amount' => $amount,
                         'approvestat'   => 'A'
                     ]);
+
+                    DB::table('t_pr02')->where('prnum', $ptaNumber)->update([
+                        // 'approved_amount' => $amount,
+                        'approvestat'   => 'A'
+                    ]);
                 }
                 $result = array(
                     'msgtype' => '200',
@@ -201,6 +206,11 @@ class ApprovePurchaseRequestController extends Controller
                 ]);
 
                 DB::table('t_pr01')->where('prnum', $ptaNumber)->update([
+                    // 'approved_amount' => $amount,
+                    'approvestat'   => 'R'
+                ]);
+
+                DB::table('t_pr02')->where('prnum', $ptaNumber)->update([
                     // 'approved_amount' => $amount,
                     'approvestat'   => 'R'
                 ]);
