@@ -65,8 +65,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/cost03list',                 'Reports\CostReportController@costDetailList')->middleware('checkAuth:report/cost03');
         Route::post('/exportcost03',              'ExportDataController@exportCostDetail')->middleware('checkAuth:report/cost03');
 
-        Route::get('/trackingpbj',                 'Reports\TrackingPBJController@index')->middleware('checkAuth:report/trackingpbj');
-        Route::get('/trackingpbjlist',             'Reports\TrackingPBJController@getData')->middleware('checkAuth:report/trackingpbj');
-        Route::post('/exporttrackingpbj',          'ExportDataController@exportCostDetail')->middleware('checkAuth:report/trackingpbj');
+        Route::get('/trackingpbj',                'Reports\TrackingPBJController@index')->middleware('checkAuth:report/trackingpbj');
+        Route::get('/trackingpbjlist',            'Reports\TrackingPBJController@getData')->middleware('checkAuth:report/trackingpbj');
+        Route::post('/exporttrackingpbj',         'ExportDataController@exportCostDetail')->middleware('checkAuth:report/trackingpbj');
+
+        Route::get('/transfer',                   'Reports\TransferController@index')->middleware('checkAuth:report/transfer');
+        Route::get('/transferlist',               'Reports\TransferController@getData')->middleware('checkAuth:report/transfer');
+        Route::post('/exporttransfer',            'ExportDataController@exportTransfer')->middleware('checkAuth:report/transfer');
     });
 });

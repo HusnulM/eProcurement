@@ -249,4 +249,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/po/list',          'Transaksi\CancelApprovePoController@listPO');//->middleware('checkAuth:cancel/approve/po');
     });
 
+    Route::group(['prefix' => '/logistic/transfer'], function () {
+        Route::get('/',                 'Transaksi\InventoryMovementController@index')->middleware('checkAuth:logistic/transfer');
+        Route::post('/save',            'Transaksi\InventoryMovementController@save')->middleware('checkAuth:logistic/transfer');
+        Route::get('/listmaterial',     'Transaksi\InventoryMovementController@getApprovedPO')->middleware('checkAuth:logistic/transfer');
+        Route::get('/listgudang',      'Transaksi\InventoryMovementController@getApprovedPO')->middleware('checkAuth:logistic/transfer');
+    });
+
 });

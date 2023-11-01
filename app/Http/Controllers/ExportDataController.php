@@ -19,6 +19,7 @@ use App\Exports\IssuedExport;
 use App\Exports\CostPerkendaraanExport;
 use App\Exports\CostPerprojectExport;
 use App\Exports\DetailCostExport;
+use App\Exports\TransferExport;
 
 class ExportDataController extends Controller
 {
@@ -49,7 +50,7 @@ class ExportDataController extends Controller
     public function exportBatchStock(Request $req){
         return Excel::download(new BatchStockExport($req), 'Laporan-Batch-Stock.xlsx');
     }
-    
+
     public function exportCost(Request $req){
         return Excel::download(new CostExport($req), 'Laporan-Cost-WO.xlsx');
     }
@@ -68,5 +69,9 @@ class ExportDataController extends Controller
 
     public function exportCostDetail(Request $req){
         return Excel::download(new DetailCostExport($req), 'Laporan-Detail-Cost.xlsx');
+    }
+
+    public function exportTransfer(Request $req){
+        return Excel::download(new TransferExport($req), 'Laporan-Transfer-Item.xlsx');
     }
 }
