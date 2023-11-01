@@ -31,9 +31,9 @@ class PrExport implements FromCollection, WithHeadings, WithMapping
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');
             }
         }
 
@@ -63,6 +63,7 @@ class PrExport implements FromCollection, WithHeadings, WithMapping
             $row->pbjnumber,
             $row->pbjitem,
             $row->budget_code,
+            $row->periode,
             $row->createdon,
             $row->createdby,
         ];
@@ -85,6 +86,7 @@ class PrExport implements FromCollection, WithHeadings, WithMapping
                 "NO. PBJ",
                 "PBJ. Item",
                 "Budget Cost Code",
+                "Budget Period",
                 "Created Date",
                 "Created By",
         ];

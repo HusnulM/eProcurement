@@ -31,9 +31,9 @@ class PoExport implements FromCollection, WithHeadings, WithMapping
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');
             }
         }
 
@@ -67,6 +67,8 @@ class PoExport implements FromCollection, WithHeadings, WithMapping
             $row->price*$row->quantity,
             $row->currency,
             $row->prnum ?? null,
+            $row->budget_code,
+            $row->budget_period,
             $row->createdon,
             $row->createdby,
         ];
@@ -93,6 +95,8 @@ class PoExport implements FromCollection, WithHeadings, WithMapping
                 "Total Price",
                 "Currency",
                 "No. PR",
+                "Cost Code",
+                "Budget Period",
                 "Created Date",
                 "Created By",
         ];

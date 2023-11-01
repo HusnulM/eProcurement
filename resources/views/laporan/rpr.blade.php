@@ -84,6 +84,7 @@
                                     <th>PBJ Number</th>
                                     <th>PBJ Item</th>
                                     <th>Budget Cost Code</th>
+                                    <th>Budget Period</th>
                                     <th>PO Created</th>
                                     <th></th>
                                 </thead>
@@ -189,6 +190,7 @@
                     {data: "pbjnumber" },
                     {data: "pbjitem" },
                     {data: "budget_code" },
+                    {data: "periode" },
                     {data: "pocreated" },
                     {"defaultContent":
                         `<button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>

@@ -86,6 +86,8 @@
                                     <th>Status</th>
                                     <th>Remark</th>
                                     <th>PR Number</th>
+                                    <th>Cost Code</th>
+                                    <th>Budget Period</th>
                                 </thead>
                                 <tbody>
 
@@ -205,7 +207,9 @@
                         }
                     },
                     {data: "note" },
-                    {data: "prnum" }
+                    {data: "prnum" },
+                    {data: "budget_code" },
+                    {data: "budget_period" }
                 ]
             });
         }
