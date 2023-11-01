@@ -42,6 +42,18 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
+                                            <label for="whs_source">Warehouse Asal</label>
+                                            <select name="whscode" id="find-whscode" class="form-control" required></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="whs_destination">Warehouse Tujuan</label>
+                                            <select name="whscodeto" id="find-whscode-to" class="form-control" required></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
                                             <label for="recipient">Di Proses Oleh</label>
                                             <input type="text" name="recipient" class="form-control" value="{{ Auth::user()->name }}">
                                         </div>
@@ -69,8 +81,8 @@
                                                 <th>Part No. / Material</th>
                                                 <th>Quantity</th>
                                                 <th>Unit</th>
-                                                <th>Gudang Asal</th>
-                                                <th>Gudang Tujuan</th>
+                                                {{-- <th>Gudang Asal</th>
+                                                <th>Gudang Tujuan</th> --}}
                                                 <th style="text-align:right;">
                                                     <button type="button" class="btn btn-success btn-sm btn-select-material">
                                                         <i class="fa fa-list"></i> List Material
@@ -111,6 +123,8 @@
                             <th>No</th>
                             <th>Part Number / Material</th>
                             <th>Description</th>
+                            <th>Warehouse</th>
+                            <th>Quantity</th>
                             <th>Unit</th>
                             <th></th>
                         </thead>
@@ -141,7 +155,6 @@
 
         $('.btn-select-material').on('click', function(){
             loadMaterial();
-            $('#modal-add-material').modal('show');
         });
 
         function checkSelectedMaterial(pMaterial) {
@@ -159,210 +172,221 @@
         }
 
         function loadMaterial(){
-            $("#tbl-material-list").DataTable({
-                serverSide: true,
-                ajax: {
-                    url: base_url+'/allmaterial',
-                    data: function (data) {
-                        data.params = {
-                            sac: "sac"
-                        }
-                    }
-                },
-                buttons: false,
-                columns: [
-                    { "data": null,"sortable": false, "searchable": false,
-                        render: function (data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
+            var whsCode = $('#find-whscode').val();
+            if(whsCode == null || whsCode === "null"){
+                toastr.error("Pilih Warehouse Asal");
+            }else{
+                $("#tbl-material-list").DataTable({
+                    serverSide: true,
+                    ajax: {
+                        url: base_url+'/summatstockbywhs/'+$('#find-whscode').val(),
+                        data: function (data) {
+                            data.params = {
+                                sac: "sac"
+                            }
                         }
                     },
-                    {data: "material", className: 'uid'},
-                    {data: "matdesc", className: 'fname'},
-                    {data: "matunit", className: 'fname'},
-                    {"defaultContent":
-                        "<button type='button' class='btn btn-primary btn-sm button-add-material'> <i class='fa fa-plus'></i> Add</button>"
+                    buttons: false,
+                    columns: [
+                        { "data": null,"sortable": false, "searchable": false,
+                            render: function (data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        },
+                        {data: "material", className: 'uid'},
+                        {data: "matdesc", className: 'fname'},
+                        {data: "whsname", className: 'fname'},
+                        {data: "quantity", className: 'text-align:right;'},
+                        {data: "unit", className: 'fname'},
+                        {"defaultContent":
+                            "<button type='button' class='btn btn-primary btn-sm button-add-material'> <i class='fa fa-plus'></i> Add</button>"
+                        }
+                    ],
+                    "bDestroy": true,
+                });
+
+                $("#tbl-material-list tbody").on('click', '.button-add-material', function(){
+                    var menuTable = $('#tbl-material-list').DataTable();
+                    selected_data = [];
+                    selected_data = menuTable.row($(this).closest('tr')).data();
+
+                    if(checkSelectedMaterial(selected_data.material)){
+                        console.log(selected_items);
+                    }else{
+                        console.log(selected_data);
+                        selected_items.push(selected_data);
+                        fCount = fCount + 1;
+                        $('#tbl-pbj-body').append(`
+                            <tr>
+                                <td>
+                                    `+selected_data.material+` - `+ selected_data.matdesc +`
+                                    <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
+                                    <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
+                                </td>
+
+                                <td>
+                                    <input type="text" name="quantity[]" class="form-control inputNumber" style="text-align:right;" required>
+                                </td>
+                                <td>
+                                    `+ selected_data.unit +`
+                                    <input type="hidden" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="btn btn-danger" style="text-align:right;" id="btnRemove`+fCount+`">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+
+                        // <td>
+                        //             <select name="whscode[]" id="find-whscode`+fCount+`" class="form-control" required></select>
+                        //         </td>
+                        //         <td>
+                        //             <select name="whscodeto[]" id="find-whscode-to`+fCount+`" class="form-control" required></select>
+                        //         </td>
+
+                        $('#btnRemove'+fCount).on('click', function(e){
+                            e.preventDefault();
+                            var row_index = $(this).closest("tr").index();
+                            removeItem(row_index);
+                            $(this).closest("tr").remove();
+                        });
+
+                        $('.inputNumber').on('change', function(){
+                            this.value = formatRupiah(this.value,'');
+                        });
+
+                        $('.inputNumber').on('keypress', function(e){
+                            validate(e);
+                        });
+
+                        function formatRupiah(angka, prefix){
+                            var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
+                            split   		  = number_string.split('.'),
+                            sisa     		  = split[0].length % 3,
+                            rupiah     		  = split[0].substr(0, sisa),
+                            ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
+
+                            if(ribuan){
+                                separator = sisa ? ',' : '';
+                                rupiah += separator + ribuan.join(',');
+                            }
+
+                            rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
+                            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
+                        }
+
+                        function validate(evt) {
+                            var theEvent = evt || window.event;
+
+                            // Handle paste
+                            if (theEvent.type === 'paste') {
+                                key = event.clipboardData.getData('text/plain');
+                            } else {
+                            // Handle key press
+                                var key = theEvent.keyCode || theEvent.which;
+                                key = String.fromCharCode(key);
+                            }
+                            var regex = /[0-9]|\./;
+                            if( !regex.test(key) ) {
+                                theEvent.returnValue = false;
+                                if(theEvent.preventDefault) theEvent.preventDefault();
+                            }
+                        }
                     }
-                ],
-                "bDestroy": true,
-            });
+                });
 
-            $("#tbl-material-list tbody").on('click', '.button-add-material', function(){
-                var menuTable = $('#tbl-material-list').DataTable();
-                selected_data = [];
-                selected_data = menuTable.row($(this).closest('tr')).data();
-
-                if(checkSelectedMaterial(selected_data.material)){
-                    console.log(selected_items);
-                }else{
-                    console.log(selected_data);
-                    selected_items.push(selected_data);
-                    fCount = fCount + 1;
-                    $('#tbl-pbj-body').append(`
-                        <tr>
-                            <td>
-                                `+selected_data.material+` - `+ selected_data.matdesc +`
-                                <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
-                                <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
-                            </td>
-
-                            <td>
-                                <input type="text" name="quantity[]" class="form-control inputNumber" style="text-align:right;" required>
-                            </td>
-                            <td>
-                                `+ selected_data.matunit +`
-                                <input type="hidden" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
-                            </td>
-                            <td>
-                                <select name="whscode[]" id="find-whscode`+fCount+`" class="form-control" required></select>
-                            </td>
-                            <td>
-                                <select name="whscodeto[]" id="find-whscode-to`+fCount+`" class="form-control" required></select>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `);
-
-                    $('#btnRemove'+fCount).on('click', function(e){
-                        e.preventDefault();
-                        var row_index = $(this).closest("tr").index();
-                        removeItem(row_index);
-                        $(this).closest("tr").remove();
-                    });
-
-                    $('.inputNumber').on('change', function(){
-                        this.value = formatRupiah(this.value,'');
-                    });
-
-                    $('.inputNumber').on('keypress', function(e){
-                        validate(e);
-                    });
-
-                    function formatRupiah(angka, prefix){
-                        var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
-                        split   		  = number_string.split('.'),
-                        sisa     		  = split[0].length % 3,
-                        rupiah     		  = split[0].substr(0, sisa),
-                        ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-
-                        if(ribuan){
-                            separator = sisa ? ',' : '';
-                            rupiah += separator + ribuan.join(',');
-                        }
-
-                        rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
-                    }
-
-                    function validate(evt) {
-                        var theEvent = evt || window.event;
-
-                        // Handle paste
-                        if (theEvent.type === 'paste') {
-                            key = event.clipboardData.getData('text/plain');
-                        } else {
-                        // Handle key press
-                            var key = theEvent.keyCode || theEvent.which;
-                            key = String.fromCharCode(key);
-                        }
-                        var regex = /[0-9]|\./;
-                        if( !regex.test(key) ) {
-                            theEvent.returnValue = false;
-                            if(theEvent.preventDefault) theEvent.preventDefault();
-                        }
-                    }
-
-                    $(document).on('select2:open', (event) => {
-                        const searchField = document.querySelector(
-                            `.select2-search__field`,
-                        );
-                        if (searchField) {
-                            searchField.focus();
-                        }
-                    });
-                    $('#find-whscode'+fCount).select2({
-                        placeholder: 'Ketik Nama Gudang',
-                        width: '100%',
-                        minimumInputLength: 0,
-                        ajax: {
-                            url: base_url + '/master/warehouse/findwhs',
-                            dataType: 'json',
-                            delay: 250,
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': _token
-                            },
-                            data: function (params) {
-                                var query = {
-                                    search: params.term,
-                                    // custname: $('#find-customer').val()
-                                }
-                                return query;
-                            },
-                            processResults: function (data) {
-                                // return {
-                                //     results: response
-                                // };
-                                console.log(data)
-                                return {
-                                    results: $.map(data.data, function (item) {
-                                        return {
-                                            text: item.whsname,
-                                            slug: item.whsname,
-                                            id: item.whscode,
-                                            ...item
-                                        }
-                                    })
-                                };
-                            },
-                            cache: true
-                        }
-                    });
-
-                    $('#find-whscode-to'+fCount).select2({
-                        placeholder: 'Ketik Nama Gudang',
-                        width: '100%',
-                        minimumInputLength: 0,
-                        ajax: {
-                            url: base_url + '/master/warehouse/findwhs',
-                            dataType: 'json',
-                            delay: 250,
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': _token
-                            },
-                            data: function (params) {
-                                var query = {
-                                    search: params.term,
-                                    // custname: $('#find-customer').val()
-                                }
-                                return query;
-                            },
-                            processResults: function (data) {
-                                // return {
-                                //     results: response
-                                // };
-                                console.log(data)
-                                return {
-                                    results: $.map(data.data, function (item) {
-                                        return {
-                                            text: item.whsname,
-                                            slug: item.whsname,
-                                            id: item.whscode,
-                                            ...item
-                                        }
-                                    })
-                                };
-                            },
-                            cache: true
-                        }
-                    });
-                }
-            });
+                $('#modal-add-material').modal('show');
+            }
         }
+
+        $(document).on('select2:open', (event) => {
+            const searchField = document.querySelector(
+                `.select2-search__field`,
+            );
+            if (searchField) {
+                searchField.focus();
+            }
+        });
+        $('#find-whscode').select2({
+            placeholder: 'Ketik Nama Gudang',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/master/warehouse/findwhs',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.whsname,
+                                slug: item.whsname,
+                                id: item.whscode,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $('#find-whscode-to').select2({
+            placeholder: 'Ketik Nama Gudang',
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + '/master/warehouse/findwhs',
+                dataType: 'json',
+                delay: 250,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        // custname: $('#find-customer').val()
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    // return {
+                    //     results: response
+                    // };
+                    console.log(data)
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.whsname,
+                                slug: item.whsname,
+                                id: item.whscode,
+                                ...item
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
     });
 </script>
 @endsection

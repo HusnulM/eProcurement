@@ -52,7 +52,7 @@ class InventoryMovementController extends Controller
 
                 $latestStock = DB::table('t_inv_stock')
                                ->where('material', $parts[$i])
-                               ->where('whscode', $whscode[$i])->first();
+                               ->where('whscode', $whscode)->first();
                 if($latestStock){
                     if($latestStock->quantity < $qty){
                         DB::rollBack();
@@ -61,8 +61,8 @@ class InventoryMovementController extends Controller
 
                         DB::select('call spTransferMaterialWithBatchFIFO(
                             "'. $parts[$i] .'",
-                            "'. $whscode[$i] .'",
-                            "'. $whscode2[$i] .'",
+                            "'. $whscode .'",
+                            "'. $whscode2 .'",
                             "'. $qty .'",
                             "'. $ptaNumber .'",
                             "'. date('Y') .'",

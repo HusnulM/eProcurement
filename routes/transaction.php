@@ -10,6 +10,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/allmaterial',          'Transaksi\GeneralController@allMaterial');
     Route::get('/matstock',             'Transaksi\GeneralController@matstockAll');
     Route::get('/matstockbywhs/{p1}',   'Transaksi\GeneralController@matstockByWhs');
+    Route::get('/summatstockbywhs/{p1}','Transaksi\GeneralController@summaryStokByWhs');
 
 
     Route::group(['prefix' => '/transaction/budgeting'], function () {
