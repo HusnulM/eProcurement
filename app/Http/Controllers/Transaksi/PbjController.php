@@ -176,6 +176,74 @@ class PbjController extends Controller
         }
     }
 
+    public function closePbjView(){
+        return view('transaksi.pbj.closepbj');
+    }
+
+    public function getPbjItems(Request $req){
+        $query = DB::table('v_pbj02');
+
+        $query->where('pbjnumber', $req->pbjnumber);
+        $query->where('prcreated', 'N');
+        $query->where('wocreated', 'N');
+        $query->where('bast_created', 'N');
+
+        $query->orderBy('id');
+
+        return $query->get();
+        // DataTables::queryBuilder($query)
+        // ->toJson();
+    }
+
+    public function listOpenPbj(Request $req){
+        $query = DB::table('v_pbj02')
+                ->select('id','pbjnumber','tgl_pbj','tujuan_permintaan','kepada','unit_desc','engine_model','createdby','department')
+                ->distinct();
+        $query->where('prcreated', 'N');
+        $query->where('wocreated', 'N');
+        $query->where('bast_created', 'N');
+        $query->orderBy('id', 'DESC');
+
+        return DataTables::queryBuilder($query)->toJson();
+    }
+
+    public function saveClosePBJ(Request $req){
+        DB::beginTransaction();
+        try{
+            DB::table('t_pbj01')
+            ->where('pbjnumber', $req->pbjnumber)
+            ->update([
+                'pbj_status' => 'C'
+            ]);
+
+            DB::table('t_pbj02')
+            ->where('pbjnumber', $req->pbjnumber)
+            ->where('prcreated', 'N')
+            ->where('wocreated', 'N')
+            ->where('bast_created', 'N')
+            ->update([
+                'itemstatus'   => 'C',
+                'prcreated'    => 'C',
+                'wocreated'    => 'C',
+                'bast_created' => 'C',
+                'approvestat'  => 'C'
+            ]);
+            DB::commit();
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'PBJ '. $req->pbjnumber .' berhasil di close'
+            );
+            return $result;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+        }
+    }
+
     public function list(){
         $department = DB::table('t_department')->get();
         return view('transaksi.pbj.list', ['department' => $department]);

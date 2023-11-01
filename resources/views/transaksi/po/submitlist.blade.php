@@ -14,14 +14,12 @@
 </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    
-
                     <div class="row">
                         <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
                             <li class="nav-item">
@@ -61,7 +59,7 @@
                                                         <label for="">-</label>
                                                         <input type="date" class="form-control" name="dateto" id="dateto" value="{{ $_GET['dateto'] ?? '' }}">
                                                     </div>
-                                                    
+
                                                     <div class="col-lg-2">
                                                         <label for="">Department</label>
                                                         <select name="department" id="department" class="form-control">
@@ -73,15 +71,15 @@
                                                     </div>
                                                     <div class="col-lg-3" style="text-align:center;">
                                                         <br>
-                                                        <button type="button" class="btn btn-default mt-2 btn-search"> 
+                                                        <button type="button" class="btn btn-default mt-2 btn-search">
                                                             <i class="fa fa-search"></i> Filter
                                                         </button>
-                                                        {{-- <button type="submit" class="btn btn-success mt-2 btn-export"> 
+                                                        {{-- <button type="submit" class="btn btn-success mt-2 btn-export">
                                                             <i class="fa fa-download"></i> Export Data
                                                         </button> --}}
                                                     </div>
                                                 </div>
-                                            </form>                                            
+                                            </form>
                                         </div>
                                     </div>
                                     <hr>
@@ -98,7 +96,7 @@
                                                     <th></th>
                                                 </thead>
                                                 <tbody>
-                        
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -120,7 +118,7 @@
                                                         <label for="">-</label>
                                                         <input type="date" class="form-control" name="dateto" id="dateto2" value="{{ $_GET['dateto'] ?? '' }}">
                                                     </div>
-                                                    
+
                                                     <div class="col-lg-2">
                                                         <label for="">Department</label>
                                                         <select name="department" id="department2" class="form-control">
@@ -132,12 +130,12 @@
                                                     </div>
                                                     <div class="col-lg-3" style="text-align:center;">
                                                         <br>
-                                                        <button type="button" class="btn btn-default mt-2 btn-search-submit"> 
+                                                        <button type="button" class="btn btn-default mt-2 btn-search-submit">
                                                             <i class="fa fa-search"></i> Filter
                                                         </button>
                                                     </div>
                                                 </div>
-                                            </form>                                            
+                                            </form>
                                         </div>
                                     </div>
                                     <hr>
@@ -154,7 +152,7 @@
                                                     <th></th>
                                                 </thead>
                                                 <tbody>
-                        
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -164,7 +162,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -241,7 +239,7 @@
                     // { "data": null,"sortable": false, "searchable": false,
                     //     render: function (data, type, row, meta) {
                     //         return meta.row + meta.settings._iDisplayStart + 1;
-                    //     }  
+                    //     }
                     // },
                     {data: "ponum", className: 'uid'},
                     {data: "podat", className: 'uid',
@@ -250,16 +248,16 @@
                         }
                     },
                     {data: "vendor_name", className: 'uid'},
-                    {data: "department"},               
+                    {data: "department"},
                     {data: "note" },
-                    {"defaultContent": 
+                    {"defaultContent":
                         `
                         <button class='btn btn-success btn-sm button-submit-po'> <i class='fa fa-search'></i> Submit PO</button>
                         `,
                         "className": "text-center",
                         "width": "10%"
                     }
-                ]  
+                ]
             });
 
             $('#tbl-budget-list tbody').on('click', '.button-submit-po', function () {
@@ -293,7 +291,7 @@
                         console.log(err)
                     }
                 }).done(function(data){
-                    
+
                     console.log(data)
                     if(data.status == '200'){
                         var rText = data.data;
@@ -341,7 +339,7 @@
                             console.log(err)
                         }
                     }).done(function(data){
-                        
+
                         if ( row.child.isShown() ) {
                             row.child.hide();
                             tr.removeClass('shown');
@@ -360,7 +358,7 @@
                     var appNote = '';
                     var appDate = '';
                     var appBy   = '';
-                    
+
                     var html = '';
                     html = `<table class="table table-bordered table-hover table-striped table-sm">
                         <thead>
@@ -372,7 +370,7 @@
                                 <th>Total Price</th>
                         </thead>
                         <tbody>`;
-                        for(var i = 0; i < results.length; i++){         
+                        for(var i = 0; i < results.length; i++){
                             html +=`
                             <tr style="background-color:gray; color:white;">
                                 <td> `+ results[i].poitem +` </td>
@@ -382,13 +380,13 @@
                                 <td style="text-align:right;"> `+ (results[i].price*1) +` </td>
                                 <td style="text-align:right;"> `+ (results[i].price*1)*(results[i].quantity*1) +` </td>
                             </tr>
-                            `;    
+                            `;
                         }
 
                     html +=`</tbody>
                             </table>`;
                     return html;
-                } 
+                }
             });
         }
 
@@ -422,7 +420,7 @@
                     // { "data": null,"sortable": false, "searchable": false,
                     //     render: function (data, type, row, meta) {
                     //         return meta.row + meta.settings._iDisplayStart + 1;
-                    //     }  
+                    //     }
                     // },
                     {data: "ponum", className: 'uid'},
                     {data: "podat", className: 'uid',
@@ -431,16 +429,16 @@
                         }
                     },
                     {data: "vendor_name", className: 'uid'},
-                    {data: "department"},               
+                    {data: "department"},
                     {data: "note" },
-                    {"defaultContent": 
+                    {"defaultContent":
                         `
                         <button class='btn btn-success btn-sm button-resubmit-po'> <i class='fa fa-search'></i> Re-Submit PO</button>
                         `,
                         "className": "text-center",
                         "width": "10%"
                     }
-                ]  
+                ]
             });
 
             $('#tbl-submitted-list tbody').on('click', '.button-resubmit-po', function () {
@@ -469,7 +467,7 @@
                         console.log(err)
                     }
                 }).done(function(data){
-                    
+
                     console.log(data)
                     if(data.status == '200'){
                         toastr.info(data.data)
@@ -509,7 +507,7 @@
                             console.log(err)
                         }
                     }).done(function(data){
-                        
+
                         if ( row.child.isShown() ) {
                             row.child.hide();
                             tr.removeClass('shown');
@@ -528,7 +526,7 @@
                     var appNote = '';
                     var appDate = '';
                     var appBy   = '';
-                    
+
                     var html = '';
                     html = `<table class="table table-bordered table-hover table-striped table-sm">
                         <thead>
@@ -540,7 +538,7 @@
                                 <th>Total Price</th>
                         </thead>
                         <tbody>`;
-                        for(var i = 0; i < results.length; i++){         
+                        for(var i = 0; i < results.length; i++){
                             html +=`
                             <tr style="background-color:gray; color:white;">
                                 <td> `+ results[i].poitem +` </td>
@@ -550,16 +548,16 @@
                                 <td style="text-align:right;"> `+ (results[i].price*1) +` </td>
                                 <td style="text-align:right;"> `+ (results[i].price*1)*(results[i].quantity*1) +` </td>
                             </tr>
-                            `;    
+                            `;
                         }
 
                     html +=`</tbody>
                             </table>`;
                     return html;
-                } 
+                }
             });
         }
-        
+
 
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');
@@ -571,14 +569,14 @@
             sisa     		  = split[0].length % 3,
             rupiah     		  = split[0].substr(0, sisa),
             ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-        
+
             if(ribuan){
                 separator = sisa ? ',' : '';
                 rupiah += separator + ribuan.join(',');
             }
-        
+
             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
         }
     });
 </script>

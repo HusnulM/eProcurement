@@ -54,6 +54,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/pbj/duedatepbj',      'Transaksi\PbjController@duedatepbj')->middleware('checkAuth:pbj/duedatepbj');
     Route::get('/pbj/duedatepbjlist',  'Transaksi\PbjController@listDuedatePBJ')->middleware('checkAuth:pbj/duedatepbj');
 
+    Route::get('/pbj/closepbj',        'Transaksi\PbjController@closePbjView')->middleware('checkAuth:pbj/closepbj');
+    Route::post('/pbj/getitems',       'Transaksi\PbjController@getPbjItems')->middleware('checkAuth:pbj/closepbj');
+    Route::get('/pbj/listopenpbj',     'Transaksi\PbjController@listOpenPbj')->middleware('checkAuth:pbj/closepbj');
+    Route::post('/pbj/closepbj',       'Transaksi\PbjController@saveClosePBJ')->middleware('checkAuth:pbj/closepbj');
+
 
     Route::group(['prefix' => '/datachecklistkendaraan'], function () {
         Route::get('/',                 'Transaksi\ChecklistKendaraanController@ViewdataCekList')->middleware('checkAuth:datachecklistkendaraan');
