@@ -1096,6 +1096,8 @@ function sendPurchaseOrder($poNumber){
     $prNumber      = DB::table('t_po02')->where('ponum', $poheader->ponum)->pluck('prnum');
     $pbjNumber     = DB::table('t_pr02')->whereIn('prnum', $prNumber)->pluck('pbjnumber');
 
+    $pbjData       = DB::table('t_pbj01')->whereIn('pbjnumber', $pbjNumber)->first();
+
     $attachments = DB::table('v_attachments')
                     ->select('fileurl')
                     // ->whereIn('doc_object', ['PO','PR', 'PBJ'])
@@ -1141,7 +1143,7 @@ function sendPurchaseOrder($poNumber){
             "dept"          => $poheader->deptid,
             "budget"        => $row->budget_code,
             "budget_period" => $row->budget_period ?? "",
-            "catatan"       => $poheader->note,
+            "catatan"       => $pbjData->tujuan_permintaan ?? $poheader->note,
             "item_rek"      => $vendor->vendor_id, //$vendor->no_rek, Pak ada sedikit update untuk array yang dikirim pak
             "item_bank"     => $vendor->vendor_id, //$vendor->bank, Item_bank dan item_rek disamakan dengan item_payee pak
             "periode"       => date('Y'),
