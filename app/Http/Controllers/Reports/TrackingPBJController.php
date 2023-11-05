@@ -17,7 +17,7 @@ class TrackingPBJController extends Controller
     }
 
     public function getData(Request $req){
-        $query = DB::table('v_pbj_trackingv2');
+        $query = DB::table('v_pbj_trackingv3');
         //->select('id','prnum','prdate','approvestat','requestby','remark','deptname','createdby')->distinct();
 
         if(isset($req->department)){
