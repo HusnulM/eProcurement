@@ -589,9 +589,12 @@ class PbjController extends Controller
         DB::beginTransaction();
         try{
             if(isset($req['parts'])){
-
                 $ptaNumber = $req['pbjnumber'];
 
+                $pbjHdr = DB::table('t_pbj01')->where('pbjnumber', $ptaNumber)->first();
+                if(!$pbjHdr){
+                    return 'PBJ Tidak ditemukan';
+                }
                 // return $ptaNumber;
 
                 // $amount = $req['nominal'];
@@ -693,7 +696,8 @@ class PbjController extends Controller
                 // insertOrUpdate($insertFiles,'t_attachments');
 
                 //Set Approval
-                $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', Auth::user()->id)->get();
+                $creator  = DB::table('users')->where('email',  $pbjHdr->createdby)->first();
+                $approval = DB::table('v_workflow_budget')->where('object', 'PBJ')->where('requester', $creator->id)->get();
                 if(sizeof($approval) > 0){
                     DB::table('t_pbj_approval')->where('pbjnumber', $ptaNumber)->delete();
                     // foreach($pbjItems as $pbitem){
