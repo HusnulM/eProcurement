@@ -33,6 +33,8 @@ class TrackingPBJController extends Controller
                 $query->where('pbjstatus', 'Approved');
             }elseif($req->pbjstatus === "R"){
                 $query->where('pbjstatus', 'Rejected');
+            }elseif($req->pbjstatus === "C"){
+                $query->where('pbjstatus', 'Closed');
             }
         }
 

@@ -36,6 +36,7 @@
                                             <option value="O">Open</option>
                                             <option value="A">Approved</option>
                                             <option value="R">Rejected</option>
+                                            <option value="C">Closed</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-2">
