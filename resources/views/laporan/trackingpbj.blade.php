@@ -130,7 +130,7 @@
         function loadDocument(_params){
             $("#tbl-budget-list").DataTable({
                 serverSide: true,
-                processing: true,
+                // processing: true,
                 ajax: {
                     url: base_url+'/report/trackingpbjlist'+_params,
                     data: function (data) {
@@ -185,7 +185,7 @@
             });
         }
 
-        $.fn.dataTable.ext.errMode = 'throw';
+        // $.fn.dataTable.ext.errMode = 'throw';
 
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');
