@@ -184,9 +184,10 @@ class PbjController extends Controller
         $query = DB::table('v_pbj02');
 
         $query->where('pbjnumber', $req->pbjnumber);
-        $query->where('prcreated', 'N');
-        $query->where('wocreated', 'N');
-        $query->where('bast_created', 'N');
+        // $query->where('prcreated', 'N');
+        // $query->where('wocreated', 'N');
+        $query->where('pbj_status', '!=', 'C');
+        $query->where('openqty', '>', 0);
 
         $query->orderBy('id');
 
@@ -199,9 +200,11 @@ class PbjController extends Controller
         $query = DB::table('v_pbj02')
                 ->select('id','pbjnumber','tgl_pbj','tujuan_permintaan','kepada','unit_desc','engine_model','createdby','department')
                 ->distinct();
-        $query->where('prcreated', 'N');
-        $query->where('wocreated', 'N');
-        $query->where('bast_created', 'N');
+        // $query->where('prcreated', 'N');
+        // $query->where('wocreated', 'N');
+        // $query->where('bast_created', 'N');
+        $query->where('pbj_status', '!=', 'C');
+        $query->where('openqty', '>', 0);
         $query->orderBy('id', 'DESC');
 
         return DataTables::queryBuilder($query)->toJson();
@@ -218,9 +221,10 @@ class PbjController extends Controller
 
             DB::table('t_pbj02')
             ->where('pbjnumber', $req->pbjnumber)
-            ->where('prcreated', 'N')
-            ->where('wocreated', 'N')
-            ->where('bast_created', 'N')
+            // ->where('prcreated', 'N')
+            // ->where('wocreated', 'N')
+            // ->where('bast_created', 'N')
+            // ->where('openqty', '>', 0)
             ->update([
                 'itemstatus'   => 'C',
                 'prcreated'    => 'C',

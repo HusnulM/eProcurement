@@ -214,6 +214,7 @@
                             <th>Kode Item</th>
                             <th>Nama Item</th>
                             <th>Quantity</th>
+                            <th>Open Qty</th>
                             <th>Figure</th>
                             <th>Remark</th>
                     </thead>
@@ -225,6 +226,7 @@
                             <td> `+ results[i].partnumber +` </td>
                             <td> `+ results[i].description +` </td>
                             <td style="text-align:right;"> `+ (results[i].quantity*1) +` `+ results[i].unit +` </td>
+                            <td style="text-align:right;"> `+ (results[i].openqty*1) +` `+ results[i].unit +` </td>
                             <td style="text-align:left;"> `+ results[i].figure +` </td>
                             <td style="text-align:left;"> `+ results[i].remark +` </td>
                         </tr>
