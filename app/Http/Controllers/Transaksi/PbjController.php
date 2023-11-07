@@ -227,10 +227,10 @@ class PbjController extends Controller
             // ->where('openqty', '>', 0)
             ->update([
                 'itemstatus'   => 'C',
-                'prcreated'    => 'C',
-                'wocreated'    => 'C',
-                'bast_created' => 'C',
-                'approvestat'  => 'C'
+                // 'prcreated'    => 'C',
+                // 'wocreated'    => 'C',
+                // 'bast_created' => 'C',
+                // 'approvestat'  => 'C'
             ]);
             DB::commit();
             $result = array(

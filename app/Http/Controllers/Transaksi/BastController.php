@@ -16,7 +16,10 @@ class BastController extends Controller
     public function create($pbjID){
         $pbjheader = DB::table('v_pbj_to_bast')->where('id', $pbjID)->first();
         if($pbjheader){
-            $pbjitems = DB::table('t_pbj02')->where('pbjnumber', $pbjheader->pbjnumber)->where('approvestat', 'A')->get();
+            $pbjitems = DB::table('t_pbj02')->where('pbjnumber', $pbjheader->pbjnumber)
+                        ->where('approvestat', 'A')
+                        // ->orWhere('approvestat', 'C')
+                        ->get();
             // return $pbjitems;
             return view('transaksi.bast.create',[
                 'pbjheader' => $pbjheader,
@@ -37,7 +40,7 @@ class BastController extends Controller
 
         if(!$attachment){
             $attachment = null;
-        }             
+        }
         return view('transaksi.bast.detail',[
             'header' => $header,
             'items'  => $items,
@@ -46,7 +49,7 @@ class BastController extends Controller
     }
 
     function listDataBast(Request $req){
-        $params = $req->params;        
+        $params = $req->params;
         $whereClause = $params['sac'];
         $query = DB::table('v_bast_01');
 
@@ -65,7 +68,7 @@ class BastController extends Controller
     }
 
     public function dataBast(Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
         $query = DB::table('v_pbj_to_bast')->orderBy('id');
         return DataTables::queryBuilder($query)
@@ -102,8 +105,8 @@ class BastController extends Controller
             $wonum    = $req['wonum'];
             // return $wonum;
             $insertData = array();
-            $count = 0;      
-            
+            $count = 0;
+
             $pbjheader = DB::table('t_pbj01')->where('pbjnumber', $pbjnum[0])->first();
 
             $ptaNumber = generateIssueNumber(date('Y'), date('m'));
@@ -138,7 +141,7 @@ class BastController extends Controller
                     $latestStock = DB::table('v_inv_summary_stock')
                                    ->where('material', $parts[$i])
                                    ->where('whsid',    $warehouseID)->first();
-    
+
                     if($latestStock){
                         if($latestStock->quantity < $qty){
                             DB::rollBack();
@@ -159,7 +162,7 @@ class BastController extends Controller
                     $pbjdtl = DB::table('t_pbj02')
                             ->where('pbjnumber', $pbjnum[$i])
                             ->where('pbjitem', $pbjitm[$i])->first();
-                    
+
                     $warehouseID = $pbjdtl->whscode;
                     $latestStock = DB::table('v_inv_summary_stock')
                                    ->where('material', $parts[$i])
@@ -221,13 +224,13 @@ class BastController extends Controller
                     "'. Auth::user()->email .'")');
             }
             insertOrUpdate($insertData,'t_bast02');
-                
+
 
             //Insert Attachments | t_attachments
             if(isset($req['efile'])){
                 $files = $req['efile'];
                 $insertFiles = array();
-    
+
                 foreach ($files as $efile) {
                     $filename = $efile->getClientOriginalName();
                     $upfiles = array(
@@ -239,9 +242,9 @@ class BastController extends Controller
                         'createdby'  => Auth::user()->username ?? Auth::user()->email
                     );
                     array_push($insertFiles, $upfiles);
-    
-                    // $efile->move(public_path().'/files/PO/', $filename);  
-                    $efile->move('files/BAST/', $filename);  
+
+                    // $efile->move(public_path().'/files/PO/', $filename);
+                    $efile->move('files/BAST/', $filename);
                 }
                 if(sizeof($insertFiles) > 0){
                     insertOrUpdate($insertFiles,'t_attachments');
