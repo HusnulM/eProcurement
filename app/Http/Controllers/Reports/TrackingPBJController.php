@@ -58,7 +58,7 @@ class TrackingPBJController extends Controller
         // }
         // $query->where('createdby', Auth::user()->email);
 
-        $query->orderBy('id');
+        $query->orderBy('id', 'DESC');
 
         return DataTables::queryBuilder($query)
         // ->editColumn('tgl_pbj', function ($query){

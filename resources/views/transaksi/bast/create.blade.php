@@ -15,7 +15,7 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <form action="{{ url('logistic/bast/save') }}" method="post" enctype="multipart/form-data">
         @csrf
@@ -68,7 +68,7 @@
                                             <input type="text" class="form-control" name="department" value="{{ $pbjheader->department }}" readonly>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="remark">Remark</label>
@@ -91,6 +91,7 @@
                                             <thead>
                                                 <th>Part Number</th>
                                                 <th>Quantity</th>
+                                                <th>Realized Qty</th>
                                                 <th>Unit</th>
                                                 <th>PBJ Number</th>
                                             </thead>
@@ -104,7 +105,11 @@
                                                     </td>
                                                     <td style="text-align:right;">
                                                         {{ number_format($row->quantity,0) }}
-                                                        <input type="hidden" name="quantity[]" value="{{ $row->quantity }}">
+                                                        <input type="hidden" name="pbjquantity[]" value="{{ $row->quantity }}">
+                                                    </td>
+                                                    <td style="text-align:right;">
+                                                        {{ number_format($row->realized_qty,0) }}
+                                                        <input type="hidden" name="quantity[]" value="{{ $row->realized_qty }}">
                                                     </td>
                                                     <td>
                                                         {{ $row->unit }}
@@ -122,7 +127,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                                            
+
                             </div>
                         </div>
                     </div>
@@ -161,8 +166,8 @@
                             <th></th>
                         </thead>
                         <tbody></tbody>
-                    </table>  
-                </div> 
+                    </table>
+                </div>
             </div>
         </div>
         <div class="modal-footer justify-content-between">
@@ -175,7 +180,7 @@
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
+<script>
     $(document).ready(function(){
         var count = 0;
         let selected_pr_items = [];
@@ -192,7 +197,7 @@
                 searchField.focus();
             }
         });
-        $('#find-penerima').select2({ 
+        $('#find-penerima').select2({
             placeholder: 'Nama',
             width: '100%',
             minimumInputLength: 0,
@@ -233,7 +238,7 @@
 
         $('#find-penerima').on('change', function(){
             // alert(this.value)
-            
+
             var data = $('#find-penerima').select2('data')
             console.log(data);
         });

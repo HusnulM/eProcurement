@@ -27,9 +27,9 @@ class ReportsController extends Controller
             if($req->approvalstat === "O"){
                 $query->where('budget_status', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('budget_status', 'A');                
+                $query->where('budget_status', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('budget_status', 'R');                
+                $query->where('budget_status', 'R');
             }
         }
 
@@ -60,7 +60,7 @@ class ReportsController extends Controller
         $department = DB::table('t_department')->get();
         return view('laporan.pbj', ['department' => $department]);
     }
-    
+
     public function pbjList(Request $req){
         $query = DB::table('v_rpbj01');
 
@@ -74,9 +74,11 @@ class ReportsController extends Controller
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');
+            }elseif($req->approvalstat === "C"){
+                $query->where('approvestat', 'C');
             }
         }
 
@@ -117,9 +119,9 @@ class ReportsController extends Controller
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');
             }
         }
 
@@ -176,9 +178,9 @@ class ReportsController extends Controller
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');
             }
         }
 
@@ -223,9 +225,9 @@ class ReportsController extends Controller
             if($req->approvalstat === "O"){
                 $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');                
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');                
+                $query->where('approvestat', 'R');
             }
         }
 

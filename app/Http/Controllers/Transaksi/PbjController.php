@@ -186,6 +186,7 @@ class PbjController extends Controller
         $query->where('pbjnumber', $req->pbjnumber);
         // $query->where('prcreated', 'N');
         // $query->where('wocreated', 'N');
+        $query->where('bast_created', 'N');
         $query->where('pbj_status', '!=', 'C');
         $query->where('openqty', '>', 0);
 
@@ -202,50 +203,12 @@ class PbjController extends Controller
                 ->distinct();
         // $query->where('prcreated', 'N');
         // $query->where('wocreated', 'N');
-        // $query->where('bast_created', 'N');
+        $query->where('bast_created', 'N');
         $query->where('pbj_status', '!=', 'C');
         $query->where('openqty', '>', 0);
         $query->orderBy('id', 'DESC');
 
         return DataTables::queryBuilder($query)->toJson();
-    }
-
-    public function saveClosePBJ(Request $req){
-        DB::beginTransaction();
-        try{
-            DB::table('t_pbj01')
-            ->where('pbjnumber', $req->pbjnumber)
-            ->update([
-                'pbj_status' => 'C'
-            ]);
-
-            DB::table('t_pbj02')
-            ->where('pbjnumber', $req->pbjnumber)
-            // ->where('prcreated', 'N')
-            // ->where('wocreated', 'N')
-            // ->where('bast_created', 'N')
-            // ->where('openqty', '>', 0)
-            ->update([
-                'itemstatus'   => 'C',
-                // 'prcreated'    => 'C',
-                // 'wocreated'    => 'C',
-                // 'bast_created' => 'C',
-                // 'approvestat'  => 'C'
-            ]);
-            DB::commit();
-            $result = array(
-                'msgtype' => '200',
-                'message' => 'PBJ '. $req->pbjnumber .' berhasil di close'
-            );
-            return $result;
-        }catch(\Exception $e){
-            DB::rollBack();
-            $result = array(
-                'msgtype' => '500',
-                'message' => $e->getMessage()
-            );
-            return $result;
-        }
     }
 
     public function list(){
@@ -380,6 +343,50 @@ class PbjController extends Controller
         ->toJson();
     }
 
+    public function saveClosePBJ(Request $req){
+        DB::beginTransaction();
+        try{
+            $pbjItems = DB::table('t_pbj02')
+                        ->where('pbjnumber', $req->pbjnumber)
+                        ->where('bast_created', 'N')->get();
+
+            DB::table('t_pbj01')
+            ->where('pbjnumber', $req->pbjnumber)
+            ->update([
+                'pbj_status' => 'C'
+            ]);
+
+            foreach($pbjItems as $row){
+                $totalRelQty = DB::table('t_pr02')
+                               ->where('pbjnumber', $row->pbjnumber)
+                               ->where('pbjitem', $row->pbjitem)
+                               ->sum('quantity');
+
+                DB::table('t_pbj02')
+                    ->where('pbjnumber', $req->pbjnumber)
+                    ->where('bast_created', 'N')
+                    // ->where('openqty', '>', 0)
+                    ->update([
+                        'itemstatus'   => 'C',
+                        'realized_qty' => $totalRelQty
+                    ]);
+            }
+            DB::commit();
+            $result = array(
+                'msgtype' => '200',
+                'message' => 'PBJ '. $req->pbjnumber .' berhasil di close'
+            );
+            return $result;
+        }catch(\Exception $e){
+            DB::rollBack();
+            $result = array(
+                'msgtype' => '500',
+                'message' => $e->getMessage()
+            );
+            return $result;
+        }
+    }
+
     public function save(Request $req){
         // return $req;
         DB::beginTransaction();
@@ -449,6 +456,7 @@ class PbjController extends Controller
                         'partnumber'   => $parts[$i],
                         'description'  => $partdsc[$i],
                         'quantity'     => $qty,
+                        'realized_qty' => $qty,
                         'unit'         => $uom[$i],
                         'figure'       => $figure[$i],
                         'remark'       => $remark[$i],

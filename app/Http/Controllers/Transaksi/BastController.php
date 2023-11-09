@@ -205,7 +205,9 @@ class BastController extends Controller
 
                 DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
                 ->update([
-                    'bast_created' => 'Y'
+                    'itemstatus'   => 'C',
+                    'bast_created' => 'Y',
+                    'realized_qty' => $qty
                 ]);
 
                 //Insert movement

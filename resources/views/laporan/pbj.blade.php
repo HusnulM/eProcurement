@@ -5,7 +5,7 @@
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -42,6 +42,7 @@
                                             <option value="O">Open</option>
                                             <option value="A">Approved</option>
                                             <option value="R">Rejected</option>
+                                            <option value="C">Closed</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-2">
@@ -55,10 +56,10 @@
                                     </div>
                                     <div class="col-lg-3" style="text-align:center;">
                                         <br>
-                                        <button type="button" class="btn btn-default mt-2 btn-search"> 
+                                        <button type="button" class="btn btn-default mt-2 btn-search">
                                             <i class="fa fa-search"></i> Filter
                                         </button>
-                                        <button type="submit" class="btn btn-success mt-2 btn-export"> 
+                                        <button type="submit" class="btn btn-success mt-2 btn-export">
                                             <i class="fa fa-download"></i> Export Data
                                         </button>
                                     </div>
@@ -92,7 +93,7 @@
                                     <!-- <th></th> -->
                                 </thead>
                                 <tbody>
-        
+
                                 </tbody>
                             </table>
                         </div>
@@ -158,7 +159,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "pbjnumber", className: 'uid'},
                     {data: "tgl_pbj", className: 'uid'},
@@ -181,7 +182,7 @@
                     {data: "unit"},
                     {data: "figure" },
                     {data: "remark" },
-                    {data: "approvestat", 
+                    {data: "approvestat",
                         render: function (data, type, row){
                             if(row.approvestat == "O"){
                                 return `Open`;
@@ -189,13 +190,15 @@
                                 return `Approved`;
                             }else if(row.approvestat == "R"){
                                 return `Rejected`;
+                            }else{
+                                return `Closed`;
                             }
                         }
                     }
-                ]  
+                ]
             });
         }
-        
+
 
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');
@@ -207,14 +210,14 @@
             sisa     		  = split[0].length % 3,
             rupiah     		  = split[0].substr(0, sisa),
             ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-        
+
             if(ribuan){
                 separator = sisa ? ',' : '';
                 rupiah += separator + ribuan.join(',');
             }
-        
+
             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
         }
     });
 </script>
