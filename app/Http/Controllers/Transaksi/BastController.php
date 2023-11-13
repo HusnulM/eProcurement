@@ -18,7 +18,7 @@ class BastController extends Controller
         if($pbjheader){
             $pbjitems = DB::table('t_pbj02')->where('pbjnumber', $pbjheader->pbjnumber)
                         ->where('approvestat', 'A')
-                        // ->orWhere('approvestat', 'C')
+                        ->Where('bast_created', 'N')
                         ->get();
             // return $pbjitems;
             return view('transaksi.bast.create',[

@@ -346,7 +346,27 @@ class ApprovePurchaseRequestController extends Controller
                         'approvestat'   => 'A'
                     ]);
 
+                    $prItems =  DB::table('t_pr02')
+                                ->where('prnum', $ptaNumber)
+                                ->whereIn('pritem', $data['pritem'])
+                                ->get();
+
+                    foreach($prItems as $row){
+                        $totalRelQty = DB::table('t_pr02')
+                               ->where('pbjnumber', $row->pbjnumber)
+                               ->where('pbjitem', $row->pbjitem)
+                               ->sum('quantity');
+
+                        DB::table('t_pbj02')
+                        ->where('pbjnumber', $row->pbjnumber)
+                        ->whereIn('pritem', $row->pbjitem)
+                        ->update([
+                            'realized_qty' => $totalRelQty
+                        ]);
+                    }
+
                     $this->generateAttachment($pbjHeader->id);
+
                 }
             }
 

@@ -75,6 +75,7 @@ class PurchaseRequestController extends Controller
         $query = DB::table('v_pbj02')
                  ->where('pbj_status', 'A')
                  ->where('approvestat', 'A')
+                 ->where('itemstatus', '<>', 'C')
                  ->where('openqty', '>', 0)
                  ->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
