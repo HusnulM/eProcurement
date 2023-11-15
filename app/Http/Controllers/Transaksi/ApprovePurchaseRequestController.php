@@ -362,7 +362,7 @@ class ApprovePurchaseRequestController extends Controller
 
                             DB::table('t_pbj02')
                             ->where('pbjnumber', $row->pbjnumber)
-                            ->whereIn('pritem', $row->pbjitem)
+                            ->whereIn('pbjitem', $row->pbjitem)
                             ->update([
                                 'realized_qty' => $totalRelQty
                             ]);
