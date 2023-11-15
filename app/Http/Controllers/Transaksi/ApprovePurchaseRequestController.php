@@ -346,31 +346,31 @@ class ApprovePurchaseRequestController extends Controller
                         'approvestat'   => 'A'
                     ]);
 
-                    // $prItems =  DB::table('t_pr02')
-                    //             ->where('prnum', $ptaNumber)
-                    //             ->whereIn('pritem', $data['pritem'])
-                    //             ->where('pbjnumber', '<>','0')
-                    //             ->get();
-                    // // return $prItems;
-                    // if(sizeof($prItems) > 0){
-                    //     foreach($prItems as $row){
+                    $prItems =  DB::table('t_pr02')
+                                ->where('prnum', $ptaNumber)
+                                ->whereIn('pritem', $data['pritem'])
+                                ->where('pbjnumber', '<>','0')
+                                ->get();
+                    // return $prItems;
+                    if(sizeof($prItems) > 0){
+                        foreach($prItems as $row){
 
-                    //         $totalRelQty = DB::table('t_pr02')
-                    //                ->where('pbjnumber', $row->pbjnumber)
-                    //                ->where('pbjitem', $row->pbjitem)
-                    //                ->sum('quantity');
+                            $totalRelQty = DB::table('t_pr02')
+                                   ->where('pbjnumber', $row->pbjnumber)
+                                   ->where('pbjitem', $row->pbjitem)
+                                   ->sum('quantity');
 
-                    //         DB::table('t_pbj02')
-                    //         ->where('pbjnumber', $row->pbjnumber)
-                    //         ->whereIn('pbjitem', $row->pbjitem)
-                    //         ->update([
-                    //             'realized_qty' => $totalRelQty
-                    //         ]);
-                    //         // if($row->pbjnumber <> "0"){
+                            DB::table('t_pbj02')
+                            ->where('pbjnumber', $row->pbjnumber)
+                            ->where('pbjitem', $row->pbjitem)
+                            ->update([
+                                'realized_qty' => $totalRelQty
+                            ]);
+                            // if($row->pbjnumber <> "0"){
 
-                    //         // }
-                    //     }
-                    // }
+                            // }
+                        }
+                    }
 
                     $this->generateAttachment($pbjHeader->id);
 
