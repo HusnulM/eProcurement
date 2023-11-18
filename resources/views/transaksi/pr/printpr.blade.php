@@ -165,7 +165,8 @@
             <td></td>
             <td>
                 @if($approval)
-                <u> {{ getUserNameByID($approval->approved_by) }} </u>
+                <u> {{ getUserNameByID($approval->approved_by) }} </u><br>
+                Date: {{ formatDate($approval->approval_date) }}
                 @endif
             </td>
         </tr>

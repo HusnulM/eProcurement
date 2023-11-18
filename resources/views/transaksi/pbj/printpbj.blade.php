@@ -249,17 +249,22 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align:center;">{{ $firstApprover->name ?? '' }}</td>
+                    <td style="text-align:center;">
+                        {{ $firstApprover->name ?? '' }} <br>
+                        Date: {{ formatDate($firstApprovalDate->approval_date) ?? '' }}
+                    </td>
                     <td></td>
                     <td style="text-align:center;">
                         @if($secondApprover)
-                        {{ $secondApprover->name ?? '' }}
+                        {{ $secondApprover->name ?? '' }} <br>
+                        Date: {{ formatDate($secondApprovalDate->approval_date) ?? '' }}
                         @endif
                     </td>
                     <td></td>
                     <td style="text-align:center;">
                         @if($thirdApprover)
-                        {{ $thirdApprover->name ?? '' }}
+                        {{ $thirdApprover->name ?? '' }} <br>
+                        Date: {{ formatDate($thirdApprovalDate->approval_date) ?? '' }}
                         @endif
                     </td>
                     <td></td>

@@ -301,19 +301,22 @@
             <tr>
                 <td>
                     @if($firstApprover)
-                    <u>{{ $firstApprover->name ?? '' }}</u>
+                    <u>{{ $firstApprover->name ?? '' }}</u> <br>
+                    Date: {{ formatDate($firstApprovalDate->approval_date ?? '') }}
                     @endif
                 </td>
                 <td></td>
                 <td>
                     @if($secondApprover)
-                    <u>{{ $secondApprover->name ?? '' }}</u>
+                    <u>{{ $secondApprover->name ?? '' }}</u> <br>
+                    Date: {{ formatDate($secondApprovalDate->approval_date ?? '') }}
                     @endif
                 </td>
                 <td></td>
                 <td>
                     @if($lastApprover)
-                    <u>{{ $lastApprover->name ?? '' }}</u>
+                    <u>{{ $lastApprover->name ?? '' }}</u> <br>
+                    Date: {{ formatDate($lastApprovalDate->approval_date ?? '') }}
                     @endif
                 </td>
             </tr>

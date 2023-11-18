@@ -147,9 +147,15 @@ class PrintDocumentController extends Controller
                 ->orderBy('approver_level','ASC')
                 ->first();
         if($PBJApprover){
-            $firstApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+            $firstApprover     = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+            $firstApprovalDate = DB::table('v_pbj_approval')
+            ->where('approver', $PBJApprover->approver)
+            ->where('pbjnumber', $prhdr->pbjnumber)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
         }else{
             $firstApprover = null;
+            $firstApprovalDate = null;
         }
 
         $PBJApprover = DB::table('workflow_budget')
@@ -160,8 +166,14 @@ class PrintDocumentController extends Controller
                 ->first();
         if($PBJApprover){
             $secondApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+            $secondApprovalDate = DB::table('v_pbj_approval')
+            ->where('approver', $PBJApprover->approver)
+            ->where('pbjnumber', $prhdr->pbjnumber)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
         }else{
             $secondApprover = null;
+            $secondApprovalDate = null;
         }
 
         $PBJApprover = DB::table('workflow_budget')
@@ -172,8 +184,14 @@ class PrintDocumentController extends Controller
                 ->first();
         if($PBJApprover){
             $thirdApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
+            $thirdApprovalDate = DB::table('v_pbj_approval')
+            ->where('approver', $PBJApprover->approver)
+            ->where('pbjnumber', $prhdr->pbjnumber)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
         }else{
             $thirdApprover = null;
+            $thirdApprovalDate = null;
         }
 
         // $customPaper = array(0,0,567.00,283.80);
@@ -185,7 +203,10 @@ class PrintDocumentController extends Controller
                 'project' => $project,
                 'firstApprover'  => $firstApprover,
                 'secondApprover' => $secondApprover,
-                'thirdApprover'  => $thirdApprover
+                'thirdApprover'  => $thirdApprover,
+                'firstApprovalDate'  => $firstApprovalDate,
+                'secondApprovalDate' => $secondApprovalDate,
+                'thirdApprovalDate'  => $thirdApprovalDate
             ]
             )->setPaper('A5','landscape');
         // $pdf = ('P','mm','A5');
@@ -306,8 +327,16 @@ class PrintDocumentController extends Controller
                 ->where('requester', $userPO->id)
                 ->orderBy('approver_level','ASC')
                 ->first();
+                // return $POApprover;
         if($POApprover){
             $firstApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+            $firstApprovalDate = DB::table('v_po_approval_v2')
+            ->where('approver_level','1')
+            ->where('ponum', $pohdr->ponum)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
+
+            // return $firstApprovalDate;
         }
 
         $POApprover = DB::table('workflow_budget')
@@ -319,6 +348,11 @@ class PrintDocumentController extends Controller
 
         if($POApprover){
             $secondApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+            $secondApprovalDate = DB::table('v_po_approval_v2')
+            ->where('approver_level','2')
+            ->where('ponum', $pohdr->ponum)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
         }
 
         $POApprover = DB::table('workflow_budget')
@@ -330,6 +364,11 @@ class PrintDocumentController extends Controller
 
         if($POApprover){
             $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+            $lastApprovalDate = DB::table('v_po_approval_v2')
+            ->where('approver_level','3')
+            ->where('ponum', $pohdr->ponum)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
         }
 
         if($pohdr->is_posolar === 'Y'){
@@ -340,7 +379,10 @@ class PrintDocumentController extends Controller
                 'vendor'         => $vendor,
                 'firstApprover'  => $firstApprover ?? null,
                 'secondApprover' => $secondApprover ?? null,
-                'lastApprover'   => $lastApprover ?? null
+                'lastApprover'   => $lastApprover ?? null,
+                'firstApprovalDate'  => $firstApprovalDate ?? null,
+                'secondApprovalDate' => $secondApprovalDate ?? null,
+                'lastApprovalDate'   => $lastApprovalDate ?? null
             ]);
         }else{
             $pdf = PDF::loadview('transaksi.po.formpo',
@@ -350,7 +392,10 @@ class PrintDocumentController extends Controller
                 'vendor'         => $vendor,
                 'firstApprover'  => $firstApprover ?? null,
                 'secondApprover' => $secondApprover ?? null,
-                'lastApprover'   => $lastApprover ?? null
+                'lastApprover'   => $lastApprover ?? null,
+                'firstApprovalDate'  => $firstApprovalDate ?? null,
+                'secondApprovalDate' => $secondApprovalDate ?? null,
+                'lastApprovalDate'   => $lastApprovalDate ?? null
             ]);
         }
         // $pdf->setOptions(['isRemoteEnabled' => true]);
