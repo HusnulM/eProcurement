@@ -495,6 +495,69 @@ class ApprovePurchaseOrderController extends Controller
     }
 
     public function generateAttachment($id){
+        // $pohdr = DB::table('v_rpo')->where('id', $id)->first();
+        // if($pohdr->is_posolar === 'Y'){
+        //     $podtl = DB::table('v_po_solar_items')->where('ponum', $pohdr->ponum)->first();
+        // }else{
+        //     $podtl = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
+        // }
+
+        // // $podtl = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
+        // $vendor = DB::table('t_vendor')->where('vendor_code', $pohdr->vendor)->first();
+        // $userPO = DB::table('users')->where('email', $pohdr->createdby)->first();
+
+        // $POApprover = DB::table('workflow_budget')
+        //         ->where('object', 'PO')
+        //         ->where('requester', $userPO->id)
+        //         ->orderBy('approver_level','ASC')
+        //         ->first();
+        // if($POApprover){
+        //     $firstApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+        // }
+
+        // $POApprover = DB::table('workflow_budget')
+        //         ->where('object', 'PO')
+        //         ->where('requester', $userPO->id)
+        //         ->where('approver_level','2')
+        //         ->orderBy('approver_level','ASC')
+        //         ->first();
+
+        // if($POApprover){
+        //     $secondApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+        // }
+
+        // $POApprover = DB::table('workflow_budget')
+        //         ->where('object', 'PO')
+        //         ->where('requester', $userPO->id)
+        //         ->where('approver_level','3')
+        //         ->orderBy('approver_level','DESC')
+        //         ->first();
+
+        // if($POApprover){
+        //     $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+        // }
+
+        // if($pohdr->is_posolar === 'Y'){
+        //     $pdf = PDF::loadview('transaksi.po.formposolar',
+        //     [
+        //         'pohdr'          => $pohdr,
+        //         'poitem'         => $podtl,
+        //         'vendor'         => $vendor,
+        //         'firstApprover'  => $firstApprover ?? null,
+        //         'secondApprover' => $secondApprover ?? null,
+        //         'lastApprover'   => $lastApprover ?? null
+        //     ]);
+        // }else{
+        //     $pdf = PDF::loadview('transaksi.po.formpo',
+        //     [
+        //         'pohdr'          => $pohdr,
+        //         'poitem'         => $podtl,
+        //         'vendor'         => $vendor,
+        //         'firstApprover'  => $firstApprover ?? null,
+        //         'secondApprover' => $secondApprover ?? null,
+        //         'lastApprover'   => $lastApprover ?? null
+        //     ]);
+        // }
         $pohdr = DB::table('v_rpo')->where('id', $id)->first();
         if($pohdr->is_posolar === 'Y'){
             $podtl = DB::table('v_po_solar_items')->where('ponum', $pohdr->ponum)->first();
@@ -502,7 +565,8 @@ class ApprovePurchaseOrderController extends Controller
             $podtl = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
         }
 
-        // $podtl = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
+        // return $podtl;
+
         $vendor = DB::table('t_vendor')->where('vendor_code', $pohdr->vendor)->first();
         $userPO = DB::table('users')->where('email', $pohdr->createdby)->first();
 
@@ -511,8 +575,16 @@ class ApprovePurchaseOrderController extends Controller
                 ->where('requester', $userPO->id)
                 ->orderBy('approver_level','ASC')
                 ->first();
+                // return $POApprover;
         if($POApprover){
             $firstApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+            $firstApprovalDate = DB::table('v_po_approval_v2')
+            ->where('approver_level','1')
+            ->where('ponum', $pohdr->ponum)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
+
+            // return $firstApprovalDate;
         }
 
         $POApprover = DB::table('workflow_budget')
@@ -524,6 +596,11 @@ class ApprovePurchaseOrderController extends Controller
 
         if($POApprover){
             $secondApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+            $secondApprovalDate = DB::table('v_po_approval_v2')
+            ->where('approver_level','2')
+            ->where('ponum', $pohdr->ponum)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
         }
 
         $POApprover = DB::table('workflow_budget')
@@ -535,6 +612,11 @@ class ApprovePurchaseOrderController extends Controller
 
         if($POApprover){
             $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
+            $lastApprovalDate = DB::table('v_po_approval_v2')
+            ->where('approver_level','3')
+            ->where('ponum', $pohdr->ponum)
+            ->orderBy('approval_date', 'DESC')
+            ->first();
         }
 
         if($pohdr->is_posolar === 'Y'){
@@ -545,7 +627,10 @@ class ApprovePurchaseOrderController extends Controller
                 'vendor'         => $vendor,
                 'firstApprover'  => $firstApprover ?? null,
                 'secondApprover' => $secondApprover ?? null,
-                'lastApprover'   => $lastApprover ?? null
+                'lastApprover'   => $lastApprover ?? null,
+                'firstApprovalDate'  => $firstApprovalDate ?? null,
+                'secondApprovalDate' => $secondApprovalDate ?? null,
+                'lastApprovalDate'   => $lastApprovalDate ?? null
             ]);
         }else{
             $pdf = PDF::loadview('transaksi.po.formpo',
@@ -555,9 +640,13 @@ class ApprovePurchaseOrderController extends Controller
                 'vendor'         => $vendor,
                 'firstApprover'  => $firstApprover ?? null,
                 'secondApprover' => $secondApprover ?? null,
-                'lastApprover'   => $lastApprover ?? null
+                'lastApprover'   => $lastApprover ?? null,
+                'firstApprovalDate'  => $firstApprovalDate ?? null,
+                'secondApprovalDate' => $secondApprovalDate ?? null,
+                'lastApprovalDate'   => $lastApprovalDate ?? null
             ]);
         }
+        $pdf->render();
 
         $filename = $pohdr->ponum;
         $filename = str_replace('/', '-', $filename);

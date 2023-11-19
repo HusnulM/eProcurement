@@ -529,6 +529,7 @@ class ApprovePurchaseRequestController extends Controller
                 'approveSign' => $approveSign,
                 'creatorSign' => $creatorSign
             ]);
+        $pdf->render();
         // return $pdf->stream();
 
         $filename = $prhdr->prnum;

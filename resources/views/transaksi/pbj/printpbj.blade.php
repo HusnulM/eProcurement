@@ -251,20 +251,20 @@
                 <tr>
                     <td style="text-align:center;">
                         {{ $firstApprover->name ?? '' }} <br>
-                        Date: {{ formatDate($firstApprovalDate->approval_date) ?? '' }}
+                        Date: {{ formatDate($firstApprovalDate->approval_date ?? null) }}
                     </td>
                     <td></td>
                     <td style="text-align:center;">
                         @if($secondApprover)
                         {{ $secondApprover->name ?? '' }} <br>
-                        Date: {{ formatDate($secondApprovalDate->approval_date) ?? '' }}
+                        Date: {{ formatDate($secondApprovalDate->approval_date ?? null) }}
                         @endif
                     </td>
                     <td></td>
                     <td style="text-align:center;">
                         @if($thirdApprover)
                         {{ $thirdApprover->name ?? '' }} <br>
-                        Date: {{ formatDate($thirdApprovalDate->approval_date) ?? '' }}
+                        Date: {{ formatDate($thirdApprovalDate->approval_date ?? null) }}
                         @endif
                     </td>
                     <td></td>

@@ -302,21 +302,21 @@
                 <td>
                     @if($firstApprover)
                     <u>{{ $firstApprover->name ?? '' }}</u> <br>
-                    Date: {{ formatDate($firstApprovalDate->approval_date ?? '') }}
+                    Date: {{ formatDate($firstApprovalDate->approval_date ?? null) }}
                     @endif
                 </td>
                 <td></td>
                 <td>
                     @if($secondApprover)
                     <u>{{ $secondApprover->name ?? '' }}</u> <br>
-                    Date: {{ formatDate($secondApprovalDate->approval_date ?? '') }}
+                    Date: {{ formatDate($secondApprovalDate->approval_date ?? null) }}
                     @endif
                 </td>
                 <td></td>
                 <td>
                     @if($lastApprover)
                     <u>{{ $lastApprover->name ?? '' }}</u> <br>
-                    Date: {{ formatDate($lastApprovalDate->approval_date ?? '') }}
+                    Date: {{ formatDate($lastApprovalDate->approval_date ?? null) }}
                     @endif
                 </td>
             </tr>
