@@ -263,7 +263,7 @@ class ApprovePurchaseRequestController extends Controller
 
             if($data['action'] === 'R'){
                 DB::table('t_pr_approvalv2')
-                ->where('prnumber', $ptaNumber)
+                ->where('prnum', $ptaNumber)
                 ->whereIn('pritem', $data['pritem'])
                 // ->where('approver_level', $nextApprover)
                 ->update([
@@ -279,7 +279,7 @@ class ApprovePurchaseRequestController extends Controller
                         'approvestat'   => $data['action']
                     ]);
 
-                DB::table('t_pr02')->where('pbjnumber', $ptaNumber)
+                DB::table('t_pr02')->where('prnum', $ptaNumber)
                     ->whereIn('pritem', $data['pritem'])
                     ->update([
                         'approvestat'   => $data['action']
@@ -529,7 +529,7 @@ class ApprovePurchaseRequestController extends Controller
                 'approveSign' => $approveSign,
                 'creatorSign' => $creatorSign
             ]);
-        $pdf->render();
+        // $pdf->render();
         // return $pdf->stream();
 
         $filename = $prhdr->prnum;
