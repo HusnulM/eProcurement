@@ -264,7 +264,7 @@ class PurchaseRequestController extends Controller
             // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
             $ptaNumber = $prhdr->prnum;
 
-            $checkApproval = DB::table('v_pr_approval')
+            $checkApproval = DB::table('t_pr_approvalv2')
                 ->where('prnum', $ptaNumber)->where('approval_status', 'A')->first();
 
             if($checkApproval){
