@@ -53,6 +53,26 @@
             background-color: #B4B1B1;
             color: black;
         }
+
+        #header,
+        #footer {
+        position: fixed;
+        left: 0;
+            right: 0;
+            color: #aaa;
+            font-size: 0.9em;
+        }
+        #header {
+        top: 0;
+            border-bottom: 0.1pt solid #aaa;
+        }
+        #footer {
+        bottom: 0;
+        border-top: 0.1pt solid #aaa;
+        }
+        .page-number:before {
+        content: "Page " counter(page);
+        }
     </style>
 </head>
 <body>
@@ -171,5 +191,17 @@
             </td>
         </tr>
     </table>
+
+    <script type="text/php">
+        if (isset($pdf)) {
+            $text = "page {PAGE_NUM} of {PAGE_COUNT}";
+            $size = 10;
+            $font = $fontMetrics->getFont("Verdana");
+            $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
+            $x = ($pdf->get_width() - $width) / 2;
+            $y = $pdf->get_height() - 35;
+            $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    </script>
 </body>
 </html>

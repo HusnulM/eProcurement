@@ -122,6 +122,8 @@ class PrintDocumentController extends Controller
                 'approveSign' => $approveSign,
                 'creatorSign' => $creatorSign
             ]);
+        // $pdf->setOptions(['isPhpEnabled' => true]);
+        $pdf->set_option("enable_php", true);
         return $pdf->stream();
     }
 
@@ -210,6 +212,8 @@ class PrintDocumentController extends Controller
             ]
             )->setPaper('A5','landscape');
         // $pdf = ('P','mm','A5');
+        // $pdf->setOptions(['isPhpEnabled' => true]);
+        $pdf->set_option("enable_php", true);
         $pdf->render();
         return $pdf->stream();
     }
@@ -371,6 +375,8 @@ class PrintDocumentController extends Controller
             ->first();
         }
 
+
+
         if($pohdr->is_posolar === 'Y'){
             $pdf = PDF::loadview('transaksi.po.formposolar',
             [
@@ -398,6 +404,10 @@ class PrintDocumentController extends Controller
                 'lastApprovalDate'   => $lastApprovalDate ?? null
             ]);
         }
+        // $pdf->setOptions(['isPhpEnabled' => true]);
+        $pdf->set_option("enable_php", true);
+        // $pdf = \App::make('dompdf.wrapper');
+        // $pdf->setOptions("isPhpEnabled", true);
         // $pdf->setOptions(['isRemoteEnabled' => true]);
         // $pdf->setProtocol($_SERVER['DOCUMENT_ROOT']);
         // $pdf = PDF::loadview('transaksi.po.printpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
