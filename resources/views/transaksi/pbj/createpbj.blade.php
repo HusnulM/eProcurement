@@ -15,7 +15,7 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <!-- action="{{ url('transaction/pbj/save') }}" -->
     <form id="form-pbj-data" method="post" enctype="multipart/form-data">
@@ -26,7 +26,10 @@
                     <div class="card-header">
                         <h3 class="card-title">Pembuatan PBJ</h3>
                         <div class="card-tools">
-                            <button type="submit" class="btn btn-primary btn-sm btn-add-dept btn-submit">
+                            <button type="submit" class="btn btn-primary btn-sm btn-submit" id="btn-submit-draft">
+                                <i class="fas fa-save"></i> Draft PBJ
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-sm btn-add-dept btn-submit" id="btn-submit">
                                 <i class="fas fa-save"></i> Simpan PBJ
                             </button>
                         </div>
@@ -36,6 +39,8 @@
                             <div class="col-lg-4 col-md-12">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-12">
+                                        <input type="hidden" name="is_draft" id="is_draft" value="N">
+
                                         <div class="form-group">
                                             <label for="tglpbj">Tanggal PBJ</label>
                                             <input type="date" name="tglpbj" class="form-control" required>
@@ -50,7 +55,7 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                         <div class="form-group">
-                                            <label for="currency">Warehouse</label>                                            
+                                            <label for="currency">Warehouse</label>
                                             <select name="whscode" id="find-whscode" class="form-control" required></select>
                                         </div>
                                     </div>
@@ -95,7 +100,7 @@
                                             <label for="requestor">Requestor</label>
                                             <input type="text" name="requestor" class="form-control" value="{{ Auth::user()->name }}">
                                         </div>
-                                    </div>                                    
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="typeModel">Type / Model</label>
@@ -113,7 +118,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>        
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="kodeJasa">Kode Barang / Jasa</label>
@@ -147,13 +152,13 @@
                                                 <option value="0">0</option>
                                             </select>
                                         </div>
-                                    </div>       
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="no_rangka">No. Rangka</label>
                                             <input type="text" name="no_rangka" id="no_rangka" class="form-control">
                                         </div>
-                                    </div>  
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="periode">Periode</label>
@@ -173,13 +178,13 @@
                                                 <option value="Desember <?= date('Y'); ?>">Desember <?= date('Y'); ?></option>
                                             </select>
                                         </div>
-                                    </div>    
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="project">Project</label>
                                             <select name="project" id="find-project" class="form-control" required></select>
                                         </div>
-                                    </div>                        
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12">
@@ -215,7 +220,7 @@
                                                 </th>
                                             </thead>
                                             <tbody id="tbl-pbj-body">
-                                                
+
                                             </tbody>
                                             <!-- <tfoot>
                                                 <tr>
@@ -258,16 +263,13 @@
                             <th>No</th>
                             <th>Material</th>
                             <th>Description</th>
-                            {{-- <th>Part Number</th> --}}
-                            {{-- <th>Warehouse</th>
-                            <th>Warehouse Name</th> --}}
                             <th>Available Quantity</th>
                             <th>Unit</th>
                             <th></th>
                         </thead>
                         <tbody></tbody>
-                    </table>  
-                </div> 
+                    </table>
+                </div>
             </div>
         </div>
         <div class="modal-footer justify-content-between">
@@ -280,7 +282,7 @@
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
+<script>
     function validate(evt) {
         var theEvent = evt || window.event;
 
@@ -296,7 +298,7 @@
         if( !regex.test(key) ) {
             theEvent.returnValue = false;
             if(theEvent.preventDefault) theEvent.preventDefault();
-        }                        
+        }
     }
 
     $(document).ready(function(){
@@ -306,6 +308,13 @@
         let selected_items = [];
         var fCount = 0;
 
+        $('#btn-submit-draft').on('click', function(){
+            $('#is_draft').val('Y');
+        });
+
+        $('#btn-submit').on('click', function(){
+            $('#is_draft').val('N');
+        });
 
         function loadMaterial(){
             $("#tbl-material-list").DataTable({
@@ -323,14 +332,14 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'fname'},
                     // {data: "partnumber", className: 'fname'},
                     {data: "availableQty", "className": "text-right"},
                     {data: "matunit", className: 'fname'},
-                    {"defaultContent": 
+                    {"defaultContent":
                         "<button type='button' class='btn btn-primary btn-sm button-add-material'> <i class='fa fa-plus'></i> Add</button>"
                     }
                 ],
@@ -377,7 +386,7 @@
                             </td>
                         </tr>
                     `);
-    
+
                     $('#btnRemove'+fCount).on('click', function(e){
                         e.preventDefault();
                         var row_index = $(this).closest("tr").index();
@@ -395,13 +404,13 @@
                 }else{
                     return false;
                 }
-            }); 
+            });
         }
 
         function removeItem(index){
             selected_items.splice(index, 1);
         }
-            
+
 
         $('.btn-add-pbj-item').on('click', function(){
             // alert($('#find-whscode').val())
@@ -413,101 +422,6 @@
             }
         });
 
-        // $('.btn-add-pbj-item').on('click', function(){
-        //     fCount = fCount + 1;
-        //     $('#tbl-pbj-body').append(`
-        //         <tr>
-        //             <td>
-        //                 <select name="parts[]" id="find-part`+fCount+`" class="form-control"></select>
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" readonly>
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="quantity[]" class="form-control" onkeypress="`+validate(event)+`" required>
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control">
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="figures[]" class="form-control" required>
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="remarks[]" class="form-control" required>
-        //             </td>
-        //             <td>
-        //                 <button type="button" class="btn btn-danger btnRemove">
-        //                     <i class="fa fa-trash"></i>
-        //                 </button>
-        //             </td>
-        //         </tr>
-        //     `);
-
-        //     $('.btnRemove').on('click', function(e){
-        //         e.preventDefault();
-        //         $(this).closest("tr").remove();
-        //     });
-
-        //     $(document).on('select2:open', (event) => {
-        //         const searchField = document.querySelector(
-        //             `.select2-search__field`,
-        //         );
-        //         if (searchField) {
-        //             searchField.focus();
-        //         }
-        //     });
-
-        //     $('#find-part'+fCount).select2({ 
-        //         placeholder: 'Type Part Number',
-        //         width: '100%',
-        //         minimumInputLength: 0,
-        //         ajax: {
-        //             url: base_url + '/master/item/findpartnumber',
-        //             dataType: 'json',
-        //             delay: 250,
-        //             method: 'POST',
-        //             headers: {
-        //                 'X-CSRF-TOKEN': _token
-        //             },
-        //             data: function (params) {
-        //                 var query = {
-        //                     search: params.term,
-        //                     // custname: $('#find-customer').val()
-        //                 }
-        //                 return query;
-        //             },
-        //             processResults: function (data) {
-        //                 // return {
-        //                 //     results: response
-        //                 // };
-        //                 console.log(data)
-        //                 return {
-        //                     results: $.map(data.data, function (item) {
-        //                         return {
-        //                             text: item.material + ' - ' +item.matdesc,
-        //                             slug: item.partnumber,
-        //                             id: item.material,
-        //                             ...item
-        //                         }
-        //                     })
-        //                 };
-        //             },
-        //             cache: true
-        //         }
-        //     });
-
-        //     $('#find-part'+fCount).on('change', function(){
-        //         // alert(this.value)
-                
-        //         var data = $('#find-part'+fCount).select2('data')
-        //         console.log(data);
-
-        //         // alert(data[0].material);
-        //         $('#partdesc'+fCount).val(data[0].partname);
-        //         $('#partunit'+fCount).val(data[0].matunit);
-        //     });
-        // });
-
         $(document).on('select2:open', (event) => {
             const searchField = document.querySelector(
                 `.select2-search__field`,
@@ -516,7 +430,7 @@
                 searchField.focus();
             }
         });
-        $('#find-unitdesc').select2({ 
+        $('#find-unitdesc').select2({
             placeholder: 'Type Unit Desc / Code',
             width: '100%',
             minimumInputLength: 0,
@@ -531,14 +445,10 @@
                 data: function (params) {
                     var query = {
                         search: params.term,
-                        // custname: $('#find-customer').val()
                     }
                     return query;
                 },
                 processResults: function (data) {
-                    // return {
-                    //     results: response
-                    // };
                     console.log(data)
                     return {
                         results: $.map(data.data, function (item) {
@@ -570,7 +480,7 @@
             $('#bahan_bakar').val(data[0].bahan_bakar);
         });
 
-        $('#find-whscode').select2({ 
+        $('#find-whscode').select2({
             placeholder: 'Ketik Nama Gudang',
             width: '100%',
             minimumInputLength: 0,
@@ -607,9 +517,9 @@
                 },
                 cache: true
             }
-        }); 
+        });
 
-        $('#find-project').select2({ 
+        $('#find-project').select2({
             placeholder: 'Nama Project',
             width: '100%',
             minimumInputLength: 0,
@@ -665,7 +575,7 @@
                 if(theEvent.preventDefault) theEvent.preventDefault();
             }
         }
-        
+
         function formatNumber(num) {
             return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
         }
@@ -680,19 +590,19 @@
             sisa     		  = split[0].length % 3,
             rupiah     		  = split[0].substr(0, sisa),
             ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-        
+
             if(ribuan){
                 separator = sisa ? ',' : '';
                 rupiah += separator + ribuan.join(',');
             }
-        
+
             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
         }
 
         $('#form-pbj-data').on('submit', function(event){
             event.preventDefault();
-            
+
             var formData = new FormData(this);
             console.log($(this).serialize());
             $.ajax({
@@ -717,12 +627,12 @@
                 if(result.msgtype === "200"){
                     toastr.success(result.message);
                     // $(".btn-submit").attr("disabled", false);
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         location.reload();
                     }, 2000);
                 }else if(result.msgtype === "400"){
-                    toastr.error(result.message)          
-                    $(".btn-submit").attr("disabled", false);  
+                    toastr.error(result.message)
+                    $(".btn-submit").attr("disabled", false);
                 }
             });
         });

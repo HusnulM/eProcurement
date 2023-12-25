@@ -552,7 +552,7 @@
 
         $('#form-pbj-data').on('submit', function(event){
             event.preventDefault();
-            
+
             var formData = new FormData(this);
             console.log($(this).serialize());
             $.ajax({
@@ -578,16 +578,16 @@
                     toastr.success(result.message);
                     $(".btn-submit").attr("disabled", false);
 
-                    setTimeout(function(){ 
+                    setTimeout(function(){
                         location.reload();
                     }, 2000);
                 }else if(result.msgtype === "400"){
-                    toastr.error(result.message)          
-                    $(".btn-submit").attr("disabled", false);  
+                    toastr.error(result.message)
+                    $(".btn-submit").attr("disabled", false);
                 }
             });
         });
-            
+
     });
 </script>
 @endsection
