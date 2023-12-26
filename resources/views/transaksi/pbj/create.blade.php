@@ -161,18 +161,20 @@
                                             <label for="periode">Periode</label>
                                             <select name="periode" class="form-control">
                                                 <option value="">---</option>
-                                                <option value="Januari <?= date('Y'); ?>">Januari <?= date('Y'); ?></option>
-                                                <option value="Februari <?= date('Y'); ?>">Februari <?= date('Y'); ?></option>
-                                                <option value="Maret <?= date('Y'); ?>">Maret <?= date('Y'); ?></option>
-                                                <option value="April <?= date('Y'); ?>">April <?= date('Y'); ?></option>
-                                                <option value="Mei <?= date('Y'); ?>">Mei <?= date('Y'); ?></option>
-                                                <option value="Juni <?= date('Y'); ?>">Juni <?= date('Y'); ?></option>
-                                                <option value="Juli <?= date('Y'); ?>">Juli <?= date('Y'); ?></option>
-                                                <option value="Agustus <?= date('Y'); ?>">Agustus <?= date('Y'); ?></option>
-                                                <option value="September <?= date('Y'); ?>">September <?= date('Y'); ?></option>
-                                                <option value="Oktober <?= date('Y'); ?>">Oktober <?= date('Y'); ?></option>
-                                                <option value="November <?= date('Y'); ?>">November <?= date('Y'); ?></option>
-                                                <option value="Desember <?= date('Y'); ?>">Desember <?= date('Y'); ?></option>
+                                                @foreach ($periode as $key => $row )
+                                                <option value="Januari {{ $row->pyear }}">Januari {{ $row->pyear }}</option>
+                                                <option value="Februari {{ $row->pyear }}">Februari {{ $row->pyear }}</option>
+                                                <option value="Maret {{ $row->pyear }}">Maret {{ $row->pyear }}</option>
+                                                <option value="April {{ $row->pyear }}">April {{ $row->pyear }}</option>
+                                                <option value="Mei {{ $row->pyear }}">Mei {{ $row->pyear }}</option>
+                                                <option value="Juni {{ $row->pyear }}">Juni {{ $row->pyear }}</option>
+                                                <option value="Juli {{ $row->pyear }}">Juli {{ $row->pyear }}</option>
+                                                <option value="Agustus {{ $row->pyear }}">Agustus {{ $row->pyear }}</option>
+                                                <option value="September {{ $row->pyear }}">September {{ $row->pyear }}</option>
+                                                <option value="Oktober {{ $row->pyear }}">Oktober {{ $row->pyear }}</option>
+                                                <option value="November {{ $row->pyear }}">November {{ $row->pyear }}</option>
+                                                <option value="Desember {{ $row->pyear }}">Desember {{ $row->pyear }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -451,100 +453,6 @@
             $('#modal-add-material').modal('show');
         });
 
-        // $('.btn-add-pbj-item').on('click', function(){
-        //     fCount = fCount + 1;
-        //     $('#tbl-pbj-body').append(`
-        //         <tr>
-        //             <td>
-        //                 <select name="parts[]" id="find-part`+fCount+`" class="form-control"></select>
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" readonly>
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="quantity[]" class="form-control" onkeypress="`+validate(event)+`" required>
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="uoms[]" id="partunit`+fCount+`" class="form-control">
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="figures[]" class="form-control" required>
-        //             </td>
-        //             <td>
-        //                 <input type="text" name="remarks[]" class="form-control" required>
-        //             </td>
-        //             <td>
-        //                 <button type="button" class="btn btn-danger btnRemove">
-        //                     <i class="fa fa-trash"></i>
-        //                 </button>
-        //             </td>
-        //         </tr>
-        //     `);
-
-        //     $('.btnRemove').on('click', function(e){
-        //         e.preventDefault();
-        //         $(this).closest("tr").remove();
-        //     });
-
-        //     $(document).on('select2:open', (event) => {
-        //         const searchField = document.querySelector(
-        //             `.select2-search__field`,
-        //         );
-        //         if (searchField) {
-        //             searchField.focus();
-        //         }
-        //     });
-
-        //     $('#find-part'+fCount).select2({
-        //         placeholder: 'Type Part Number',
-        //         width: '100%',
-        //         minimumInputLength: 0,
-        //         ajax: {
-        //             url: base_url + '/master/item/findpartnumber',
-        //             dataType: 'json',
-        //             delay: 250,
-        //             method: 'POST',
-        //             headers: {
-        //                 'X-CSRF-TOKEN': _token
-        //             },
-        //             data: function (params) {
-        //                 var query = {
-        //                     search: params.term,
-        //                     // custname: $('#find-customer').val()
-        //                 }
-        //                 return query;
-        //             },
-        //             processResults: function (data) {
-        //                 // return {
-        //                 //     results: response
-        //                 // };
-        //                 console.log(data)
-        //                 return {
-        //                     results: $.map(data.data, function (item) {
-        //                         return {
-        //                             text: item.material + ' - ' +item.matdesc,
-        //                             slug: item.partnumber,
-        //                             id: item.material,
-        //                             ...item
-        //                         }
-        //                     })
-        //                 };
-        //             },
-        //             cache: true
-        //         }
-        //     });
-
-        //     $('#find-part'+fCount).on('change', function(){
-        //         // alert(this.value)
-
-        //         var data = $('#find-part'+fCount).select2('data')
-        //         console.log(data);
-
-        //         // alert(data[0].material);
-        //         $('#partdesc'+fCount).val(data[0].partname);
-        //         $('#partunit'+fCount).val(data[0].matunit);
-        //     });
-        // });
 
         $(document).on('select2:open', (event) => {
             const searchField = document.querySelector(

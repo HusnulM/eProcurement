@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\NotifApprovePbjMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+
+use Carbon\Carbon;
 use DataTables, Auth, DB;
 use Validator,Redirect,Response;
 
@@ -24,6 +26,9 @@ class PbjController extends Controller
             $cklist     = DB::table('v_checklist_kendaraan')->where('no_checklist', $wodata->cheklistnumber)->first();
             $kendaraan  = DB::table('t_kendaraan')->where('id', $cklist->no_plat)->first();
             $warehouse  = DB::table('t_warehouse')->where('id', $wodata->whscode)->first();
+            $periode    = DB::table('t_budget_period')
+                          ->where('pstatus', 'A')->get();
+
             return view('transaksi.pbj.create',
                 [
                     'wodata'     => $wodata,
@@ -32,7 +37,8 @@ class PbjController extends Controller
                     'cklist'     => $cklist,
                     'kendaraan'  => $kendaraan,
                     'woitems'    => $woitems,
-                    'warehouse'  => $warehouse
+                    'warehouse'  => $warehouse,
+                    'periode'    => $periode
                 ]);
         }else{
             return Redirect::to("/transaction/pbj")->withError('Data SPK/Work Order tidak ditemukan');
@@ -40,14 +46,20 @@ class PbjController extends Controller
     }
 
     public function createWithoueWO(){
+        // $newDateTime = date('Y')+1;
+        // dd($newDateTime);
         $mekanik    = DB::table('t_mekanik')->get();
         $department = DB::table('t_department')->get();
         $kendaraan  = DB::table('t_kendaraan')->get();
+
+        $periode    = DB::table('t_budget_period')
+                      ->where('pstatus', 'A')->get();
         return view('transaksi.pbj.createpbj',
             [
                 'mekanik'    => $mekanik,
                 'department' => $department,
-                'kendaraan'  => $kendaraan
+                'kendaraan'  => $kendaraan,
+                'periode'    => $periode
             ]);
     }
 

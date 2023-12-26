@@ -99,18 +99,20 @@
                                             <label for="periode">Budget Periode</label>
                                             <select name="periode" class="form-control">
                                                 <option value="">---</option>
-                                                <option value="Januari <?= date('Y'); ?>">Januari <?= date('Y'); ?></option>
-                                                <option value="Februari <?= date('Y'); ?>">Februari <?= date('Y'); ?></option>
-                                                <option value="Maret <?= date('Y'); ?>">Maret <?= date('Y'); ?></option>
-                                                <option value="April <?= date('Y'); ?>">April <?= date('Y'); ?></option>
-                                                <option value="Mei <?= date('Y'); ?>">Mei <?= date('Y'); ?></option>
-                                                <option value="Juni <?= date('Y'); ?>">Juni <?= date('Y'); ?></option>
-                                                <option value="Juli <?= date('Y'); ?>">Juli <?= date('Y'); ?></option>
-                                                <option value="Agustus <?= date('Y'); ?>">Agustus <?= date('Y'); ?></option>
-                                                <option value="September <?= date('Y'); ?>">September <?= date('Y'); ?></option>
-                                                <option value="Oktober <?= date('Y'); ?>">Oktober <?= date('Y'); ?></option>
-                                                <option value="November <?= date('Y'); ?>">November <?= date('Y'); ?></option>
-                                                <option value="Desember <?= date('Y'); ?>">Desember <?= date('Y'); ?></option>
+                                                @foreach ($periode as $key => $row )
+                                                <option value="Januari {{ $row->pyear }}">Januari {{ $row->pyear }}</option>
+                                                <option value="Februari {{ $row->pyear }}">Februari {{ $row->pyear }}</option>
+                                                <option value="Maret {{ $row->pyear }}">Maret {{ $row->pyear }}</option>
+                                                <option value="April {{ $row->pyear }}">April {{ $row->pyear }}</option>
+                                                <option value="Mei {{ $row->pyear }}">Mei {{ $row->pyear }}</option>
+                                                <option value="Juni {{ $row->pyear }}">Juni {{ $row->pyear }}</option>
+                                                <option value="Juli {{ $row->pyear }}">Juli {{ $row->pyear }}</option>
+                                                <option value="Agustus {{ $row->pyear }}">Agustus {{ $row->pyear }}</option>
+                                                <option value="September {{ $row->pyear }}">September {{ $row->pyear }}</option>
+                                                <option value="Oktober {{ $row->pyear }}">Oktober {{ $row->pyear }}</option>
+                                                <option value="November {{ $row->pyear }}">November {{ $row->pyear }}</option>
+                                                <option value="Desember {{ $row->pyear }}">Desember {{ $row->pyear }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>

@@ -14,7 +14,15 @@ class PurchaseOrderController extends Controller
 {
     public function index(){
         $department = DB::table('t_department')->get();
-        return view('transaksi.po.index', ['department' => $department]);
+        $periode    = DB::table('t_budget_period')
+                          ->where('pstatus', 'A')->get();
+
+        return view('transaksi.po.index',
+            [
+                'department' => $department,
+                'periode'    => $periode
+            ]
+        );
     }
 
     public function duedate(){
