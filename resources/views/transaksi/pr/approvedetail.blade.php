@@ -320,6 +320,31 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalApprovalNote">
+    <div class="modal-dialog modal-md">
+        <form class="form-horizontal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalApprovalTitle">Approval Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="position-relative row form-group">
+                    <div class="col-lg-12">
+                        <textarea name="approver_note" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit-approval"> OK</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @section('additional-js')
@@ -351,20 +376,7 @@
 
     $(document).ready(function () {
         let _token   = $('meta[name="csrf-token"]').attr('content');
-
-        // $('#tbl-pr-data').DataTable();
-
-        $('#btn-approve').on('click', function(){
-            $('#btn-approve').prop('disabled', true);
-            $('#btn-reject').prop('disabled', true);
-            approveDocument('A');
-        });
-
-        $('#btn-reject').on('click', function(){
-            $('#btn-approve').prop('disabled', true);
-            $('#btn-reject').prop('disabled', true);
-            approveDocument('R');
-        });
+        let _action  = null;
 
         $('#checkAll').click(function(){
             if(this.checked){
@@ -378,44 +390,6 @@
             }
         });
 
-        function approveDocument(_action){
-
-            $.ajax({
-                url: base_url+'/approve/pr/save',
-                type:"POST",
-                data:{
-                    prnum: "{{ $prhdr->prnum }}",
-                    action:_action,
-                    approvernote:$('#approver_note').val(),
-                    _token: _token
-                },
-                success:function(response){
-                    console.log(response);
-                    if(response.msgtype === "200"){
-                        if(_action === "A"){
-                            toastr.success(response.message)
-                        }else if(_action === "R"){
-                            toastr.success(response.message)
-                        }
-
-                        setTimeout(function(){
-                            window.location.href = base_url+'/approve/pr';
-                        }, 2000);
-                    }
-                },
-                error: function(error) {
-                    console.log(error);
-                    toastr.error(error)
-
-                    setTimeout(function(){
-                        location.reload();
-                    }, 2000);
-                }
-            }).done(function(response){
-                console.log(response);
-            });
-        }
-
         $('#btn-approve-items').on('click', function(){
             var tableControl= document.getElementById('tbl-pr-data');
             var _splchecked = [];
@@ -425,11 +399,48 @@
             }).get();
             if(_splchecked.length > 0){
                 console.log(_splchecked)
-                var prtemchecked = {
+                _action = 'A';
+                $('#modalApprovalTitle').html('Approve Note');
+                $('#modalApprovalNote').modal('show');
+            }else{
+                alert('No record selected ');
+            }
+        });
+
+        $('#btn-reject-items').on('click', function(){
+            var tableControl= document.getElementById('tbl-pr-data');
+            var _splchecked = [];
+            _action = 'R';
+            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+                _splchecked.push($(this).parent().next().text())
+            }).get();
+            if(_splchecked.length > 0){
+                console.log(_splchecked)
+                _action = 'R';
+                $('#modalApprovalTitle').html('Reject Note');
+                $('#modalApprovalNote').modal('show');
+            }else{
+                alert('No record selected ');
+            }
+        });
+
+        $('#submit-approval').on('click', function(){
+            approvePR();
+        });
+
+        function approvePR(){
+            var tableControl= document.getElementById('tbl-pr-data');
+            var _splchecked = [];
+            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+                _splchecked.push($(this).parent().next().text())
+            }).get();
+
+            var prtemchecked = {
                     "prnum"  : {{ $prhdr->id }},
                     "pritem" : _splchecked,
                     "action" : _action,
-                    "_token": _token
+                    "_token": _token,
+                    "approvernote":$('#approver_note').val(),
                 }
                 $.ajax({
                     url:base_url+'/approve/pr/approveitems',
@@ -438,14 +449,13 @@
                     dataType:'JSON',
                     beforeSend:function(){
                         $('#btn-approve-items').attr('disabled','disabled');
+                        $('#btn-reject-items').attr('disabled','disabled');
                     },
                     success:function(data)
                     {
 
                     },
                     error:function(err){
-                        // console.log(JSON.stringify(err));
-                        // showErrorMessage(JSON.stringify(err))
                         console.log(err);
                         toastr.error(err)
 
@@ -474,73 +484,8 @@
                         }, 2000);
                     }
                 });
-            }else{
-                alert('No record selected ');
-            }
-        });
 
-        $('#btn-reject-items').on('click', function(){
-            var tableControl= document.getElementById('tbl-pr-data');
-            var _splchecked = [];
-            _action = 'R';
-            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-                _splchecked.push($(this).parent().next().text())
-            }).get();
-            if(_splchecked.length > 0){
-                console.log(_splchecked)
-                var prtemchecked = {
-                    "prnum"  : {{ $prhdr->id }},
-                    "pritem" : _splchecked,
-                    "action" : _action,
-                    "_token": _token
-                }
-                $.ajax({
-                    url:base_url+'/approve/pr/approveitems',
-                    method:'post',
-                    data:prtemchecked,
-                    dataType:'JSON',
-                    beforeSend:function(){
-                        $('#btn-approve-items').attr('disabled','disabled');
-                    },
-                    success:function(data)
-                    {
-
-                    },
-                    error:function(err){
-                        // console.log(JSON.stringify(err));
-                        // showErrorMessage(JSON.stringify(err))
-                        console.log(err);
-                        toastr.error(err)
-
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
-                    }
-                }).done(function(response){
-                    console.log(response);
-                    // $('#btn-approve').attr('disabled',false);
-                    console.log(response);
-                    if(response.msgtype === "200"){
-                        if(_action === "A"){
-                            toastr.success(response.message)
-                        }else if(_action === "R"){
-                            toastr.warning(response.message)
-                        }
-
-                        setTimeout(function(){
-                            window.location.href = base_url+'/approve/pr';
-                        }, 2000);
-                    }else{
-                        toastr.error(response.message)
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
-                    }
-                });
-            }else{
-                alert('No record selected ');
-            }
-        });
+        }
     });
 </script>
 @endsection

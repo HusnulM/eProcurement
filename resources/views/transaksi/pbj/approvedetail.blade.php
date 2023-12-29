@@ -263,7 +263,7 @@
                                                     <th>PBJ Item</th>
                                                     <th>Approval Status</th>
                                                     <th>Approve/Reject Date</th>
-                                                    {{-- <th>Approver Note</th> --}}
+                                                    <th>Approver Note</th>
                                                 </thead>
                                                 <tbody>
                                                     @foreach($approvals as $key => $row)
@@ -292,34 +292,13 @@
                                                                 ({{ formatDateTime($row->approval_date) }})
                                                             @endif
                                                         </td>
-                                                        {{-- <td>{!! $row->approval_remark !!}</td> --}}
+                                                        <td>{!! $row->approval_remark !!}</td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-                                    {{-- @if($isApprovedbyUser)
-                                        @if($isApprovedbyUser->approval_status <> "A")
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <form action="">
-                                                    <div class="form-group">
-                                                        <textarea name="approver_note" id="approver_note" class="form-control" cols="30" rows="3" placeholder="Approver Note"></textarea>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <button type="button" class="btn btn-success pull-right ml-1" id="btn-approve">
-                                                            <i class="fa fa-check"></i> APPROVE
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger pull-right" id="btn-reject">
-                                                            <i class="fa fa-xmark"></i> REJECT
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        @endif
-                                    @endif --}}
                                 </div>
 
                                 <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
@@ -394,6 +373,31 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalApprovalNote">
+    <div class="modal-dialog modal-md">
+        <form class="form-horizontal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalApprovalTitle">Approval Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="position-relative row form-group">
+                    <div class="col-lg-12">
+                        <textarea name="approver_note" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit-approval"> OK</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @section('additional-js')
@@ -425,20 +429,7 @@
 
     $(document).ready(function () {
         let _token   = $('meta[name="csrf-token"]').attr('content');
-
-        // $('#tbl-pbj').DataTable();
-
-        $('#btn-approve').on('click', function(){
-            $('#btn-approve').prop('disabled', true);
-            $('#btn-reject').prop('disabled', true);
-            approveDocument('A');
-        });
-
-        $('#btn-reject').on('click', function(){
-            $('#btn-approve').prop('disabled', true);
-            $('#btn-reject').prop('disabled', true);
-            approveDocument('R');
-        });
+        let _action  = null;
 
         $('#checkAll').click(function(){
             if(this.checked){
@@ -461,55 +452,10 @@
                 _splchecked.push($(this).parent().next().text())
             }).get();
             if(_splchecked.length > 0){
-                console.log(_splchecked)
-                var prtemchecked = {
-                    "pbjitem" : _splchecked,
-                    "action" : _action,
-                    "_token": _token
-                }
-                $.ajax({
-                    url:base_url+'/approve/pbj/approveitems/{{ $pbjhdr->id }}',
-                    method:'post',
-                    data:prtemchecked,
-                    dataType:'JSON',
-                    beforeSend:function(){
-                        $('#btn-approve-items').attr('disabled','disabled');
-                    },
-                    success:function(data)
-                    {
+                _action = 'A';
+                $('#modalApprovalTitle').html('Approve Note');
+                $('#modalApprovalNote').modal('show');
 
-                    },
-                    error:function(err){
-                        // console.log(JSON.stringify(err));
-                        // showErrorMessage(JSON.stringify(err))
-                        console.log(err);
-                        toastr.error(err)
-
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
-                    }
-                }).done(function(response){
-                    console.log(response);
-                    // $('#btn-approve').attr('disabled',false);
-                    console.log(response);
-                    if(response.msgtype === "200"){
-                        if(_action === "A"){
-                            toastr.success(response.message)
-                        }else if(_action === "R"){
-                            toastr.success(response.message)
-                        }
-
-                        setTimeout(function(){
-                            window.location.href = base_url+'/approve/pbj';
-                        }, 2000);
-                    }else{
-                        toastr.error(response.message)
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
-                    }
-                });
             }else{
                 alert('No record selected ');
             }
@@ -524,95 +470,77 @@
             }).get();
             if(_splchecked.length > 0){
                 console.log(_splchecked)
-                var prtemchecked = {
-                    "pbjitem" : _splchecked,
-                    "action" : _action,
-                    "_token": _token
-                }
-                $.ajax({
-                    url:base_url+'/approve/pbj/approveitems/{{ $pbjhdr->id }}',
-                    method:'post',
-                    data:prtemchecked,
-                    dataType:'JSON',
-                    beforeSend:function(){
-                        $('#btn-approve-items').attr('disabled','disabled');
-                    },
-                    success:function(data)
-                    {
-
-                    },
-                    error:function(err){
-                        // console.log(JSON.stringify(err));
-                        // showErrorMessage(JSON.stringify(err))
-                        console.log(err);
-                        toastr.error(err)
-
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
-                    }
-                }).done(function(response){
-                    console.log(response);
-                    // $('#btn-approve').attr('disabled',false);
-                    console.log(response);
-                    if(response.msgtype === "200"){
-                        if(_action === "A"){
-                            toastr.success(response.message)
-                        }else if(_action === "R"){
-                            toastr.warning(response.message)
-                        }
-
-                        setTimeout(function(){
-                            window.location.href = base_url+'/approve/pbj';
-                        }, 2000);
-                    }else{
-                        toastr.error(response.message)
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
-                    }
-                });
+                _action = 'R';
+                $('#modalApprovalTitle').html('Reject Note');
+                $('#modalApprovalNote').modal('show');
             }else{
                 alert('No record selected ');
             }
         });
 
+        $('#submit-approval').on('click', function(){
+            approvePBJ();
+        });
 
-        function approveDocument(_action){
+        function approvePBJ(){
+            var tableControl= document.getElementById('tbl-pbj');
+            var _splchecked = [];
 
+            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+                _splchecked.push($(this).parent().next().text())
+            }).get();
+
+            // console.log(_splchecked)
+            var prtemchecked = {
+                "pbjitem" : _splchecked,
+                "approvernote": $('#approver_note').val(),
+                "action"  : _action,
+                "_token"  : _token
+            }
+            console.log(prtemchecked);
             $.ajax({
-                url: base_url+'/approve/pbj/save',
-                type:"POST",
-                data:{
-                    pbjNumber: "{{ $pbjhdr->pbjnumber }}",
-                    action:_action,
-                    approvernote:$('#approver_note').val(),
-                    _token: _token
+                url:base_url+'/approve/pbj/approveitems/{{ $pbjhdr->id }}',
+                method:'post',
+                data:prtemchecked,
+                dataType:'JSON',
+                beforeSend:function(){
+                    $('#btn-approve-items').attr('disabled','disabled');
+                    $('#btn-reject-items').attr('disabled','disabled');
                 },
-                success:function(response){
-                    console.log(response);
-                    if(response.msgtype === "200"){
-                        if(_action === "A"){
-                            toastr.success(response.message)
-                        }else if(_action === "R"){
-                            toastr.success(response.message)
-                        }
+                success:function(data)
+                {
 
-                        setTimeout(function(){
-                            window.location.href = base_url+'/approve/pbj';
-                        }, 2000);
+                },
+                error:function(err){
+                    console.log(err);
+                    toastr.error(err)
+
+                    setTimeout(function(){
+                        location.reload();
+                    }, 2000);
+                }
+            }).done(function(response){
+                console.log(response);
+                console.log(response);
+                if(response.msgtype === "200"){
+                    if(_action === "A"){
+                        toastr.success(response.message)
+                    }else if(_action === "R"){
+                        toastr.success(response.message)
                     }
-                },
-                error: function(error) {
-                    console.log(error);
-                    toastr.error(error)
 
+                    setTimeout(function(){
+                        window.location.href = base_url+'/approve/pbj';
+                    }, 2000);
+                }else{
+                    toastr.error(response.message)
                     setTimeout(function(){
                         location.reload();
                     }, 2000);
                 }
             });
         }
+
     });
 </script>
 @endsection

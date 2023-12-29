@@ -269,7 +269,7 @@ class ApprovePurchaseRequestController extends Controller
                 ->update([
                     'is_active'       => 'N',
                     'approval_status' => 'R',
-                    'approval_remark' => 'Level '. $userAppLevel->approver_level . ' Rejected',
+                    'approval_remark' => $data['approvernote'],
                     'approved_by'     => Auth::user()->username,
                     'approval_date'   => getLocalDatabaseDateTime()
                 ]);
@@ -293,7 +293,7 @@ class ApprovePurchaseRequestController extends Controller
                 ->update([
                     'approval_status' => 'A',
                     // 'approval_remark' => $req['approvernote'],
-                    'approval_remark' => 'Level '. $userAppLevel->approver_level . ' Approved',
+                    'approval_remark' => $data['approvernote'],
                     'approved_by'     => Auth::user()->username,
                     'approval_date'   => getLocalDatabaseDateTime()
                 ]);

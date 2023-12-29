@@ -156,7 +156,7 @@ class ApprovePurchaseOrderController extends Controller
                 // ->where('approver_level',$userAppLevel->approver_level)
                 ->update([
                     'approval_status' => 'R',
-                    'approval_remark' => 'Level '. $userAppLevel->approver_level . ' Rejected PO',
+                    'approval_remark' => $req['approvernote'],
                     'approved_by'     => Auth::user()->username,
                     'approval_date'   => getLocalDatabaseDateTime()
                 ]);
@@ -195,7 +195,7 @@ class ApprovePurchaseOrderController extends Controller
                 ->where('approver_level',$userAppLevel->approver_level)
                 ->update([
                     'approval_status' => 'A',
-                    'approval_remark' => 'Level '. $userAppLevel->approver_level . ' Approved PO',
+                    'approval_remark' => $req['approvernote'],
                     'approved_by'     => Auth::user()->username,
                     'approval_date'   => getLocalDatabaseDateTime()
                 ]);
@@ -309,7 +309,7 @@ class ApprovePurchaseOrderController extends Controller
                 // ->where('approver_level',$userAppLevel->approver_level)
                 ->update([
                     'approval_status' => 'R',
-                    'approval_remark' => 'Level '. $userAppLevel->approver_level . ' Rejected PO',
+                    'approval_remark' => $data['approvernote'],
                     'approved_by'     => Auth::user()->username,
                     'approval_date'   => getLocalDatabaseDateTime()
                 ]);
@@ -348,7 +348,7 @@ class ApprovePurchaseOrderController extends Controller
                 ->where('approver_level',$userAppLevel->approver_level)
                 ->update([
                     'approval_status' => 'A',
-                    'approval_remark' => $req['approvernote'],
+                    'approval_remark' => $data['approvernote'],
                     'approved_by'     => Auth::user()->username,
                     'approval_date'   => getLocalDatabaseDateTime()
                 ]);

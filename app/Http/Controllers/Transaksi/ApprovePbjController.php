@@ -178,7 +178,7 @@ class ApprovePbjController extends Controller
 
             $pbjHeader  = DB::table('t_pbj01')->where('id', $pbjID)->first();
             $pbjCreator = DB::table('users')->where('email', $pbjHeader->createdby)->first();
-            $items      = join(",",$data['pbjitem']);
+            // $items      = join(",",$data['pbjitem']);
             $ptaNumber  = $pbjHeader->pbjnumber;
 
             $pbjItemData = DB::table('t_pbj02')
@@ -200,7 +200,7 @@ class ApprovePbjController extends Controller
                 ->update([
                     'is_active'       => 'N',
                     'approval_status' => 'R',
-                    'approval_remark' => null,
+                    'approval_remark' => $data['approvernote'],
                     'approved_by'     => Auth::user()->username,
                     'approval_date'   => getLocalDatabaseDateTime()
                 ]);
@@ -224,8 +224,7 @@ class ApprovePbjController extends Controller
                 ->where('approver_level',$userAppLevel->approver_level)
                 ->update([
                     'approval_status' => 'A',
-                    // 'approval_remark' => $req['approvernote'],
-                    'approval_remark' => null,
+                    'approval_remark' => $data['approvernote'],
                     'approved_by'     => Auth::user()->username,
                     'approval_date'   => getLocalDatabaseDateTime()
                 ]);
@@ -308,68 +307,6 @@ class ApprovePbjController extends Controller
     }
 
     public function generateAttachment($id){
-        // $prhdr = DB::table('t_pbj01')->where('id', $id)->first();
-        // $prdtl = DB::table('t_pbj02')->where('pbjnumber', $prhdr->pbjnumber)->get();
-        // $logo = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
-        // $project = DB::table('t_projects')->where('idproject', $prhdr->idproject)->first();
-        // if(!$project){
-        //     $project = null;
-        // }
-
-        // $pbjUser = DB::table('users')->where('email', $prhdr->createdby)->first();
-
-        // $PBJApprover = DB::table('workflow_budget')
-        //         ->where('object', 'PBJ')
-        //         ->where('requester', $pbjUser->id ?? null)
-        //         ->where('approver_level', 1)
-        //         ->orderBy('approver_level','ASC')
-        //         ->first();
-        // if($PBJApprover){
-        //     $firstApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
-        // }else{
-        //     $firstApprover = null;
-        // }
-
-        // $PBJApprover = DB::table('workflow_budget')
-        //         ->where('object', 'PBJ')
-        //         ->where('requester', $pbjUser->id ?? null)
-        //         ->where('approver_level', 2)
-        //         ->orderBy('approver_level','ASC')
-        //         ->first();
-        // if($PBJApprover){
-        //     $secondApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
-        // }else{
-        //     $secondApprover = null;
-        // }
-
-        // $PBJApprover = DB::table('workflow_budget')
-        //         ->where('object', 'PBJ')
-        //         ->where('requester', $pbjUser->id ?? null)
-        //         ->where('approver_level', 3)
-        //         ->orderBy('approver_level','ASC')
-        //         ->first();
-        // if($PBJApprover){
-        //     $thirdApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
-        // }else{
-        //     $thirdApprover = null;
-        // }
-
-        // // $customPaper = array(0,0,567.00,283.80);
-        // $pdf = PDF::loadview('transaksi.pbj.printpbj',
-        //     [
-        //         'hdr'     => $prhdr,
-        //         'item'    => $prdtl,
-        //         'logo'    => $logo,
-        //         'project' => $project,
-        //         'firstApprover'  => $firstApprover,
-        //         'secondApprover' => $secondApprover,
-        //         'thirdApprover'  => $thirdApprover
-        //     ]
-        //     )->setPaper('A5','landscape');
-        // // $pdf = ('P','mm','A5');
-        // $pdf->render();
-        // return $pdf->stream();
-
         $prhdr = DB::table('t_pbj01')->where('id', $id)->first();
         $prdtl = DB::table('t_pbj02')->where('pbjnumber', $prhdr->pbjnumber)->get();
         $logo = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
