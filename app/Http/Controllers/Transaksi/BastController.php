@@ -184,6 +184,10 @@ class BastController extends Controller
                         return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError('Stock Tidak Mencukupi untuk part : '. $parts[$i]);
                     }
                 }
+
+                $matdesc = str_replace('"','\"',$partdsc[$i]);
+                // $matdesc = str_replace("'","\''",$partdsc[$i]);
+
                 $data = array(
                     'bast_id'      => $bastID,
                     'no_bast'      => $req['nomorbast'],
@@ -218,7 +222,7 @@ class BastController extends Controller
                     "'. $ptaNumber .'",
                     "'. date('Y') .'",
                     "201",
-                    "'. $partdsc[$i] .'",
+                    "'. $matdesc .'",
                     "'. $uom[$i] .'",
                     "-",
                     "'. $pbjnum[$i] .'",
@@ -259,5 +263,17 @@ class BastController extends Controller
             // dd($e);
             return Redirect::to("/logistic/bast/create/".$req['pbjID'])->withError($e->getMessage());
         }
+    }
+
+    function mysql_escape_mimic($inp) {
+
+        if(is_array($inp))
+            return array_map(__METHOD__, $inp);
+
+        if(!empty($inp) && is_string($inp)) {
+            return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
+        }
+
+        return $inp;
     }
 }
