@@ -107,7 +107,7 @@ class ReportsController extends Controller
     }
 
     public function poList(Request $req){
-        $query = DB::table('v_rpo');
+        $query = DB::table('v_rpo_v2');
 
         if(isset($req->department)){
             if($req->department !== 'All'){

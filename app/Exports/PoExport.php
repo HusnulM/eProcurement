@@ -19,7 +19,7 @@ class PoExport implements FromCollection, WithHeadings, WithMapping
     */
     public function collection()
     {
-        $query = DB::table('v_rpo');
+        $query = DB::table('v_rpo_v2');
 
         if(isset($req->department)){
             if($req->department !== 'All'){
@@ -69,6 +69,7 @@ class PoExport implements FromCollection, WithHeadings, WithMapping
             $row->prnum ?? null,
             $row->budget_code,
             $row->budget_period,
+            $row->no_plat,
             $row->createdon,
             $row->createdby,
         ];
@@ -97,6 +98,7 @@ class PoExport implements FromCollection, WithHeadings, WithMapping
                 "No. PR",
                 "Cost Code",
                 "Budget Period",
+                "Unit Code / No. Pol",
                 "Created Date",
                 "Created By",
         ];
