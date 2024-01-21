@@ -242,11 +242,30 @@ function getWfGroup($doctype){
 }
 
 function groupOpen($groupid){
-    $routeName = \Route::current()->uri();
-    $selectMenu = DB::table('menus')->where('route', $routeName)->first();
-    if($selectMenu){
-        return $groupid == $selectMenu->menugroup ? 'menu-open' : '';
+    $routeName = null;
+    $routes = explode('/',\Route::current()->uri());
+    $count = 0;
+
+    foreach($routes as $row){
+        $count = $count + 1;
+        $routeName = $routeName . '/' . $row;
+        if($count == 1){
+            $routeName = substr($routeName,1);
+        }
+
+        $selectMenu = DB::table('menus')->where('route', $routeName)->first();
+        if($selectMenu){
+            // dd($selectMenu);
+            return $groupid == $selectMenu->menugroup ? 'menu-open' : '';
+            break;
+        }
     }
+
+    // $routeName = \Route::current()->uri();
+    // $selectMenu = DB::table('menus')->where('route', $routeName)->first();
+    // if($selectMenu){
+    //     return $groupid == $selectMenu->menugroup ? 'menu-open' : '';
+    // }
     // return request()->is("*".$groupname."*") ? 'menu-open' : '';
 }
 

@@ -41,21 +41,21 @@ class ItemMasterController extends Controller
     }
 
     public function itemLists(Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
         $query = DB::table('v_material')->orderBy('material');
         return DataTables::queryBuilder($query)->setRowId('id')->toJson();
     }
 
     public function itemCategoryLists(Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
         $query = DB::table('t_materialtype')->orderBy('id');
         return DataTables::queryBuilder($query)->setRowId('id')->toJson();
     }
 
     public function uomLists(Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
         $query = DB::table('t_uom')->select('id','uom','uomdesc','createdby', 'createdon')->orderBy('uom');
         return DataTables::queryBuilder($query)->setRowId('id')->toJson();
@@ -66,11 +66,22 @@ class ItemMasterController extends Controller
         // $search = $url['query'];
         // $search = str_replace("searchName=","",$search);
 
-        $query['data'] = DB::table('v_material')->where('partnumber', 'like', '%'. $request->search . '%')->get();
+        $query['data'] = DB::table('v_material')
+        ->where('partnumber', 'like', '%'. $request->search . '%')
+        ->orWhere('matdesc', 'like', '%'. $request->search . '%')
+        ->get();
 
         // return \Response::json($query);
         return $query;
         // return $this->successResponse('OK', $query);
+    }
+
+    public function findMaterial(Request $request){
+        $query['data'] = DB::table('v_material')
+        ->where('partnumber', 'like', '%'. $request->search . '%')
+        ->orWhere('matdesc', 'like', '%'. $request->search . '%')
+        ->get();
+        return $query;
     }
 
     public function save(Request $req){
@@ -90,8 +101,8 @@ class ItemMasterController extends Controller
                     'matuniqid'  => $current_timestamp,
                     'createdon'  => date('Y-m-d H:m:s'),
                     'createdby'  => Auth::user()->email ?? Auth::user()->username
-                ]);            
-    
+                ]);
+
                 $insertAltUom = array();
                 $altUom = array(
                     'material'  => $req['partnumber'],
@@ -103,7 +114,7 @@ class ItemMasterController extends Controller
                     'createdby' => Auth::user()->email ?? Auth::user()->username
                 );
                 array_push($insertAltUom, $altUom);
-    
+
                 if(isset($req['convuom'])){
                     $convuom    = $req['convuom'];
                     $convalue   = $req['convalue'];
@@ -138,7 +149,7 @@ class ItemMasterController extends Controller
         DB::beginTransaction();
         try{
             $current_timestamp = Carbon::now()->timestamp;
-        
+
             DB::table('t_material')->where('material', $req['partnumber'])->update([
                 // 'material'   => $req['itemcode'],
                 'matdesc'    => $req['partname'],
@@ -146,8 +157,8 @@ class ItemMasterController extends Controller
                 'partname'   => $req['partname'],
                 'partnumber' => $req['partnumber'],
                 'matunit'    => $req['itemunit']
-            ]);         
-            
+            ]);
+
             DB::table('t_material2')->where('material', $req['partnumber'])->delete();
 
             $insertAltUom = array();
@@ -264,7 +275,7 @@ class ItemMasterController extends Controller
                 'uom'       => $uom,
                 'uomdesc'   => $uomdesc
             ]);
-            
+
             DB::commit();
             return Redirect::to("/master/item")->withSuccess('Unit of measure updated');
         } catch(\Exception $e){
@@ -324,7 +335,7 @@ class ItemMasterController extends Controller
         $file = $request->file('file');
 
         // membuat nama file unik
-        $nama_file = $file->hashName();        
+        $nama_file = $file->hashName();
 
         $destinationPath = 'excel/';
         $file->move($destinationPath,$file->getClientOriginalName());

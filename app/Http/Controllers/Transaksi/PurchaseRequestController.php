@@ -283,7 +283,7 @@ class PurchaseRequestController extends Controller
                 'deptid'            => Auth::user()->deptid,
                 'requestby'         => $req['requestor'],
                 'remark'            => $req['remark'],
-                // 'createdon'         => getLocalDatabaseDateTime(),
+                'changedon'         => getLocalDatabaseDateTime(),
                 // 'createdby'         => Auth::user()->email ?? Auth::user()->username
             ]);
 

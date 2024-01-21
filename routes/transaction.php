@@ -115,6 +115,11 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/duedatepr',        'Transaksi\PurchaseRequestController@duedate')->middleware('checkAuth:proc/pr/duedatepr');
         Route::get('/duedateprlist',    'Transaksi\PurchaseRequestController@listDuedatePR')->middleware('checkAuth:proc/pr/duedatepr');
+
+        Route::get('/approvedprintlist',      'Transaksi\ChangeApprovedPrController@approvedList')->middleware('checkAuth:proc/pr/changeapprovedpr');
+        Route::get('/changeapprovedpr',       'Transaksi\ChangeApprovedPrController@index')->middleware('checkAuth:proc/pr/changeapprovedpr');
+        Route::get('/changeapprovedpr/{p1}',  'Transaksi\ChangeApprovedPrController@change')->middleware('checkAuth:proc/pr/changeapprovedpr');
+        Route::post('/savechangeapprovedpr',  'Transaksi\ChangeApprovedPrController@update')->middleware('checkAuth:proc/pr/changeapprovedpr');
     });
 
     Route::group(['prefix' => '/approve/pr'], function () {
