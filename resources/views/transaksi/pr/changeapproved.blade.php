@@ -323,7 +323,7 @@
                             </div>
                             <div class="col-sm-12">
                                 <label for="newQty">New Quantity</label>
-                                <input type="text" name="newQuantity" id="newQuantity" class="form-control" required>
+                                <input type="text" name="newQuantity" id="newQuantity" class="form-control inputNumber" required>
                             </div>
                             <div class="col-sm-12">
                                 <label for="newUom">Unit</label>
@@ -445,6 +445,30 @@
             });
 
             $('#modalChangePRItemTitle').html('Subtitut PR Item '+ _adata.pritem);
+
+            $('.inputNumber').on('keypress', function(e){
+                validate(e);
+            });
+
+            function validate(evt) {
+                var theEvent = evt || window.event;
+
+                // Handle paste
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                // Handle key press
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+                var regex = /[0-9]|\./;
+                if( !regex.test(key) ) {
+                    theEvent.returnValue = false;
+                    if(theEvent.preventDefault) theEvent.preventDefault();
+                }
+            }
+
+
             $('#modalChangePRItem').modal('show');
         });
 
