@@ -71,12 +71,6 @@
                                             <textarea type="text" name="remark" id="remark" cols="30" rows="4" class="form-control" placeholder="Remark..." style="white-space: pre-wrap;">{{ trim($prhdr->remark) }}</textarea>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 col-md-12">
-                                        <div class="form-group">
-                                            <label for="attachment">Attachment</label>
-                                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="col-lg-10 col-md-12">
