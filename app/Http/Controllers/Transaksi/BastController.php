@@ -98,7 +98,7 @@ class BastController extends Controller
 
             $parts    = $req['material'];
             $partdsc  = $req['matdesc'];
-            $quantity = $req['quantity'];
+            $quantity = $req['bastquantity'];
             $uom      = $req['unit'];
             $pbjnum   = $req['pbjnumber'];
             $pbjitm   = $req['pbjitem'];
@@ -123,6 +123,10 @@ class BastController extends Controller
                 ]);
 
             for($i = 0; $i < sizeof($parts); $i++){
+                if(!isset($quantity[$i]) || $quantity[$i] == 0){
+                    continue;
+                }
+
                 $qty    = $quantity[$i];
                 $qty    = str_replace(',','',$qty);
 
@@ -202,17 +206,35 @@ class BastController extends Controller
                 );
                 array_push($insertData, $data);
 
-                DB::table('t_pbj01')->where('pbjnumber', $pbjnum[$i])
-                ->update([
-                    'bast_created' => 'Y'
-                ]);
 
-                DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
-                ->update([
-                    'itemstatus'   => 'C',
-                    'bast_created' => 'Y',
-                    'realized_qty' => $qty
-                ]);
+
+                $pbjitem = DB::table('t_pbj02')
+                            ->where('pbjnumber', $pbjnum[$i])
+                            ->where('pbjitem', $pbjitm[$i])->first();
+
+                $relQty = $pbjitem->realized_qty + $qty;
+                // dd($relQty);
+                if($relQty >= $pbjitem->quantity){
+                    DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
+                    ->update([
+                        'itemstatus'   => 'C',
+                        'bast_created' => 'Y',
+                        'realized_qty' => $relQty
+                    ]);
+                }else{
+                    // DB::table('t_pbj01')->where('pbjnumber', $pbjnum[$i])
+                    // ->update([
+                    //     'bast_created' => 'N'
+                    // ]);
+
+                    DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
+                    ->update([
+                        // 'itemstatus'   => 'C',
+                        // 'bast_created' => 'N',
+                        'realized_qty' => $relQty
+                    ]);
+                }
+
 
                 //Insert movement
                 DB::select('call spIssueMaterialWithBatchFIFO(
@@ -257,6 +279,17 @@ class BastController extends Controller
                 }
             }
             DB::commit();
+
+            $checkBastAll = DB::table('t_pbj02')
+                            ->where('pbjnumber', $pbjnum[0])
+                            ->where('bast_created', 'N')->first();
+            if(!$checkBastAll){
+                DB::table('t_pbj01')->where('pbjnumber', $pbjnum[$i])
+                    ->update([
+                        'bast_created' => 'Y'
+                    ]);
+                DB::commit();
+            }
             return Redirect::to("/logistic/bast")->withSuccess('BAST Berhasil disimpan');
         } catch(\Exception $e){
             DB::rollBack();

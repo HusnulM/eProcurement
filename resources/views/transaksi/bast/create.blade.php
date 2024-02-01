@@ -93,6 +93,7 @@
                                                 <th>Quantity</th>
                                                 <th>Realized Qty</th>
                                                 <th>Unit</th>
+                                                <th>BAST Qty</th>
                                                 <th>PBJ Number</th>
                                             </thead>
                                             <tbody id="tbl-pbj-body">
@@ -114,6 +115,9 @@
                                                     <td>
                                                         {{ $row->unit }}
                                                         <input type="hidden" name="unit[]" value="{{ $row->unit }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="bastquantity[]" class="form-control" value="0" style="text-align: right;">
                                                     </td>
                                                     <td>
                                                         {{ $row->pbjnumber }}
