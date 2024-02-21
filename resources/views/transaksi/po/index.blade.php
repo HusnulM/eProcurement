@@ -97,7 +97,7 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="periode">Budget Periode</label>
-                                            <select name="periode" class="form-control">
+                                            <select name="periode" class="form-control" required>
                                                 <option value="">---</option>
                                                 @foreach ($periode as $key => $row )
                                                 <option value="Januari {{ $row->pyear }}">Januari {{ $row->pyear }}</option>
@@ -113,6 +113,7 @@
                                                 <option value="November {{ $row->pyear }}">November {{ $row->pyear }}</option>
                                                 <option value="Desember {{ $row->pyear }}">Desember {{ $row->pyear }}</option>
                                                 @endforeach
+                                                <option value="NONBUDGET">NONBUDGET</option>
                                             </select>
                                         </div>
                                     </div>
