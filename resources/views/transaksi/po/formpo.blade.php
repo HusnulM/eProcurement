@@ -161,7 +161,7 @@
             <thead>
                 <th>No</th>
                 <th style="width:90px;">Part Number</th>
-                <th style="width:180px;">Description</th>
+                <th style="width:150px;">Description</th>
                 <th style="text-align:right;">Quantity</th>
                 <th style="text-align:center;">Unit</th>
                 <th style="text-align:right;">Unit Price</th>
