@@ -157,7 +157,7 @@
         <p>
             Please supply for the following goods and/ or services :
         </p>
-        <table id="items">
+        <table id="items" style="width: 100%;">
             <thead>
                 <th>No</th>
                 <th style="width:90px;">Part Number</th>
