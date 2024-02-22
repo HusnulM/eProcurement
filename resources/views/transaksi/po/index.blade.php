@@ -97,7 +97,7 @@
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="periode">Budget Periode</label>
-                                            <select name="periode" class="form-control" required>
+                                            <select name="periode" class="form-control">
                                                 <option value="">---</option>
                                                 @foreach ($periode as $key => $row )
                                                 <option value="Januari {{ $row->pyear }}">Januari {{ $row->pyear }}</option>
