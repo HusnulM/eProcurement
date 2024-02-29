@@ -316,7 +316,7 @@ class PrintDocumentController extends Controller
     public function printpo($id){
         $pohdr = DB::table('v_rpo')->where('id', $id)->first();
         if($pohdr->is_posolar === 'Y'){
-            $podtl = DB::table('v_po_solar_items')->where('ponum', $pohdr->ponum)->get();
+            $podtl = DB::table('v_po_solar_items')->where('ponum', $pohdr->ponum)->first();
         }else{
             $podtl = DB::table('v_form_po_dtl')
                     ->where('ponum', $pohdr->ponum)
