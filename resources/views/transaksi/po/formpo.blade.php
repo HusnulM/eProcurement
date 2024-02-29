@@ -280,6 +280,8 @@
                                 <br><br><br>
                                 @endif
                             @endif
+                        @else
+                            <br><br><br>
                         @endif
                     @endif
                 </td>
@@ -297,6 +299,8 @@
                                 <br><br><br>
                                 @endif
                             @endif
+                        @else
+                            <br><br><br>
                         @endif
                     @endif
                 </td>
@@ -313,6 +317,8 @@
                                 <br><br><br>
                                 @endif
                             @endif
+                        @else
+                            <br><br><br>
                         @endif
                     @endif
                 </td>
