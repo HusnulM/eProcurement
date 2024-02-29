@@ -397,7 +397,7 @@
             <tr>
                 <td>
                     @if($firstApprover)
-                        @if($pohdr->approvestat == "A")
+                        @if($firstApprovalDate->approval_date)
                             @if(checkIsLocalhost())
                             <img src="{{ public_path($firstApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                             @else
@@ -413,7 +413,7 @@
                 <td></td>
                 <td>
                     @if($secondApprover)
-                        @if($pohdr->approvestat == "A")
+                        @if($secondApprovalDate->approval_date)
                             @if(checkIsLocalhost())
                             <img src="{{ public_path($secondApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                             @else
@@ -430,7 +430,7 @@
                 <td></td>
                 <td>
                     @if($lastApprover)
-                        @if($pohdr->approvestat == "A")
+                        @if($lastApprovalDate->approval_date)
                             @if(checkIsLocalhost())
                             <img src="{{ public_path($lastApprover->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                             @else
