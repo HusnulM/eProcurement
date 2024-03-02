@@ -29,9 +29,9 @@ class VendorMasterController extends Controller
     }
 
     public function vendorLists(Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
-        $query = DB::table('v_vendor')->orderBy('vendor_code');
+        $query = DB::table('t_vendor')->orderBy('vendor_code');
         return DataTables::queryBuilder($query)->toJson();
     }
 
@@ -122,7 +122,7 @@ class VendorMasterController extends Controller
         $file = $request->file('file');
 
         // membuat nama file unik
-        $nama_file = $file->hashName();        
+        $nama_file = $file->hashName();
 
         $destinationPath = 'excel/';
         $file->move($destinationPath,$file->getClientOriginalName());

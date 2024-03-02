@@ -18,21 +18,25 @@ class ProjectController extends Controller
     public function save(Request $req){
         DB::beginTransaction();
         try{
-            $kodeProject = $req['kodeproject'];
-            $namaProject = $req['namaproject'];
+            $kodeProject    = $req['kodeProyek'];
+            $namaProject    = $req['namaProyek'];
+            $nilaiProject   = $req['nilaiProyek'];
+            $projectManager = $req['projectManager'];
+
             $insertData = array();
-            for($i = 0; $i < sizeof($kodeProject); $i++){
-                $data = array(
-                    'kode_project'  => $kodeProject[$i],
-                    'nama_project'  => $namaProject[$i],
-                    'createdon'     => getLocalDatabaseDateTime(),
-                    'createdby'     => Auth::user()->email ?? Auth::user()->username
-                );
-                array_push($insertData, $data);
-            }
+            $data = array(
+                'kode_project'    => $kodeProject,
+                'nama_project'    => $namaProject,
+                'nilai_project'   => $nilaiProject,
+                'project_manager' => $projectManager,
+                'createdon'       => getLocalDatabaseDateTime(),
+                'createdby'       => Auth::user()->email ?? Auth::user()->username
+            );
+            array_push($insertData, $data);
+
             insertOrUpdate($insertData,'t_projects');
             DB::commit();
-            return Redirect::to("/master/project")->withSuccess('Master Project Berhasil dibuat');
+            return Redirect::to("/master/project")->withSuccess('Master Proyek Berhasil dibuat');
 
         }catch(\Exception $e){
             DB::rollBack();
@@ -43,12 +47,16 @@ class ProjectController extends Controller
     public function update(Request $req){
         DB::beginTransaction();
         try{
-            $idProject   = $req['idProject'];
-            $kodeProject = $req['kodeproject'];
-            $namaProject = $req['namaproject'];
-            
-            DB::table('t_projects')->where('idproject', $idProject)->update([
-                'nama_project' => $namaProject
+            $idProject      = $req['idProject'];
+            $kodeProject    = $req['kodeProyek'];
+            $namaProject    = $req['namaProyek'];
+            $nilaiProject   = $req['nilaiProyek'];
+            $projectManager = $req['projectManager'];
+
+            DB::table('t_projects')->where('id', $idProject)->update([
+                'nama_project'    => $namaProject,
+                'nilai_project'   => $nilaiProject,
+                'project_manager' => $projectManager,
             ]);
 
             DB::commit();
@@ -75,9 +83,9 @@ class ProjectController extends Controller
     }
 
     public function projectlist(Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
-        $query = DB::table('t_projects')->orderBy('idproject');
+        $query = DB::table('t_projects')->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
     }
 

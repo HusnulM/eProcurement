@@ -5,13 +5,13 @@
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Role List</h3>
+                    <h3 class="card-title">Role List Update</h3>
                     <div class="card-tools">
                         <a href="{{ url('/config/roles/create') }}" class="btn btn-success btn-sm">
                             <i class="fas fa-plus"></i> Create Role
@@ -37,7 +37,9 @@
                                 <td>{{$key+1}}</td>
                                 <td>{{ $row->rolename }}</td>
                                 <td style="text-align:center;">
-                                    <a href="{{ url('config/roles/delete') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</a> 
+                                    @if($row->rolename !== "SYS-ADMIN")
+                                    <a href="{{ url('config/roles/delete') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</a>
+                                    @endif
                                     <a href="{{ url('config/roles/assignment') }}/{{$row->id}}" class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> ASSIGNMENT</a>
                                 </td>
                             </tr>

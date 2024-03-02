@@ -24,14 +24,14 @@ class RolesController extends Controller
     }
 
     public function userroles($roleid, Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
         $query = DB::table('v_userroles')->where('roleid', $roleid)->orderBy('userid');
         return DataTables::queryBuilder($query)->toJson();
     }
 
     public function rolemenus($roleid, Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
         $query = DB::table('v_menuroles')->where('roleid', $roleid)
                                          ->orderBy('menugroup', 'ASC')
@@ -41,7 +41,7 @@ class RolesController extends Controller
 
     public function dataadduser($roleid, Request $request){
         $userid = DB::table('userroles')->where('roleid', $roleid)->pluck('userid');
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'] ?? '';
         $query = DB::table('users')->whereNotIn('id', $userid);
         return DataTables::queryBuilder($query)->toJson();
@@ -49,7 +49,7 @@ class RolesController extends Controller
 
     public function dataaddmenu($roleid, Request $request){
         $menuid = DB::table('menuroles')->where('roleid', $roleid)->pluck('menuid');
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'] ?? '';
         $query = DB::table('v_menus')->whereNotIn('id', $menuid)->orderBy('menugroup', 'ASC')->orderBy('id', 'ASC');
         return DataTables::queryBuilder($query)->toJson();

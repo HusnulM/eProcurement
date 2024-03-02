@@ -31,37 +31,32 @@
                             <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="fa fa-save"></i> SAVE
                             </button>
-                            
+
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <div class="row">
-                                    <!-- <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label for="itemcode">Item Code</label>
-                                            <input type="text" name="itemcode" id="itemcode" class="form-control" value="{{ $materialdata->material }}" readonly required>
-                                        </div>
-                                    </div>
+
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="itemname">Item Name</label>
-                                            <input type="text" name="itemname" id="itemname" class="form-control" autocomplete="off" value="{{ $materialdata->matdesc }}" required>
-                                        </div>
-                                    </div> -->
-                                    <div class="col-lg-12 col-md-12">
-                                        <div class="form-group">
-                                            <label for="partnumber">Part Number</label>
+                                            <label for="partnumber">Item Code</label>
                                             <input type="text" name="partnumber" id="partnumber" class="form-control" value="{{ $materialdata->partnumber }}" readonly required autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="partname">Part Name</label>
+                                            <label for="partname">Item Name</label>
                                             <input type="text" name="partname" id="partname" class="form-control" value="{{ $materialdata->partname }}" required autocomplete="off">
                                         </div>
-                                    </div>  
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="matspec">Spek / Type / Ukuran</label>
+                                            <input type="text" name="matspec" id="matspec" class="form-control" autocomplete="off" value="{{ $materialdata->matspec }}">
+                                        </div>
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="itemtype">Item Category</label>
@@ -73,7 +68,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>  
+                                    </div>
                                     <div class="col-lg-6 col-md-12">
                                         <div class="form-group">
                                             <label for="itemunit">Item Base Unit</label>
@@ -85,8 +80,8 @@
                                             </select>
                                             <!-- <input type="text" name="itemunit" id="itemunit" class="form-control" autocomplete="off" required> -->
                                         </div>
-                                    </div>                                
-                                </div>                                
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-lg-6 col-md-12">
                                 <table class="table table-stripped table-sm">

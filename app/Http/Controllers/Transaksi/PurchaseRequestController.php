@@ -14,7 +14,8 @@ use PDF;
 class PurchaseRequestController extends Controller
 {
     public function index(){
-        return view('transaksi.pr.index');
+        $proyek = DB::table('t_projects')->get();
+        return view('transaksi.pr.index', ['proyek' => $proyek]);
     }
 
     public function listPR(){

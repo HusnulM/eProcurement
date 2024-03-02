@@ -95,6 +95,7 @@ class ItemMasterController extends Controller
                     'material'   => $req['partnumber'],
                     'matdesc'    => $req['partname'],
                     'mattype'    => $req['itemtype'],
+                    'matspec'    => $req['matspec'],
                     'partname'   => $req['partname'],
                     'partnumber' => $req['partnumber'],
                     'matunit'    => $req['itemunit'],
@@ -154,6 +155,7 @@ class ItemMasterController extends Controller
                 // 'material'   => $req['itemcode'],
                 'matdesc'    => $req['partname'],
                 'mattype'    => $req['itemtype'],
+                'matspec'    => $req['matspec'],
                 'partname'   => $req['partname'],
                 'partnumber' => $req['partnumber'],
                 'matunit'    => $req['itemunit']

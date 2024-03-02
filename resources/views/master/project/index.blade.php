@@ -5,7 +5,7 @@
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -28,10 +28,12 @@
                                 <th>No</th>
                                 <th>Project ID</th>
                                 <th>Nama Project</th>
+                                <th>Nilai Project</th>
+                                <th>Project Manager</th>
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
-    
+
                             </tbody>
                         </table>
                     </div>
@@ -56,22 +58,22 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                            <thead>
-                                <th>Kode Project</th>
-                                <th>Nama Project</th>
-                                <th style="width:50px; text-align:center;">
-                                    <button type="button" class="btn btn-success btn-sm btn-add-new-dept">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </th>
-                            </thead>
-                            <tbody id="tbl-new-dept-body">
-
-                            </tbody>
-                        </table>  
-                    </div> 
+                    <div class="col-lg-12 col-md-12">
+                        <label for="kodeProyek">Kode Proyek</label>
+                        <input type="text" name="kodeProyek" class="form-control" required>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="namaProyek">Nama Proyek</label>
+                        <input type="text" name="namaProyek" class="form-control" required>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="nilaiProyek">Nilai Proyek</label>
+                        <input type="text" name="nilaiProyek" class="form-control" required>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="projectManager">Project Manager</label>
+                        <input type="text" name="projectManager" class="form-control" required>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -96,25 +98,23 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                            <thead>
-                                <th>Kode Project</th>
-                                <th>Nama Project</th>
-                            </thead>
-                            <tbody id="tbl-edit-dept-body">
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control" name="kodeproject" id="kdProject" readonly>
-                                        <input type="hidden" class="form-control" name="idProject" id="idProject">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" name="namaproject" id="nmProject">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>  
-                    </div> 
+                    <input type="hidden" name="idProject" id="idProject">
+                    <div class="col-lg-12 col-md-12">
+                        <label for="kodeProyek">Kode Proyek</label>
+                        <input type="text" name="kodeProyek" id="kodeProyek" class="form-control" required>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="namaProyek">Nama Proyek</label>
+                        <input type="text" name="namaProyek" id="namaProyek" class="form-control" required>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="nilaiProyek">Nilai Proyek</label>
+                        <input type="text" name="nilaiProyek" id="nilaiProyek" class="form-control" required>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="projectManager">Project Manager</label>
+                        <input type="text" name="projectManager" id="projectManager" class="form-control" required>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -149,25 +149,27 @@
                 { "data": null,"sortable": false, "searchable": false,
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
-                    }  
+                    }
                 },
                 {data: "kode_project", className: 'uid'},
                 {data: "nama_project", className: 'uid'},
-                {"defaultContent": 
-                    `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button> 
+                {data: "nilai_project", className: 'uid'},
+                {data: "project_manager", className: 'uid'},
+                {"defaultContent":
+                    `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button>
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
                     `,
                     "className": "text-center",
                     "width": "20%"
                 }
-            ]  
+            ]
         });
 
         $('#tbl-dept-master tbody').on( 'click', '.button-delete', function () {
             var table = $('#tbl-dept-master').DataTable();
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
-            window.location = base_url+"/master/project/delete/"+selected_data.idproject;
+            window.location = base_url+"/master/project/delete/"+selected_data.id;
         });
         $('#tbl-dept-master tbody').on( 'click', '.button-edit', function () {
             var table = $('#tbl-dept-master').DataTable();
@@ -175,9 +177,11 @@
             selected_data = table.row($(this).closest('tr')).data();
             console.log(selected_data)
             // window.location = base_url+"/master/department/edit/"+selected_data.deptid;
-            $('#kdProject').val(selected_data.kode_project);
-            $('#nmProject').val(selected_data.nama_project);
-            $('#idProject').val(selected_data.idproject);
+            $('#kodeProyek').val(selected_data.kode_project);
+            $('#namaProyek').val(selected_data.nama_project);
+            $('#nilaiProyek').val(selected_data.nilai_project);
+            $('#projectManager').val(selected_data.project_manager);
+            $('#idProject').val(selected_data.id);
             $('#modal-edit-project').modal('show');
         });
 
