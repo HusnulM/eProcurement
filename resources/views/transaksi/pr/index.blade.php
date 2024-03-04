@@ -18,7 +18,7 @@
 @section('content')
 <div class="container-fluid">
     <form id="form-submit-data" method="post" enctype="multipart/form-data">
-    <!-- <form id="form-submit-dataxx" action="/proc/pr/save" method="post" enctype="multipart/form-data"> -->
+    {{-- <form id="form-submit-dataxx" action="/proc/pr/save" method="post" enctype="multipart/form-data"> --}}
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -42,6 +42,16 @@
                                         <div class="form-group">
                                             <label for="tglreq">Tanggal Request</label>
                                             <input type="date" name="tglreq" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="requestor">Type PR</label>
+                                            <select name="prtype" id="prtype" class="form-control" required>
+                                                <option value="">Pilih Satu</option>
+                                                <option value="AA">Head Office</option>
+                                                <option value="SQ">Proyek</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
