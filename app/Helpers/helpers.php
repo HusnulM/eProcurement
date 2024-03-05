@@ -170,67 +170,6 @@ function generateDcnNumber($doctype){
 
 }
 
-function generateCheckListNumber($tahun, $bulan){
-    $dcnNumber = '';
-    $getdata = DB::table('dcn_nriv')->where('year', $tahun)->where('month', $bulan)
-              ->where('object','CKL')->first();
-    $doctype = 'CKL';
-
-    if($getdata){
-        DB::beginTransaction();
-        try{
-            $leadingZero = '';
-            if(strlen($getdata->current_number) == 5){
-                $leadingZero = '0';
-            }elseif(strlen($getdata->current_number) == 4){
-                $leadingZero = '00';
-            }elseif(strlen($getdata->current_number) == 3){
-                $leadingZero = '000';
-            }elseif(strlen($getdata->current_number) == 2){
-                $leadingZero = '0000';
-            }elseif(strlen($getdata->current_number) == 1){
-                $leadingZero = '00000';
-            }
-
-            $lastnum = ($getdata->current_number*1) + 1;
-
-            if($leadingZero == ''){
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2). $bulan .'-'. $lastnum;
-            }else{
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2). $bulan .'-'. $leadingZero . $lastnum;
-            }
-
-            DB::table('dcn_nriv')->where('year', $tahun)->where('month', $bulan)->where('object','CKL')->update([
-                'current_number' => $lastnum
-            ]);
-
-            DB::commit();
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            return null;
-        }
-    }else{
-        $dcnNumber = $doctype . '-' .substr(date('Y'),2).$bulan.'-000001';
-        DB::beginTransaction();
-        try{
-            DB::table('dcn_nriv')->insert([
-                'year'            => $tahun,
-                'month'           => $bulan,
-                'object'          => 'CKL',
-                'current_number'  => '1',
-                'createdon'       => date('Y-m-d H:m:s'),
-                'createdby'       => Auth::user()->email ?? Auth::user()->username
-            ]);
-            DB::commit();
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            return null;
-        }
-    }
-}
-
 function getWfGroup($doctype){
 
     $wfgroup = DB::table('doctypes')->where('id', $doctype)->first();
@@ -600,52 +539,48 @@ function generatePbjNumber($tahun, $dept, $tgl){
     }
 }
 
-function generatePRNumber($tahun, $bulan, $tgl, $dept, $deptname){
-    // $dcnNumber = 'PR-'.$deptname.'/'.$tahun.$bulan.$tgl;
-    $dcnNumber = 'PR-'.$deptname.'/'.$tahun;
-    // dd($dcnNumber);
-    $getdata = DB::table('t_nriv_budget')
-               ->where('tahun',  $tahun)
-               ->where('object', 'PR')
-            //    ->where('bulan',  $bulan)
-            //    ->where('tanggal',  $tgl)
-               ->where('deptid', $dept)
+function generatePRNumber($tahun, $bulan, $prtype, $project){
+    $dcnNumber = 'SPB/'.$prtype.'/'.$bulan.'/'.$tahun;
+    $getdata = DB::table('nriv_pr')
+               ->where('year',   $tahun)
+               ->where('month',  $bulan)
+               ->where('prtype', $prtype)
+               ->where('prefix', $project)
                ->first();
 
     if($getdata){
         DB::beginTransaction();
         try{
             $leadingZero = '';
-            if(strlen($getdata->lastnumber) == 5){
+            if(strlen($getdata->current_number) == 5){
                 $leadingZero = '0';
-            }elseif(strlen($getdata->lastnumber) == 4){
+            }elseif(strlen($getdata->current_number) == 4){
                 $leadingZero = '00';
-            }elseif(strlen($getdata->lastnumber) == 3){
+            }elseif(strlen($getdata->current_number) == 3){
                 $leadingZero = '000';
-            }elseif(strlen($getdata->lastnumber) == 2){
+            }elseif(strlen($getdata->current_number) == 2){
                 $leadingZero = '0000';
-            }elseif(strlen($getdata->lastnumber) == 1){
+            }elseif(strlen($getdata->current_number) == 1){
                 $leadingZero = '00000';
             }
 
-            $lastnum = ($getdata->lastnumber*1) + 1;
+            $lastnum = ($getdata->current_number*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum;
+                $dcnNumber = $dcnNumber.'/'.$lastnum;
             }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
+                $dcnNumber = $dcnNumber .'/'. $leadingZero . $lastnum;
             }
 
             // dd($leadingZero);
 
-            DB::table('t_nriv_budget')
-            ->where('tahun',  $tahun)
-            ->where('object', 'PR')
-            // ->where('bulan',  $bulan)
-            // ->where('tanggal',  $tgl)
-            ->where('deptid', $dept)
+            DB::table('nriv_pr')
+            ->where('year',   $tahun)
+            ->where('month',  $bulan)
+            ->where('prtype', $prtype)
+            ->where('prefix', $project)
             ->update([
-                'lastnumber' => $lastnum
+                'current_number' => $lastnum
             ]);
 
             DB::commit();
@@ -655,18 +590,17 @@ function generatePRNumber($tahun, $bulan, $tgl, $dept, $deptname){
             return null;
         }
     }else{
-        $dcnNumber = $dcnNumber.'000001';
+        $dcnNumber = $dcnNumber.'/000001';
         DB::beginTransaction();
         try{
-            DB::table('t_nriv_budget')->insert([
-                'object'          => 'PR',
-                'tahun'           => $tahun,
-                'bulan'           => $bulan,
-                'tanggal'         => $tgl,
-                'deptid'          => $dept,
-                'lastnumber'      => '1',
+            DB::table('nriv_pr')->insert([
+                'year'            => $tahun,
+                'month'           => $bulan,
+                'prtype'          => $prtype,
+                'prefix'          => $project,
+                'current_number'  => '1',
                 'createdon'       => date('Y-m-d H:m:s'),
-                'createdby'       => Auth::user()->email ?? Auth::user()->username
+                'createdby'       => Auth::user()->username
             ]);
             DB::commit();
             return $dcnNumber;

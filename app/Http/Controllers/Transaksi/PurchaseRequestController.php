@@ -19,12 +19,53 @@ class PurchaseRequestController extends Controller
     }
 
     public function listPR(){
-        $department = DB::table('t_department')->get();
-        return view('transaksi.pr.printlist', ['department' => $department]);
+        $proyek = DB::table('t_projects')->get();
+        return view('transaksi.pr.printlist', ['proyek' => $proyek]);
     }
 
     public function duedate(){
         return view('transaksi.pr.duedatepr');
+    }
+
+    public function getListPR(Request $req)
+    {
+        $query = DB::table('t_pr01')
+            ->join('t_projects', 't_pr01.idproject', '=', 't_projects.id')
+            ->select('t_pr01.*','t_projects.kode_project', 't_projects.nama_project', 't_projects.project_manager')->distinct();
+
+        if(isset($req->approvalstat)){
+            if($req->approvalstat === "O"){
+                $query->where('t_pr01.approvestat', 'O');
+            }elseif($req->approvalstat === "A"){
+                $query->where('t_pr01.approvestat', 'A');
+            }elseif($req->approvalstat === "R"){
+                $query->where('t_pr01.approvestat', 'R');
+            }
+        }
+
+        if(isset($req->datefrom) && isset($req->dateto)){
+            $query->whereBetween('t_pr01.prdate', [$req->datefrom, $req->dateto]);
+        }elseif(isset($req->datefrom)){
+            $query->where('t_pr01.prdate', $req->datefrom);
+        }elseif(isset($req->dateto)){
+            $query->where('t_pr01.prdate', '<=', $req->dateto);
+        }
+
+        if(isset($req->project)){
+            if($req->project !== 'All'){
+                $query->where('idproject', $req->project);
+            }
+        }
+
+        $query->orderBy('t_pr01.id');
+
+        return DataTables::queryBuilder($query)
+        ->editColumn('prdate', function ($query){
+            return [
+                'prdate1' => \Carbon\Carbon::parse($query->prdate)->format('d-m-Y')
+             ];
+        })
+        ->toJson();
     }
 
     public function listDuedatePR(Request $request){
@@ -51,35 +92,32 @@ class PurchaseRequestController extends Controller
     }
 
     public function changePR($id){
-        // return view('transaksi.pr.change');
-        $department = DB::table('t_department')->get();
         $prhdr = DB::table('t_pr01')->where('id', $id)->first();
-        $prdtl = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->where('isdeleted', 'N')->get();
-        $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
-        $approvals   = DB::table('v_pr_approval_v2')->where('prnum', $prhdr->prnum)->get();
+        $prdtl = DB::table('t_pr02')
+                ->join('t_material', 't_pr02.material', '=', 't_material.material')
+                ->select('t_pr02.*','t_material.matspec')
+                ->where('t_pr02.prnum', $prhdr->prnum)
+                ->where('t_pr02.isdeleted', 'N')
+                ->get();
+
+        $attachments = DB::table('t_attachments')
+                        ->where('doc_object','PR')
+                        ->where('doc_number', $prhdr->prnum)
+                        ->get();
+
+        $proyek = DB::table('t_projects')->get();
+
+        $approvals   = DB::table('v_pr_approval01')->where('prnum', $prhdr->prnum)->get();
         // return $attachments;
         return view('transaksi.pr.change',
             [
-                'department'    => $department,
+                // 'department'    => $department,
                 'prhdr'         => $prhdr,
                 'pritem'        => $prdtl,
                 'attachments'   => $attachments,
+                'proyek'        => $proyek,
                 'approvals'     => $approvals
             ]);
-    }
-
-    public function listApprovedPbj(Request $request){
-        if(isset($request->params)){
-            $params = $request->params;
-            $whereClause = $params['sac'];
-        }
-        $query = DB::table('v_pbj02')
-                 ->where('pbj_status', 'A')
-                 ->where('approvestat', 'A')
-                 ->where('itemstatus', '<>', 'C')
-                 ->where('openqty', '>', 0)
-                 ->orderBy('id');
-        return DataTables::queryBuilder($query)->toJson();
     }
 
     public function save(Request $req){
@@ -87,15 +125,25 @@ class PurchaseRequestController extends Controller
         DB::beginTransaction();
         try{
             if(!isset($req['parts'])){
-                return Redirect::to("/proc/pr")->withError('Item PR Blum di isi');
+                // return Redirect::to("/proc/pr")->withError('Item PR Blum di isi');
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'Item PR Blum di isi'
+                );
+                return $result;
             }
             $tgl   = substr($req['tglreq'], 8, 2);
             $bulan = substr($req['tglreq'], 5, 2);
             $tahun = substr($req['tglreq'], 0, 4);
-            // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
-            $ptaNumber = 'SPB/SQ/03/24/001';
 
-            // return $ptaNumber;
+            $kodeProject = null;
+            $project = DB::table('t_projects')->where('id', $req['project'])->first();
+            if($project){
+                $kodeProject = $project->kode_project;
+            }
+
+            $ptaNumber = generatePRNumber($tahun, $bulan, $req['prtype'], $req['project']);
+            // 'SPB/SQ/03/24/001';
 
             // $amount = $req['nominal'];
             // $amount = str_replace(',','',$amount);
@@ -107,7 +155,7 @@ class PurchaseRequestController extends Controller
                 'requestby'         => $req['requestor'],
                 'remark'            => $req['remark'],
                 'createdon'         => getLocalDatabaseDateTime(),
-                'createdby'         => Auth::user()->email ?? Auth::user()->username
+                'createdby'         => Auth::user()->username
             ]);
 
             $parts    = $req['parts'];
@@ -158,7 +206,7 @@ class PurchaseRequestController extends Controller
                         'efile'      => $filename,
                         'pathfile'   => '/files/PR/'. $filename,
                         'createdon'  => getLocalDatabaseDateTime(),
-                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                        'createdby'  => Auth::user()->username
                     );
                     array_push($insertFiles, $upfiles);
 
@@ -244,16 +292,16 @@ class PurchaseRequestController extends Controller
         DB::beginTransaction();
         try{
             if(!isset($req['material'])){
-                return Redirect::to("/proc/pr")->withError('Item PR Blum di isi');
+                // return Redirect::to("/proc/pr")->withError('Item PR Blum di isi');
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'PR : '. $ptaNumber . ' - Item PR Blum di isi'
+                );
+                return $result;
             }
 
             $prhdr = DB::table('t_pr01')->where('id', $prid)->first();
 
-
-            $tgl   = substr($req['tglreq'], 8, 2);
-            $bulan = substr($req['tglreq'], 5, 2);
-            $tahun = substr($req['tglreq'], 0, 4);
-            // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
             $ptaNumber = $prhdr->prnum;
 
             $checkApproval = DB::table('t_pr_approvalv2')
@@ -267,25 +315,21 @@ class PurchaseRequestController extends Controller
                 return $result;
             }
 
-            // $amount = $req['nominal'];
-            // $amount = str_replace(',','',$amount);
             DB::table('t_pr01')->where('id', $prid)->update([
                 'prnum'             => $ptaNumber,
                 'prdate'            => $req['tglreq'],
-                'deptid'            => Auth::user()->deptid,
                 'requestby'         => $req['requestor'],
                 'remark'            => $req['remark'],
+                'idproject'         => $req['project'],
                 'changedon'         => getLocalDatabaseDateTime(),
-                // 'createdby'         => Auth::user()->email ?? Auth::user()->username
+                'changedby'         => Auth::user()->username
             ]);
 
             $parts    = $req['material'];
             $partdsc  = $req['matdesc'];
             $quantity = $req['quantity'];
             $uom      = $req['unit'];
-            $pbjnum   = $req['pbjnumber'];
-            $pbjitm   = $req['pbjitem'];
-            $nopol    = $req['nopol'];
+            $itemtext = $req['remarks'];
             $pritem   = $req['pritem'];
 
             $insertData = array();
@@ -305,11 +349,11 @@ class PurchaseRequestController extends Controller
                         'matdesc'      => $partdsc[$i],
                         'quantity'     => $qty,
                         'unit'         => $uom[$i],
-                        'pbjnumber'    => $pbjnum[$i] ?? 0,
-                        'pbjitem'      => $pbjitm[$i] ?? 0,
-                        'no_plat'      => $nopol[$i] ?? null,
-                        // 'createdon'    => getLocalDatabaseDateTime(),
-                        // 'createdby'    => Auth::user()->email ?? Auth::user()->username
+                        'remark'       => $itemtext[$i],
+                        'createdon'    => $prhdr->createdon,
+                        'createdby'    => $prhdr->createdby,
+                        'changedon'    => getLocalDatabaseDateTime(),
+                        'changedby'    => Auth::user()->username
                     );
                 }else{
                     $count += 1;
@@ -320,21 +364,16 @@ class PurchaseRequestController extends Controller
                         'matdesc'      => $partdsc[$i],
                         'quantity'     => $qty,
                         'unit'         => $uom[$i],
-                        'pbjnumber'    => $pbjnum[$i] ?? 0,
-                        'pbjitem'      => $pbjitm[$i] ?? 0,
-                        'no_plat'      => $nopol[$i] ?? null,
+                        'remark'       => $itemtext[$i],
                         'createdon'    => getLocalDatabaseDateTime(),
-                        'createdby'    => Auth::user()->email ?? Auth::user()->username
+                        'createdby'    => Auth::user()->username,
+                        'changedon'    => getLocalDatabaseDateTime(),
+                        'changedby'    => Auth::user()->username
                     );
                 }
 
                 array_push($insertData, $data);
                 array_push($prItems, $data);
-
-                DB::table('t_pbj02')->where('pbjnumber', $pbjnum[$i])->where('pbjitem', $pbjitm[$i])
-                ->update([
-                    'prcreated' => 'Y'
-                ]);
             }
 
             // return $insertData;
@@ -353,7 +392,7 @@ class PurchaseRequestController extends Controller
                         'efile'      => $filename,
                         'pathfile'   => '/files/PR/'. $filename,
                         'createdon'  => getLocalDatabaseDateTime(),
-                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                        'createdby'  => Auth::user()->username
                     );
                     array_push($insertFiles, $upfiles);
 
@@ -367,38 +406,38 @@ class PurchaseRequestController extends Controller
             // insertOrUpdate($insertFiles,'t_attachments');
 
             //Set Approval
-            $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
-            if(sizeof($approval) > 0){
-                DB::table('t_pr_approvalv2')->where('prnum', $ptaNumber)->delete();
-                for($a = 0; $a < sizeof($prItems); $a++){
-                    $insertApproval = array();
-                    foreach($approval as $row){
-                        $is_active = 'N';
-                        if($row->approver_level == 1){
-                            $is_active = 'Y';
-                        }
-                        $approvals = array(
-                            'prnum'             => $ptaNumber,
-                            'pritem'            => $prItems[$a]['pritem'],
-                            'approver_level'    => $row->approver_level,
-                            'approver'          => $row->approver,
-                            'requester'         => Auth::user()->id,
-                            'is_active'         => $is_active,
-                            'createdon'         => getLocalDatabaseDateTime()
-                        );
-                        array_push($insertApproval, $approvals);
-                    }
-                    insertOrUpdate($insertApproval,'t_pr_approvalv2');
-                }
-            }else{
-                DB::rollBack();
-                $result = array(
-                    'msgtype' => '500',
-                    'message' => 'Approval belum di tambahkan untuk user '. Auth::user()->name
-                );
-                return $result;
-                // return Redirect::to("/proc/pr/change/".$prid)->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
-            }
+            // $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
+            // if(sizeof($approval) > 0){
+            //     DB::table('t_pr_approvalv2')->where('prnum', $ptaNumber)->delete();
+            //     for($a = 0; $a < sizeof($prItems); $a++){
+            //         $insertApproval = array();
+            //         foreach($approval as $row){
+            //             $is_active = 'N';
+            //             if($row->approver_level == 1){
+            //                 $is_active = 'Y';
+            //             }
+            //             $approvals = array(
+            //                 'prnum'             => $ptaNumber,
+            //                 'pritem'            => $prItems[$a]['pritem'],
+            //                 'approver_level'    => $row->approver_level,
+            //                 'approver'          => $row->approver,
+            //                 'requester'         => Auth::user()->id,
+            //                 'is_active'         => $is_active,
+            //                 'createdon'         => getLocalDatabaseDateTime()
+            //             );
+            //             array_push($insertApproval, $approvals);
+            //         }
+            //         insertOrUpdate($insertApproval,'t_pr_approvalv2');
+            //     }
+            // }else{
+            //     DB::rollBack();
+            //     $result = array(
+            //         'msgtype' => '500',
+            //         'message' => 'Approval belum di tambahkan untuk user '. Auth::user()->name
+            //     );
+            //     return $result;
+            //     // return Redirect::to("/proc/pr/change/".$prid)->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
+            // }
 
             DB::commit();
             // return Redirect::to("/proc/pr/change/".$prid)->withSuccess('PR '. $ptaNumber .'Berhasil di update');

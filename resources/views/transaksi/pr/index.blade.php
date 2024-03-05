@@ -210,6 +210,9 @@
                 }else{
                     console.log(selected_data);
                     selected_items.push(selected_data);
+                    if(selected_data.matspec == null || selected_data.matspec == 'null'){
+                        selected_data.matspec = '';
+                    }
                     fCount = fCount + 1;
                     $('#tbl-pbj-body').append(`
                         <tr>
@@ -220,7 +223,7 @@
                             </td>
 
                             <td>
-                                <input type="text" name="quantity[]" class="form-control inputNumber" required>
+                                <input type="text" name="quantity[]" class="form-control inputNumber" style="text-align:right;" required>
                             </td>
                             <td>
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
