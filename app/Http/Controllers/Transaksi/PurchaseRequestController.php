@@ -91,6 +91,36 @@ class PurchaseRequestController extends Controller
         ->toJson();
     }
 
+    public function prdetail($id){
+        $prhdr = DB::table('t_pr01')->where('id', $id)->first();
+        $prdtl = DB::table('t_pr02')
+                ->join('t_material', 't_pr02.material', '=', 't_material.material')
+                ->select('t_pr02.*','t_material.matspec')
+                ->where('t_pr02.prnum', $prhdr->prnum)
+                ->where('t_pr02.isdeleted', 'N')
+                ->get();
+
+        $attachments = DB::table('t_attachments')
+                        ->where('doc_object','PR')
+                        ->where('doc_number', $prhdr->prnum)
+                        ->get();
+
+        $proyek = DB::table('t_projects')->get();
+        $proyekx = DB::table('t_projects')->where('id', $prhdr->idproject)->first();
+
+        $approvals   = DB::table('v_pr_approval01')->where('prnum', $prhdr->prnum)->get();
+        // return $attachments;
+        return view('transaksi.pr.prdetail',
+            [
+                'prhdr'          => $prhdr,
+                'pritem'         => $prdtl,
+                'attachments'    => $attachments,
+                'proyek'         => $proyek,
+                'proyekx'        => $proyekx,
+                'approvals'      => $approvals
+            ]);
+    }
+
     public function changePR($id){
         $prhdr = DB::table('t_pr01')->where('id', $id)->first();
         $prdtl = DB::table('t_pr02')
@@ -106,6 +136,7 @@ class PurchaseRequestController extends Controller
                         ->get();
 
         $proyek = DB::table('t_projects')->get();
+        $proyekx = DB::table('t_projects')->where('id', $prhdr->idproject)->first();
 
         $approvals   = DB::table('v_pr_approval01')->where('prnum', $prhdr->prnum)->get();
         // return $attachments;
@@ -116,6 +147,7 @@ class PurchaseRequestController extends Controller
                 'pritem'        => $prdtl,
                 'attachments'   => $attachments,
                 'proyek'        => $proyek,
+                'proyekx'       => $proyekx,
                 'approvals'     => $approvals
             ]);
     }
@@ -134,19 +166,19 @@ class PurchaseRequestController extends Controller
             }
             $tgl   = substr($req['tglreq'], 8, 2);
             $bulan = substr($req['tglreq'], 5, 2);
-            $tahun = substr($req['tglreq'], 0, 4);
+            $tahun = substr($req['tglreq'], 2, 2);
 
             $kodeProject = null;
             $project = DB::table('t_projects')->where('id', $req['project'])->first();
             if($project){
                 $kodeProject = $project->kode_project;
             }
+            if($req['prtype'] === "AA"){
+                $kodeProject = 'AA';
+            }
 
-            $ptaNumber = generatePRNumber($tahun, $bulan, $req['prtype'], $req['project']);
-            // 'SPB/SQ/03/24/001';
+            $ptaNumber = generatePRNumber($tahun, $bulan, $req['prtype'], $kodeProject);
 
-            // $amount = $req['nominal'];
-            // $amount = str_replace(',','',$amount);
             $prID = DB::table('t_pr01')->insertGetId([
                 'prnum'             => $ptaNumber,
                 'typepr'            => $req['prtype'],
@@ -211,7 +243,6 @@ class PurchaseRequestController extends Controller
                     array_push($insertFiles, $upfiles);
 
                     $efile->move('files/PR/', $filename);
-                    // $efile->move(public_path().'/files/PR/', $filename);
                 }
                 if(sizeof($insertFiles) > 0){
                     insertOrUpdate($insertFiles,'t_attachments');
@@ -220,55 +251,39 @@ class PurchaseRequestController extends Controller
             // insertOrUpdate($insertFiles,'t_attachments');
 
             //Set Approval
-            // $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
-            // if(sizeof($approval) > 0){
-            //     for($a = 0; $a < sizeof($prItems); $a++){
-            //         $insertApproval = array();
-            //         foreach($approval as $row){
-            //             $is_active = 'N';
-            //             if($row->approver_level == 1){
-            //                 $is_active = 'Y';
-            //             }
-            //             $approvals = array(
-            //                 'prnum'             => $ptaNumber,
-            //                 'pritem'            => $prItems[$a]['pritem'],
-            //                 'approver_level'    => $row->approver_level,
-            //                 'approver'          => $row->approver,
-            //                 'requester'         => Auth::user()->id,
-            //                 'is_active'         => $is_active,
-            //                 'createdon'         => getLocalDatabaseDateTime()
-            //             );
-            //             array_push($insertApproval, $approvals);
-            //         }
-            //         insertOrUpdate($insertApproval,'t_pr_approvalv2');
-            //     }
-            // }else{
-            //     DB::rollBack();
-            //     $result = array(
-            //         'msgtype' => '500',
-            //         'message' => 'Approval belum di tambahkan untuk user '. Auth::user()->name
-            //     );
-            //     return $result;
-            //     // return Redirect::to("/proc/pr")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
-            // }
+            $approvalActive = DB::table('general_setting')->where('setting_name', 'WORKFLOW_PR_ACTIVE')->first();
+            if($approvalActive->setting_value === "Y"){
+                $approval = DB::table('v_workflows')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
+                if(sizeof($approval) > 0){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $is_active = 'N';
+                        if($row->approver_level == 1){
+                            $is_active = 'Y';
+                        }
+                        $approvals = array(
+                            'prnum'             => $ptaNumber,
+                            // 'pritem'            => $prItems[$a]['pritem'],
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $row->approver,
+                            'requester'         => Auth::user()->id,
+                            'is_active'         => $is_active,
+                            'createdon'         => getLocalDatabaseDateTime()
+                        );
+                        array_push($insertApproval, $approvals);
+                    }
+                    insertOrUpdate($insertApproval,'t_pr_approval');
+                }else{
+                    DB::rollBack();
+                    $result = array(
+                        'msgtype' => '500',
+                        'message' => 'Approval belum di tambahkan untuk user '. Auth::user()->name
+                    );
+                    return $result;
+                }
+            }
 
             DB::commit();
-            // return Redirect::to("/proc/pr")->withSuccess('PR Berhasil dibuat dengan Nomor : '. $ptaNumber);
-
-            // $approverId = DB::table('v_workflow_budget')->where('object', 'PR')
-            //                 ->where('requester', Auth::user()->id)
-            //                 ->where('approver_level', '1')
-            //                 ->pluck('approver');
-
-            // $mailto = DB::table('users')
-            //         ->whereIn('id', $approverId)
-            //         ->pluck('email');
-
-            // $dataApprovePBJ = DB::table('v_pr_duedate')
-            //         ->where('prnum', $ptaNumber)
-            //         ->orderBy('id')->get();
-
-            // Mail::to($mailto)->queue(new NotifApprovePrMail($dataApprovePBJ, $prID, $ptaNumber));
 
             $result = array(
                 'msgtype' => '200',
@@ -282,17 +297,13 @@ class PurchaseRequestController extends Controller
                 'message' => $e->getMessage()
             );
             return $result;
-            // return Redirect::to("/proc/pr")->withError($e->getMessage());
-            // dd($e->getMessage());
         }
     }
 
     public function update(Request $req, $prid){
-        // return $req;
         DB::beginTransaction();
         try{
             if(!isset($req['material'])){
-                // return Redirect::to("/proc/pr")->withError('Item PR Blum di isi');
                 $result = array(
                     'msgtype' => '500',
                     'message' => 'PR : '. $ptaNumber . ' - Item PR Blum di isi'
@@ -304,7 +315,7 @@ class PurchaseRequestController extends Controller
 
             $ptaNumber = $prhdr->prnum;
 
-            $checkApproval = DB::table('t_pr_approvalv2')
+            $checkApproval = DB::table('t_pr_approval')
                 ->where('prnum', $ptaNumber)->where('approval_status', 'A')->first();
 
             if($checkApproval){
@@ -403,41 +414,40 @@ class PurchaseRequestController extends Controller
                     insertOrUpdate($insertFiles,'t_attachments');
                 }
             }
-            // insertOrUpdate($insertFiles,'t_attachments');
 
             //Set Approval
-            // $approval = DB::table('v_workflow_budget')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
-            // if(sizeof($approval) > 0){
-            //     DB::table('t_pr_approvalv2')->where('prnum', $ptaNumber)->delete();
-            //     for($a = 0; $a < sizeof($prItems); $a++){
-            //         $insertApproval = array();
-            //         foreach($approval as $row){
-            //             $is_active = 'N';
-            //             if($row->approver_level == 1){
-            //                 $is_active = 'Y';
-            //             }
-            //             $approvals = array(
-            //                 'prnum'             => $ptaNumber,
-            //                 'pritem'            => $prItems[$a]['pritem'],
-            //                 'approver_level'    => $row->approver_level,
-            //                 'approver'          => $row->approver,
-            //                 'requester'         => Auth::user()->id,
-            //                 'is_active'         => $is_active,
-            //                 'createdon'         => getLocalDatabaseDateTime()
-            //             );
-            //             array_push($insertApproval, $approvals);
-            //         }
-            //         insertOrUpdate($insertApproval,'t_pr_approvalv2');
-            //     }
-            // }else{
-            //     DB::rollBack();
-            //     $result = array(
-            //         'msgtype' => '500',
-            //         'message' => 'Approval belum di tambahkan untuk user '. Auth::user()->name
-            //     );
-            //     return $result;
-            //     // return Redirect::to("/proc/pr/change/".$prid)->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
-            // }
+            $approvalActive = DB::table('general_setting')->where('setting_name', 'WORKFLOW_PR_ACTIVE')->first();
+            if($approvalActive->setting_value === "Y"){
+                $approval = DB::table('v_workflows')->where('object', 'PR')->where('requester', Auth::user()->id)->get();
+                if(sizeof($approval) > 0){
+                    DB::table('t_pr_approval')->where('prnum', $ptaNumber)->delete();
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $is_active = 'N';
+                        if($row->approver_level == 1){
+                            $is_active = 'Y';
+                        }
+                        $approvals = array(
+                            'prnum'             => $ptaNumber,
+                            // 'pritem'            => $prItems[$a]['pritem'],
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $row->approver,
+                            'requester'         => Auth::user()->id,
+                            'is_active'         => $is_active,
+                            'createdon'         => getLocalDatabaseDateTime()
+                        );
+                        array_push($insertApproval, $approvals);
+                    }
+                    insertOrUpdate($insertApproval,'t_pr_approval');
+                }else{
+                    DB::rollBack();
+                    $result = array(
+                        'msgtype' => '500',
+                        'message' => 'Approval belum di tambahkan untuk user '. Auth::user()->name
+                    );
+                    return $result;
+                }
+            }
 
             DB::commit();
             // return Redirect::to("/proc/pr/change/".$prid)->withSuccess('PR '. $ptaNumber .'Berhasil di update');
@@ -474,7 +484,7 @@ class PurchaseRequestController extends Controller
 
             DB::table('t_pr01')->where('id', $id)->delete();
             DB::table('t_attachments')->where('doc_object', 'PR')->where('doc_number',$prhdr->prnum)->delete();
-            DB::table('t_pr_approvalv2')->where('prnum', $prhdr->prnum)->delete();
+            DB::table('t_pr_approval')->where('prnum', $prhdr->prnum)->delete();
 
             // return $pbjdoc;
             foreach($pbjdoc as $row){

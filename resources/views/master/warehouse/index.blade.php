@@ -5,7 +5,7 @@
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -28,10 +28,11 @@
                                 <th>No</th>
                                 <th>Kode Gudang</th>
                                 <th>Nama Gudang</th>
+                                <th>Alamat</th>
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
-    
+
                             </tbody>
                         </table>
                     </div>
@@ -46,7 +47,7 @@
 <div class="modal fade" id="modal-add-department">
     <form action="{{ url('master/warehouse/save') }}" method="post">
         @csrf
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title">Tambah Gudang</h4>
@@ -57,21 +58,17 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                            <thead>
-                                <th>Kode Gudang</th>
-                                <th>Nama Gudang</th>
-                                <th style="width:50px; text-align:center;">
-                                    <button type="button" class="btn btn-success btn-sm btn-add-new-dept">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </th>
-                            </thead>
-                            <tbody id="tbl-new-dept-body">
-
-                            </tbody>
-                        </table>  
-                    </div> 
+                        <label for="kodeGudang">Kode Gudang</label>
+                        <input type="text" name="kodeGudang" class="form-control" required>
+                    </div>
+                    <div class="col-lg-12">
+                        <label for="namaGudang">Nama Gudang</label>
+                        <input type="text" name="namaGudang" class="form-control" required>
+                    </div>
+                    <div class="col-lg-12">
+                        <label for="alamatGudang">Alamat</label>
+                        <textarea name="alamatGudang" cols="10" rows="5" class="form-control" required></textarea>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -86,7 +83,7 @@
 <div class="modal fade" id="modal-edit-department">
     <form action="{{ url('master/warehouse/update') }}" method="post">
         @csrf
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title">Edit Data Gudang</h4>
@@ -97,20 +94,18 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                            <thead>
-                                <th>Nama Gudang</th>
-                            </thead>
-                            <tbody id="tbl-edit-dept-body">
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control" name="whsname" id="whsname">
-                                        <input type="hidden" class="form-control" name="whsid" id="whsid">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>  
-                    </div> 
+                        <label for="kodeGudang">Kode Gudang</label>
+                        <input type="text" name="kodeGudang" id="kodeGudang" class="form-control" readonly required>
+                        <input type="hidden" class="form-control" name="whsid" id="whsid">
+                    </div>
+                    <div class="col-lg-12">
+                        <label for="namaGudang">Nama Gudang</label>
+                        <input type="text" class="form-control" name="whsname" id="whsname">
+                    </div>
+                    <div class="col-lg-12">
+                        <label for="alamatGudang">Alamat</label>
+                        <textarea name="alamatGudang" id="alamatGudang" cols="10" rows="5" class="form-control" required></textarea>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -145,18 +140,19 @@
                 { "data": null,"sortable": false, "searchable": false,
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
-                    }  
+                    }
                 },
                 {data: "whscode", className: 'uid'},
                 {data: "whsname", className: 'uid'},
-                {"defaultContent": 
-                    `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button> 
+                {data: "address", className: 'uid'},
+                {"defaultContent":
+                    `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button>
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
                     `,
                     "className": "text-center",
                     "width": "20%"
                 }
-            ]  
+            ]
         });
 
         $('#tbl-dept-master tbody').on( 'click', '.button-delete', function () {
@@ -170,7 +166,9 @@
             selected_data = [];
             selected_data = table.row($(this).closest('tr')).data();
             // window.location = base_url+"/master/department/edit/"+selected_data.deptid;
+            $('#kodeGudang').val(selected_data.whscode);
             $('#whsname').val(selected_data.whsname);
+            $('#alamatGudang').val(selected_data.address);
             $('#whsid').val(selected_data.id);
             $('#modal-edit-department').modal('show');
         });

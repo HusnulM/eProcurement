@@ -55,9 +55,11 @@
                                         <div class="form-group">
                                             <label for="requestor">Type PR</label>
                                             <select name="prtype" id="prtype" class="form-control" required>
-                                                <option value="">Pilih Satu</option>
-                                                <option value="AA">Head Office</option>
-                                                <option value="SQ">Proyek</option>
+                                                @if($prhdr->typepr === 'AA')
+                                                    <option value="AA">Head Office</option>
+                                                @else
+                                                    <option value="SQ">Proyek</option>
+                                                @endif
                                             </select>
                                         </div>
                                     </div>
@@ -77,7 +79,7 @@
                                         <div class="form-group">
                                             <label for="requestor">Proyek</label>
                                             <select name="project" id="proyek" class="form-control" required>
-                                                <option value="">Pilih Satu</option>
+                                                <option value="{{ $proyekx->id }}">{{ $proyekx->kode_project }} - {{ $proyekx->nama_project }}</option>
                                                 @foreach ($proyek as $ls => $row)
                                                     <option value="{{ $row->id }}">{{ $row->kode_project }} - {{ $row->nama_project }}</option>
                                                 @endforeach

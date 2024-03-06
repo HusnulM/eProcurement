@@ -21,17 +21,9 @@
         <div class="col-lg-12">
             <!-- <h4 class="mt-5 ">Custom Content Above</h4> -->
             <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+
                 <li class="nav-item">
-                    <a class="nav-link active" id="custom-content-categories-tab" data-toggle="pill" href="#custom-content-categories" role="tab" aria-controls="custom-content-categories" aria-selected="true">Approval Budget</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Approval PBJ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="custom-content-above-spk-tab" data-toggle="pill" href="#custom-content-above-spk" role="tab" aria-controls="custom-content-above-spk" aria-selected="true">Approval SPK</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Approval PR</a>
+                    <a class="nav-link active" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Approval PR</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="custom-content-above-po-tab" data-toggle="pill" href="#custom-content-above-po" role="tab" aria-controls="custom-content-above-po" aria-selected="false">Approval PO</a>
@@ -41,124 +33,7 @@
                 <p class="lead mb-0">Custom Content goes here</p>
             </div> -->
             <div class="tab-content" id="custom-content-above-tabContent">
-                <div class="tab-pane fade show active" id="custom-content-categories" role="tabpanel" aria-labelledby="custom-content-categories-tab">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-primary btn-sm btn-add-categories">
-                                        <i class="fas fa-plus"></i> Tambah Approval Budget
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <table id="tbl-worflow-budget" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                                    <thead>
-                                        <th>No</th>
-                                        <th>Budget Requestor</th>
-                                        <th>Approver</th>
-                                        <th>Approval Level</th>
-                                        <th></th>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($budgetwf as $key => $row)
-                                        <tr>
-                                            <td>{{ $key+1 }}</td>
-                                            <td>{{ $row->requester_name }}</td>
-                                            <td>{{ $row->approver_name }}</td>
-                                            <td>{{ $row->approver_level }}</td>
-                                            <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deletebudgetwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</a> 
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade show" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-primary btn-sm btn-add-pbj-approval">
-                                        <i class="fas fa-plus"></i> Tambah Approval PBJ
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <table id="tbl-worflow-pbj" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                                    <thead>
-                                        <th>No</th>
-                                        <th>PBJ Creator</th>
-                                        <th>Approver</th>
-                                        <th>Approval Level</th>
-                                        <th></th>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($pbjwf as $key => $row)
-                                        <tr>
-                                            <td>{{ $key+1 }}</td>
-                                            <td>{{ $row->requester_name }}</td>
-                                            <td>{{ $row->approver_name }}</td>
-                                            <td>{{ $row->approver_level }}</td>
-                                            <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deletepbjwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
-                                                    <i class='fa fa-trash'></i> DELETE
-                                                </a> 
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane fade show" id="custom-content-above-spk" role="tabpanel" aria-labelledby="custom-content-above-spk-tab">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-primary btn-sm btn-add-spk-approval">
-                                        <i class="fas fa-plus"></i> Tambah Approval SPK
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <table id="tbl-worflow-spk" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
-                                    <thead>
-                                        <th>No</th>
-                                        <th>SPK Creator</th>
-                                        <th>Approver</th>
-                                        <th>Approval Level</th>
-                                        <th></th>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($spkwf as $key => $row)
-                                        <tr>
-                                            <td>{{ $key+1 }}</td>
-                                            <td>{{ $row->requester_name }}</td>
-                                            <td>{{ $row->approver_name }}</td>
-                                            <td>{{ $row->approver_level }}</td>
-                                            <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deletewowf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
-                                                    <i class='fa fa-trash'></i> DELETE
-                                                </a> 
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+                <div class="tab-pane fade show active" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
@@ -185,14 +60,14 @@
                                             <td>{{ $row->approver_name }}</td>
                                             <td>{{ $row->approver_level }}</td>
                                             <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deleteprwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
+                                                <a href="{{ url('config/workflow/deleteprwf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'>
                                                     <i class='fa fa-trash'></i> DELETE
-                                                </a> 
+                                                </a>
                                             </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
-                                </table>                                                    
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -225,14 +100,14 @@
                                             <td>{{ $row->approver_name }}</td>
                                             <td>{{ $row->approver_level }}</td>
                                             <td style="text-align:center;">
-                                                <a href="{{ url('config/workflow/deletepowf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'> 
+                                                <a href="{{ url('config/workflow/deletepowf/') }}/{{$row->id}}" class='btn btn-danger btn-sm button-delete'>
                                                     <i class='fa fa-trash'></i> DELETE
-                                                </a> 
+                                                </a>
                                             </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
-                                </table>                                                    
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -276,12 +151,12 @@
                                 <tr>
                                     <td colspan="1"></td>
                                     <td>
-                                        
+
                                     </td>
                                 </tr>
                             </tfoot>
-                        </table>  
-                    </div> 
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -325,12 +200,12 @@
                                 <tr>
                                     <td colspan="1"></td>
                                     <td>
-                                        
+
                                     </td>
                                 </tr>
                             </tfoot>
-                        </table>  
-                    </div> 
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -374,12 +249,12 @@
                                 <tr>
                                     <td colspan="1"></td>
                                     <td>
-                                        
+
                                     </td>
                                 </tr>
                             </tfoot>
-                        </table>  
-                    </div> 
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -423,12 +298,12 @@
                                 <tr>
                                     <td colspan="1"></td>
                                     <td>
-                                        
+
                                     </td>
                                 </tr>
                             </tfoot>
-                        </table>  
-                    </div> 
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -472,12 +347,12 @@
                                 <tr>
                                     <td colspan="1"></td>
                                     <td>
-                                        
+
                                     </td>
                                 </tr>
                             </tfoot>
-                        </table>  
-                    </div> 
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -551,7 +426,7 @@
                             @endforeach
                         </select>
                     </td>
-                    
+
                     <td>
                         <select name="wfapprov[]" class="form-control wfapprov">
                             @foreach($users as $key => $row)
@@ -646,7 +521,7 @@
                 $(this).closest("tr").remove();
             });
         });
-        
+
 
         $('.btn-add-new-pr-wf').on('click', function(){
             $('#tbl-pr-wf-body').append(`

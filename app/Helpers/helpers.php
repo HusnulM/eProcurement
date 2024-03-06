@@ -184,7 +184,6 @@ function groupOpen($groupid){
     $routeName = null;
     $routes = explode('/',\Route::current()->uri());
     $count = 0;
-
     foreach($routes as $row){
         $count = $count + 1;
         $routeName = $routeName . '/' . $row;
@@ -194,18 +193,10 @@ function groupOpen($groupid){
 
         $selectMenu = DB::table('menus')->where('route', $routeName)->first();
         if($selectMenu){
-            // dd($selectMenu);
             return $groupid == $selectMenu->menugroup ? 'menu-open' : '';
             break;
         }
     }
-
-    // $routeName = \Route::current()->uri();
-    // $selectMenu = DB::table('menus')->where('route', $routeName)->first();
-    // if($selectMenu){
-    //     return $groupid == $selectMenu->menugroup ? 'menu-open' : '';
-    // }
-    // return request()->is("*".$groupname."*") ? 'menu-open' : '';
 }
 
 function currentURL(){
@@ -219,7 +210,33 @@ function currentURL(){
 
 function active($partialUrl){
     // return $partialUrl;
-    return request()->is("*".$partialUrl."*") ? 'active' : '';
+
+    $checkRoute = DB::table('menus')->where('route', \Route::current()->uri())->first();
+    if($checkRoute){
+        if(\Route::current()->uri() === $partialUrl){
+            return 'active';
+        }else{
+            return '';
+        }
+        // $routeName = null;
+        // $routes    = explode('/',\Route::current()->uri());
+        // $count     = 0;
+        // foreach($routes as $row){
+        //     $count = $count + 1;
+        //     $routeName = $routeName . '/' . $row;
+        //     if($count == 1){
+        //         $routeName = substr($routeName,1);
+        //     }
+
+        //     $selectMenu = DB::table('menus')->where('route', $routeName)->first();
+        //     if($selectMenu){
+        //         return 'active';
+        //         break;
+        //     }
+        // }
+    }else{
+        return request()->is("*".$partialUrl."*") ? 'active' : '';
+    }
 }
 
 function insertOrUpdate(array $rows, $table){
@@ -376,171 +393,13 @@ function getUserNameByID($id){
     return $userDept->name;
 }
 
-function generateBudgetDcnNumber($tahun, $bulan, $tgl, $dept, $deptname){
-    $dcnNumber = 'PTA-'.$deptname.'/'.$tahun.$bulan.$tgl;
-
-    $getdata = DB::table('t_nriv_budget')
-               ->where('tahun',  $tahun)
-               ->where('object', 'BUDGET')
-               ->where('bulan',  $bulan)
-               ->where('tanggal',  $tgl)
-               ->where('deptid', $dept)
-               ->first();
-
-    if($getdata){
-        DB::beginTransaction();
-        try{
-            $leadingZero = '';
-            if(strlen($getdata->lastnumber) == 5){
-                $leadingZero = '0';
-            }elseif(strlen($getdata->lastnumber) == 4){
-                $leadingZero = '00';
-            }elseif(strlen($getdata->lastnumber) == 3){
-                $leadingZero = '000';
-            }elseif(strlen($getdata->lastnumber) == 2){
-                $leadingZero = '0000';
-            }elseif(strlen($getdata->lastnumber) == 1){
-                $leadingZero = '00000';
-            }
-
-            $lastnum = ($getdata->lastnumber*1) + 1;
-
-            if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum;
-            }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
-            }
-
-            // dd($leadingZero);
-
-            DB::table('t_nriv_budget')
-            ->where('tahun',  $tahun)
-            ->where('object', 'BUDGET')
-            ->where('bulan',  $bulan)
-            ->where('tanggal',  $tgl)
-            ->where('deptid', $dept)
-            ->update([
-                'lastnumber' => $lastnum
-            ]);
-
-            DB::commit();
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            return null;
-        }
-    }else{
-        $dcnNumber = $dcnNumber.'000001';
-        DB::beginTransaction();
-        try{
-            DB::table('t_nriv_budget')->insert([
-                'object'          => 'BUDGET',
-                'tahun'           => $tahun,
-                'bulan'           => $bulan,
-                'tanggal'         => $tgl,
-                'deptid'          => $dept,
-                'lastnumber'      => '1',
-                'createdon'       => date('Y-m-d H:m:s'),
-                'createdby'       => Auth::user()->email ?? Auth::user()->username
-            ]);
-            DB::commit();
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            return null;
-        }
-    }
-}
-
-function generatePbjNumber($tahun, $dept, $tgl){
-
-    $department = DB::table('t_department')->where('deptid', $dept)->first();
-
-
-    $deptid = $department->deptid;
-    // dd($deptid);
-    $dcnNumber = 'PBJ-'.$department->department.'/'.$tahun;
-    // dd($dcnNumber);
-    $getdata = DB::table('t_nriv_budget')
-               ->where('tahun',  $tahun)
-               ->where('object', 'PBJ')
-               ->where('deptid',  $deptid)
-            //    ->where('tanggal',  $tgl)
-            //    ->where('deptid', $dept)
-               ->first();
-    // dd($getdata);
-
-    if($getdata){
-        DB::beginTransaction();
-        try{
-            $leadingZero = '';
-            if(strlen($getdata->lastnumber) == 5){
-                $leadingZero = '0';
-            }elseif(strlen($getdata->lastnumber) == 4){
-                $leadingZero = '00';
-            }elseif(strlen($getdata->lastnumber) == 3){
-                $leadingZero = '000';
-            }elseif(strlen($getdata->lastnumber) == 2){
-                $leadingZero = '0000';
-            }elseif(strlen($getdata->lastnumber) == 1){
-                $leadingZero = '00000';
-            }
-
-            $lastnum = ($getdata->lastnumber*1) + 1;
-
-            if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum;
-            }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
-            }
-
-            // dd($leadingZero);
-
-            DB::table('t_nriv_budget')
-            ->where('tahun',  $tahun)
-            ->where('object', 'PBJ')
-            ->where('deptid',  $deptid)
-            // ->where('tanggal',  $tgl)
-            // ->where('deptid', $dept)
-            ->update([
-                'lastnumber' => $lastnum
-            ]);
-
-            DB::commit();
-            // dd($dcnNumber);
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            return null;
-        }
-    }else{
-        $dcnNumber = $dcnNumber.'000001';
-        DB::beginTransaction();
-        try{
-            DB::table('t_nriv_budget')->insert([
-                'object'          => 'PBJ',
-                'tahun'           => $tahun,
-                'deptid'          => $deptid,
-                'bulan'           => date('m'),
-                'tanggal'         => '01',
-                // 'deptid'          => $dept,
-                'lastnumber'      => '1',
-                'createdon'       => date('Y-m-d H:m:s'),
-                'createdby'       => Auth::user()->email ?? Auth::user()->username
-            ]);
-            DB::commit();
-            // dd($dcnNumber);
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            dd($e);
-            return null;
-        }
-    }
-}
-
 function generatePRNumber($tahun, $bulan, $prtype, $project){
-    $dcnNumber = 'SPB/'.$prtype.'/'.$bulan.'/'.$tahun;
+    if($prtype === 'AA'){
+        $dcnNumber = 'SPB/'.$prtype.'/'.$bulan.'/'.$tahun;
+    }else{
+        $prtype    = $project;
+        $dcnNumber = 'SPB/'.$project.'/'.$bulan.'/'.$tahun;
+    }
     $getdata = DB::table('nriv_pr')
                ->where('year',   $tahun)
                ->where('month',  $bulan)
@@ -921,84 +780,6 @@ function generateTransferNumber($tahun, $bulan){
     }
 }
 
-function generateWONumber($tahun, $bulan){
-    $dcnNumber = 'WO/'.$tahun.$bulan;
-    // dd($dcnNumber);
-    $getdata = DB::table('t_nriv_budget')
-               ->where('tahun',  $tahun)
-               ->where('object', 'WO')
-               ->where('bulan',  $bulan)
-            //    ->where('tanggal',  $tgl)
-            //    ->where('deptid', $dept)
-               ->first();
-
-    if($getdata){
-        DB::beginTransaction();
-        try{
-            $leadingZero = '';
-            if(strlen($getdata->lastnumber) == 5){
-                $leadingZero = '0';
-            }elseif(strlen($getdata->lastnumber) == 4){
-                $leadingZero = '00';
-            }elseif(strlen($getdata->lastnumber) == 3){
-                $leadingZero = '000';
-            }elseif(strlen($getdata->lastnumber) == 2){
-                $leadingZero = '0000';
-            }elseif(strlen($getdata->lastnumber) == 1){
-                $leadingZero = '00000';
-            }
-
-            $lastnum = ($getdata->lastnumber*1) + 1;
-
-            if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum;
-            }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
-            }
-
-            // dd($leadingZero);
-
-            DB::table('t_nriv_budget')
-            ->where('tahun',  $tahun)
-            ->where('object', 'WO')
-            ->where('bulan',  $bulan)
-            // ->where('tanggal',  $tgl)
-            // ->where('deptid', $dept)
-            ->update([
-                'lastnumber' => $lastnum
-            ]);
-
-            DB::commit();
-            // dd($dcnNumber);
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            return null;
-        }
-    }else{
-        $dcnNumber = $dcnNumber.'000001';
-        DB::beginTransaction();
-        try{
-            DB::table('t_nriv_budget')->insert([
-                'object'          => 'WO',
-                'tahun'           => $tahun,
-                'bulan'           => $bulan,
-                'tanggal'         => '01',
-                // 'deptid'          => $dept,
-                'lastnumber'      => '1',
-                'createdon'       => date('Y-m-d H:m:s'),
-                'createdby'       => Auth::user()->email ?? Auth::user()->username
-            ]);
-            DB::commit();
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            // dd($e->getMessage());
-            return null;
-        }
-    }
-}
-
 function generateVendorCode(){
     $getdata = DB::table('t_nriv')
     ->where('object', 'VENDOR')
@@ -1040,102 +821,7 @@ function generateVendorCode(){
     }
 }
 
-function sendPurchaseOrder($poNumber){
 
-    $poheader = DB::table('t_po01')->where('ponum', $poNumber)->first();
-    $vendor   = DB::table('t_vendor')->where('vendor_code', $poheader->vendor)->first();
-    $poitem   = DB::table('t_po02')->where('ponum', $poNumber)->where('approvestat', 'A')->get();
-
-    $prNumber      = DB::table('t_po02')->where('ponum', $poheader->ponum)->pluck('prnum');
-    $pbjNumber     = DB::table('t_pr02')->whereIn('prnum', $prNumber)->pluck('pbjnumber');
-
-    $pbjData       = DB::table('t_pbj01')->whereIn('pbjnumber', $pbjNumber)->first();
-
-    $attachments = DB::table('v_attachments')
-                    ->select('fileurl')
-                    // ->whereIn('doc_object', ['PO','PR', 'PBJ'])
-                    ->where('doc_number', $poheader->ponum)
-                    ->orWhereIn('doc_number', $prNumber)
-                    ->orWhereIn('doc_number', $pbjNumber)
-                    ->pluck('fileurl');
-
-    // $prAttachments = DB::table('v_attachments')
-    //                 ->select('fileurl')
-    //                 ->where('doc_object','PR')
-    //                 ->whereIn('doc_number', $prNumber)->pluck('fileurl');
-
-    // $pbjAttachments = DB::table('v_attachments')
-    //                 ->select('fileurl')
-    //                 ->where('doc_object','PBJ')
-    //                 ->whereIn('doc_number', $pbjNumber)->pluck('fileurl');
-
-    // $attachments = $prAttachments;
-    // array_push($attachments, $pbjAttachments);
-
-    // return $attachments;
-
-    $sendData   = array();
-    $insertData = array();
-    foreach($poitem as $row){
-        $idProject = 0;
-        $project = DB::table('t_projects')->where('idproject', $row->idproject)->first();
-        if(!$project){
-            $idProject = 0;
-        }else{
-            $idProject = $project->kode_project;
-        }
-        $insert = array(
-            "proyek_id"     => $idProject,
-            "item_desk"     => $row->matdesc. '. '. $row->quantity . $row->unit . ' @'.$row->price,
-            "item_payee"    => $vendor->vendor_id,
-            "item_curr"     => "IDR",
-            "pretax_rp"     => $row->price*$row->quantity,
-            "PPN"           => $poheader->ppn,
-            "item_rp"       => ($row->price*$row->quantity)+(($row->price*$row->quantity)*($poheader->ppn/100)),
-            "oleh"          => $row->createdby,
-            "dept"          => $poheader->deptid,
-            "budget"        => $row->budget_code,
-            "budget_period" => $row->budget_period ?? "",
-            "catatan"       => $pbjData->tujuan_permintaan ?? $poheader->note,
-            "item_rek"      => $vendor->vendor_id, //$vendor->no_rek, Pak ada sedikit update untuk array yang dikirim pak
-            "item_bank"     => $vendor->vendor_id, //$vendor->bank, Item_bank dan item_rek disamakan dengan item_payee pak
-            "periode"       => date('Y'),
-            "no_po"         => $row->ponum,
-            "attachment"    => $attachments
-        );
-        array_push($sendData, $insert);
-
-        $submitData = array(
-            'ponum'    => $row->ponum,
-            'poitem'   => $row->poitem,
-            'material' => $row->material,
-            'matdesc'  => $row->matdesc,
-            'quantity' => $row->quantity,
-            'unit'     => $row->unit,
-            'submitdate' => getLocalDatabaseDateTime(),
-            'submitby'   => Auth::user()->username
-        );
-        array_push($insertData, $submitData);
-    }
-
-    // return $sendData;
-
-    $apikey  = 'B807C072-05ADCCE0-C1C82376-3EC92EF1';
-    $url     = 'https://mahakaryabangunpersada.com/api/v1/submit/po';
-    $get_api = mbpAPI($url, $apikey, $sendData);
-
-    $response = json_decode($get_api, true);
-    $status   = $response['status'];
-    $pesan    = $response['status_message'];
-    $datajson = $response['data'];
-    if(str_contains($datajson,'Succeed')){
-        insertOrUpdate($insertData,'t_log_submit_api');
-        DB::table('t_po01')->where('ponum', $poNumber)->update([
-            'submitted' => 'Y'
-        ]);
-    }
-    return $response;
-}
 
 function mbpAPI($url, $apikey, $data=array()){
     $curl = curl_init();

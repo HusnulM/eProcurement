@@ -12,7 +12,7 @@
           <a href="#" class="d-block">{{ Auth::user()->name }}</a>
         </div>
       </div>
-      
+
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         @foreach(userMenu() as $headMenu)
@@ -40,11 +40,16 @@
                 @foreach(userSubMenu() as $detailMenu)
                   @if($headMenu->menugroup === $detailMenu->menugroup)
                   <li class="nav-item">
-                    <a href="{{ url($detailMenu->route) }}" class="nav-link {{ active($detailMenu->route) }}" style="{{ active($detailMenu->route) == 'active' ? '':'background-color: rgb(15 14 14 / 90%);'}}">
+                    <a href="{{ url($detailMenu->route) }}" class="nav-link {{ active($detailMenu->route) }}">
                       <i class="far fa-circle nav-icon"></i>
                       <p>{{ $detailMenu->menu_desc }}</p>
                     </a>
                   </li>
+
+                  {{-- <a href="{{ url($detailMenu->route) }}" class="nav-link {{ $detailMenu->route == \Route::current()->uri() ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>{{ $detailMenu->menu_desc }}</p>
+                  </a> --}}
                   @endif
                 @endforeach
               </ul>
@@ -72,4 +77,3 @@
       </nav>
     </div>
 </aside>
-    

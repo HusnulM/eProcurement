@@ -22,7 +22,7 @@ class WarehouseController extends Controller
     }
 
     public function warehouseLists(Request $request){
-        $params = $request->params;        
+        $params = $request->params;
         $whereClause = $params['sac'];
         $query = DB::table('t_warehouse')->orderBy('id');
         return DataTables::queryBuilder($query)->toJson();
@@ -32,19 +32,20 @@ class WarehouseController extends Controller
         // return $req;
         DB::beginTransaction();
         try{
-            $whscode = $req['kodegudang'];
-            $whsname = $req['namagudang'];
+            $whscode = $req['kodeGudang'];
+            $whsname = $req['namaGudang'];
+            $address = $req['alamatGudang'];
 
             $insertData = array();
-            for($i = 0; $i < sizeof($whscode); $i++){
-                $data = array(
-                    'whscode'       => $whscode[$i],
-                    'whsname'       => $whsname[$i],
-                    'createdon'     => date('Y-m-d H:m:s'),
-                    'createdby'     => Auth::user()->email ?? Auth::user()->username
-                );
-                array_push($insertData, $data);
-            }
+            $data = array(
+                'whscode'       => $whscode,
+                'whsname'       => $whsname,
+                'address'       => $whsname,
+                'createdon'     => date('Y-m-d H:m:s'),
+                'createdby'     => Auth::user()->username
+            );
+            array_push($insertData, $data);
+
             insertOrUpdate($insertData,'t_warehouse');
             DB::commit();
             return Redirect::to("/master/warehouse")->withSuccess('Master Gudang Berhasil dibuat');
@@ -58,7 +59,8 @@ class WarehouseController extends Controller
         DB::beginTransaction();
         try{
             DB::table('t_warehouse')->where('id', $req['whsid'])->update([
-                'whsname' => $req['whsname']
+                'whsname' => $req['whsname'],
+                'address' => $req['alamatGudang']
             ]);
             DB::commit();
             return Redirect::to("/master/warehouse")->withSuccess('Data Gudang Berhasil di update');

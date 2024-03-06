@@ -15,7 +15,7 @@
     </style>
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <form action="{{ url('proc/pr/save') }}" method="post">
         @csrf
@@ -25,13 +25,13 @@
                     <div class="card-header">
                         <h3 class="card-title">Purchase Request</h3>
                         <div class="card-tools">
-                            <a href="{{ url('/printdoc/pr/print') }}/{{ $prhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'> 
+                            <a href="{{ url('/printdoc/pr/print') }}/{{ $prhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'>
                                 <i class='fa fa-print'></i> Print
                             </a>
-                            <a href="{{ url('/proc/pr/change') }}/{{ $prhdr->id}}" class='btn btn-primary btn-sm'> 
+                            <a href="{{ url('/proc/pr/change') }}/{{ $prhdr->id}}" class='btn btn-primary btn-sm'>
                                 <i class='fa fa-edit'></i> Change
                             </a>
-                            <a href="{{ url('/proc/pr/listpr') }}" class='btn btn-default btn-sm'> 
+                            <a href="{{ url('/proc/pr/listpr') }}" class='btn btn-default btn-sm'>
                                 <i class='fa fa-arrow-left'></i> Back
                             </a>
 
@@ -52,6 +52,18 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
+                                            <label for="requestor">Type PR</label>
+                                            <select name="prtype" id="prtype" class="form-control" required>
+                                                @if($prhdr->typepr === 'AA')
+                                                    <option value="AA">Head Office</option>
+                                                @else
+                                                    <option value="SQ">Proyek</option>
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
                                             <label for="tglreq">Tanggal Request</label>
                                             <input type="date" name="tglreq" class="form-control" required value="{{ $prhdr->prdate }}">
                                         </div>
@@ -64,8 +76,13 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="department">Department</label>
-                                            <input type="text" name="department" class="form-control" value="{{ getUserDepartment() }}" readonly>
+                                            <label for="requestor">Proyek</label>
+                                            <select name="project" id="proyek" class="form-control" required>
+                                                <option value="{{ $proyekx->id }}">{{ $proyekx->kode_project }} - {{ $proyekx->nama_project }}</option>
+                                                @foreach ($proyek as $ls => $row)
+                                                    <option value="{{ $row->id }}">{{ $row->kode_project }} - {{ $row->nama_project }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
@@ -91,7 +108,7 @@
                                                     <a class="nav-link" id="custom-content-above-attachment-tab" data-toggle="pill" href="#custom-content-above-attachment" role="tab" aria-controls="custom-content-above-attachment" aria-selected="false">Attachment</a>
                                                 </li>
                                             </ul>
-                                        </div>                                    
+                                        </div>
                                     </div>
 
                                     <div class="card-body">
@@ -103,46 +120,30 @@
                                                             <div class="col-lg-12">
                                                                 <table class="table table-sm">
                                                                     <thead>
-                                                                        <th>Part No. / Type</th>
-                                                                        <th>Description</th>
+                                                                        <th>Item Code</th>
                                                                         <th>Quantity</th>
                                                                         <th>Unit</th>
-                                                                        <th>PBJ Reference</th>
-                                                                        <!-- <th style="text-align:right;"> -->
-                                                                            <!-- <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                                                <i class="fa fa-plus"></i>
-                                                                            </button>
-                                                                            <button type="button" class="btn btn-success btn-sm btn-select-pbj">
-                                                                                <i class="fa fa-list"></i> List PBJ
-                                                                            </button> -->
-                                                                        <!-- </th> -->
+                                                                        <th>Remark</th>
                                                                     </thead>
                                                                     <tbody id="tbl-pbj-body">
                                                                         @foreach($pritem as $key => $row)
                                                                         <tr>
                                                                             <td>
-                                                                            {{ $row->material }}
-                                                                                <!-- <input type="text" class="form-control" value="{{ $row->material }}"> -->
-                                                                            </td>
-                                                                            <td>
-                                                                            {{ $row->matdesc }}
-                                                                                <!-- <input type="text" class="form-control" value="{{ $row->matdesc }}"> -->
+                                                                                {{ $row->material }} - {{ $row->matdesc }} <br>
+                                                                                {{ $row->matspec }}
                                                                             </td>
                                                                             <td style="text-align:right;">
-                                                                            {{ number_format($row->quantity, 3, ',', '.') }}
-                                                                                <!-- <input type="text" class="form-control" value="{{ $row->quantity }}" style="text-align:right;"> -->
+                                                                                {{ number_format($row->quantity, 0, ',', '.') }}
                                                                             </td>
                                                                             <td>
-                                                                            {{ $row->unit }}
-                                                                                <!-- <input type="text" class="form-control" value="{{ $row->unit }}"> -->
+                                                                                {{ $row->unit }}
                                                                             </td>
                                                                             <td>
-                                                                            {{ $row->pbjnumber }}
-                                                                                <!-- <input type="text" class="form-control" value="{{ $row->pbjnumber }}"> -->
+                                                                                {{ $row->remark }}
                                                                             </td>
                                                                         </tr>
                                                                         @endforeach
-                                                                    </tbody>                                            
+                                                                    </tbody>
                                                                 </table>
                                                             </div>
                                                         </div>
@@ -176,10 +177,10 @@
                                                                                 Open
                                                                             </td>
                                                                             @endif
-                                                                            
+
                                                                             <td>
                                                                                 @if($row->approval_date != null)
-                                                                                    <i class="fa fa-clock"></i> 
+                                                                                    <i class="fa fa-clock"></i>
                                                                                     ({{ formatDateTime($row->approval_date) }})
                                                                                 @endif
                                                                             </td>
@@ -187,10 +188,10 @@
                                                                         </tr>
                                                                         @endforeach
                                                                     </tbody>
-                                                                </table>                                                    
+                                                                </table>
                                                             </div>
                                                         </div>
-                                                    </div>   
+                                                    </div>
 
                                                     <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
                                                         <div class="row">
@@ -223,33 +224,14 @@
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach
-                                                                    @foreach($pbjAttachments as $key => $file)
-                                                                        <tr>
-                                                                            <td>{{ $key+1 }}</td>
-                                                                            <td>
-                                                                                {{ $file->doc_object }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{ $file->efile }}
-                                                                            </td>
-                                                                            <td>
-                                                                                <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
-                                                                            </td>
-                                                                            <td>
-                                                                                <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PBJ/{{$file->efile}}#toolbar=0')">
-                                                                                    <i class="fa fa-search"></i> Preview File
-                                                                                </button>
-                                                                            </td>
-                                                                        </tr>
-                                                                    @endforeach
                                                                     </tbody>
-                                                                </table>                           
+                                                                </table>
                                                             </div>
                                                         </div>
-                                                    </div>    
+                                                    </div>
                                                 </div>
-        
-                                                
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -289,14 +271,14 @@
                                 <th>Figure</th>
                                 <th>Remark</th>
                                 <th style="width:50px; text-align:center;">
-                                    
+
                                 </th>
                             </thead>
                             <tbody>
 
                             </tbody>
-                        </table>  
-                    </div> 
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -321,7 +303,7 @@
                 <div class="position-relative row form-group">
                     <div class="col-lg-12" id="fileViewer">
                         <!-- <div id="example1"></div> -->
-                        
+
                     </div>
                 </div>
             </div>
@@ -334,26 +316,26 @@
         </div>
         </form>
     </div>
-</div>   
+</div>
 @endsection
 
 @section('additional-js')
 <script src="{{ asset('/assets/js/select2.min.js') }}"></script>
-<script>    
-    function previewFile(files){         
+<script>
+    function previewFile(files){
         // alert(base_url)
         var pathfile = base_url+'/'+files;
         if(files !== ""){
             $('#fileViewer').html('');
             $('#fileViewer').append(`
                 <embed src="`+ pathfile +`" frameborder="0" width="100%" height="500px">
-            
+
             `);
 
             var fileUri = pathfile;
             fileUri = fileUri.replace("#toolbar=0", "?force=true");
-            
-            document.getElementById("btnDownloadFile").href=fileUri; 
+
+            document.getElementById("btnDownloadFile").href=fileUri;
             $('#modalPreviewFile').modal('show');
         } else{
             swal("File Not Found", "", "warning");
@@ -385,7 +367,7 @@
                         <label id="lbldesc`+fCount+`"></lable>
                         <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control">
                     </td>
-                    
+
                     <td>
                         <input type="text" name="quantity[]" class="form-control inputNumber" required>
                     </td>
@@ -419,7 +401,7 @@
                 }
             });
 
-            $('#find-part'+fCount).select2({ 
+            $('#find-part'+fCount).select2({
                 placeholder: 'Type Part Number',
                 width: '100%',
                 minimumInputLength: 0,
@@ -460,7 +442,7 @@
 
             $('#find-part'+fCount).on('change', function(){
                 // alert(this.value)
-                
+
                 var data = $('#find-part'+fCount).select2('data')
                 console.log(data);
 
@@ -487,7 +469,7 @@
                     if(theEvent.preventDefault) theEvent.preventDefault();
                 }
             }
-            
+
             function formatNumber(num) {
                 return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
             }
@@ -506,14 +488,14 @@
                 sisa     		  = split[0].length % 3,
                 rupiah     		  = split[0].substr(0, sisa),
                 ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-            
+
                 if(ribuan){
                     separator = sisa ? ',' : '';
                     rupiah += separator + ribuan.join(',');
                 }
-            
+
                 rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+                return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
             }
         });
 
@@ -544,17 +526,17 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "pbjnumber", className: 'uid'},
                     {data: "tgl_pbj", className: 'uid'},
                     {data: "partnumber"},
                     {data: "description"},
                     {data: "quantity", "className": "text-right",},
-                    {data: "unit"},      
+                    {data: "unit"},
                     {data: "figure"},
-                    {data: "remark"},      
-                    {"defaultContent": 
+                    {data: "remark"},
+                    {"defaultContent":
                         `
                         <button class='btn btn-success btn-sm button-add-pbj-to-pritem'> <i class="fa fa-plus"></i></button>
                         `,
@@ -583,7 +565,7 @@
                             </select>
                             <input type="text" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+selected_data.description+`" readonly>
                         </td>
-                        
+
                         <td>
                             <input type="text" name="quantity[]" class="form-control inputNumber" value="`+selected_data.quantity+`" required>
                         </td>
@@ -602,7 +584,7 @@
                         </td>
                     </tr>
                 `);
-    
+
                 $('.btnRemove').on('click', function(e){
                     e.preventDefault();
                     $(this).closest("tr").remove();
@@ -622,14 +604,14 @@
                     sisa     		  = split[0].length % 3,
                     rupiah     		  = split[0].substr(0, sisa),
                     ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-                
+
                     if(ribuan){
                         separator = sisa ? ',' : '';
                         rupiah += separator + ribuan.join(',');
                     }
-                
+
                     rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-                    return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+                    return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
                 }
 
                 function validate(evt) {

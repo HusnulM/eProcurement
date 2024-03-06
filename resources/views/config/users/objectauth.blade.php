@@ -88,8 +88,8 @@
                                     </th>
                                 </thead>
                                 <tbody id="tbl-object-auth-add"></tbody>
-                            </table>  
-                        </div> 
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -105,7 +105,7 @@
 @section('additional-js')
 <script>
     $(document).ready(function(){
-        
+
         $('.btn-add-object-auth').on('click', function(e){
             // loadListUser();
             $('#modal-add-user-obj-auth').modal('show');
@@ -122,10 +122,7 @@
                         </select>
                     </td>
                     <td>
-                        <select name="objval[]" class="form-control">
-                            <option value="Y">Yes</option>
-                            <option value="N">No</option>
-                        </select>
+                        <input type="text" name="objval[]" class="form-control">
                     </td>
                     <td style="width:50px; text-align:center;">
                         <button type="button" class="btn btn-danger btn-sm btnRemove">
