@@ -35,7 +35,7 @@ class PurchaseRequestController extends Controller
 
         if(isset($req->approvalstat)){
             if($req->approvalstat === "O"){
-                $query->where('t_pr01.approvestat', 'O');
+                $query->where('t_pr01.approvestat', 'N');
             }elseif($req->approvalstat === "A"){
                 $query->where('t_pr01.approvestat', 'A');
             }elseif($req->approvalstat === "R"){
@@ -316,12 +316,15 @@ class PurchaseRequestController extends Controller
             $ptaNumber = $prhdr->prnum;
 
             $checkApproval = DB::table('t_pr_approval')
-                ->where('prnum', $ptaNumber)->where('approval_status', 'A')->first();
+                ->where('prnum', $ptaNumber)
+                ->where('approval_status', 'A')
+                ->orWhere('approval_status', 'R')
+                ->first();
 
             if($checkApproval){
                 $result = array(
                     'msgtype' => '500',
-                    'message' => 'PR : '. $ptaNumber . ' sudah di approve, data tidak bisa diupdate'
+                    'message' => 'PR : '. $ptaNumber . ' sudah di approve/reject, data tidak bisa di update'
                 );
                 return $result;
             }

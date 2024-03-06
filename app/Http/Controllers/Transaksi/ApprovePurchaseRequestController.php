@@ -17,34 +17,30 @@ class ApprovePurchaseRequestController extends Controller
     }
 
     public function approveDetail($id){
-        $prhdr = DB::table('t_pr01')->where('id', $id)->first();
+        $prhdr = DB::table('v_pr_approval01')->where('id', $id)->first();
         if($prhdr){
-            $checkAllowApprove = DB::table('v_pr_approval_v2')
+            $checkAllowApprove = DB::table('v_pr_approval01')
             ->where('prnum', $prhdr->prnum)
             ->where('approver', Auth::user()->id)
             ->first();
 
             if($checkAllowApprove){
-                $items       = DB::table('v_pr_approval_v2')
-                                ->select('id','prnum', 'pritem', 'prdate', 'requestby', 'material', 'matdesc', 'quantity', 'unit', 'pbjnumber', 'pbjitem', 'approval_status')
-                                ->distinct()
-                                ->where('prnum', $prhdr->prnum)
-                                ->where('approver', Auth::user()->id)
+                $items       = DB::table('t_pr02')
+                                ->join('t_material', 't_pr02.material', '=', 't_material.material')
+                                ->select('t_pr02.*','t_material.matspec')
+                                ->where('t_pr02.prnum', $prhdr->prnum)
+                                ->where('t_pr02.isdeleted', 'N')
                                 ->get();
-                $approvals   = DB::table('v_pr_approval_v2')
+                $approvals   = DB::table('v_pr_approval01')
                                 ->where('prnum', $prhdr->prnum)
                                 // ->where('approver', Auth::user()->id)
                                 ->orderBy('approver_level', 'ASC')
                                 ->orderBy('pritem', 'ASC')
                                 ->get();
-                $department  = DB::table('v_pr_approval_v2')->where('prnum', $prhdr->prnum)->first();
+                $department  = DB::table('v_pr_approval01')->where('prnum', $prhdr->prnum)->first();
                 $attachments = DB::table('t_attachments')->where('doc_object','PR')->where('doc_number', $prhdr->prnum)->get();
 
-                $pbjNumber = DB::table('t_pr02')->where('prnum', $prhdr->prnum)->pluck('pbjnumber');
-                $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
-                                  ->whereIn('doc_number', $pbjNumber)->get();
-
-                $isApprovedbyUser = DB::table('v_pr_approval_v2')
+                $isApprovedbyUser = DB::table('v_pr_approval01')
                         ->where('prnum',    $prhdr->prnum)
                         ->where('approver', Auth::user()->id)
                         ->where('is_active', 'Y')
@@ -55,10 +51,8 @@ class ApprovePurchaseRequestController extends Controller
                         'prhdr'            => $prhdr,
                         'pritem'           => $items,
                         'approvals'        => $approvals,
-                        'department'       => $department,
                         'attachments'      => $attachments,
-                        'isApprovedbyUser' => $isApprovedbyUser,
-                        'pbjAttachments'   => $pbjAttachments
+                        'isApprovedbyUser' => $isApprovedbyUser
                     ]);
             }else{
                 return Redirect::to("/approve/pr")->withError('Anda tidak di izinkan melakukan approve PR '. $prhdr->prnum);
@@ -75,8 +69,8 @@ class ApprovePurchaseRequestController extends Controller
             $params = $request->params;
             $whereClause = $params['sac'];
         }
-        $query = DB::table('v_pr_approval_v2')
-                 ->select('id','prnum', 'prdate','requestby','department')
+        $query = DB::table('v_pr_approval01')
+                 ->select('id','prnum', 'prdate','requestby', 'nama_project')
                  ->distinct()
                  ->where('approver',Auth::user()->id)
                  ->where('is_active','Y')
@@ -96,12 +90,12 @@ class ApprovePurchaseRequestController extends Controller
     }
 
     public function getNextApproval($dcnNum){
-        $userLevel = DB::table('t_pr_approvalv2')
+        $userLevel = DB::table('v_pr_approval01')
                     ->where('prnum', $dcnNum)
                     ->where('approver', Auth::user()->id)
                     ->first();
 
-        $nextApproval = DB::table('t_pr_approvalv2')
+        $nextApproval = DB::table('v_pr_approval01')
                         ->where('prnum', $dcnNum)
                         ->where('approver_level', '>', $userLevel->approver_level)
                         ->orderBy('approver_level', 'ASC')
@@ -116,21 +110,22 @@ class ApprovePurchaseRequestController extends Controller
     }
 
     public function save(Request $req){
+        return $req;
         DB::beginTransaction();
         try{
-            $ptaNumber = $req['prnum'];
+            $prhdr  = DB::table('t_pr01')->where('id', $req['prnum'])->first();
+            if(!$prhdr){
+                $result = array(
+                    'msgtype' => '500',
+                    'message' => 'PR Tidak ditemukan'
+                );
+                return $result;
+            }
+            $prUser = DB::table('users')->where('username', $prhdr->createdby)->first();
 
-            $prhdr = DB::table('t_pr01')->where('prnum', $ptaNumber)->first();
-            $prUser = DB::table('users')->where('email', $prhdr->createdby)->first();
-            // return $ptaNumber;
+            $ptaNumber = $prhdr->prnum;
 
-            // $amount = $req['amount2'];
-            // $amount = str_replace(',','',$amount);
-            // DB::table('t_budget')->where('ptanumber', $ptaNumber)->update([
-            //     'approved_amount' => $amount,
-            // ]);
-
-            $userAppLevel = DB::table('t_pr_approvalv2')
+            $userAppLevel = DB::table('v_pr_approval01')
                             ->select('approver_level')
                             ->where('prnum', $ptaNumber)
                             ->where('approver', Auth::user()->id)
@@ -139,7 +134,7 @@ class ApprovePurchaseRequestController extends Controller
             //Set Approval
 
             if($req['action'] === 'A'){
-                DB::table('t_pr_approvalv2')
+                DB::table('v_pr_approval01')
                 ->where('prnum', $ptaNumber)
                 // ->where('approver_id', Auth::user()->id)
                 ->where('approver_level',$userAppLevel->approver_level)
@@ -151,14 +146,14 @@ class ApprovePurchaseRequestController extends Controller
                 ]);
                 $nextApprover = $this->getNextApproval($ptaNumber);
                 if($nextApprover  != null){
-                    DB::table('t_pr_approvalv2')
+                    DB::table('v_pr_approval01')
                     ->where('prnum', $ptaNumber)
                     ->where('approver_level', $nextApprover)
                     ->update([
                         'is_active' => 'Y'
                     ]);
                 }
-                $checkIsFullApprove = DB::table('t_pr_approvalv2')
+                $checkIsFullApprove = DB::table('v_pr_approval01')
                                           ->where('prnum', $ptaNumber)
                                           ->where('approval_status', '!=', 'A')
                                           ->get();
@@ -194,7 +189,7 @@ class ApprovePurchaseRequestController extends Controller
                     'message' => 'PR dengan Nomor : '. $ptaNumber . ' berhasil di approve'
                 );
             }else{
-                DB::table('t_pr_approvalv2')
+                DB::table('v_pr_approval01')
                 ->where('prnum', $ptaNumber)
                 // ->where('approver_id', Auth::user()->id)
                 // ->where('approver_level',$userAppLevel->approver_level)
@@ -252,7 +247,7 @@ class ApprovePurchaseRequestController extends Controller
             ->where('approver', Auth::user()->id)
             ->get();
             // return $pbjItemData;
-            $userAppLevel = DB::table('t_pr_approvalv2')
+            $userAppLevel = DB::table('v_pr_approval01')
             ->select('approver_level')
             ->where('prnum', $ptaNumber)
             ->whereIn('pritem', $data['pritem'])
@@ -262,7 +257,7 @@ class ApprovePurchaseRequestController extends Controller
             // return $userAppLevel;
 
             if($data['action'] === 'R'){
-                DB::table('t_pr_approvalv2')
+                DB::table('v_pr_approval01')
                 ->where('prnum', $ptaNumber)
                 ->whereIn('pritem', $data['pritem'])
                 // ->where('approver_level', $nextApprover)
@@ -286,7 +281,7 @@ class ApprovePurchaseRequestController extends Controller
                 ]);
             }else{
                 //Set Approval
-                DB::table('t_pr_approvalv2')
+                DB::table('v_pr_approval01')
                 ->where('prnum', $ptaNumber)
                 ->whereIn('pritem', $data['pritem'])
                 ->where('approver_level',$userAppLevel->approver_level)
@@ -300,7 +295,7 @@ class ApprovePurchaseRequestController extends Controller
 
                 $nextApprover = $this->getNextApproval($ptaNumber);
                 if($nextApprover  != null){
-                    DB::table('t_pr_approvalv2')
+                    DB::table('v_pr_approval01')
                     ->where('prnum', $ptaNumber)
                     ->whereIn('pritem', $data['pritem'])
                     ->where('approver_level', $nextApprover)
@@ -309,7 +304,7 @@ class ApprovePurchaseRequestController extends Controller
                     ]);
                 }
 
-                $checkIsFullApprove = DB::table('t_pr_approvalv2')
+                $checkIsFullApprove = DB::table('v_pr_approval01')
                                           ->where('prnum', $ptaNumber)
                                         //   ->whereIn('pritem', $data['pritem'])
                                           ->where('approval_status', '!=', 'A')
@@ -406,7 +401,7 @@ class ApprovePurchaseRequestController extends Controller
     public function reGenerateApproval(){
         DB::beginTransaction();
         try{
-            $oldPO = DB::table('t_pr_approvalv2')->where('pritem', 0)->get();
+            $oldPO = DB::table('v_pr_approval01')->where('pritem', 0)->get();
             // return $pohdr;
             foreach($oldPO as $po){
                 $ptaNumber = $po->prnum;
@@ -419,7 +414,7 @@ class ApprovePurchaseRequestController extends Controller
                             ->where('requester', $creator->id)->get();
 
                 // return $approval;
-                DB::table('t_pr_approvalv2')->where('prnum', $ptaNumber)->delete();
+                DB::table('v_pr_approval01')->where('prnum', $ptaNumber)->delete();
                 for($a = 0; $a < sizeof($poItems); $a++){
                     $insertApproval = array();
                     foreach($approval as $row){
@@ -439,7 +434,7 @@ class ApprovePurchaseRequestController extends Controller
                         );
                         array_push($insertApproval, $approvals);
                     }
-                    insertOrUpdate($insertApproval,'t_pr_approvalv2');
+                    insertOrUpdate($insertApproval,'v_pr_approval01');
                 }
 
                 DB::commit();
@@ -456,7 +451,7 @@ class ApprovePurchaseRequestController extends Controller
     public function reGenerateOldApproval(){
         DB::beginTransaction();
         try{
-            $oldPO = DB::table('t_pr_approvalv2')->pluck('prnum');
+            $oldPO = DB::table('v_pr_approval01')->pluck('prnum');
             // return $pohdr;
             $pohdr    = DB::table('t_pr01')->whereNotIn('prnum', $oldPO)->get();
             foreach($pohdr as $po){
@@ -469,7 +464,7 @@ class ApprovePurchaseRequestController extends Controller
                             ->where('requester', $creator->id)->get();
 
                 // return $approval;
-                DB::table('t_pr_approvalv2')->where('prnum', $ptaNumber)->delete();
+                DB::table('v_pr_approval01')->where('prnum', $ptaNumber)->delete();
                 for($a = 0; $a < sizeof($poItems); $a++){
                     $insertApproval = array();
                     foreach($approval as $row){
@@ -489,7 +484,7 @@ class ApprovePurchaseRequestController extends Controller
                         );
                         array_push($insertApproval, $approvals);
                     }
-                    insertOrUpdate($insertApproval,'t_pr_approvalv2');
+                    insertOrUpdate($insertApproval,'v_pr_approval01');
                 }
 
                 DB::commit();
@@ -507,7 +502,7 @@ class ApprovePurchaseRequestController extends Controller
         $prhdr    = DB::table('t_pr01')->where('id', $id)->first();
         $prdtl    = DB::table('v_form_pr_dtl')->where('prnum', $prhdr->prnum)->get();
 
-        $approval = DB::table('t_pr_approvalv2')
+        $approval = DB::table('v_pr_approval01')
                     ->where('prnum', $prhdr->prnum)
                     ->where('approval_status', 'A')
                     ->orderBy('approver_level', 'DESC')

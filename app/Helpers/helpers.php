@@ -218,22 +218,6 @@ function active($partialUrl){
         }else{
             return '';
         }
-        // $routeName = null;
-        // $routes    = explode('/',\Route::current()->uri());
-        // $count     = 0;
-        // foreach($routes as $row){
-        //     $count = $count + 1;
-        //     $routeName = $routeName . '/' . $row;
-        //     if($count == 1){
-        //         $routeName = substr($routeName,1);
-        //     }
-
-        //     $selectMenu = DB::table('menus')->where('route', $routeName)->first();
-        //     if($selectMenu){
-        //         return 'active';
-        //         break;
-        //     }
-        // }
     }else{
         return request()->is("*".$partialUrl."*") ? 'active' : '';
     }

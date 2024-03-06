@@ -126,6 +126,7 @@
         });
 
         loadDocument('');
+        // $("#tbl-budget-list").DataTable();
 
         function loadDocument(_params){
             $("#tbl-budget-list").DataTable({
@@ -212,14 +213,14 @@
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                window.location = "/proc/pr/detail/"+selected_data.id;
+                window.location = "/proc/pr/list/detail/"+selected_data.id;
             });
 
             $('#tbl-budget-list tbody').on( 'click', '.button-change', function () {
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                window.location = "/proc/pr/change/"+selected_data.id;
+                window.location = "/proc/pr/list/change/"+selected_data.id;
             });
         }
 

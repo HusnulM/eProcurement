@@ -29,7 +29,7 @@
                             {{-- <a href="{{ url('/printdoc/pr/print') }}/{{ $prhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'>
                                 <i class='fa fa-print'></i> Print
                             </a> --}}
-                            <a href="{{ url('/proc/pr/listpr') }}" class='btn btn-default btn-sm btn-update-pr'>
+                            <a href="{{ url('/proc/pr/list') }}" class='btn btn-default btn-sm btn-update-pr'>
                                 <i class='fa fa-arrow-left'></i> Back
                             </a>
                             <button type="submit" class="btn btn-primary btn-sm btn-update-pr">

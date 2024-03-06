@@ -41,7 +41,7 @@
                                     <label>Requestor:</label> {{$prhdr->requestby}}
                                 </div>
                                 <div class="form-group">
-                                    <label>Department:</label> {{$department->department}}
+                                    <label>Project:</label> {{$prhdr->nama_project}}
                                 </div>
                                 <div class="form-group">
                                     <label>Created Date:</label>
@@ -92,48 +92,34 @@
                                             <table id="tbl-pr-data" class="table table-bordered table-hover table-striped table-sm">
                                                 <thead>
                                                     {{-- <th>No</th> --}}
-                                                    <th style="text-align:center;">
+                                                    {{-- <th style="text-align:center;">
                                                         <input type="checkbox" id="checkAll" class="filled-in" />
                                                         <label for="checkAll"></label>
-                                                    </th>
+                                                    </th> --}}
                                                     <th>PR Item</th>
-                                                    <th>Part Number</th>
-                                                    <th>Description</th>
+                                                    <th>Item Code</th>
                                                     <th style="text-align:center;">Quantity</th>
                                                     <th>Unit</th>
-                                                    <th>PBJ Number</th>
-                                                    <th>PBJ Item</th>
+                                                    <th>Remark</th>
                                                 </thead>
                                                 <tbody>
                                                 @foreach($pritem as $key => $row)
                                                     <tr>
-                                                        {{-- <td>{{ $key+1 }}</td> --}}
-                                                        <td style="text-align:center;">
-                                                            @if($row->approval_status !== "A" && $row->approval_status !== "R")
-                                                            <input class="filled-in checkbox" type="checkbox" id="{{ $row->pritem }}" name="ID[]">
-                                                            <label for="{{ $row->pritem }}"></label>
-                                                            @endif
-                                                        </td>
                                                         <td>
                                                             {{ $row->pritem }}
                                                         </td>
                                                         <td>
-                                                            {{ $row->material }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $row->matdesc }}
+                                                            {{ $row->material }} - {{ $row->matdesc }} <br>
+                                                            {{ $row->matspec }}
                                                         </td>
                                                         <td style="text-align:right;">
-                                                            {{ number_format($row->quantity,3) }}
+                                                            {{ number_format($row->quantity,0) }}
                                                         </td>
                                                         <td>
                                                             {{ $row->unit }}
                                                         </td>
                                                         <td>
-                                                            {{ $row->pbjnumber }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $row->pbjitem }}
+                                                            {{ $row->remark }}
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -158,7 +144,6 @@
                                         <div class="col-lg-12">
                                             <table id="tbl-approval" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                                                 <thead>
-                                                    <th>PR Item</th>
                                                     <th>Approver Name</th>
                                                     <th>Approver Level</th>
                                                     <th>Approval Status</th>
@@ -168,7 +153,6 @@
                                                 <tbody>
                                                     @foreach($approvals as $key => $row)
                                                     <tr>
-                                                        <td>{{ $row->pritem }}</td>
                                                         <td>{{ $row->approver_name }}</td>
                                                         <td>{{ $row->approver_level }}</td>
                                                         @if($row->approval_status == "A")
@@ -198,29 +182,6 @@
                                             </table>
                                         </div>
                                     </div>
-                                    {{-- @if($isApprovedbyUser)
-                                        @if($isApprovedbyUser->approval_status <> "A")
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <!-- <form action="{{ url('approve/pr/save') }}" method="post">
-                                                    @csrf
-                                                </form> -->
-                                                <div class="form-group">
-                                                    <textarea name="approver_note" id="approver_note" class="form-control" cols="30" rows="3" placeholder="Approver Note"></textarea>
-                                                    <input type="hidden" name="prnum" value="{{ $prhdr->prnum }}">
-                                                </div>
-                                                <div class="form-group">
-                                                    <button type="button" class="btn btn-success pull-right ml-1" id="btn-approve">
-                                                        <i class="fa fa-check"></i> APPROVE
-                                                    </button>
-                                                    <button type="button" class="btn btn-danger pull-right" id="btn-reject">
-                                                        <i class="fa fa-xmark"></i> REJECT
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endif
-                                    @endif --}}
                                 </div>
 
                                 <div class="tab-pane fade" id="custom-content-above-attachment" role="tabpanel" aria-labelledby="custom-content-above-attachment-tab">
@@ -254,27 +215,6 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
-
-                                                @foreach($pbjAttachments as $key => $file)
-                                                    <tr>
-                                                        <td>{{ $key+1 }}</td>
-                                                        <td>
-                                                            {{ $file->doc_object }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $file->efile }}
-                                                        </td>
-                                                        <td>
-                                                            <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
-                                                        </td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PBJ/{{$file->efile}}#toolbar=0')">
-                                                                <i class="fa fa-search"></i> Preview File
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-
                                                 </tbody>
                                             </table>
                                         </div>
@@ -322,7 +262,7 @@
 </div>
 
 <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalApprovalNote">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg">
         <form class="form-horizontal">
         <div class="modal-content">
             <div class="modal-header">
@@ -335,6 +275,10 @@
                 <div class="position-relative row form-group">
                     <div class="col-lg-12">
                         <textarea name="approver_note" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
+                    </div>
+                    <div class="col-lg-12">
+                        <label for="Attachment">Attachment</label>
+                        <input type="file" name="efile" id="efile" class="form-control">
                     </div>
                 </div>
             </div>
@@ -391,37 +335,37 @@
         });
 
         $('#btn-approve-items').on('click', function(){
-            var tableControl= document.getElementById('tbl-pr-data');
-            var _splchecked = [];
+            // var tableControl= document.getElementById('tbl-pr-data');
+            // var _splchecked = [];
+            // _action = 'A';
+            // $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+            //     _splchecked.push($(this).parent().next().text())
+            // }).get();
+            // if(_splchecked.length > 0){
+            //     console.log(_splchecked)
+            // }else{
+            //     alert('No record selected ');
+            // }
             _action = 'A';
-            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-                _splchecked.push($(this).parent().next().text())
-            }).get();
-            if(_splchecked.length > 0){
-                console.log(_splchecked)
-                _action = 'A';
-                $('#modalApprovalTitle').html('Approve Note');
-                $('#modalApprovalNote').modal('show');
-            }else{
-                alert('No record selected ');
-            }
+            $('#modalApprovalTitle').html('Approve Note');
+            $('#modalApprovalNote').modal('show');
         });
 
         $('#btn-reject-items').on('click', function(){
-            var tableControl= document.getElementById('tbl-pr-data');
-            var _splchecked = [];
+            // var tableControl= document.getElementById('tbl-pr-data');
+            // var _splchecked = [];
+            // _action = 'R';
+            // $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
+            //     _splchecked.push($(this).parent().next().text())
+            // }).get();
+            // if(_splchecked.length > 0){
+            //     console.log(_splchecked)
+            // }else{
+            //     alert('No record selected ');
+            // }
             _action = 'R';
-            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-                _splchecked.push($(this).parent().next().text())
-            }).get();
-            if(_splchecked.length > 0){
-                console.log(_splchecked)
-                _action = 'R';
-                $('#modalApprovalTitle').html('Reject Note');
-                $('#modalApprovalNote').modal('show');
-            }else{
-                alert('No record selected ');
-            }
+            $('#modalApprovalTitle').html('Reject Note');
+            $('#modalApprovalNote').modal('show');
         });
 
         $('#submit-approval').on('click', function(){
@@ -429,21 +373,16 @@
         });
 
         function approvePR(){
-            var tableControl= document.getElementById('tbl-pr-data');
-            var _splchecked = [];
-            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-                _splchecked.push($(this).parent().next().text())
-            }).get();
-
             var prtemchecked = {
                     "prnum"  : {{ $prhdr->id }},
-                    "pritem" : _splchecked,
                     "action" : _action,
+                    "efile"  : $('#efile').val();
                     "_token": _token,
                     "approvernote":$('#approver_note').val(),
                 }
+
                 $.ajax({
-                    url:base_url+'/approve/pr/approveitems',
+                    url:base_url+'/approve/pr/save',
                     method:'post',
                     data:prtemchecked,
                     dataType:'JSON',
@@ -459,9 +398,9 @@
                         console.log(err);
                         toastr.error(err)
 
-                        // setTimeout(function(){
-                        //     location.reload();
-                        // }, 2000);
+                        setTimeout(function(){
+                            location.reload();
+                        }, 2000);
                     }
                 }).done(function(response){
                     console.log(response);

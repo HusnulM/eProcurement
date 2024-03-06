@@ -28,10 +28,10 @@
                             <a href="{{ url('/printdoc/pr/print') }}/{{ $prhdr->id}}" target="_blank" class='btn btn-success btn-sm button-print'>
                                 <i class='fa fa-print'></i> Print
                             </a>
-                            <a href="{{ url('/proc/pr/change') }}/{{ $prhdr->id}}" class='btn btn-primary btn-sm'>
+                            <a href="{{ url('/proc/pr/list/change') }}/{{ $prhdr->id}}" class='btn btn-primary btn-sm'>
                                 <i class='fa fa-edit'></i> Change
                             </a>
-                            <a href="{{ url('/proc/pr/listpr') }}" class='btn btn-default btn-sm'>
+                            <a href="{{ url('/proc/pr/list') }}" class='btn btn-default btn-sm'>
                                 <i class='fa fa-arrow-left'></i> Back
                             </a>
 
