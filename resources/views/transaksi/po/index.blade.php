@@ -28,9 +28,9 @@
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan Purchase Order
                             </button>
-                            <a href="{{ url('/proc/po/listpo') }}" class="btn btn-success btn-sm">
+                            {{-- <a href="{{ url('/proc/po/listpo') }}" class="btn btn-success btn-sm">
                                 <i class="fa fa-list"></i> List PO
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
                     <div class="card-body">
@@ -51,24 +51,21 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="vendor">Vendor</label>
-                                            <select name="vendor" id="find-vendor" class="form-control" required></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <p id="vendor_address"></p>
+                                            <label for="requestor">Type PO</label>
+                                            <select name="prtype" id="prtype" class="form-control" required>
+                                                <option value="">Pilih Satu</option>
+                                                <option value="AA">Head Office</option>
+                                                <option value="SQ">Proyek</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="kepada">Department</label>
-                                            <select name="department" id="department" class="form-control" required>
-                                                <option value="">Pilih Department</option>
-                                                @foreach($department as $key => $row)
-                                                    <option value="{{ $row->deptid }}">{{ $row->department }}</option>
-                                                @endforeach
-                                            </select>
+                                            <label for="vendor">Vendor</label>
+                                            <select name="vendor" id="find-vendor" class="form-control" required></select>
                                         </div>
                                     </div>
+
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="requestor">Creator</label>
@@ -86,43 +83,16 @@
                                     </div>
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <label for="budgetcode">Budget / Cost Code</label>
-                                            <select name="budgetcode" class="form-control">
-                                                <option value="">Pilih Budget Code</option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 col-md-12">
-                                        <div class="form-group">
-                                            <label for="periode">Budget Periode</label>
-                                            <select name="periode" class="form-control">
-                                                <option value="">---</option>
-                                                @foreach ($periode as $key => $row )
-                                                <option value="Januari {{ $row->pyear }}">Januari {{ $row->pyear }}</option>
-                                                <option value="Februari {{ $row->pyear }}">Februari {{ $row->pyear }}</option>
-                                                <option value="Maret {{ $row->pyear }}">Maret {{ $row->pyear }}</option>
-                                                <option value="April {{ $row->pyear }}">April {{ $row->pyear }}</option>
-                                                <option value="Mei {{ $row->pyear }}">Mei {{ $row->pyear }}</option>
-                                                <option value="Juni {{ $row->pyear }}">Juni {{ $row->pyear }}</option>
-                                                <option value="Juli {{ $row->pyear }}">Juli {{ $row->pyear }}</option>
-                                                <option value="Agustus {{ $row->pyear }}">Agustus {{ $row->pyear }}</option>
-                                                <option value="September {{ $row->pyear }}">September {{ $row->pyear }}</option>
-                                                <option value="Oktober {{ $row->pyear }}">Oktober {{ $row->pyear }}</option>
-                                                <option value="November {{ $row->pyear }}">November {{ $row->pyear }}</option>
-                                                <option value="Desember {{ $row->pyear }}">Desember {{ $row->pyear }}</option>
+                                            <label for="requestor">Proyek</label>
+                                            <select name="project" id="proyek" class="form-control" required>
+                                                <option value="">Pilih Satu</option>
+                                                @foreach ($proyek as $ls => $row)
+                                                    <option value="{{ $row->id }}">{{ $row->kode_project }} - {{ $row->nama_project }}</option>
                                                 @endforeach
-                                                <option value="NONBUDGET">NONBUDGET</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <!-- <div class="col-lg-12 col-md-12">
-                                        <div class="form-group">
-                                            <label for="department">Department</label>
-                                            <input type="text" name="department" class="form-control" value="{{ getUserDepartment() }}" readonly>
-                                        </div>
-                                    </div> -->
+
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
                                             <label for="remark">Remark</label>
@@ -316,8 +286,6 @@
                                     <th>Open Quantity</th>
                                     <th>Unit</th>
                                     <th>Request By</th>
-                                    <th>Department</th>
-                                    <th>No. Plat</th>
                                     <th>Remark</th>
                                     <th>Project</th>
                                     <th style="width:50px; text-align:center;">
@@ -500,7 +468,7 @@
                                 <input type="hidden" name="pritem[]" id="pritem`+fCount+`" value="" class="form-control">
                             </td>
                             <td>
-                                <select name="project[]" id="find-project`+fCount+`" class="form-control"></select>
+                                <select name="projecxxxt[]" id="find-project`+fCount+`" class="form-control"></select>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
@@ -627,10 +595,10 @@
 
         $('#find-vendor').on('change', function(){
             // alert(this.value)
-            $('#vendor_address').html('');
+            // $('#vendor_address').html('');
             var data = $('#find-vendor').select2('data')
             console.log(data);
-            $('#vendor_address').html(data[0].vendor_address);
+            // $('#vendor_address').html(data[0].vendor_address);
             // alert(data[0].material);
             // $('#partdesc'+fCount).val(data[0].partname);
             // $('#partunit'+fCount).val(data[0].matunit);
@@ -644,8 +612,7 @@
                     url: base_url+'/proc/po/listapprovedpr',
                     data: function (data) {
                         data.params = {
-                            sac: "sac",
-                            deptid: $('#department').val()
+                            sac: "sac"
                         }
                     }
                 },
@@ -665,14 +632,27 @@
                     {data: "prdate", className: 'uid'},
                     {data: "material"},
                     {data: "matdesc"},
-                    {data: "quantity", "className": "text-right"},
-                    {data: "poqty", "className": "text-right"},
-                    {data: "openqty", "className": "text-right"},
+                    {data: "quantity", "sortable": false,
+                        render: function (data, type, row){
+                            return ``+ row.quantity.quantity1 + ``;
+                        },
+                        "className": "text-right",
+                    },
+                    {data: "poqty",
+                        render: function (data, type, row){
+                            return ``+ row.poqty.poqty1 + ``;
+                        },
+                        "className": "text-right",
+                    },
+                    {data: "openqty",
+                        render: function (data, type, row){
+                            return ``+ row.openqty.openqty1 + ``;
+                        },
+                        "className": "text-right",
+                    },
                     {data: "unit"},
                     {data: "requestby"},
-                    {data: "department"},
-                    {data: "no_plat"},
-                    {data: "remark"},
+                    {data: "itemtext"},
                     {data: "nama_project"},
                     {"defaultContent":
                         `
@@ -718,7 +698,7 @@
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
                             <td>
-                                <input type="text" name="quantity[]" class="form-control inputNumber" id="inputQty`+fCount+`" value="`+ selected_data.openqty +`" data-openqty="`+ selected_data.openqty +`">
+                                <input type="text" name="quantity[]" class="form-control inputNumber" id="inputQty`+fCount+`" value="`+ selected_data.openqty.openqty1 +`" data-openqty="`+ selected_data.openqty.openqty1 +`">
                             </td>
                             <td>
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
@@ -733,7 +713,7 @@
                             </td>
                             <td>
                                 <input type="text" name="namaproject[]" class="form-control" value="`+ selected_data.nama_project +`" readonly>
-                                <input type="hidden" name="project[]" id="project`+fCount+`" value="`+ selected_data.idproject +`">
+                                <input type="hidden" name="projecxxxxt[]" id="project`+fCount+`" value="`+ selected_data.idproject +`">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">

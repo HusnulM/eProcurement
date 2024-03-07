@@ -454,15 +454,13 @@ function generatePRNumber($tahun, $bulan, $prtype, $project){
     }
 }
 
-function generatePONumber($tahun, $bulan, $tgl){
-    $dcnNumber = 'PO/'.$tahun.$bulan.$tgl;
+function generatePONumber($tahun, $bulan, $prefix){
+    $dcnNumber = 'KRS/PO/'.$prefix.'/'.$bulan.'/'.$tahun;
     // dd($dcnNumber);
-    $getdata = DB::table('t_nriv_budget')
-               ->where('tahun',  $tahun)
-               ->where('object', 'PO')
-               ->where('bulan',  $bulan)
-               ->where('tanggal',  $tgl)
-            //    ->where('deptid', $dept)
+    $getdata = DB::table('nriv_po')
+               ->where('prefix', $prefix)
+               ->where('month',  $bulan)
+               ->where('year',   $tahun)
                ->first();
 
     if($getdata){
@@ -484,19 +482,17 @@ function generatePONumber($tahun, $bulan, $tgl){
             $lastnum = ($getdata->lastnumber*1) + 1;
 
             if($leadingZero == ''){
-                $dcnNumber = $dcnNumber. $lastnum;
+                $dcnNumber = $dcnNumber.'/'.$lastnum;
             }else{
-                $dcnNumber = $dcnNumber . $leadingZero . $lastnum;
+                $dcnNumber = $dcnNumber .'/'.$leadingZero . $lastnum;
             }
 
             // dd($leadingZero);
 
-            DB::table('t_nriv_budget')
-            ->where('tahun',  $tahun)
-            ->where('object', 'PO')
-            ->where('bulan',  $bulan)
-            ->where('tanggal',  $tgl)
-            // ->where('deptid', $dept)
+            DB::table('nriv_po')
+            ->where('prefix', $prefix)
+            ->where('month',  $bulan)
+            ->where('year',   $tahun)
             ->update([
                 'lastnumber' => $lastnum
             ]);
@@ -508,18 +504,16 @@ function generatePONumber($tahun, $bulan, $tgl){
             return null;
         }
     }else{
-        $dcnNumber = $dcnNumber.'000001';
+        $dcnNumber = $dcnNumber.'/000001';
         DB::beginTransaction();
         try{
-            DB::table('t_nriv_budget')->insert([
-                'object'          => 'PO',
-                'tahun'           => $tahun,
-                'bulan'           => $bulan,
-                'tanggal'         => $tgl,
-                // 'deptid'          => $dept,
+            DB::table('nriv_po')->insert([
+                'prefix'          => $prefix,
+                'month'           => $bulan,
+                'year'            => $tahun,
                 'lastnumber'      => '1',
                 'createdon'       => date('Y-m-d H:m:s'),
-                'createdby'       => Auth::user()->email ?? Auth::user()->username
+                'createdby'       => Auth::user()->username
             ]);
             DB::commit();
             return $dcnNumber;

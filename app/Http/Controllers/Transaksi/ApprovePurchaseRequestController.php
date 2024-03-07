@@ -110,7 +110,7 @@ class ApprovePurchaseRequestController extends Controller
     }
 
     public function save(Request $req){
-        return $req;
+        // return $req;
         DB::beginTransaction();
         try{
             $prhdr  = DB::table('t_pr01')->where('id', $req['prnum'])->first();
@@ -158,20 +158,20 @@ class ApprovePurchaseRequestController extends Controller
                                           ->where('approval_status', '!=', 'A')
                                           ->get();
                 if(sizeof($checkIsFullApprove) > 0){
-                    $approverId = DB::table('v_workflow_budget')->where('object', 'PR')
-                                ->where('requester', $prUser->id)
-                                ->where('approver_level', $nextApprover)
-                                ->pluck('approver');
+                    // $approverId = DB::table('v_workflows')->where('object', 'PR')
+                    //             ->where('requester', $prUser->id)
+                    //             ->where('approver_level', $nextApprover)
+                    //             ->pluck('approver');
 
-                    $mailto = DB::table('users')
-                            ->whereIn('id', $approverId)
-                            ->pluck('email');
+                //     $mailto = DB::table('users')
+                //             ->whereIn('id', $approverId)
+                //             ->pluck('email');
 
-                    $dataApprovePBJ = DB::table('v_pr_duedate')
-                            ->where('prnum', $ptaNumber)
-                            ->orderBy('id')->get();
+                //     $dataApprovePBJ = DB::table('v_pr_duedate')
+                //             ->where('prnum', $ptaNumber)
+                //             ->orderBy('id')->get();
 
-                    Mail::to($mailto)->queue(new NotifApprovePrMail($dataApprovePBJ, $prhdr->id, $ptaNumber));
+                //     Mail::to($mailto)->queue(new NotifApprovePrMail($dataApprovePBJ, $prhdr->id, $ptaNumber));
                 }else{
                     //Full Approve
                     DB::table('t_pr01')->where('prnum', $ptaNumber)->update([

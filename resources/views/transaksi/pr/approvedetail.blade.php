@@ -376,7 +376,7 @@
             var prtemchecked = {
                     "prnum"  : {{ $prhdr->id }},
                     "action" : _action,
-                    "efile"  : $('#efile').val();
+                    // "efile"  : $('#efile').val(),
                     "_token": _token,
                     "approvernote":$('#approver_note').val(),
                 }
