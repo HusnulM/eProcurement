@@ -29,10 +29,48 @@ function getLocalDatabaseDateTime(){
     return $localDateTime[0]->lcldate;
 }
 
+function getAuthorizedProject(){
+    $checkObjAuth = DB::table('user_object_auth')
+        ->where('object_name', 'ALLOW_DISPLAY_PROJECT')
+        ->where('object_val', '*')
+        ->where('userid', Auth::user()->id)
+        ->first();
+
+    if($checkObjAuth){
+        $proyek = DB::table('t_projects')->get();
+    }else{
+        $authProject = DB::table('user_object_auth')
+            ->where('object_name', 'ALLOW_DISPLAY_PROJECT')
+            ->where('userid', Auth::user()->id)
+            ->pluck('object_val');
+
+        $proyek = DB::table('t_projects')
+            ->whereIn('kode_project', $authProject)
+            ->get();
+    }
+
+    return $proyek;
+}
+
 function getTotalPricePO($ponum){
     // fGetTotalPricePO
     $totalPrice = DB::select("SELECT fGetTotalPricePO('$ponum') as price");
     return $totalPrice[0]->price;
+}
+
+function getTotalPOCreated($prnum, $pritem){
+    $poQty = DB::select("SELECT fGetQuantityCreatedPRItem('$prnum','$pritem') as poqty");
+    $prQty = DB::table('t_pr02')->where('prnum', $prnum)->where('pritem', $pritem)->first();
+    if($prQty){
+        if($prQty->quantity == $poQty[0]->poqty){
+            return '1';
+        }else{
+            return '0';
+        }
+    }else{
+        return '0';
+    }
+    // return $poQty[0]->poqty;
 }
 
 function formatDate($date, $format = "d-m-Y")
@@ -110,64 +148,6 @@ function generateBatchNumber(){
             return null;
         }
     }
-}
-
-function generateDcnNumber($doctype){
-    $dcnNumber = '';
-    $getdata = DB::table('dcn_nriv')->where('year', date('Y'))->where('object',$doctype)->first();
-    if($getdata){
-        DB::beginTransaction();
-        try{
-            $leadingZero = '';
-            if(strlen($getdata->current_number) == 5){
-                $leadingZero = '0';
-            }elseif(strlen($getdata->current_number) == 4){
-                $leadingZero = '00';
-            }elseif(strlen($getdata->current_number) == 3){
-                $leadingZero = '000';
-            }elseif(strlen($getdata->current_number) == 2){
-                $leadingZero = '0000';
-            }elseif(strlen($getdata->current_number) == 1){
-                $leadingZero = '00000';
-            }
-
-            $lastnum = ($getdata->current_number*1) + 1;
-
-            if($leadingZero == ''){
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $lastnum;
-            }else{
-                $dcnNumber = $doctype . '-' . substr($getdata->year,2) .'-'. $leadingZero . $lastnum;
-            }
-
-            DB::table('dcn_nriv')->where('year',$getdata->year)->where('object',$doctype)->update([
-                'current_number' => $lastnum
-            ]);
-
-            DB::commit();
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            return null;
-        }
-    }else{
-        $dcnNumber = $doctype . '-' .substr(date('Y'),2).'-000001';
-        DB::beginTransaction();
-        try{
-            DB::table('dcn_nriv')->insert([
-                'year'            => date('Y'),
-                'object'          => $doctype,
-                'current_number'  => '1',
-                'createdon'       => date('Y-m-d H:m:s'),
-                'createdby'       => Auth::user()->email ?? Auth::user()->username
-            ]);
-            DB::commit();
-            return $dcnNumber;
-        }catch(\Exception $e){
-            DB::rollBack();
-            return null;
-        }
-    }
-
 }
 
 function getWfGroup($doctype){

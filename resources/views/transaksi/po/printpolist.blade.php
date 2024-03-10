@@ -13,15 +13,7 @@
                 <div class="card-header">
                     <h3 class="card-title">List Purchase Order</h3>
                     <div class="card-tools">
-                        <!-- <a href="{{ url('transaction/budgeting') }}" class="btn btn-success btn-sm btn-add-dept">
-                            <i class="fas fa-plus"></i> Buat Pengajuan Budget
-                        </a> -->
-                        <!-- <a href="{{ url('/master/department/create') }}" class="btn btn-success btn-sm">
-                            <i class="fas fa-plus"></i> Create Department
-                        </a> -->
-                        <a href="{{ url('/proc/po') }}" class='btn btn-default btn-sm'>
-                            <i class='fa fa-arrow-left'></i> Back
-                        </a>
+
                     </div>
                 </div>
                 <div class="card-body">
@@ -48,11 +40,11 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-2">
-                                        <label for="">Department</label>
-                                        <select name="department" id="department" class="form-control">
+                                        <label for="">Proyek</label>
+                                        <select name="project" id="project" class="form-control">
                                             <option value="All">All</option>
-                                            @foreach($department as $key => $row)
-                                                <option value="{{ $row->deptid }}">{{ $row->department }}</option>
+                                            @foreach($proyek as $key => $row)
+                                                <option value="{{ $row->id }}">{{ $row->kode_project }} - {{ $row->nama_project }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -75,16 +67,10 @@
                                     <th>Nomor PO</th>
                                     <th>Tanggal PO</th>
                                     <th>Vendor</th>
-                                    <!-- <th>Partnumber</th>
-                                    <th>Description</th>
-                                    <th>Quantity</th>
-                                    <th>Unit</th> -->
-                                    <th>Total Price</th>
-                                    <th>Department</th>
+                                    {{-- <th>Total Price</th> --}}
+                                    <th>Project</th>
                                     <th>Status</th>
                                     <th>Remark</th>
-                                    <!-- <th>PBJ Number</th>
-                                    <th>PBJ Item</th> -->
                                     <th></th>
                                 </thead>
                                 <tbody>
@@ -127,7 +113,7 @@
     $(document).ready(function(){
 
         $('.btn-search').on('click', function(){
-            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&department='+$('#department').val()+'&approvalstat='+$('#approvalStatus').val();
+            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&project='+$('#project').val()+'&approvalstat='+$('#approvalStatus').val();
             loadDocument(param);
         });
 
@@ -137,7 +123,7 @@
             $("#tbl-budget-list").DataTable({
                 serverSide: true,
                 ajax: {
-                    url: base_url+'/proc/po/printlist'+_params,
+                    url: base_url+'/po/list/get'+_params,
                     data: function (data) {
                         data.params = {
                             sac: "sac"
@@ -163,20 +149,12 @@
                         }
                     },
                     {data: "vendor_name", className: 'uid'},
-                    {data: "totalprice", "className": "text-right",
-                        render: function (data, type, row){
-                            return ``+ row.totalprice.total + ``;
-                        }
-                    },
-                    // {data: "matdesc", className: 'uid'},
-                    // {data: "quantity", "sortable": false,
+                    // {data: "totalprice", "className": "text-right",
                     //     render: function (data, type, row){
-                    //         return ``+ row.quantity.qty1 + ``;
-                    //     },
-                    //     "className": "text-right",
+                    //         return ``+ row.totalprice.total + ``;
+                    //     }
                     // },
-                    // {data: "unit"},
-                    {data: "deptname"},
+                    {data: "nama_project"},
                     {data: "approvestat",
                         render: function (data, type, row){
                             if(row.approvestat == "O"){
@@ -191,9 +169,6 @@
                         }
                     },
                     {data: "note" },
-                    // {data: "approvestat" },
-                    // {data: "pbjnumber" },
-                    // {data: "pbjitem" },
                     {"defaultContent":
                         `<button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>
                          <button class='btn btn-primary btn-sm button-detail'> <i class='fa fa-search'></i> View Detail</button>

@@ -61,6 +61,8 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/deletecostgroup/{id}',  'Master\CostMasterController@deleteGroup')->middleware('checkAuth:master/costmaster');
         Route::get('/deletecostmaster/{id}', 'Master\CostMasterController@delete')->middleware('checkAuth:master/costmaster');
+
+        Route::post('/findcostmaster',  'Master\CostMasterController@findcostCode');
     });
 
     Route::group(['prefix' => '/master/warehouse'], function () {

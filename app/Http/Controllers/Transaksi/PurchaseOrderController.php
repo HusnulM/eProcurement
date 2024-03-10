@@ -13,7 +13,7 @@ use Validator,Redirect,Response;
 class PurchaseOrderController extends Controller
 {
     public function index(){
-        $proyek = DB::table('t_projects')->get();
+        $proyek = getAuthorizedProject();
         return view('transaksi.po.index', ['proyek' => $proyek]);
     }
 
@@ -21,33 +21,56 @@ class PurchaseOrderController extends Controller
         return view('transaksi.po.duedatepo');
     }
 
-    public function listDuedatePO(Request $request){
-        $params = $request->params;
-        if(isset($request->params)){
-            $whereClause = $params['sac'];
+    public function listPO(){
+        $proyek = getAuthorizedProject();
+        return view('transaksi.po.printpolist', ['proyek' => $proyek]);
+    }
+
+    public function getListPO(Request $req){
+
+        $query = DB::table('t_po01')
+        ->join('t_projects', 't_po01.idproject', '=', 't_projects.id')
+        ->join('t_vendor', 't_po01.vendor', '=', 't_vendor.id')
+        ->select('t_po01.*','t_projects.kode_project', 't_projects.nama_project','t_vendor.vendor_name')
+        ->distinct();
+
+        if(isset($req->approvalstat)){
+            if($req->approvalstat === "O"){
+                $query->where('t_po01.approvestat', 'O');
+            }elseif($req->approvalstat === "A"){
+                $query->where('t_po01.approvestat', 'A');
+            }elseif($req->approvalstat === "R"){
+                $query->where('t_po01.approvestat', 'R');
+            }
         }
-        $query = DB::table('v_po_duedate')
-                 ->where('duedate','>','3')
-                 ->where('openqty', '>', 0)
-                 ->orderBy('id');
+
+        if(isset($req->datefrom) && isset($req->dateto)){
+            $query->whereBetween('podat', [$req->datefrom, $req->dateto]);
+        }elseif(isset($req->datefrom)){
+            $query->where('podat', $req->datefrom);
+        }elseif(isset($req->dateto)){
+            $query->where('podat', '<=', $req->dateto);
+        }
+
+        $checkObjAuth = DB::table('user_object_auth')
+        ->where('object_name', 'ALLOW_DISPLAY_PROJECT')
+        ->where('object_val', '*')
+        ->where('userid', Auth::user()->id)
+        ->first();
+        if($checkObjAuth){
+
+        }else{
+            if(isset($req->project)){
+                if($req->project !== 'All'){
+                    $query->where('t_po01.idproject', $req->project);
+                }
+            }
+        }
+
+        $query->orderBy('t_po01.id');
+
         return DataTables::queryBuilder($query)
-        ->editColumn('quantity', function ($query){
-            return [
-                'qty1' => number_format($query->quantity,0)
-            ];
-        })->editColumn('grqty', function ($query){
-            return [
-                'qty2' => number_format($query->grqty,0)
-            ];
-        })->editColumn('openqty', function ($query){
-            return [
-                'qty3' => number_format($query->openqty,0)
-            ];
-        })->editColumn('price', function ($query){
-            return [
-                'price1' => number_format($query->price,0)
-            ];
-        })->editColumn('podat', function ($query){
+        ->editColumn('podat', function ($query){
             return [
                 'podat1' => \Carbon\Carbon::parse($query->podat)->format('d-m-Y')
              ];
@@ -56,31 +79,38 @@ class PurchaseOrderController extends Controller
     }
 
     public function changePO($id){
-        $department  = DB::table('t_department')->get();
+
         $pohdr       = DB::table('t_po01')->where('id', $id)->first();
-        $podtl       = DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
+        $podtl       = DB::table('t_po02')
+                        ->join('t_material', 't_po02.material', '=', 't_material.material')
+                        ->leftJoin('v_cost_master', 't_po02.cost_code', '=', 'v_cost_master.id')
+                        ->select('t_po02.*','t_material.matspec', 'v_cost_master.cost_code as costcd',
+                                 'v_cost_master.cost_desc', 'v_cost_master.cost_group_desc')
+                        ->where('t_po02.ponum', $pohdr->ponum)
+                        ->get();
+        // dd($podtl);
+        // DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
         $costs       = DB::table('t_po03')->where('ponum', $pohdr->ponum)->get();
         $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $pohdr->ponum)->get();
         $approvals   = DB::table('v_po_approval')->where('ponum', $pohdr->ponum)->get();
-        $vendor      = DB::table('t_vendor')->where('vendor_code', $pohdr->vendor)->first();
-        $sdepartment = DB::table('t_department')->where('deptid', $pohdr->deptid)->first();
+        $vendor      = DB::table('t_vendor')->where('id', $pohdr->vendor)->first();
+        // $sdepartment = DB::table('t_department')->where('deptid', $pohdr->deptid)->first();
+        $proyek = getAuthorizedProject();
+        $sproyek = DB::table('t_projects')->where('id', $pohdr->idproject)->first();
 
         return view('transaksi.po.change',
             [
-                'department'    => $department,
+                // 'department'    => $department,
                 'pohdr'         => $pohdr,
                 'poitem'        => $podtl,
                 'costs'         => $costs,
                 'attachments'   => $attachments,
                 'approvals'     => $approvals,
                 'vendor'        => $vendor,
-                'sdepartment'   => $sdepartment
+                'proyek'        => $proyek,
+                'sproyek'       => $sproyek
+                // 'sdepartment'   => $sdepartment
             ]);
-    }
-
-    public function listPO(){
-        $department = DB::table('t_department')->get();
-        return view('transaksi.po.printpolist', ['department' => $department]);
     }
 
     public function getApprovedPR(Request $request){
@@ -90,9 +120,11 @@ class PurchaseOrderController extends Controller
         }
 
         $query = DB::table('v_approved_prv2')
-                 ->where('pocreated', 'N')
-                 ->where('openqty', '>', 0)
-                 ->orderBy('id');
+                 ->join('t_material', 'v_approved_prv2.material', '=', 't_material.material')
+                 ->select('v_approved_prv2.*','t_material.matspec')
+                 ->whereIn('v_approved_prv2.pocreated', ['N','P'])
+                 ->where('v_approved_prv2.openqty', '>', 0)
+                 ->orderBy('v_approved_prv2.id');
         return DataTables::queryBuilder($query)
         ->editColumn('poqty', function ($query){
             return [
@@ -105,6 +137,10 @@ class PurchaseOrderController extends Controller
         })->editColumn('quantity', function ($query){
             return [
                 'quantity1' => number_format($query->quantity,0)
+             ];
+        })->editColumn('last_purchase_price', function ($query){
+            return [
+                'last_price' => number_format($query->last_purchase_price,0)
              ];
         })
         ->toJson();
@@ -140,6 +176,7 @@ class PurchaseOrderController extends Controller
                     'delivery_date'     => $req['deldate'],
                     'vendor'            => $req['vendor'],
                     'note'              => $req['remark'],
+                    'idproject'         => $req['project'],
                     'ppn'               => $req['ppn'] ?? 0,
                     'currency'          => $req['currency'],
                     'tf_top'            => $req['termofpayment'] ?? null,
@@ -160,6 +197,7 @@ class PurchaseOrderController extends Controller
                     'delivery_date'     => $req['deldate'],
                     'vendor'            => $req['vendor'],
                     'note'              => $req['remark'],
+                    'idproject'         => $req['project'],
                     'ppn'               => $req['ppn'] ?? 0,
                     'currency'          => $req['currency'],
                     'tf_top'            => $req['termofpayment'] ?? null,
@@ -177,6 +215,7 @@ class PurchaseOrderController extends Controller
             $price    = $req['unitprice'];
             $prnum    = $req['prnum'];
             $pritem   = $req['pritem'];
+            $costcode = $req['costcode'];
 
             $insertData = array();
             $poItems    = array();
@@ -204,16 +243,27 @@ class PurchaseOrderController extends Controller
                     'prnum'        => $prnum[$i] ?? 0,
                     'pritem'       => $pritem[$i] ?? 0,
                     'idproject'    => $req['project'],
+                    'cost_code'    => $costcode[$i],
                     'createdon'    => getLocalDatabaseDateTime(),
                     'createdby'    => Auth::user()->username
                 );
                 array_push($insertData, $data);
                 array_push($poItems, $data);
 
-                // DB::table('t_pr02')->where('prnum', $prnum[$i])->where('pritem', $pritem[$i])
-                // ->update([
-                //     'pocreated' => 'Y'
-                // ]);
+                if($prnum[$i]){
+                    $poQty = getTotalPOCreated($prnum[$i] ?? 0, $pritem[$i] ?? 0);
+                    if($poQty == '1'){
+                        DB::table('t_pr02')->where('prnum', $prnum[$i])->where('pritem', $pritem[$i])
+                        ->update([
+                            'pocreated' => 'Y'
+                        ]);
+                    }else{
+                        DB::table('t_pr02')->where('prnum', $prnum[$i])->where('pritem', $pritem[$i])
+                        ->update([
+                            'pocreated' => 'P'
+                        ]);
+                    }
+                }
 
                 DB::table('t_material')->where('material', $parts[$i])->update([
                     'last_purchase_price' => $uprice
@@ -269,46 +319,44 @@ class PurchaseOrderController extends Controller
             // insertOrUpdate($insertFiles,'t_attachments');
 
             //Set Approval
-            // $approval = DB::table('v_workflows')->where('object', 'PO')->where('requester', Auth::user()->id)->get();
-            // if(sizeof($approval) > 0){
-            //     $insertApproval = array();
-            //     foreach($approval as $row){
-            //         $is_active = 'N';
-            //         if($row->approver_level == 1){
-            //             $is_active = 'Y';
-            //         }
-            //         $approvals = array(
-            //             'ponum'             => $ptaNumber,
-            //             'approver_level'    => $row->approver_level,
-            //             'approver'          => $row->approver,
-            //             'requester'         => Auth::user()->id,
-            //             'is_active'         => $is_active,
-            //             'createdon'         => getLocalDatabaseDateTime()
-            //         );
-            //         array_push($insertApproval, $approvals);
-            //     }
-            //     insertOrUpdate($insertApproval,'t_po_approval');
-            // }else{
-            //     DB::rollBack();
-            //     return Redirect::to("/proc/po")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
-            // }
+            $approvalActive = DB::table('general_setting')->where('setting_name', 'WORKFLOW_PR_ACTIVE')->first();
+            if($approvalActive){
+                $approval = DB::table('v_workflows')->where('object', 'PO')->where('requester', Auth::user()->id)->get();
+                if(sizeof($approval) > 0){
+                    $insertApproval = array();
+                    foreach($approval as $row){
+                        $is_active = 'N';
+                        if($row->approver_level == 1){
+                            $is_active = 'Y';
+                        }
+                        $approvals = array(
+                            'ponum'             => $ptaNumber,
+                            'approver_level'    => $row->approver_level,
+                            'approver'          => $row->approver,
+                            'requester'         => Auth::user()->id,
+                            'is_active'         => $is_active,
+                            'createdon'         => getLocalDatabaseDateTime()
+                        );
+                        array_push($insertApproval, $approvals);
+                    }
+                    insertOrUpdate($insertApproval,'t_po_approval');
+                }else{
+                    DB::rollBack();
+                    return Redirect::to("/proc/po")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
+                }
+            }
 
             DB::commit();
 
-            // $approverId = DB::table('v_workflow_budget')->where('object', 'PO')
-            //                 ->where('requester', Auth::user()->id)
-            //                 ->where('approver_level', '1')
-            //                 ->pluck('approver');
+            if(!$approvalActive){
+                DB::table('t_po01')->where('ponum', $ptaNumber)->update([
+                    'approvestat' => 'A'
+                ]);
 
-            // $mailto = DB::table('users')
-            //         ->whereIn('id', $approverId)
-            //         ->pluck('email');
-
-            // $dataApprovePO = DB::table('v_po_duedate')
-            //         ->where('ponum', $ptaNumber)
-            //         ->orderBy('id')->get();
-
-            // Mail::to($mailto)->queue(new NotifApprovePoMail($dataApprovePO, $poID, $ptaNumber));
+                DB::table('t_po02')->where('ponum', $ptaNumber)->update([
+                    'approvestat' => 'A'
+                ]);
+            }
 
             return Redirect::to("/proc/po")->withSuccess('PO Berhasil dibuat dengan Nomor : '. $ptaNumber);
         } catch(\Exception $e){
@@ -320,36 +368,42 @@ class PurchaseOrderController extends Controller
     }
 
     public function update(Request $req, $poid){
+        // return $req;
         DB::beginTransaction();
         try{
             if(!isset($req['parts'])){
-                return Redirect::to("/proc/po")->withError('Item PO Blum di isi');
-            }
-            // $tgl   = substr($req['tglreq'], 8, 2);
-            // $bulan = substr($req['tglreq'], 5, 2);
-            // $tahun = substr($req['tglreq'], 0, 4);
-            // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
-            $pohdr = DB::table('t_po01')->where('id', $poid)->first();
-            $ptaNumber = $pohdr->ponum;
-
-            $checkApproval = DB::table('v_po_approval')
-                ->where('ponum', $ptaNumber)->where('approval_status', 'A')->first();
-
-            if($checkApproval){
+                // return Redirect::to("/proc/po")->withError('Item PO Blum di isi');
                 $result = array(
                     'msgtype' => '500',
-                    'message' => 'PO : '. $ptaNumber . ' sudah di approve, data tidak bisa diupdate'
+                    'message' => 'Item PO Blum di isi PO : '. $ptaNumber . ' masih kosong'
                 );
                 return $result;
             }
 
+            $pohdr = DB::table('t_po01')->where('id', $poid)->first();
+            $ptaNumber = $pohdr->ponum;
+
+            $approvalActive = DB::table('general_setting')->where('setting_name', 'WORKFLOW_PR_ACTIVE')->first();
+            if($approvalActive){
+                $checkApproval = DB::table('v_po_approval')
+                    ->where('ponum', $ptaNumber)->where('approval_status', 'A')->first();
+
+                if($checkApproval){
+                    $result = array(
+                        'msgtype' => '500',
+                        'message' => 'PO : '. $ptaNumber . ' sudah di approve, data tidak bisa diupdate'
+                    );
+                    return $result;
+                }
+            }
+
             if($req['poSolarInd'] === 'Y'){
                 DB::table('t_po01')->where('id', $poid)->update([
-                    'deptid'            => $req['department'],
                     'podat'             => $req['tglreq'],
                     'delivery_date'     => $req['deldate'],
                     'vendor'            => $req['vendor'],
                     'note'              => $req['remark'],
+                    'idproject'         => $req['project'],
                     'ppn'               => $req['ppn'] ?? 0,
                     'currency'          => $req['currency'],
                     'tf_top'            => $req['termofpayment'] ?? null,
@@ -357,13 +411,15 @@ class PurchaseOrderController extends Controller
                     'solar_pbbkb'       => $req['solarpbbkb'],
                     'solar_oat'         => $req['solaroat'],
                     'solar_ppn_oat'     => $req['ppnoat'],
+                    'changedon'         => getLocalDatabaseDateTime(),
+                    'changedby'         => Auth::user()->username
                 ]);
             }else{
                 DB::table('t_po01')->where('id', $poid)->update([
-                    'deptid'            => $req['department'],
                     'podat'             => $req['tglreq'],
                     'delivery_date'     => $req['deldate'],
                     'vendor'            => $req['vendor'],
+                    'idproject'         => $req['project'],
                     'note'              => $req['remark'],
                     'ppn'               => $req['ppn'] ?? 0,
                     'currency'          => $req['currency'],
@@ -372,6 +428,8 @@ class PurchaseOrderController extends Controller
                     'solar_pbbkb'       => 0,
                     'solar_oat'         => 0,
                     'solar_ppn_oat'     => 0,
+                    'changedon'         => getLocalDatabaseDateTime(),
+                    'changedby'         => Auth::user()->username
                 ]);
             }
 
@@ -383,11 +441,11 @@ class PurchaseOrderController extends Controller
             $prnum    = $req['prnum'];
             $pritem   = $req['pritem'];
             $poitem   = $req['poitem'];
+            $costcode = $req['costcode'];
 
             $insertData = array();
             $poItems    = array();
             $count = 0;
-
 
             for($i = 0; $i < sizeof($parts); $i++){
                 $qty    = $quantity[$i];
@@ -396,20 +454,10 @@ class PurchaseOrderController extends Controller
                 $uprice = $price[$i];
                 $uprice = str_replace(',','',$uprice);
 
-                // $count = $count + 1;
                 if($poitem[$i]){
                     $count = $poitem[$i];
                 }else{
                     $count += 1;
-                }
-
-                $prdata = DB::table('v_pr_pbj')->where('prnum', $prnum[$i])->first();
-                if($prdata){
-                    $budgetCode  = $prdata->budget_cost_code ?? $req['budgetcode'];
-                    $budgetPriod = $prdata->periode ?? $req['periode'];
-                }else{
-                    $budgetCode  = $req['budgetcode'];
-                    $budgetPriod = $req['periode'];
                 }
 
                 $data = array(
@@ -420,26 +468,39 @@ class PurchaseOrderController extends Controller
                     'quantity'     => $qty,
                     'unit'         => $uom[$i],
                     'price'        => $uprice,
-                    'prnum'        => $prnum[$i] ?? 0,
+                    'prnum'        => $prnum[$i] ?? null,
                     'pritem'       => $pritem[$i] ?? 0,
-                    'budget_code'  => $budgetCode,
-                    'budget_period'=> $budgetPriod,
-                    'createdon'    => date('Y-m-d H:m:s'),
+                    'idproject'    => $req['project'],
+                    'cost_code'    => $costcode[$i],
+                    'createdon'    => $pohdr->createdon,
                     'createdby'    => $pohdr->createdby,
-                    // Auth::user()->email ?? Auth::user()->username
+                    'changedon'    => getLocalDatabaseDateTime(),
+                    'changedby'    => Auth::user()->username
                 );
                 array_push($insertData, $data);
                 array_push($poItems, $data);
 
-                DB::table('t_pr02')->where('prnum', $prnum[$i])->where('pritem', $pritem[$i])
-                ->update([
-                    'pocreated' => 'Y'
-                ]);
+                if($prnum[$i]){
+                    $poQty = getTotalPOCreated($prnum[$i] ?? 0, $pritem[$i] ?? 0);
+                    if($poQty == '1'){
+                        DB::table('t_pr02')->where('prnum', $prnum[$i])->where('pritem', $pritem[$i])
+                        ->update([
+                            'pocreated' => 'Y'
+                        ]);
+                    }else{
+                        DB::table('t_pr02')->where('prnum', $prnum[$i])->where('pritem', $pritem[$i])
+                        ->update([
+                            'pocreated' => 'P'
+                        ]);
+                    }
+                }
 
                 DB::table('t_material')->where('material', $parts[$i])->update([
                     'last_purchase_price' => $uprice
                 ]);
             }
+
+            // return($insertData);
             insertOrUpdate($insertData,'t_po02');
 
             if(isset($req['costname'])){
@@ -486,7 +547,7 @@ class PurchaseOrderController extends Controller
                         'efile'      => $filename,
                         'pathfile'   => '/files/PO/'. $filename,
                         'createdon'  => getLocalDatabaseDateTime(),
-                        'createdby'  => Auth::user()->username ?? Auth::user()->email
+                        'createdby'  => Auth::user()->username
                     );
                     array_push($insertFiles, $upfiles);
 
@@ -499,11 +560,12 @@ class PurchaseOrderController extends Controller
             }
 
             //Set Approval
-            $creator = DB::table('users')->where('email', $pohdr->createdby)->first();
-            $approval = DB::table('v_workflow_budget')->where('object', 'PO')->where('requester', $creator->id)->get();
-            if(sizeof($approval) > 0){
-                DB::table('t_po_approval')->where('ponum', $ptaNumber)->delete();
-                for($a = 0; $a < sizeof($poItems); $a++){
+            $approvalActive = DB::table('general_setting')->where('setting_name', 'WORKFLOW_PR_ACTIVE')->first();
+            if($approvalActive){
+                $creator = DB::table('users')->where('username', $pohdr->createdby)->first();
+                $approval = DB::table('v_workflows')->where('object', 'PO')->where('requester', $creator->id)->get();
+                if(sizeof($approval) > 0){
+                    DB::table('t_po_approval')->where('ponum', $ptaNumber)->delete();
                     $insertApproval = array();
                     foreach($approval as $row){
                         $is_active = 'N';
@@ -512,7 +574,6 @@ class PurchaseOrderController extends Controller
                         }
                         $approvals = array(
                             'ponum'             => $ptaNumber,
-                            'poitem'            => $poItems[$a]['poitem'],
                             'approver_level'    => $row->approver_level,
                             'approver'          => $row->approver,
                             'requester'         => $creator->id,
@@ -522,37 +583,30 @@ class PurchaseOrderController extends Controller
                         array_push($insertApproval, $approvals);
                     }
                     insertOrUpdate($insertApproval,'t_po_approval');
-                }
-            }else{
-                DB::rollBack();
-                $result = array(
-                    'msgtype' => '500',
-                    'message' => 'Gagal Update PO, Approval belum di tambahkan untuk user '. Auth::user()->name
-                );
+                }else{
+                    DB::rollBack();
+                    $result = array(
+                        'msgtype' => '500',
+                        'message' => 'Gagal Update PO, Approval belum di tambahkan untuk user '. Auth::user()->name
+                    );
 
-                return $result;
-                // return Redirect::to("/proc/po")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
+                    return $result;
+                    // return Redirect::to("/proc/po")->withError('Approval belum di tambahkan untuk user '. Auth::user()->name);
+                }
             }
 
             DB::commit();
 
-            $approverId = DB::table('v_workflow_budget')->where('object', 'PO')
-                            ->where('requester', Auth::user()->id)
-                            ->where('approver_level', '1')
-                            ->pluck('approver');
+            if(!$approvalActive){
+                DB::table('t_po01')->where('ponum', $ptaNumber)->update([
+                    'approvestat' => 'A'
+                ]);
 
-            $mailto = DB::table('users')
-                    ->whereIn('id', $approverId)
-                    ->pluck('email');
+                DB::table('t_po02')->where('ponum', $ptaNumber)->update([
+                    'approvestat' => 'A'
+                ]);
+            }
 
-            $dataApprovePO = DB::table('v_po_duedate')
-                    ->where('ponum', $ptaNumber)
-                    ->orderBy('id')->get();
-
-            Mail::to($mailto)->queue(new NotifApprovePoMail($dataApprovePO, $pohdr->id, $ptaNumber));
-
-            // DB::commit();
-            // return Redirect::to("/proc/po")->withSuccess('PO Berhasil dibuat dengan Nomor : '. $ptaNumber);
             $result = array(
                 'msgtype' => '200',
                 'message' => 'PO : '. $ptaNumber . ' Berhasil di update'

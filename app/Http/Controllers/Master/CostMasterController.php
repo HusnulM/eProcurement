@@ -41,6 +41,15 @@ class CostMasterController extends Controller
         return DataTables::queryBuilder($query)->setRowId('id')->toJson();
     }
 
+    public function findcostCode(Request $request){
+        $query['data'] = DB::table('v_cost_master')
+        ->where('cost_code', 'like', '%'. $request->search . '%')
+        ->orWhere('cost_desc', 'like', '%'. $request->search . '%')
+        ->orWhere('cost_group_desc', 'like', '%'. $request->search . '%')
+        ->get();
+        return $query;
+    }
+
     public function costGroupLists(Request $request){
         $params = $request->params;
         $whereClause = $params['sac'];

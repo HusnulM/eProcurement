@@ -129,7 +129,7 @@
                                                                         @foreach($pritem as $key => $row)
                                                                         <tr>
                                                                             <td>
-                                                                                {{ $row->material }} - {{ $row->matdesc }} <br>
+                                                                                {{ $row->matdesc }} <br>
                                                                                 {{ $row->matspec }}
                                                                             </td>
                                                                             <td style="text-align:right;">

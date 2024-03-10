@@ -14,12 +14,14 @@ use PDF;
 class PurchaseRequestController extends Controller
 {
     public function index(){
-        $proyek = DB::table('t_projects')->get();
+        $proyek = getAuthorizedProject();
+
         return view('transaksi.pr.index', ['proyek' => $proyek]);
     }
 
     public function listPR(){
-        $proyek = DB::table('t_projects')->get();
+        $proyek = getAuthorizedProject();
+
         return view('transaksi.pr.printlist', ['proyek' => $proyek]);
     }
 
@@ -285,6 +287,16 @@ class PurchaseRequestController extends Controller
 
             DB::commit();
 
+            if(!$approvalActive){
+                DB::table('t_pr01')->where('prnum', $ptaNumber)->update([
+                    'approvestat' => 'A'
+                ]);
+
+                DB::table('t_pr02')->where('prnum', $ptaNumber)->update([
+                    'approvestat' => 'A'
+                ]);
+            }
+
             $result = array(
                 'msgtype' => '200',
                 'message' => 'PR Berhasil dibuat dengan Nomor : '. $ptaNumber
@@ -315,18 +327,21 @@ class PurchaseRequestController extends Controller
 
             $ptaNumber = $prhdr->prnum;
 
-            $checkApproval = DB::table('t_pr_approval')
-                ->where('prnum', $ptaNumber)
-                ->where('approval_status', 'A')
-                ->orWhere('approval_status', 'R')
-                ->first();
+            $approvalActive = DB::table('general_setting')->where('setting_name', 'WORKFLOW_PR_ACTIVE')->first();
+            if($approvalActive){
+                $checkApproval = DB::table('t_pr_approval')
+                    ->where('prnum', $ptaNumber)
+                    ->where('approval_status', 'A')
+                    ->orWhere('approval_status', 'R')
+                    ->first();
 
-            if($checkApproval){
-                $result = array(
-                    'msgtype' => '500',
-                    'message' => 'PR : '. $ptaNumber . ' sudah di approve/reject, data tidak bisa di update'
-                );
-                return $result;
+                if($checkApproval){
+                    $result = array(
+                        'msgtype' => '500',
+                        'message' => 'PR : '. $ptaNumber . ' sudah di approve/reject, data tidak bisa di update'
+                    );
+                    return $result;
+                }
             }
 
             DB::table('t_pr01')->where('id', $prid)->update([

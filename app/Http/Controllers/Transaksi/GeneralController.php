@@ -13,7 +13,13 @@ class GeneralController extends Controller
         $params      = $request->params;
         $whereClause = $params['sac'];
         $query       = DB::table('v_material')->orderBy('material');
-        return DataTables::queryBuilder($query)->toJson();
+        return DataTables::queryBuilder($query)
+        ->editColumn('last_purchase_price', function ($query){
+            return [
+                'last_price' => number_format($query->last_purchase_price,0)
+             ];
+        })
+        ->toJson();
     }
 
     public function matstockAll(Request $request){

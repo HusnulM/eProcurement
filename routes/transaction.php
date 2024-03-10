@@ -77,6 +77,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/duedatepolist',    'Transaksi\PurchaseOrderController@listDuedatePO')->middleware('checkAuth:proc/po/duedatepo');
     });
 
+    Route::group(['prefix' => '/po/list'], function () {
+        Route::get('/',      'Transaksi\PurchaseOrderController@listPO')->middleware('checkAuth:po/list');
+        Route::get('/get',   'Transaksi\PurchaseOrderController@getListPO')->middleware('checkAuth:po/list');
+    });
+
     Route::group(['prefix' => '/approve/po'], function () {
         Route::get('/',                         'Transaksi\ApprovePurchaseOrderController@index')->middleware('checkAuth:approve/po');
         Route::post('/save',                    'Transaksi\ApprovePurchaseOrderController@save')->middleware('checkAuth:approve/po');

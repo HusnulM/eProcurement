@@ -146,7 +146,7 @@
                                                                         @foreach($pritem as $key => $row)
                                                                         <tr>
                                                                             <td>
-                                                                                {{ $row->material }} - {{ $row->matdesc }} <br>
+                                                                                {{ $row->matdesc }} <br>
                                                                                 {{ $row->matspec }}
                                                                                 <input type="hidden" class="form-control" name="pritem[]" value="{{ $row->pritem }}">
                                                                                 <input type="hidden" class="form-control" name="material[]" value="{{ $row->material }}">

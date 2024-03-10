@@ -25,12 +25,15 @@
                     <div class="card-header">
                         <h3 class="card-title">Purchase Order</h3>
                         <div class="card-tools">
+                            <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
+                                <i class="fa fa-plus"></i> List Item
+                            </button>
+                            <button type="button" class="btn btn-success btn-sm btn-add-po-item-based-pr">
+                                <i class="fa fa-list"></i> List PR
+                            </button>
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
                                 <i class="fas fa-save"></i> Simpan Purchase Order
                             </button>
-                            {{-- <a href="{{ url('/proc/po/listpo') }}" class="btn btn-success btn-sm">
-                                <i class="fa fa-list"></i> List PO
-                            </a> --}}
                         </div>
                     </div>
                     <div class="card-body">
@@ -122,9 +125,7 @@
                                             </ul>
                                         </div>
                                         <div class="card-tools">
-                                            {{-- <a href="{{ url('/approve/pbj') }}" class="btn btn-default btn-sm">
-                                                <i class="fa fa-arrow-left"></i> Back
-                                            </a> --}}
+
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -137,35 +138,25 @@
                                                             <div class="col-lg-12">
                                                                 <table id="tbl-po-item" class="table table-sm">
                                                                     <thead>
-                                                                        <th>Part Number</th>
+                                                                        <th>Item Name</th>
                                                                         {{-- <th>Description</th> --}}
                                                                         <th>Quantity</th>
                                                                         <th>Unit</th>
                                                                         <th>Unit Price</th>
                                                                         <th>PR Reference</th>
-                                                                        <th>Project</th>
-                                                                        <th style="text-align:right;">
-                                                                            <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
+                                                                        <th>Cost Code</th>
+                                                                        <th style="text-align:center;">
+                                                                            {{-- <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
                                                                                 <i class="fa fa-plus"></i>
                                                                             </button>
                                                                             <button type="button" class="btn btn-success btn-sm btn-add-po-item-based-pr">
                                                                                 <i class="fa fa-list"></i> List PR
-                                                                            </button>
+                                                                            </button> --}}
                                                                         </th>
                                                                     </thead>
                                                                     <tbody id="tbl-pbj-body">
 
                                                                     </tbody>
-                                                                    <!-- <tfoot>
-                                                                        <tr>
-                                                                            <td colspan="7"></td>
-                                                                            <td style="text-align:right;">
-                                                                                <button type="button" class="btn btn-success btn-sm btn-add-pbj-item">
-                                                                                    <i class="fa fa-plus"></i>
-                                                                                </button>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tfoot> -->
                                                                 </table>
                                                             </div>
                                                         </div>
@@ -203,7 +194,7 @@
                                                                 </table>
                                                             </div>
                                                         </div>
-                                                        <div class="row">
+                                                        <div class="row" style="display: none;">
                                                             <div class="col-lg-12">
                                                                 <input type="checkbox" id="isPOSolar" class="filled-in"/>
                                                                 <label for="isPOSolar">PO Solar?</label>
@@ -279,8 +270,7 @@
                                     <th></th>
                                     <th>Nomor PR</th>
                                     <th>Tanggal PR</th>
-                                    <th>Part Number</th>
-                                    <th>Part Name</th>
+                                    <th>Item Name</th>
                                     <th>Quantity</th>
                                     <th>Quantity PO</th>
                                     <th>Open Quantity</th>
@@ -323,12 +313,9 @@
                     <table id="tbl-material-list" class="table table-bordered table-hover table-striped table-sm" style="width:100%;">
                         <thead>
                             <th>No</th>
-                            <th>Part Number / Material</th>
+                            <th>Item Code</th>
                             <th>Description</th>
-                            {{-- <th>Part Number</th> --}}
-                            {{-- <th>Warehouse</th>
-                            <th>Warehouse Name</th>
-                            <th>Available Quantity</th> --}}
+                            <th>Spek</th>
                             <th>Unit</th>
                             <th></th>
                         </thead>
@@ -422,10 +409,7 @@
                     },
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'fname'},
-                    // {data: "partnumber", className: 'fname'},
-                    // {data: "whsnum", className: 'fname'},
-                    // {data: "whsname", className: 'fname'},
-                    // {data: "quantity", className: 'fname'},
+                    {data: "matspec", className: 'fname'},
                     {data: "matunit", className: 'fname'},
                     {"defaultContent":
                         "<button type='button' class='btn btn-primary btn-sm button-add-material'> <i class='fa fa-plus'></i> Add</button>"
@@ -448,30 +432,29 @@
                     $('#tbl-pbj-body').append(`
                         <tr>
                             <td>
-                                `+selected_data.material+` - `+ selected_data.matdesc +`
+                                `+selected_data.matdesc+` - `+ selected_data.matspec +`
                                 <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
-
                             <td>
-                                <input type="text" name="quantity[]" class="form-control inputNumber" required>
+                                <input type="text" name="quantity[]" class="form-control inputNumber" id="inputQty`+fCount+`" style="text-align:right;" value="">
                             </td>
                             <td>
-                                <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
+                                `+ selected_data.matunit +`
+                                <input type="hidden" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.matunit +`" class="form-control" readonly>
                             </td>
                             <td>
-                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.last_purchase_price +`" required>
+                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ formatRupiah(selected_data.last_purchase_price.last_price, '') +`" style="text-align:right;" required>
                             </td>
                             <td>
-                                <input type="text" name="prref[]" id="prref`+fCount+`" class="form-control">
                                 <input type="hidden" name="prnum[]" id="prnum`+fCount+`" value="" class="form-control">
                                 <input type="hidden" name="pritem[]" id="pritem`+fCount+`" value="" class="form-control">
                             </td>
                             <td>
-                                <select name="projecxxxt[]" id="find-project`+fCount+`" class="form-control"></select>
+                                <select name="costcode[]" id="find-cost`+fCount+`" class="form-control" required></select>
                             </td>
-                            <td>
-                                <button type="button" class="btn btn-danger" id="btnRemove`+fCount+`">
+                            <td style="text-align:center;">
+                                <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </td>
@@ -485,12 +468,54 @@
                         $(this).closest("tr").remove();
                     });
 
-                    $('#find-project'+fCount).select2({
-                        placeholder: 'Nama Project',
+                    $('.inputNumber').on('change', function(){
+                        this.value = formatRupiah(this.value,'');
+                    });
+
+                    $('.inputNumber').on('keypress', function(e){
+                        validate(e);
+                    });
+
+                    function formatRupiah(angka, prefix){
+                        var number_string = angka.toString().replace(/[^.\d]/g, '').toString(),
+                        split   		  = number_string.split('.'),
+                        sisa     		  = split[0].length % 3,
+                        rupiah     		  = split[0].substr(0, sisa),
+                        ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
+
+                        if(ribuan){
+                            separator = sisa ? ',' : '';
+                            rupiah += separator + ribuan.join(',');
+                        }
+
+                        rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
+                        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
+                    }
+
+                    function validate(evt) {
+                        var theEvent = evt || window.event;
+
+                        // Handle paste
+                        if (theEvent.type === 'paste') {
+                            key = event.clipboardData.getData('text/plain');
+                        } else {
+                        // Handle key press
+                            var key = theEvent.keyCode || theEvent.which;
+                            key = String.fromCharCode(key);
+                        }
+                        var regex = /[0-9]|\./;
+                        if( !regex.test(key) ) {
+                            theEvent.returnValue = false;
+                            if(theEvent.preventDefault) theEvent.preventDefault();
+                        }
+                    }
+
+                    $('#find-cost'+fCount).select2({
+                        placeholder: 'Type Cost Code Name',
                         width: '100%',
                         minimumInputLength: 0,
                         ajax: {
-                            url: base_url + '/master/project/findproject',
+                            url: base_url + '/master/costmaster/findcostmaster',
                             dataType: 'json',
                             delay: 250,
                             method: 'POST',
@@ -512,9 +537,9 @@
                                 return {
                                     results: $.map(data.data, function (item) {
                                         return {
-                                            text: item.kode_project + ' - ' + item.nama_project,
-                                            slug: item.nama_project,
-                                            id: item.idproject,
+                                            text: item.cost_code + ' ' + item.cost_desc,
+                                            slug: item.cost_desc + ' ' + item.cost_group_desc,
+                                            id: item.cost_code,
                                             ...item
                                         }
                                     })
@@ -594,16 +619,9 @@
         });
 
         $('#find-vendor').on('change', function(){
-            // alert(this.value)
-            // $('#vendor_address').html('');
             var data = $('#find-vendor').select2('data')
             console.log(data);
-            // $('#vendor_address').html(data[0].vendor_address);
-            // alert(data[0].material);
-            // $('#partdesc'+fCount).val(data[0].partname);
-            // $('#partunit'+fCount).val(data[0].matunit);
         });
-
 
         function loadListPR(){
             $("#tbl-pr-list").DataTable({
@@ -630,7 +648,7 @@
                     },
                     {data: "prnum", className: 'uid'},
                     {data: "prdate", className: 'uid'},
-                    {data: "material"},
+                    // {data: "material"},
                     {data: "matdesc"},
                     {data: "quantity", "sortable": false,
                         render: function (data, type, row){
@@ -664,8 +682,6 @@
                 ]
             });
 
-
-
             function checkPRSelected(prNum, prItem) {
                 return selected_pr_items.some(function(el) {
                     if(el.prnum === prNum && el.pritem === prItem){
@@ -693,18 +709,18 @@
                     $('#tbl-pbj-body').append(`
                         <tr>
                             <td>
-                                `+selected_data.material+` - `+ selected_data.matdesc +`
+                                `+selected_data.matdesc+` - `+ selected_data.matspec +`
                                 <input type="hidden" name="parts[]" id="parts`+fCount+`" class="form-control" value="`+ selected_data.material +`" readonly>
                                 <input type="hidden" name="partdesc[]" id="partdesc`+fCount+`" class="form-control" value="`+ selected_data.matdesc +`" readonly>
                             </td>
                             <td>
-                                <input type="text" name="quantity[]" class="form-control inputNumber" id="inputQty`+fCount+`" value="`+ selected_data.openqty.openqty1 +`" data-openqty="`+ selected_data.openqty.openqty1 +`">
+                                <input type="text" name="quantity[]" class="form-control inputNumber" id="inputQty`+fCount+`" value="`+ selected_data.openqty.openqty1 +`" data-openqty="`+ selected_data.openqty.openqty1 +`" style="text-align:right;">
                             </td>
                             <td>
                                 <input type="text" name="uoms[]" id="partunit`+fCount+`" value="`+ selected_data.unit +`" class="form-control" readonly>
                             </td>
                             <td>
-                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.last_purchase_price +`" required>
+                                <input type="text" name="unitprice[]" class="form-control inputNumber" value="`+ selected_data.last_purchase_price.last_price +`" style="text-align:right;" required>
                             </td>
                             <td>
                                 <input type="text" name="prref[]" id="prref`+fCount+`" value="`+ selected_data.prnum +`" class="form-control">
@@ -712,10 +728,9 @@
                                 <input type="hidden" name="pritem[]" id="pritem`+fCount+`" value="`+ selected_data.pritem +`" class="form-control">
                             </td>
                             <td>
-                                <input type="text" name="namaproject[]" class="form-control" value="`+ selected_data.nama_project +`" readonly>
-                                <input type="hidden" name="projecxxxxt[]" id="project`+fCount+`" value="`+ selected_data.idproject +`">
+                                <select name="costcode[]" id="find-cost`+fCount+`" class="form-control" required></select>
                             </td>
-                            <td>
+                            <td style="text-align:center;">
                                 <button type="button" class="btn btn-danger btnRemove" id="btnRemove`+fCount+`">
                                     <i class="fa fa-trash"></i>
                                 </button>
@@ -787,6 +802,45 @@
                             if(theEvent.preventDefault) theEvent.preventDefault();
                         }
                     }
+
+                    $('#find-cost'+fCount).select2({
+                        placeholder: 'Type Cost Code Name',
+                        width: '100%',
+                        minimumInputLength: 0,
+                        ajax: {
+                            url: base_url + '/master/costmaster/findcostmaster',
+                            dataType: 'json',
+                            delay: 250,
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': _token
+                            },
+                            data: function (params) {
+                                var query = {
+                                    search: params.term,
+                                    // custname: $('#find-customer').val()
+                                }
+                                return query;
+                            },
+                            processResults: function (data) {
+                                // return {
+                                //     results: response
+                                // };
+                                console.log(data)
+                                return {
+                                    results: $.map(data.data, function (item) {
+                                        return {
+                                            text: item.cost_desc,
+                                            slug: item.cost_desc + ' ' + item.cost_group_desc,
+                                            id: item.cost_code,
+                                            ...item
+                                        }
+                                    })
+                                };
+                            },
+                            cache: true
+                        }
+                    });
                 }
             });
 
