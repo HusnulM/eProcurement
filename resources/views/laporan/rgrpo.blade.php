@@ -5,7 +5,7 @@
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -37,10 +37,10 @@
                                     </div>
                                     <div class="col-lg-8" style="text-align:right;">
                                         <br>
-                                        <button type="button" class="btn btn-default mt-2 btn-search"> 
+                                        <button type="button" class="btn btn-default mt-2 btn-search">
                                             <i class="fa fa-search"></i> Filter
                                         </button>
-                                        <button type="submit" class="btn btn-success mt-2 btn-export"> 
+                                        <button type="submit" class="btn btn-success mt-2 btn-export">
                                             <i class="fa fa-download"></i> Export Data
                                         </button>
                                     </div>
@@ -58,15 +58,16 @@
                                     <th>Tanggal Penerimaan</th>
                                     <th>Remark</th>
                                     <th>Di Terima Oleh</th>
-                                    <th>Partnumber</th>
+                                    <th>Item Code</th>
                                     <th>Description</th>
+                                    <th>Spek</th>
                                     <th>Quantity</th>
                                     <th>Unit</th>
                                     <th>Nomor PO</th>
                                     <th>Warehouse</th>
                                 </thead>
                                 <tbody>
-        
+
                                 </tbody>
                             </table>
                         </div>
@@ -132,7 +133,7 @@
                     { "data": null,"sortable": false, "searchable": false,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
-                        }  
+                        }
                     },
                     {data: "docnum", className: 'uid'},
                     {data: "docdate", className: 'uid',
@@ -144,6 +145,7 @@
                     {data: "received_by", className: 'uid'},
                     {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'uid'},
+                    {data: "matspec", className: 'uid'},
                     {data: "quantity", "sortable": false,
                         render: function (data, type, row){
                             return ``+ row.quantity.qty1 + ``;
@@ -153,10 +155,10 @@
                     {data: "unit"},
                     {data: "ponum"},
                     {data: "whsname"}
-                ]  
+                ]
             });
         }
-        
+
 
         $('.inputNumber').on('change', function(){
             this.value = formatRupiah(this.value,'');
@@ -168,14 +170,14 @@
             sisa     		  = split[0].length % 3,
             rupiah     		  = split[0].substr(0, sisa),
             ribuan     		  = split[0].substr(sisa).match(/\d{3}/gi);
-        
+
             if(ribuan){
                 separator = sisa ? ',' : '';
                 rupiah += separator + ribuan.join(',');
             }
-        
+
             rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');            
+            return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
         }
     });
 </script>

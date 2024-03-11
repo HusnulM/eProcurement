@@ -15,13 +15,23 @@ class ReceiptPoController extends Controller
 
     public function getApprovedPO(Request $request){
         if(isset($request->params)){
-            $params = $request->params;        
+            $params = $request->params;
             $whereClause = $params['sac'];
         }
         $query = DB::table('v_approved_po')
                  ->where('grstatus', 'O')
                  ->orderBy('id');
-        return DataTables::queryBuilder($query)->toJson();
+        return DataTables::queryBuilder($query)
+        ->editColumn('openqty', function ($query){
+            return [
+                'openqty1' => number_format($query->openqty,0)
+             ];
+        })->editColumn('price', function ($query){
+            return [
+                'price1' => number_format($query->price,0)
+             ];
+        })
+        ->toJson();
     }
 
     public function save(Request $req){
@@ -59,7 +69,7 @@ class ReceiptPoController extends Controller
             $poitem   = $req['poitem'];
 
             $insertData = array();
-            $count = 0;            
+            $count = 0;
 
             for($i = 0; $i < sizeof($parts); $i++){
                 $batchNumber = generateBatchNumber();
@@ -108,25 +118,6 @@ class ReceiptPoController extends Controller
                     'unit'         => $uom[$i],
                     'last_udpate'  => getLocalDatabaseDateTime()
                 ]);
-
-                // $latestStock = DB::table('t_inv_stock')
-                //                ->where('material', $parts[$i])
-                //                ->where('whscode', $whscode[$i])->first();
-                // if($latestStock){
-                //     DB::table('t_inv_stock')
-                //     ->where('material', $parts[$i])
-                //     ->where('whscode', $whscode[$i])
-                //     ->update([
-                //         'quantity'     => $qty + $latestStock->quantity
-                //     ]);
-                // }else{
-                //     DB::table('t_inv_stock')->insert([
-                //         'material'     => $parts[$i],
-                //         'whscode'      => $whscode[$i],
-                //         'quantity'     => $qty,
-                //         'unit'         => $uom[$i],
-                //     ]);
-                // }
 
                 $POItemQty = DB::table('t_po02')
                 ->where('ponum', $ponum[$i])

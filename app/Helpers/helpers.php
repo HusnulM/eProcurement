@@ -505,9 +505,9 @@ function generatePONumber($tahun, $bulan, $prefix){
 }
 
 function generateGRPONumber($tahun, $bulan){
-    $dcnNumber = 'RPO/'.$tahun.$bulan;
+    $dcnNumber = 'RPO/'.$tahun.'/'.$bulan;
     // dd($dcnNumber);
-    $getdata = DB::table('t_nriv_budget')
+    $getdata = DB::table('t_nrivs')
                ->where('tahun',  $tahun)
                ->where('object', 'GRPO')
                ->where('bulan',  $bulan)
@@ -541,7 +541,7 @@ function generateGRPONumber($tahun, $bulan){
 
             // dd($leadingZero);
 
-            DB::table('t_nriv_budget')
+            DB::table('t_nrivs')
             ->where('tahun',  $tahun)
             ->where('object', 'GRPO')
             ->where('bulan',  $bulan)
@@ -562,7 +562,7 @@ function generateGRPONumber($tahun, $bulan){
         $dcnNumber = $dcnNumber.'000001';
         DB::beginTransaction();
         try{
-            DB::table('t_nriv_budget')->insert([
+            DB::table('t_nrivs')->insert([
                 'object'          => 'GRPO',
                 'tahun'           => $tahun,
                 'bulan'           => $bulan,
