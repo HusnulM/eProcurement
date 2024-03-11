@@ -113,7 +113,7 @@ class ApprovePurchaseRequestController extends Controller
         // return $req;
         DB::beginTransaction();
         try{
-            $prhdr  = DB::table('t_pr01')->where('id', $req['prnum'])->first();
+            $prhdr  = DB::table('t_pr01')->where('id', $req['prid'])->first();
             if(!$prhdr){
                 $result = array(
                     'msgtype' => '500',
@@ -130,8 +130,6 @@ class ApprovePurchaseRequestController extends Controller
                             ->where('prnum', $ptaNumber)
                             ->where('approver', Auth::user()->id)
                             ->first();
-
-            //Set Approval
 
             if($req['action'] === 'A'){
                 DB::table('v_pr_approval01')
@@ -175,12 +173,10 @@ class ApprovePurchaseRequestController extends Controller
                 }else{
                     //Full Approve
                     DB::table('t_pr01')->where('prnum', $ptaNumber)->update([
-                        // 'approved_amount' => $amount,
                         'approvestat'   => 'A'
                     ]);
 
                     DB::table('t_pr02')->where('prnum', $ptaNumber)->update([
-                        // 'approved_amount' => $amount,
                         'approvestat'   => 'A'
                     ]);
                 }
@@ -214,6 +210,30 @@ class ApprovePurchaseRequestController extends Controller
                     'msgtype' => '200',
                     'message' => 'PR dengan Nomor : '. $ptaNumber . ' berhasil di reject'
                 );
+            }
+
+            if(isset($req['efile'])){
+                $files = $req['efile'];
+                $insertFiles = array();
+
+                foreach ($files as $efile) {
+                    $filename = $efile->getClientOriginalName();
+                    $upfiles = array(
+                        'doc_object' => 'PR',
+                        'doc_number' => $ptaNumber,
+                        'efile'      => $filename,
+                        'pathfile'   => '/files/PR/'. $filename,
+                        'createdon'  => getLocalDatabaseDateTime(),
+                        'createdby'  => Auth::user()->username
+                    );
+                    array_push($insertFiles, $upfiles);
+
+                    // $efile->move(public_path().'/files/PO/', $filename);
+                    $efile->move('files/PR/', $filename);
+                }
+                if(sizeof($insertFiles) > 0){
+                    insertOrUpdate($insertFiles,'t_attachments');
+                }
             }
 
             DB::commit();

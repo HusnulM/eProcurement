@@ -61,7 +61,7 @@ Route::group(['middleware' => 'auth'], function () {
         // Route::get('/budgetlist',   'Transaksi\PurchaseRequestController@budgetLists')->middleware('checkAuth:proc/pr');
 
         Route::get('/print/{p1}',     'Transaksi\PrintDocumentController@printpo')->middleware('checkAuth:proc/po');
-        Route::get('/detail/{p1}',    'Transaksi\PrintDocumentController@podetail')->middleware('checkAuth:proc/po');
+
         Route::get('/printlist',      'Transaksi\PrintDocumentController@printpolist')->middleware('checkAuth:proc/po');
 
         Route::get('/listapprovedpr', 'Transaksi\PurchaseOrderController@getApprovedPR')->middleware('checkAuth:proc/po');
@@ -78,8 +78,9 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => '/po/list'], function () {
-        Route::get('/',      'Transaksi\PurchaseOrderController@listPO')->middleware('checkAuth:po/list');
-        Route::get('/get',   'Transaksi\PurchaseOrderController@getListPO')->middleware('checkAuth:po/list');
+        Route::get('/',             'Transaksi\PurchaseOrderController@listPO')->middleware('checkAuth:po/list');
+        Route::get('/get',          'Transaksi\PurchaseOrderController@getListPO')->middleware('checkAuth:po/list');
+        Route::get('/detail/{p1}',  'Transaksi\PurchaseOrderController@poDetail')->middleware('checkAuth:po/list');
     });
 
     Route::group(['prefix' => '/approve/po'], function () {

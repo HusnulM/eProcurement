@@ -263,29 +263,32 @@
 
 <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalApprovalNote">
     <div class="modal-dialog modal-lg">
-        <form class="form-horizontal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalApprovalTitle">Approval Note</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="position-relative row form-group">
-                    <div class="col-lg-12">
-                        <textarea name="approver_note" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
-                    </div>
-                    <div class="col-lg-12">
-                        <label for="Attachment">Attachment</label>
-                        <input type="file" name="efile" id="efile" class="form-control">
+        <form class="form-horizontal" id="form-submit-approval" method="post" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalApprovalTitle">Approval Note</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="position-relative row form-group">
+                        <div class="col-lg-12">
+                            <textarea name="approvernote" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
+                        </div>
+                        <div class="col-lg-12">
+                            <label for="Attachment">Attachment</label>
+                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
+                            <input type="hidden" name="action" id="_action">
+                            <input type="hidden" name="prid" id="prid" value="{{ $prhdr->id }}">
+                        </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary submit-approval"> OK</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit-approval"> OK</button>
-            </div>
-        </div>
         </form>
     </div>
 </div>
@@ -322,109 +325,58 @@
         let _token   = $('meta[name="csrf-token"]').attr('content');
         let _action  = null;
 
-        $('#checkAll').click(function(){
-            if(this.checked){
-                $('.checkbox').each(function(){
-                    this.checked = true;
-                });
-            }else{
-                $('.checkbox').each(function(){
-                    this.checked = false;
-                });
-            }
-        });
-
         $('#btn-approve-items').on('click', function(){
-            // var tableControl= document.getElementById('tbl-pr-data');
-            // var _splchecked = [];
-            // _action = 'A';
-            // $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-            //     _splchecked.push($(this).parent().next().text())
-            // }).get();
-            // if(_splchecked.length > 0){
-            //     console.log(_splchecked)
-            // }else{
-            //     alert('No record selected ');
-            // }
+
             _action = 'A';
+            $('#_action').val('A');
             $('#modalApprovalTitle').html('Approve Note');
             $('#modalApprovalNote').modal('show');
         });
 
         $('#btn-reject-items').on('click', function(){
-            // var tableControl= document.getElementById('tbl-pr-data');
-            // var _splchecked = [];
-            // _action = 'R';
-            // $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-            //     _splchecked.push($(this).parent().next().text())
-            // }).get();
-            // if(_splchecked.length > 0){
-            //     console.log(_splchecked)
-            // }else{
-            //     alert('No record selected ');
-            // }
+
             _action = 'R';
+            $('#_action').val('R');
             $('#modalApprovalTitle').html('Reject Note');
             $('#modalApprovalNote').modal('show');
         });
 
-        $('#submit-approval').on('click', function(){
-            approvePR();
-        });
-
-        function approvePR(){
-            var prtemchecked = {
-                    "prnum"  : {{ $prhdr->id }},
-                    "action" : _action,
-                    // "efile"  : $('#efile').val(),
-                    "_token": _token,
-                    "approvernote":$('#approver_note').val(),
+        $('#form-submit-approval').on('submit', function(event){
+            event.preventDefault();
+            var formData = new FormData(this);
+            console.log($(this).serialize())
+            $.ajax({
+                url:base_url+'/approve/pr/save',
+                method:'post',
+                data:formData,
+                dataType:'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend:function(){
+                    $('.submit-approval').attr('disabled','disabled');
+                },
+                error:function(error){
+                    toastr.error(error)
+                    setTimeout(function(){
+                        location.reload();
+                    }, 2000);
                 }
-
-                $.ajax({
-                    url:base_url+'/approve/pr/save',
-                    method:'post',
-                    data:prtemchecked,
-                    dataType:'JSON',
-                    beforeSend:function(){
-                        $('#btn-approve-items').attr('disabled','disabled');
-                        $('#btn-reject-items').attr('disabled','disabled');
-                    },
-                    success:function(data)
-                    {
-
-                    },
-                    error:function(err){
-                        console.log(err);
-                        toastr.error(err)
-
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
-                    }
-                }).done(function(response){
-                    console.log(response);
-                    // $('#btn-approve').attr('disabled',false);
-                    console.log(response);
-                    if(response.msgtype === "200"){
-                        if(_action === "A"){
-                            toastr.success(response.message)
-                        }else if(_action === "R"){
-                            toastr.success(response.message)
-                        }
-
-                        setTimeout(function(){
-                            window.location.href = base_url+'/approve/pr';
-                        }, 2000);
-                    }else{
-                        toastr.error(response.message)
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
-                    }
-                });
-
-        }
+            }).done(function(result){
+                console.log(result)
+                if(result.msgtype === "200"){
+                    toastr.success(result.message)
+                    setTimeout(function(){
+                        window.location.href = base_url+'/approve/pr';
+                    }, 2000);
+                }else{
+                    toastr.error(result.message)
+                    setTimeout(function(){
+                        location.reload();
+                    }, 2000);
+                }
+            }) ;
+        });
     });
 </script>
 @endsection

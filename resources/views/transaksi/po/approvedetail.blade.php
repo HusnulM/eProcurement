@@ -31,22 +31,15 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-12">
-
                                 <div class="form-group">
-                                    <label for="doctitle">Nomor PO</label>
-                                    <p>{{ $prhdr->ponum }}</p>
                                     <input type="hidden" id="poNumber" value="{{ $prhdr->ponum }}">
-                                </div>
-                                <div class="form-group">
-                                    <label>Tanggal PO:</label> {{$prhdr->podat}}
-                                </div>
-                                <div class="form-group">
-                                    <label>Vendor:</label> {{$prhdr->vendor_name}}
-                                </div>
-                                <div class="form-group">
-                                    <label>Created Date:</label>
-                                    <p>{!! formatDateTime($prhdr->createdon) !!}
-                                    </p>
+                                    <label>Type PO:</label> {{ $prhdr->potype == 'AA' ? 'Head Office' : 'Proyek' }} <br>
+                                    <label>Tanggal PO:</label> {{$prhdr->podat}} <br>
+                                    <label>Delivery: Date</label> {{ $prhdr->delivery_date }} <br>
+                                    <label>Vendor:</label> {{$prhdr->vendor_name}} <br>
+                                    <label>Nama Proyek:</label> {{ $prhdr->nama_project }} <br>
+                                    <label>Created Date:</label> {!! formatDateTime($prhdr->createdon) !!} <br>
+                                    <label>Created By:</label> {{ $prhdr->createdby }}
                                 </div>
                                 <div class="form-group">
                                     <label for="totalprice">Total Harga PO</label>
@@ -98,48 +91,35 @@
                                         <div class="col-lg-12">
                                             <table id="tbl-pr-data" class="table table-bordered table-hover table-striped table-sm">
                                                 <thead>
-                                                    <th style="text-align:center;">
-                                                        <input type="checkbox" id="checkAll" class="filled-in" />
-                                                        <label for="checkAll"></label>
-                                                    </th>
+
                                                     <th>PO Item</th>
-                                                    <th>Part Number</th>
-                                                    <th>Description</th>
+                                                    <th>Item Name</th>
                                                     <th style="text-align:center;">Quantity</th>
-                                                    <th>Unit</th>
-                                                    <th>Unit Price</th>
-                                                    <th>Total Price</th>
+                                                    <th style="text-align:center;"style="text-align:center;">Unit Price</th>
+                                                    <th style="text-align:center;">Total Price</th>
+                                                    <th>Cost Code</th>
                                                 </thead>
                                                 <tbody>
                                                 @foreach($pritem as $key => $row)
                                                     <tr>
-                                                        {{-- <td>{{ $key+1 }}</td> --}}
-                                                        <td style="text-align:center;">
-                                                            @if($row->approval_status !== "A" && $row->approval_status !== "R")
-                                                            <input class="filled-in checkbox" type="checkbox" id="{{ $row->pritem }}" name="ID[]">
-                                                            <label for="{{ $row->pritem }}"></label>
-                                                            @endif
-                                                        </td>
+
                                                         <td>
                                                             {{ $row->poitem }}
                                                         </td>
                                                         <td>
-                                                            {{ $row->material }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $row->matdesc }}
+                                                            {{ $row->matdesc }} - {{ $row->matspec }}
                                                         </td>
                                                         <td style="text-align:right;">
-                                                            {{ number_format($row->quantity,3) }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $row->unit }}
+                                                            {{ number_format($row->quantity,0) }} {{ $row->unit }}
                                                         </td>
                                                         <td style="text-align:right;">
                                                             {{ number_format($row->price,0) }}
                                                         </td>
                                                         <td style="text-align:right;">
                                                             {{ number_format($row->price * $row->quantity,0) }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $row->costcd }} - {{ $row->cost_desc }}
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -338,47 +318,6 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
-
-                                                @foreach($prAttachments as $key => $file)
-                                                    <tr>
-                                                        <td>{{ $key+1 }}</td>
-                                                        <td>
-                                                            {{ $file->doc_object }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $file->efile }}
-                                                        </td>
-                                                        <td>
-                                                            <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
-                                                        </td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PR/{{$file->efile}}#toolbar=0')">
-                                                                <i class="fa fa-search"></i> Preview File
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-
-                                                @foreach($pbjAttachments as $key => $file)
-                                                    <tr>
-                                                        <td>{{ $key+1 }}</td>
-                                                        <td>
-                                                            {{ $file->doc_object }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $file->efile }}
-                                                        </td>
-                                                        <td>
-                                                            <i class="fa fa-clock"></i> {!! formatDateTime($file->createdon) !!}
-                                                        </td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-sm btn-default" onclick="previewFile('files/PBJ/{{$file->efile}}#toolbar=0')">
-                                                                <i class="fa fa-search"></i> Preview File
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-
                                                 </tbody>
                                             </table>
                                         </div>
@@ -426,26 +365,33 @@
 </div>
 
 <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalApprovalNote">
-    <div class="modal-dialog modal-md">
-        <form class="form-horizontal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalApprovalTitle">Approval Note</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="position-relative row form-group">
-                    <div class="col-lg-12">
-                        <textarea name="approver_note" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
+    <div class="modal-dialog modal-lg">
+        <form class="form-horizontal" id="form-submit-approval" method="post" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalApprovalTitle">Approval Note</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="position-relative row form-group">
+                        <div class="col-lg-12">
+                            <textarea name="approvernote" id="approver_note" cols="30" rows="3" class="form-control" placeholder="Approval Note..."></textarea>
+                        </div>
+                        <div class="col-lg-12">
+                            <label for="Attachment">Attachment</label>
+                            <input type="file" class="form-control" name="efile[]" multiple="multiple">
+                            <input type="hidden" name="action" id="_action">
+                            <input type="hidden" name="poid" id="poid" value="{{ $prhdr->id }}">
+                        </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary submit-approval"> SUBMIT</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="submit-approval"> OK</button>
-            </div>
-        </div>
         </form>
     </div>
 </div>
@@ -496,95 +442,60 @@
 
         $('#btn-approve-items').on('click', function(){
             var tableControl= document.getElementById('tbl-pr-data');
-            var _splchecked = [];
             _action = 'A';
-            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-                _splchecked.push($(this).parent().next().text())
-            }).get();
-            if(_splchecked.length > 0){
-                console.log(_splchecked)
-                _action = 'A';
-                $('#modalApprovalTitle').html('Approve Note');
-                $('#modalApprovalNote').modal('show');
-            }else{
-                alert('No record selected ');
-            }
+            $('#_action').val('A');
+            $('#modalApprovalTitle').html('Approve Note');
+            $('#modalApprovalNote').modal('show');
         });
 
         $('#btn-reject-items').on('click', function(){
             var tableControl= document.getElementById('tbl-pr-data');
-            var _splchecked = [];
             _action = 'R';
-            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-                _splchecked.push($(this).parent().next().text())
-            }).get();
-            if(_splchecked.length > 0){
-                console.log(_splchecked)
-                _action = 'R';
-                $('#modalApprovalTitle').html('Reject Note');
-                $('#modalApprovalNote').modal('show');
-            }else{
-                alert('No record selected ');
-            }
+            $('#_action').val('R');
+            $('#modalApprovalTitle').html('Reject Note');
+            $('#modalApprovalNote').modal('show');
         });
 
-        $('#submit-approval').on('click', function(){
-            approvePO();
-        });
+        $('#form-submit-approval').on('submit', function(event){
+            event.preventDefault();
+            var formData = new FormData(this);
+            console.log($(this).serialize())
+            $.ajax({
+                url:base_url+'/approve/po/save',
+                method:'post',
+                data:formData,
+                dataType:'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend:function(){
+                    $('.submit-approval').attr('disabled','disabled');
+                },
+                success:function(data)
+                {
 
-        function approvePO(){
-            var tableControl= document.getElementById('tbl-pr-data');
-            var _splchecked = [];
-            $('input[name="ID[]"]:checkbox:checked', tableControl).each(function() {
-                _splchecked.push($(this).parent().next().text())
-            }).get();
-
-            var prtemchecked = {
-                    "poid"   : {{ $prhdr->id }},
-                    "ponum"  : "{{ $prhdr->ponum }}",
-                    "approvernote": $('#approver_note').val(),
-                    "poitem" : _splchecked,
-                    "action" : _action,
-                    "_token" : _token
+                },
+                error:function(error){
+                    toastr.error(error)
+                    setTimeout(function(){
+                        location.reload();
+                    }, 2000);
                 }
-                $.ajax({
-                    url:base_url+'/approve/po/save',
-                    method:'post',
-                    data:prtemchecked,
-                    dataType:'JSON',
-                    beforeSend:function(){
-                        $('#btn-approve-items').attr('disabled','disabled');
-                        $('#btn-reject-items').attr('disabled','disabled');
-                    },
-                    success:function(data)
-                    {
-
-                    },
-                    error:function(err){
-                        console.log(err);
-                        toastr.error(err)
-                    }
-                }).done(function(response){
-                    console.log(response);
-                    console.log(response);
-                    if(response.msgtype === "200"){
-                        if(_action === "A"){
-                            toastr.success(response.message)
-                        }else if(_action === "R"){
-                            toastr.success(response.message)
-                        }
-
-                        setTimeout(function(){
-                            window.location.href = base_url+'/approve/po';
-                        }, 2000);
-                    }else{
-                        toastr.error(response.message)
-                        setTimeout(function(){
-                            location.reload();
-                        }, 2000);
-                    }
-                });
-        }
+            }).done(function(result){
+                console.log(result)
+                if(result.msgtype === "200"){
+                    toastr.success(result.message)
+                    setTimeout(function(){
+                        window.location.href = base_url+'/approve/po';
+                    }, 2000);
+                }else{
+                    toastr.error(result.message)
+                    setTimeout(function(){
+                        location.reload();
+                    }, 2000);
+                }
+            }) ;
+        });
     });
 </script>
 @endsection

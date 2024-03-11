@@ -198,7 +198,7 @@
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                window.location = "/proc/po/detail/"+selected_data.id;
+                window.location = "/po/list/detail/"+selected_data.id;
             });
 
             $('#tbl-budget-list tbody').on( 'click', '.button-change', function () {

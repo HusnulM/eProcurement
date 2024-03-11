@@ -28,19 +28,15 @@ class PurchaseOrderController extends Controller
 
     public function getListPO(Request $req){
 
-        $query = DB::table('t_po01')
-        ->join('t_projects', 't_po01.idproject', '=', 't_projects.id')
-        ->join('t_vendor', 't_po01.vendor', '=', 't_vendor.id')
-        ->select('t_po01.*','t_projects.kode_project', 't_projects.nama_project','t_vendor.vendor_name')
-        ->distinct();
+        $query = DB::table('v_po01');
 
         if(isset($req->approvalstat)){
             if($req->approvalstat === "O"){
-                $query->where('t_po01.approvestat', 'O');
+                $query->where('approvestat', 'O');
             }elseif($req->approvalstat === "A"){
-                $query->where('t_po01.approvestat', 'A');
+                $query->where('approvestat', 'A');
             }elseif($req->approvalstat === "R"){
-                $query->where('t_po01.approvestat', 'R');
+                $query->where('approvestat', 'R');
             }
         }
 
@@ -62,12 +58,12 @@ class PurchaseOrderController extends Controller
         }else{
             if(isset($req->project)){
                 if($req->project !== 'All'){
-                    $query->where('t_po01.idproject', $req->project);
+                    $query->where('idproject', $req->project);
                 }
             }
         }
 
-        $query->orderBy('t_po01.id');
+        $query->orderBy('id');
 
         return DataTables::queryBuilder($query)
         ->editColumn('podat', function ($query){
@@ -76,6 +72,40 @@ class PurchaseOrderController extends Controller
              ];
         })
         ->toJson();
+    }
+
+    public function poDetail($id){
+        $pohdr       = DB::table('t_po01')->where('id', $id)->first();
+        $podtl       = DB::table('t_po02')
+                        ->join('t_material', 't_po02.material', '=', 't_material.material')
+                        ->leftJoin('v_cost_master', 't_po02.cost_code', '=', 'v_cost_master.id')
+                        ->select('t_po02.*','t_material.matspec', 'v_cost_master.cost_code as costcd',
+                                 'v_cost_master.cost_desc', 'v_cost_master.cost_group_desc')
+                        ->where('t_po02.ponum', $pohdr->ponum)
+                        ->get();
+        // dd($podtl);
+        // DB::table('t_po02')->where('ponum', $pohdr->ponum)->get();
+        $costs       = DB::table('t_po03')->where('ponum', $pohdr->ponum)->get();
+        $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $pohdr->ponum)->get();
+        $approvals   = DB::table('v_po_approval')->where('ponum', $pohdr->ponum)->get();
+        $vendor      = DB::table('t_vendor')->where('id', $pohdr->vendor)->first();
+        // $sdepartment = DB::table('t_department')->where('deptid', $pohdr->deptid)->first();
+        $proyek = getAuthorizedProject();
+        $sproyek = DB::table('t_projects')->where('id', $pohdr->idproject)->first();
+
+        return view('transaksi.po.podetail',
+            [
+                // 'department'    => $department,
+                'pohdr'         => $pohdr,
+                'poitem'        => $podtl,
+                'costs'         => $costs,
+                'attachments'   => $attachments,
+                'approvals'     => $approvals,
+                'vendor'        => $vendor,
+                'proyek'        => $proyek,
+                'sproyek'       => $sproyek
+                // 'sdepartment'   => $sdepartment
+            ]);
     }
 
     public function changePO($id){
@@ -171,7 +201,7 @@ class PurchaseOrderController extends Controller
                 $poID = DB::table('t_po01')->insertGetId([
                     'ponum'             => $ptaNumber,
                     'ext_ponum'         => $ptaNumber,
-                    // 'deptid'            => $req['department'],
+                    'potype'            => $req['prtype'],
                     'podat'             => $req['tglreq'],
                     'delivery_date'     => $req['deldate'],
                     'vendor'            => $req['vendor'],
@@ -192,7 +222,7 @@ class PurchaseOrderController extends Controller
                 $poID = DB::table('t_po01')->insertGetId([
                     'ponum'             => $ptaNumber,
                     'ext_ponum'         => $ptaNumber,
-                    // 'deptid'            => $req['department'],
+                    'potype'            => $req['prtype'],
                     'podat'             => $req['tglreq'],
                     'delivery_date'     => $req['deldate'],
                     'vendor'            => $req['vendor'],

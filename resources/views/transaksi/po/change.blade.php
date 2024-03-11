@@ -25,7 +25,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Change Purchase Order <b>[{{ $pohdr->ponum }}]</b></h3>
                         <div class="card-tools">
-                            <a href="{{ url('/proc/po/listpo') }}" class='btn btn-default btn-sm btn-update-pr'>
+                            <a href="{{ url('/po/list') }}" class='btn btn-default btn-sm btn-update-pr'>
                                 <i class='fa fa-arrow-left'></i> Back
                             </a>
                             <button type="submit" class="btn btn-primary btn-sm btn-add-dept">
@@ -142,9 +142,6 @@
                                             <button type="button" class="btn btn-success btn-sm btn-add-po-item-based-pr">
                                                 <i class="fa fa-list"></i> List PR
                                             </button>
-                                            <a href="{{ url('/approve/pbj') }}" class="btn btn-default btn-sm">
-                                                <i class="fa fa-arrow-left"></i> Back
-                                            </a>
                                         </div>
                                     </div>
                                     <div class="card-body">
