@@ -14,7 +14,9 @@ class PurchaseOrderController extends Controller
 {
     public function index(){
         $proyek = getAuthorizedProject();
-        return view('transaksi.po.index', ['proyek' => $proyek]);
+        $doctyp = getAuthorizedPOType('PO', 'ALLOW_POTYPE');
+
+        return view('transaksi.po.index', ['proyek' => $proyek, 'doctyp' => $doctyp]);
     }
 
     public function duedate(){
@@ -188,14 +190,20 @@ class PurchaseOrderController extends Controller
             $tahun = substr($req['tglreq'], 2, 2);
 
             // return $tgl . ' - ' . $bulan . ' - ' . $tahun;
+            $project = DB::table('t_projects')->where('id', $req['project'])->first();
+
             $prefix = null;
             if($req['prtype'] === "AA"){
                 $prefix = 'AA';
             }else{
-                $project = DB::table('t_projects')->where('id', $req['project'])->first();
-                $prefix = $project->kode_project;;
+                $prefix = $project->kode_project;
             }
             $ptaNumber = generatePONumber($tahun, $bulan, $prefix);
+
+            if($req['prtype'] === "AA"){
+                $ptaNumber = $ptaNumber .'('.$project->kode_project.')';
+            }
+
             // dd($ptaNumber);
             if($req['poSolarInd'] === 'Y'){
                 $poID = DB::table('t_po01')->insertGetId([

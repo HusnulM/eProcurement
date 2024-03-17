@@ -107,7 +107,7 @@ class ReportsController extends Controller
     }
 
     public function poList(Request $req){
-        $query = DB::table('v_rpo_v2');
+        $query = DB::table('v_rpo01');
 
         if(isset($req->department)){
             if($req->department !== 'All'){
@@ -161,16 +161,16 @@ class ReportsController extends Controller
     }
 
     public function pr(){
-        $department = DB::table('t_department')->get();
-        return view('laporan.rpr', ['department' => $department]);
+        $proyek = getAuthorizedProject();
+        return view('laporan.rpr', ['proyek' => $proyek]);
     }
 
     public function prList(Request $req){
-        $query = DB::table('v_rpr01');
+        $query = DB::table('v_pr01');
 
-        if(isset($req->department)){
-            if($req->department !== 'All'){
-                $query->where('deptid', $req->department);
+        if(isset($req->project)){
+            if($req->project !== 'All'){
+                $query->where('idproject', $req->project);
             }
         }
 

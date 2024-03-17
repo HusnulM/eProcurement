@@ -47,7 +47,7 @@ class PrintDocumentController extends Controller
     }
 
     public function printprlist(Request $req){
-        $query = DB::table('v_rpr')->select('id','prnum','prdate','approvestat','requestby','remark','deptname','createdby')->distinct();
+        $query = DB::table('v_pr01')->select('id','prnum','prdate','approvestat','requestby','remark','deptname','createdby')->distinct();
 
         if(isset($req->department)){
             if($req->department !== 'All'){
@@ -98,9 +98,16 @@ class PrintDocumentController extends Controller
 
     public function printpr($id){
         $prhdr    = DB::table('t_pr01')->where('id', $id)->first();
-        $prdtl    = DB::table('v_form_pr_dtl')->where('prnum', $prhdr->prnum)->get();
+        $prdtl    = DB::table('v_pr01')->where('prnum', $prhdr->prnum)->get();
+        $proyek   = DB::table('t_projects')->where('id', $prhdr->idproject)->first();
 
-        $approval = DB::table('t_pr_approvalv2')
+        $dtlGroup = DB::table('v_pr01')
+                    ->select('prnum','itemtext')
+                    ->distinct()
+                    ->where('prnum', $prhdr->prnum)
+                    ->get();
+
+        $approval = DB::table('t_pr_approval')
                     ->where('prnum', $prhdr->prnum)
                     ->where('approval_status', 'A')
                     ->orderBy('approver_level', 'DESC')
@@ -113,11 +120,22 @@ class PrintDocumentController extends Controller
 
         $creatorSign = DB::table('users')->where('email', $prhdr->createdby)->first();
 
+        // return view('transaksi.pr.printpr',
+        //     [
+        //         'prhdr'       => $prhdr,
+        //         'pritem'      => $prdtl,
+        //         'project'     => $proyek->nama_project,
+        //         'approval'    => $approval,
+        //         'approveSign' => $approveSign,
+        //         'creatorSign' => $creatorSign
+        //     ]);
+
         $pdf = PDF::loadview('transaksi.pr.printpr',
             [
                 'prhdr'       => $prhdr,
                 'pritem'      => $prdtl,
-                'project'     => $prdtl[0]->nmproject,
+                'dtlGroup'    => $dtlGroup,
+                'project'     => $proyek->nama_project,
                 'approval'    => $approval,
                 'approveSign' => $approveSign,
                 'creatorSign' => $creatorSign

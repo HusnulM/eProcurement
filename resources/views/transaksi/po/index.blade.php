@@ -57,8 +57,12 @@
                                             <label for="requestor">Type PO</label>
                                             <select name="prtype" id="prtype" class="form-control" required>
                                                 <option value="">Pilih Satu</option>
-                                                <option value="AA">Head Office</option>
-                                                <option value="SQ">Proyek</option>
+                                                @foreach ($doctyp as $val => $row)
+                                                {{-- @foreach ($proyek as $ls => $row) --}}
+                                                    <option value="{{ $row->doctype }}">{{ $row->description }}</option>
+                                                @endforeach
+                                                {{-- <option value="AA">Head Office</option>
+                                                <option value="SQ">Proyek</option> --}}
                                             </select>
                                         </div>
                                     </div>

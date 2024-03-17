@@ -29,6 +29,30 @@ function getLocalDatabaseDateTime(){
     return $localDateTime[0]->lcldate;
 }
 
+function getAuthorizedPOType($pobjk, $authobj){
+    $checkObjAuth = DB::table('user_object_auth')
+        ->where('object_name', $authobj)
+        ->where('object_val', '*')
+        ->where('userid', Auth::user()->id)
+        ->first();
+
+    if($checkObjAuth){
+        $doctype = DB::table('t_purc_doctype')->where('object', $pobjk)->get();
+        return $doctype;
+    }else{
+        $authDoctyp = DB::table('user_object_auth')
+            ->where('object_name', $authobj)
+            ->where('userid', Auth::user()->id)
+            ->pluck('object_val');
+        $doctype = DB::table('t_purc_doctype')
+            ->where('object', $pobjk)
+            ->whereIn('doctype', $authDoctyp)
+            ->get();
+
+        return $doctype;
+    }
+}
+
 function getAuthorizedProject(){
     $checkObjAuth = DB::table('user_object_auth')
         ->where('object_name', 'ALLOW_DISPLAY_PROJECT')
@@ -394,7 +418,6 @@ function generatePRNumber($tahun, $bulan, $prtype, $project){
             }else{
                 $dcnNumber = $dcnNumber .'/'. $leadingZero . $lastnum;
             }
-
             // dd($leadingZero);
 
             DB::table('nriv_pr')
@@ -414,6 +437,7 @@ function generatePRNumber($tahun, $bulan, $prtype, $project){
         }
     }else{
         $dcnNumber = $dcnNumber.'/000001';
+
         DB::beginTransaction();
         try{
             DB::table('nriv_pr')->insert([

@@ -82,13 +82,9 @@
                                     <th>Open Qty</th>
                                     <th>Unit</th>
                                     <th>Unit Price</th>
-                                    <th>Department</th>
                                     <th>Status</th>
                                     <th>Remark</th>
                                     <th>PR Number</th>
-                                    <th>Cost Code</th>
-                                    <th>Budget Period</th>
-                                    <th>Unit Code / No Pol</th>
                                 </thead>
                                 <tbody>
 
@@ -193,7 +189,6 @@
                         },
                         "className": "text-right",
                     },
-                    {data: "deptname"},
                     {data: "approvestat",
                         render: function (data, type, row){
                             if(row.approvestat == "O"){
@@ -209,9 +204,6 @@
                     },
                     {data: "note" },
                     {data: "prnum" },
-                    {data: "budget_code" },
-                    {data: "budget_period" },
-                    {data: "no_plat" }
                 ]
             });
         }

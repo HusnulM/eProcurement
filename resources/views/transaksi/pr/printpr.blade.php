@@ -34,7 +34,7 @@
             font-family: Arial, Helvetica, sans-serif;
             border-collapse: collapse;
             width: 100%;
-            font-size:12px;
+            font-size:10px;
         }
 
         #items td, #items th {
@@ -50,7 +50,7 @@
             /* padding-top: 12px;
             padding-bottom: 12px; */
             text-align: left;
-            background-color: #B4B1B1;
+            background-color: #f7f3f3;
             color: black;
         }
 
@@ -73,124 +73,147 @@
         .page-number:before {
         content: "Page " counter(page);
         }
+
+        #tblheader{
+            border: 1px solid black;
+            border-collapse: collapse;
+            border-spacing: 0px;
+            padding-top: 0;
+        }
+
+        th, td { padding: 2px; }
+
     </style>
 </head>
 <body>
-    <table cellspacing="0" cellpadding="0">
+    <table id="tblheader" style="width: 100%;" cellspacing="0" cellpadding="0">
         <tr>
-            <td style="text-align:center; width:130px;" rowspan="3">
-                <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-Logo" style="width:90px; height:60px;">
-            </td>
-            <td style="text-align:center; width:500px;">
-                <h2 style="text-align:center; font-family: Arial, Helvetica, sans-serif;">PURCHASE REQUISITION</h2>
-            </td>
-        </tr>
-    </table>
-    <table border="0" cellspacing="0" cellpadding="0" class="customers" style="margin-bottom: 20px !important;">
-        <tr>
-            <td style="width:120px;">PR Number</td>
-            <td style="width:20px;">:</td>
-            <td>{{ $prhdr->prnum }}</td>
-            <td style="width:90px;">Department</td>
-            <td style="width:10px;">:</td>
-            <td style="width:150px;">{{ getDepartmentByID($prhdr->deptid) }}</td>
-        </tr>
-        <tr>
-            <td>Requirement Date</td>
-            <td>:</td>
-            <td>{{ \Carbon\Carbon::parse($prhdr->prdate)->format('d-m-Y') }}</td>
-            <td>Created By</td>
-            <td>:</td>
-            <td>{{ getUserNameByID($prhdr->createdby) }}</td>
-        </tr>
-        <tr>
-            <td>Remark</td>
-            <td>:</td>
-            <td>{{ $prhdr->remark }}</td>
-            <td>Status</td>
-            <td>:</td>
-            <td>
-                @if($prhdr->approvestat === "A")
-                    Approved
-                @elseif($prhdr->approvestat === "O")
-                    Open
-                @elseif($prhdr->approvestat === "R")
-                    Rejected
+            <th  style="text-align:left; width:100px;">
+                @if(checkIsLocalhost())
+                    <img src="{{ public_path('/assets/img/logo.jpg') }}" class="img-thumbnail" alt="Logo" style="width:250px; height:35px;margin-top:0px;">
+                @else
+                    <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
                 @endif
-            </td>
+            </th>
+            <th colspan="2" style="text-align:right; font-family: Arial, Helvetica, sans-serif; margin-right:10px;">
+                <i style="margin-right:40px; font-size:12px;">NO : {{ $prhdr->prnum }}</i>
+            </th>
         </tr>
         <tr>
-            <td>Project</td>
-            <td>:</td>
-            <td>{{ $project ?? '' }}</td>
+            <th colspan="3">
+                <u>SURAT PERMINTAAN BARANG</u>
+            </th>
+        </tr>
+        <tr>
+            <th colspan="3" style="text-align:center; font-family: Arial, Helvetica, sans-serif; margin-right:50px;font-size:11px;">
+                <i>PROYEK : {{ $project }}</i>
+            </th>
+        </tr>
+        <tr>
+            <th style="width: 450px;"></th>
+            <th style="width: 50px; text-align:left; font-weight:normal; margin-left:10px; font-size:10px;">
+                Kepada:
+            </th>
+            <th style="text-align:left; font-weight:normal; margin-left:10px; font-size:10px;">
+                <li>Pengadaan & Peralatan Pusat</li>
+            </th>
+        </tr>
+        <tr>
+            <th style="width: 450px;"></th>
+            <th style="width: 50px; text-align:left; font-weight:normal; margin-left:10px; font-size:10px;">
+            </th>
+            <th style="text-align:left; font-weight:normal; margin-left:10px; font-size:10px;">
+                <li>Pengadaan & Peralatan Proyek</li>
+            </th>
+        </tr>
+        <tr>
+            <th colspan="3" style="text-align:left; font-size:10px; font-weight:normal; margin-left:10px;">
+                Mohon dibelikan / dipesan segera barang-barang tersebut dibawah ini :
+            </th>
         </tr>
     </table>
+
+
     <!-- <br> -->
     <table id="items">
-        <thead>
-            <th>No</th>
-            <th style="width:100px;">Part Number</th>
-            <th style="width:200px;">Description</th>
-            <th style="text-align:right;">Quantity</th>
-            <th style="text-align:center;">Unit</th>
-            <th>PBJ Number</th>
-            <th>PBJ Remark</th>
-            <th>Periode Budget</th>
-        </thead>
-        <tbody>
-            @foreach($pritem as $key => $row)
-            <tr>
-                <td>{{ $key+1 }}</td>
-                <td>{{ $row->material }}</td>
-                <td>{{ $row->matdesc }}</td>
-                <td style="text-align:right;">
-                @if(strpos($row->quantity, '.000') !== false)
-                {{ number_format($row->quantity, 0, ',', '.') }}
-                @else
-                {{ number_format($row->quantity, 3, ',', '.') }}
-                @endif
+        <thead font-weight:bold; font-size:9px;>
+            <th>NO</th>
+            <th style="width:200px; text-align:center">NAMA BARANG</th>
+            <th style="width:200px; text-align:center">SPEK / TYPE / UKURAN</th>
+            <th style="text-align:center;">JUMLAH</th>
+            <th style="text-align:center;">SATUAN</th>
+            <th style="text-align:center;">TIBA DI PROYEK</th>
 
-                </td>
-                <td style="text-align:center;">{{ $row->unit }}</td>
-                <td>{{ $row->pbjnumber }}</td>
-                <td>{{ $row->remarkpbj }}</td>
-                <td>{{ $row->periode }}</td>
-            </tr>
+        </thead>
+        <tbody style="font-weight:normal; margin-left:10px; font-size:10px;">
+            @foreach ($dtlGroup as $val => $grp)
+                <tr>
+                    <td></td>
+                    <td><b><i>{{ $grp->itemtext }}</i></b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                @foreach($pritem as $key => $row)
+                    @if($grp->itemtext === $row->itemtext)
+                        <tr>
+                            <td style="text-align: center;">{{ $key+1 }}</td>
+                            <td>{{ $row->matdesc }}</td>
+                            <td>{{ $row->matspec }}</td>
+                            <td style="text-align:center;">
+                            @if(strpos($row->quantity, '.000') !== false)
+                            {{ number_format($row->quantity, 0, ',', '.') }}
+                            @else
+                            {{ number_format($row->quantity, 3, ',', '.') }}
+                            @endif
+
+                            </td>
+                            <td style="text-align:center;">{{ $row->unit }}</td>
+                            <td></td>
+                        </tr>
+                    @endif
+                @endforeach
             @endforeach
         </tbody>
     </table>
 
-    <br>
-    <table class="table">
+    <table id="tblheader" style="width: 100%; font-family: Arial, Helvetica, sans-serif;" cellspacing="0" cellpadding="0">
         <tr>
-            <td style="width:15%;">Dibuat Oleh,</td>
-            <td style="width:450px;"></td>
-            <td style="width:15%;">Approve Oleh,</td>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                <b><i>Handil, 15 Desember 2023</i></b>
+            </th>
         </tr>
         <tr>
-            <td>
-                <img src="{{ asset($creatorSign->s_signfile) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-            </td>
-            <td></td>
-            <td>
-                @if($approveSign)
-                <img src="{{ asset($approveSign->s_signfile ?? '') }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
-                @else
-                <br>
-                @endif
-            </td>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                Disetujui Oleh,
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                Diketahui Oleh,
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                Dibuat Oleh,
+            </th>
         </tr>
         <tr>
-            <td> <u> {{ getUserNameByID($prhdr->createdby) }} </u></td>
-            <td></td>
-            <td>
-                @if($approval)
-                <u> {{ getUserNameByID($approval->approved_by) }} </u><br>
-                Date: {{ formatDate($approval->approval_date ?? null) }}
-                @endif
-            </td>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                <br><br><br><br>
+            </th>
         </tr>
     </table>
+
 
     <script type="text/php">
         if (isset($pdf)) {

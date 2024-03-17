@@ -15,8 +15,8 @@ class PurchaseRequestController extends Controller
 {
     public function index(){
         $proyek = getAuthorizedProject();
-
-        return view('transaksi.pr.index', ['proyek' => $proyek]);
+        $doctyp = getAuthorizedPOType('PR', 'ALLOW_PRTYPE');
+        return view('transaksi.pr.index', ['proyek' => $proyek, 'doctyp' => $doctyp]);
     }
 
     public function listPR(){
@@ -180,6 +180,10 @@ class PurchaseRequestController extends Controller
             }
 
             $ptaNumber = generatePRNumber($tahun, $bulan, $req['prtype'], $kodeProject);
+
+            if($req['prtype'] === "AA"){
+                $ptaNumber = $ptaNumber .'('.$project->kode_project.')';
+            }
 
             $prID = DB::table('t_pr01')->insertGetId([
                 'prnum'             => $ptaNumber,
@@ -490,37 +494,32 @@ class PurchaseRequestController extends Controller
         DB::beginTransaction();
         try{
             $prhdr = DB::table('t_pr01')->where('id', $id)->first();
-            $pbjdoc = DB::table('t_pr02')
-                        ->where('prnum', $prhdr->prnum)->get();
 
-            $checkApproval = DB::table('v_pr_approval_v2')
+
+            $checkApproval = DB::table('v_pr_approval01')
                         ->where('prnum', $prhdr->prnum)->where('approval_status', 'A')->first();
 
             if($checkApproval){
-                return Redirect::to("/proc/pr/listpr")->withError('PR : '. $prhdr->prnum . ' sudah di approve, data tidak bisa dihapus');
+                return Redirect::to("/proc/pr/list")->withError('PR : '. $prhdr->prnum . ' sudah di approve, data tidak bisa dihapus');
             }
 
             DB::table('t_pr01')->where('id', $id)->delete();
             DB::table('t_attachments')->where('doc_object', 'PR')->where('doc_number',$prhdr->prnum)->delete();
             DB::table('t_pr_approval')->where('prnum', $prhdr->prnum)->delete();
 
-            // return $pbjdoc;
-            foreach($pbjdoc as $row){
-                DB::table('t_pbj02')
-                    ->where('pbjnumber', $row->pbjnumber)
-                    ->where('pbjitem', $row->pbjitem)->update([
-                        'prcreated' => 'N'
-                ]);
-
-                // DB::commit();
-            }
+            // foreach($pbjdoc as $row){
+            //     DB::table('t_pbj02')
+            //         ->where('pbjnumber', $row->pbjnumber)
+            //         ->where('pbjitem', $row->pbjitem)->update([
+            //             'prcreated' => 'N'
+            //     ]);
+            // }
 
             DB::commit();
-            return Redirect::to("/proc/pr/listpr")->withSuccess('PR '. $prhdr->prnum .' Berhasil dihapus');
+            return Redirect::to("/proc/pr/list")->withSuccess('PR '. $prhdr->prnum .' Berhasil dihapus');
         }catch(\Exception $e){
             DB::rollBack();
-            return Redirect::to("/proc/pr/listpr")->withError($e->getMessage());
-            // dd($e->getMessage());
+            return Redirect::to("/proc/pr/list")->withError($e->getMessage());
         }
     }
 

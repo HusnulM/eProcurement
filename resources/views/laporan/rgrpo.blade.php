@@ -58,12 +58,12 @@
                                     <th>Tanggal Penerimaan</th>
                                     <th>Remark</th>
                                     <th>Di Terima Oleh</th>
-                                    <th>Item Code</th>
-                                    <th>Description</th>
+                                    <th>Item Name</th>
                                     <th>Spek</th>
                                     <th>Quantity</th>
                                     <th>Unit</th>
                                     <th>Nomor PO</th>
+                                    <th>Vendor</th>
                                     <th>Warehouse</th>
                                 </thead>
                                 <tbody>
@@ -143,7 +143,7 @@
                     },
                     {data: "remark", className: 'uid'},
                     {data: "received_by", className: 'uid'},
-                    {data: "material", className: 'uid'},
+                    // {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'uid'},
                     {data: "matspec", className: 'uid'},
                     {data: "quantity", "sortable": false,
@@ -154,6 +154,7 @@
                     },
                     {data: "unit"},
                     {data: "ponum"},
+                    {data: "vendor_name"},
                     {data: "whsname"}
                 ]
             });

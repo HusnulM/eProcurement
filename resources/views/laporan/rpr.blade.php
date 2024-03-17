@@ -45,11 +45,11 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-2">
-                                        <label for="">Department</label>
-                                        <select name="department" id="department" class="form-control">
+                                        <label for="">Proyek</label>
+                                        <select name="project" id="project" class="form-control">
                                             <option value="All">All</option>
-                                            @foreach($department as $key => $row)
-                                                <option value="{{ $row->deptid }}">{{ $row->department }}</option>
+                                            @foreach($proyek as $key => $row)
+                                            <option value="{{ $row->id }}">{{ $row->kode_project }} - {{ $row->nama_project }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -74,17 +74,14 @@
                                     <th>No</th>
                                     <th>Nomor PR</th>
                                     <th>Tanggal PR</th>
-                                    <th>Partnumber</th>
-                                    <th>Description</th>
+                                    {{-- <th>Item Code</th> --}}
+                                    <th>Item Name</th>
+                                    <th>Spek</th>
                                     <th>Quantity</th>
                                     <th>Unit</th>
-                                    <th>Department</th>
+                                    <th>Proyek</th>
                                     <th>Status</th>
                                     <th>Remark</th>
-                                    <th>PBJ Number</th>
-                                    <th>PBJ Item</th>
-                                    <th>Budget Cost Code</th>
-                                    <th>Budget Period</th>
                                     <th>PO Created</th>
                                     <th></th>
                                 </thead>
@@ -128,7 +125,7 @@
     $(document).ready(function(){
 
         $('.btn-search').on('click', function(){
-            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&department='+$('#department').val()+'&approvalstat='+$('#approvalStatus').val();
+            var param = '?datefrom='+ $('#datefrom').val() +'&dateto='+ $('#dateto').val()+'&project='+$('#project').val()+'&approvalstat='+$('#approvalStatus').val();
             loadDocument(param);
         });
 
@@ -163,8 +160,9 @@
                             return ``+ row.prdate.prdate1 + ``;
                         }
                     },
-                    {data: "material", className: 'uid'},
+                    // {data: "material", className: 'uid'},
                     {data: "matdesc", className: 'uid'},
+                    {data: "matspec", className: 'uid'},
                     {data: "quantity", "sortable": false,
                         render: function (data, type, row){
                             return ``+ row.quantity.qty1 + ``;
@@ -172,7 +170,7 @@
                         "className": "text-right",
                     },
                     {data: "unit"},
-                    {data: "deptname"},
+                    {data: "nama_project"},
                     {data: "approvestat",
                         render: function (data, type, row){
                             if(row.approvestat == "O"){
@@ -187,10 +185,6 @@
                         }
                     },
                     {data: "remark" },
-                    {data: "pbjnumber" },
-                    {data: "pbjitem" },
-                    {data: "budget_code" },
-                    {data: "periode" },
                     {data: "pocreated" },
                     {"defaultContent":
                         `<button class='btn btn-success btn-sm button-print'> <i class='fa fa-print'></i> Print</button>

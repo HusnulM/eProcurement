@@ -42,14 +42,14 @@
                                                             </button>
                                                         </div>
                                                     </div>
-                                                </form>                                        
+                                                </form>
                                             </div>
                                             <hr>
                                             <div class="col-lg-12">
-                                                <img src="{{ asset($complogo->setting_value ?? '/assets/dist/img/no-image.png') }}" alt="Company-Logo" class="img-thumbnail" style="width:200px; height:200px;">
+                                                <img src="{{ asset($complogo->setting_value ?? '/assets/dist/img/no-image.png') }}" alt="Company-Logo" class="img-thumbnail" style="width:600px; height:200px;">
                                             </div>
                                         </div>
-                                        
+
                                         <br>
                                         <hr>
                                         <div class="row">
@@ -82,7 +82,7 @@
                                                             </button>
                                                         </div>
                                                     </div>
-                                                </form>                                        
+                                                </form>
                                             </div>
                                             <hr>
                                             <div class="col-lg-12">
@@ -108,9 +108,9 @@
                                                             </button>
                                                         </div>
                                                     </div>
-                                                </form>                                        
+                                                </form>
                                             </div>
-                                        </div>                                
+                                        </div>
                                     </div>
                                 </div>
                             </div>
