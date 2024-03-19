@@ -101,24 +101,27 @@ class PrintDocumentController extends Controller
         $prdtl    = DB::table('v_pr01')->where('prnum', $prhdr->prnum)->get();
         $proyek   = DB::table('t_projects')->where('id', $prhdr->idproject)->first();
 
+        $disetjui = DB::table('t_master_approval')->where('id', $prhdr->disetujui)->first();
+        $diktahui = DB::table('t_master_approval')->where('id', $prhdr->diketahui)->first();
+
         $dtlGroup = DB::table('v_pr01')
                     ->select('prnum','itemtext')
                     ->distinct()
                     ->where('prnum', $prhdr->prnum)
                     ->get();
 
-        $approval = DB::table('t_pr_approval')
-                    ->where('prnum', $prhdr->prnum)
-                    ->where('approval_status', 'A')
-                    ->orderBy('approver_level', 'DESC')
-                    ->first();
-        if($approval){
-            $approveSign = DB::table('users')->where('id', $approval->approver)->first();
-        }else{
-            $approveSign = null;
-        }
+        // $approval = DB::table('t_pr_approval')
+        //             ->where('prnum', $prhdr->prnum)
+        //             ->where('approval_status', 'A')
+        //             ->orderBy('approver_level', 'DESC')
+        //             ->first();
+        // if($approval){
+        //     $approveSign = DB::table('users')->where('id', $approval->approver)->first();
+        // }else{
+        //     $approveSign = null;
+        // }
 
-        $creatorSign = DB::table('users')->where('email', $prhdr->createdby)->first();
+        // $creatorSign = DB::table('users')->where('email', $prhdr->createdby)->first();
 
         // return view('transaksi.pr.printpr',
         //     [
@@ -136,9 +139,8 @@ class PrintDocumentController extends Controller
                 'pritem'      => $prdtl,
                 'dtlGroup'    => $dtlGroup,
                 'project'     => $proyek->nama_project,
-                'approval'    => $approval,
-                'approveSign' => $approveSign,
-                'creatorSign' => $creatorSign
+                'disetjui'      => $disetjui,
+                'diktahui'      => $diktahui
             ]);
         // $pdf->setOptions(['isPhpEnabled' => true]);
         $pdf->set_option("enable_php", true);
@@ -149,295 +151,59 @@ class PrintDocumentController extends Controller
         return view('transaksi.pbj.list');
     }
 
-    public function printpbj($id){
-        $prhdr = DB::table('t_pbj01')->where('id', $id)->first();
-        $prdtl = DB::table('t_pbj02')->where('pbjnumber', $prhdr->pbjnumber)->get();
-        $logo = DB::table('general_setting')->where('setting_name', 'COMPANY_LOGO')->first();
-        $project = DB::table('t_projects')->where('idproject', $prhdr->idproject)->first();
-        if(!$project){
-            $project = null;
-        }
-
-        $pbjUser = DB::table('users')->where('email', $prhdr->createdby)->first();
-
-        $PBJApprover = DB::table('workflow_budget')
-                ->where('object', 'PBJ')
-                ->where('requester', $pbjUser->id ?? null)
-                ->where('approver_level', 1)
-                ->orderBy('approver_level','ASC')
-                ->first();
-        if($PBJApprover){
-            $firstApprover     = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
-            $firstApprovalDate = DB::table('v_pbj_approval')
-            ->where('approver', $PBJApprover->approver)
-            ->where('pbjnumber', $prhdr->pbjnumber)
-            ->orderBy('approval_date', 'DESC')
-            ->first();
-        }else{
-            $firstApprover = null;
-            $firstApprovalDate = null;
-        }
-
-        $PBJApprover = DB::table('workflow_budget')
-                ->where('object', 'PBJ')
-                ->where('requester', $pbjUser->id ?? null)
-                ->where('approver_level', 2)
-                ->orderBy('approver_level','ASC')
-                ->first();
-        if($PBJApprover){
-            $secondApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
-            $secondApprovalDate = DB::table('v_pbj_approval')
-            ->where('approver', $PBJApprover->approver)
-            ->where('pbjnumber', $prhdr->pbjnumber)
-            ->orderBy('approval_date', 'DESC')
-            ->first();
-        }else{
-            $secondApprover = null;
-            $secondApprovalDate = null;
-        }
-
-        $PBJApprover = DB::table('workflow_budget')
-                ->where('object', 'PBJ')
-                ->where('requester', $pbjUser->id ?? null)
-                ->where('approver_level', 3)
-                ->orderBy('approver_level','ASC')
-                ->first();
-        if($PBJApprover){
-            $thirdApprover = DB::table('v_users')->where('id', $PBJApprover->approver)->first();
-            $thirdApprovalDate = DB::table('v_pbj_approval')
-            ->where('approver', $PBJApprover->approver)
-            ->where('pbjnumber', $prhdr->pbjnumber)
-            ->orderBy('approval_date', 'DESC')
-            ->first();
-        }else{
-            $thirdApprover = null;
-            $thirdApprovalDate = null;
-        }
-
-        // $customPaper = array(0,0,567.00,283.80);
-        $pdf = PDF::loadview('transaksi.pbj.printpbj',
-            [
-                'hdr'     => $prhdr,
-                'item'    => $prdtl,
-                'logo'    => $logo,
-                'project' => $project,
-                'firstApprover'  => $firstApprover,
-                'secondApprover' => $secondApprover,
-                'thirdApprover'  => $thirdApprover,
-                'firstApprovalDate'  => $firstApprovalDate,
-                'secondApprovalDate' => $secondApprovalDate,
-                'thirdApprovalDate'  => $thirdApprovalDate
-            ]
-            )->setPaper('A5','landscape');
-        // $pdf = ('P','mm','A5');
-        // $pdf->setOptions(['isPhpEnabled' => true]);
-        $pdf->set_option("enable_php", true);
-        $pdf->render();
-        return $pdf->stream();
-    }
-
     public function polist(){
         $department = DB::table('t_department')->get();
         return view('transaksi.po.printpolist', ['department' => $department]);
     }
 
-    public function printpolist(Request $req){
-        $query = DB::table('v_rpo_v2')->select('id','ponum','podat','approvestat','vendor','note','vendor_name','deptname', 'totalprice','createdby')->distinct();
-
-        if(isset($req->department)){
-            if($req->department !== 'All'){
-                $query->where('deptid', $req->department);
-            }
-        }
-
-        if(isset($req->approvalstat)){
-            if($req->approvalstat === "O"){
-                $query->where('approvestat', 'O');
-            }elseif($req->approvalstat === "A"){
-                $query->where('approvestat', 'A');
-            }elseif($req->approvalstat === "R"){
-                $query->where('approvestat', 'R');
-            }
-        }
-
-        if(isset($req->datefrom) && isset($req->dateto)){
-            $query->whereBetween('podat', [$req->datefrom, $req->dateto]);
-        }elseif(isset($req->datefrom)){
-            $query->where('podat', $req->datefrom);
-        }elseif(isset($req->dateto)){
-            $query->where('podat', $req->dateto);
-        }
-
-        $checkObjAuth = DB::table('user_object_auth')
-                        ->where('object_name', 'ALLOW_DISPLAY_ALL_DEPT')
-                        ->where('object_val', 'Y')
-                        ->where('userid', Auth::user()->id)
-                        ->first();
-        if($checkObjAuth){
-
-        }else{
-            $query->where('createdby', Auth::user()->email);
-        }
-
-        $query->orderBy('id');
-
-        return DataTables::queryBuilder($query)
-        ->editColumn('podat', function ($query){
-            return [
-                'podat1' => \Carbon\Carbon::parse($query->podat)->format('d-m-Y')
-             ];
-        })
-        ->editColumn('totalprice', function ($query){
-            return [
-                'total' => number_format($query->totalprice, 0)
-             ];
-        })
-        ->toJson();
-    }
-
-    public function podetail($id){
-        $department  = DB::table('t_department')->get();
-        $pohdr       = DB::table('v_rpo')->where('id', $id)->first();
-        if(!$pohdr){
-            return Redirect::to("/proc/po/listpo")->withError("PO tidak ditemukan!");
-        }
-        $podtl       = DB::table('v_form_po_dtl')->where('ponum', $pohdr->ponum)->get();
-        $costs       = DB::table('t_po03')->where('ponum', $pohdr->ponum)->get();
-        $attachments = DB::table('t_attachments')->where('doc_object','PO')->where('doc_number', $pohdr->ponum)->get();
-        $approvals   = DB::table('v_po_approval_v2')
-                        ->where('ponum', $pohdr->ponum)
-                        ->orderBy('approver_level', 'ASC')
-                        ->orderBy('poitem', 'ASC')
-                        ->get();
-
-        $prNumber = DB::table('t_po02')->where('ponum', $pohdr->ponum)->pluck('prnum');
-        $prAttachments = DB::table('t_attachments')->where('doc_object','PR')
-                              ->whereIn('doc_number', $prNumber)->get();
-
-        $pbjNumber = DB::table('t_pr02')->whereIn('prnum', $prNumber)->pluck('pbjnumber');
-        $pbjAttachments = DB::table('t_attachments')->where('doc_object','PBJ')
-                              ->whereIn('doc_number', $pbjNumber)->get();
-
-        return view('transaksi.po.podetail',
-            [
-                'department'    => $department,
-                'pohdr'         => $pohdr,
-                'poitem'        => $podtl,
-                'costs'         => $costs,
-                'attachments'   => $attachments,
-                'approvals'     => $approvals,
-                'prAttachments' => $prAttachments,
-                'pbjAttachments' => $pbjAttachments
-            ]);
-    }
-
     public function printpo($id){
-        $pohdr = DB::table('v_rpo')->where('id', $id)->first();
-        if($pohdr->is_posolar === 'Y'){
-            $podtl = DB::table('v_po_solar_items')->where('ponum', $pohdr->ponum)->first();
-        }else{
-            $podtl = DB::table('v_form_po_dtl')
+        $pohdr = DB::table('v_po01')->where('id', $id)->first();
+        if($pohdr){
+            $podtl = DB::table('t_po02')
+                    ->join('t_material', 't_po02.material', '=', 't_material.material')
+                    ->leftJoin('v_cost_master', 't_po02.cost_code', '=', 'v_cost_master.id')
+                    ->select('t_po02.*','t_material.matspec', 'v_cost_master.cost_code as costcd',
+                            'v_cost_master.cost_desc', 'v_cost_master.cost_group_desc')
+                    ->where('t_po02.ponum', $pohdr->ponum)
+                    ->get();
+
+            $vendor = DB::table('t_vendor')->where('id', $pohdr->vendor)->first();
+            $userPO = DB::table('users')->where('username', $pohdr->createdby)->first();
+
+            $totalPrice = DB::table('v_po02')
                     ->where('ponum', $pohdr->ponum)
-                    ->where('approvestat', '!=', 'R')->get();
-        }
-
-        // return $podtl;
-
-        $vendor = DB::table('t_vendor')->where('vendor_code', $pohdr->vendor)->first();
-        $userPO = DB::table('users')->where('email', $pohdr->createdby)->first();
-
-        $POApprover = DB::table('workflow_budget')
-                ->where('object', 'PO')
-                ->where('requester', $userPO->id)
-                ->orderBy('approver_level','ASC')
-                ->first();
-                // return $POApprover;
-        if($POApprover){
-            $firstApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
-            $firstApprovalDate = DB::table('v_po_approval_v2')
-            ->where('approver_level','1')
-            ->where('ponum', $pohdr->ponum)
-            ->orderBy('approval_date', 'DESC')
-            ->first();
-
-            // return $firstApprovalDate;
-        }
-
-        $POApprover = DB::table('workflow_budget')
-                ->where('object', 'PO')
-                ->where('requester', $userPO->id)
-                ->where('approver_level','2')
-                ->orderBy('approver_level','ASC')
-                ->first();
-
-        if($POApprover){
-            $secondApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
-            $secondApprovalDate = DB::table('v_po_approval_v2')
-            ->where('approver_level','2')
-            ->where('ponum', $pohdr->ponum)
-            ->orderBy('approval_date', 'DESC')
-            ->first();
-        }
-
-        $POApprover = DB::table('workflow_budget')
-                ->where('object', 'PO')
-                ->where('requester', $userPO->id)
-                ->where('approver_level','3')
-                ->orderBy('approver_level','DESC')
-                ->first();
-
-        if($POApprover){
-            $lastApprover = DB::table('v_users')->where('id', $POApprover->approver)->first();
-            $lastApprovalDate = DB::table('v_po_approval_v2')
-            ->where('approver_level','3')
-            ->where('ponum', $pohdr->ponum)
-            ->orderBy('approval_date', 'DESC')
-            ->first();
-        }
-
-
-
-        if($pohdr->is_posolar === 'Y'){
-            $pdf = PDF::loadview('transaksi.po.formposolar',
-            [
-                'pohdr'          => $pohdr,
-                'poitem'         => $podtl,
-                'vendor'         => $vendor,
-                'firstApprover'  => $firstApprover ?? null,
-                'secondApprover' => $secondApprover ?? null,
-                'lastApprover'   => $lastApprover ?? null,
-                'firstApprovalDate'  => $firstApprovalDate ?? null,
-                'secondApprovalDate' => $secondApprovalDate ?? null,
-                'lastApprovalDate'   => $lastApprovalDate ?? null
-            ]);
-        }else{
+                    ->sum('totalprice');
+            // dd($totalPrice);
             $pdf = PDF::loadview('transaksi.po.formpo',
             [
                 'pohdr'          => $pohdr,
                 'poitem'         => $podtl,
                 'vendor'         => $vendor,
-                'firstApprover'  => $firstApprover ?? null,
-                'secondApprover' => $secondApprover ?? null,
-                'lastApprover'   => $lastApprover ?? null,
-                'firstApprovalDate'  => $firstApprovalDate ?? null,
-                'secondApprovalDate' => $secondApprovalDate ?? null,
-                'lastApprovalDate'   => $lastApprovalDate ?? null
+                'totalPrice'     => $totalPrice
             ]);
+            // $pdf->setOptions(['isPhpEnabled' => true]);
+            $pdf->set_option("enable_php", true);
+            return $pdf->stream();
+        }else{
+            return 'PO tidak ditemukan';
         }
-        // $pdf->setOptions(['isPhpEnabled' => true]);
-        $pdf->set_option("enable_php", true);
-        // $pdf = \App::make('dompdf.wrapper');
-        // $pdf->setOptions("isPhpEnabled", true);
-        // $pdf->setOptions(['isRemoteEnabled' => true]);
-        // $pdf->setProtocol($_SERVER['DOCUMENT_ROOT']);
-        // $pdf = PDF::loadview('transaksi.po.printpo', ['pohdr' => $pohdr, 'poitem' => $podtl]);
-        return $pdf->stream();
-        // $filename = $pohdr->ponum;
-        // $filename = str_replace('/', '-', $filename);
-        // $content = $pdf->output();
-        // file_put_contents('files/Document/'.$filename.'.pdf', $content);
-        // return "Ok";
-        // return $pdf->save('files/Document/'.$pohdr->ponum.'.pdf');
+
+        // if($pohdr->is_posolar === 'Y'){
+        //     $pdf = PDF::loadview('transaksi.po.formposolar',
+        //     [
+        //         'pohdr'          => $pohdr,
+        //         'poitem'         => $podtl,
+        //         'vendor'         => $vendor,
+        //         'firstApprover'  => $firstApprover ?? null,
+        //         'secondApprover' => $secondApprover ?? null,
+        //         'lastApprover'   => $lastApprover ?? null,
+        //         'firstApprovalDate'  => $firstApprovalDate ?? null,
+        //         'secondApprovalDate' => $secondApprovalDate ?? null,
+        //         'lastApprovalDate'   => $lastApprovalDate ?? null
+        //     ]);
+        // }else{
+        // }
+
     }
 
     public function wolist(Request $req){

@@ -375,10 +375,19 @@ function getDepartmentByID($id){
 }
 
 function getUserNameByID($id){
-    $userDept = DB::table('users')->where('id', $id)
+    $userName = DB::table('users')->where('id', $id)
             ->orWhere('email', $id)
             ->orWhere('username', $id)->first();
-    return $userDept->name;
+    return $userName->name;
+}
+
+function getUserJabatan(){
+    $userName = DB::table('t_jabatan')->where('id', Auth::user()->jabatanid)->first();
+    if($userName){
+        return $userName->jabatan;
+    }else{
+        return '';
+    }
 }
 
 function generatePRNumber($tahun, $bulan, $prtype, $project){

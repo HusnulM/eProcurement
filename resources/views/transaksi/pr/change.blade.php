@@ -98,6 +98,27 @@
                                             <input type="file" class="form-control" name="efile[]" multiple="multiple">
                                         </div>
                                     </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <select name="disetujui" class="form-control">
+                                                <option value="{{ $disetjui->id ?? '' }}">{{ $disetjui->nama ?? 'Pilih' }} - {{ $disetjui->jabatan ?? 'Satu' }}</option>
+                                                @foreach ($approver as $key => $row)
+                                                    <option value="{{ $row->id }}">{{ $row->nama }} - {{ $row->jabatan }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <select name="diketahui" class="form-control">
+                                                <option value="{{ $diktahui->id ?? '' }}">{{ $diktahui->nama ?? 'Pilih' }} - {{ $diktahui->jabatan ?? 'Satu' }}</option>
+                                                @foreach ($approver as $key => $row)
+                                                    <option value="{{ $row->id }}">{{ $row->nama }} - {{ $row->jabatan }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-lg-10 col-md-12">
@@ -549,7 +570,7 @@
                 if(result.msgtype === "200"){
                     toastr.success(result.message)
                     setTimeout(function(){
-                        window.location.href = base_url+'/proc/pr/change/{{ $prhdr->id }}';
+                        window.location.href = base_url+'/proc/pr/list/change/{{ $prhdr->id }}';
                     }, 2000);
                 }else{
                     toastr.error(result.message)

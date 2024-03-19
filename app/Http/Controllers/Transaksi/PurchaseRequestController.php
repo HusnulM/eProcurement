@@ -16,7 +16,9 @@ class PurchaseRequestController extends Controller
     public function index(){
         $proyek = getAuthorizedProject();
         $doctyp = getAuthorizedPOType('PR', 'ALLOW_PRTYPE');
-        return view('transaksi.pr.index', ['proyek' => $proyek, 'doctyp' => $doctyp]);
+        $approver = DB::table('t_master_approval')->get();
+
+        return view('transaksi.pr.index', ['proyek' => $proyek, 'doctyp' => $doctyp, 'approver' => $approver]);
     }
 
     public function listPR(){
@@ -59,7 +61,7 @@ class PurchaseRequestController extends Controller
             }
         }
 
-        $query->orderBy('t_pr01.id');
+        $query->orderBy('t_pr01.id', 'DESC');
 
         return DataTables::queryBuilder($query)
         ->editColumn('prdate', function ($query){
@@ -140,6 +142,10 @@ class PurchaseRequestController extends Controller
         $proyek = DB::table('t_projects')->get();
         $proyekx = DB::table('t_projects')->where('id', $prhdr->idproject)->first();
 
+        $approver = DB::table('t_master_approval')->get();
+        $disetjui = DB::table('t_master_approval')->where('id', $prhdr->disetujui)->first();
+        $diktahui = DB::table('t_master_approval')->where('id', $prhdr->diketahui)->first();
+
         $approvals   = DB::table('v_pr_approval01')->where('prnum', $prhdr->prnum)->get();
         // return $attachments;
         return view('transaksi.pr.change',
@@ -150,7 +156,10 @@ class PurchaseRequestController extends Controller
                 'attachments'   => $attachments,
                 'proyek'        => $proyek,
                 'proyekx'       => $proyekx,
-                'approvals'     => $approvals
+                'approvals'     => $approvals,
+                'approver'      => $approver,
+                'disetjui'      => $disetjui,
+                'diktahui'      => $diktahui
             ]);
     }
 
@@ -192,6 +201,8 @@ class PurchaseRequestController extends Controller
                 'idproject'         => $req['project'],
                 'requestby'         => $req['requestor'],
                 'remark'            => $req['remark'],
+                'disetujui'         => $req['disetujui'],
+                'diketahui'         => $req['diketahui'],
                 'createdon'         => getLocalDatabaseDateTime(),
                 'createdby'         => Auth::user()->username
             ]);
@@ -335,8 +346,7 @@ class PurchaseRequestController extends Controller
             if($approvalActive){
                 $checkApproval = DB::table('t_pr_approval')
                     ->where('prnum', $ptaNumber)
-                    ->where('approval_status', 'A')
-                    ->orWhere('approval_status', 'R')
+                    ->whereIn('approval_status', ['A','R'])
                     ->first();
 
                 if($checkApproval){
@@ -354,6 +364,8 @@ class PurchaseRequestController extends Controller
                 'requestby'         => $req['requestor'],
                 'remark'            => $req['remark'],
                 'idproject'         => $req['project'],
+                'disetujui'         => $req['disetujui'],
+                'diketahui'         => $req['diketahui'],
                 'changedon'         => getLocalDatabaseDateTime(),
                 'changedby'         => Auth::user()->username
             ]);

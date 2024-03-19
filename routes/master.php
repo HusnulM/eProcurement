@@ -33,6 +33,22 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/exporttemplate',          'Master\ItemMasterController@downloadTemplate')->middleware('checkAuth:master/item');
     });
 
+    Route::group(['prefix' => '/master/approval'], function () {
+        Route::get('/',             'Master\ApprovalMasterController@index')->middleware('checkAuth:master/approval');
+        Route::get('/list',         'Master\ApprovalMasterController@listApproval')->middleware('checkAuth:master/approval');
+        Route::post('/save',        'Master\ApprovalMasterController@save')->middleware('checkAuth:master/approval');
+        Route::post('/update',      'Master\ApprovalMasterController@update')->middleware('checkAuth:master/approval');
+        Route::get('/delete/{id}',  'Master\ApprovalMasterController@delete')->middleware('checkAuth:master/approval');
+    });
+
+    Route::group(['prefix' => '/master/jabatan'], function () {
+        Route::get('/',             'Master\JabatanMasterController@index')->middleware('checkAuth:master/jabatan');
+        Route::get('/list',         'Master\JabatanMasterController@jabatanLists')->middleware('checkAuth:master/jabatan');
+        Route::post('/save',        'Master\JabatanMasterController@save')->middleware('checkAuth:master/jabatan');
+        Route::post('/update',      'Master\JabatanMasterController@update')->middleware('checkAuth:master/jabatan');
+        Route::get('/delete/{id}',  'Master\JabatanMasterController@delete')->middleware('checkAuth:master/jabatan');
+    });
+
     Route::group(['prefix' => '/master/vendor'], function () {
         Route::get('/',             'Master\VendorMasterController@index')->middleware('checkAuth:master/vendor');
         Route::get('/create',       'Master\VendorMasterController@create')->middleware('checkAuth:master/vendor');

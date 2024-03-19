@@ -5,7 +5,7 @@
 @section('additional-css')
 @endsection
 
-@section('content')        
+@section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -32,12 +32,12 @@
                                 <th>User Name</th>
                                 <th>Email</th>
                                 <th>Name</th>
-                                <th>Department</th>
+                                {{-- <th>Department</th> --}}
                                 <th>Jabatan</th>
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
-    
+
                             </tbody>
                         </table>
                     </div>
@@ -71,14 +71,14 @@
                 { "data": null,"sortable": false, "searchable": false,
                     render: function (data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
-                    }  
+                    }
                 },
                 {data: "username", className: 'uid'},
                 {data: "email", className: 'fname'},
                 {data: "name", className: 'uname'},
-                {data: "department", className: 'fname'},
+                // {data: "department", className: 'fname'},
                 {data: "jabatan", className: 'uname'},
-                {"defaultContent": 
+                {"defaultContent":
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button>
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>
                     <button class='btn btn-success btn-sm button-object-auth'> <i class='fa fa-find'></i> OBJECT AUTH</button>
@@ -86,7 +86,7 @@
                     "className": "text-center",
                     "width": "20%"
                 }
-            ]  
+            ]
         });
 
         $('#tbl-users tbody').on( 'click', '.button-delete', function () {

@@ -92,7 +92,7 @@
                 @if(checkIsLocalhost())
                     <img src="{{ public_path('/assets/img/logo.jpg') }}" class="img-thumbnail" alt="Logo" style="width:250px; height:35px;margin-top:0px;">
                 @else
-                    <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="E-sign" style="width:100px; height:100px;">
+                    <img src="{{ asset(getCompanyLogo()) }}" class="img-thumbnail" alt="Logo" style="width:250px; height:35px;margin-top:0px;">
                 @endif
             </th>
             <th colspan="2" style="text-align:right; font-family: Arial, Helvetica, sans-serif; margin-right:10px;">
@@ -187,7 +187,7 @@
 
             </th>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
-                <b><i>Handil, 15 Desember 2023</i></b>
+                {{-- <b><i>Handil, 15 Desember 2023</i></b> --}}
             </th>
         </tr>
         <tr>
@@ -209,11 +209,37 @@
 
             </th>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
-                <br><br><br><br>
+                <br><br><br>
+            </th>
+        </tr>
+        <tr>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                <b><u><i>{{ $disetjui->nama }}</i></u></b>
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                <b><u><i>{{ $diktahui->nama }}</i></u></b>
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                <b><u><i>{{ getUserNameByID($prhdr->createdby) }}</i></u></b>
+            </th>
+        </tr>
+        <tr>
+            <th style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                <i>{{ $disetjui->jabatan }}</i>
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                <i>{{ $diktahui->jabatan }}</i>
+            </th>
+            <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
+                <i>{{ getUserJabatan() ?? null }}</i>
             </th>
         </tr>
     </table>
-
+    <table style="font-size:10px; font-weight:normal;">
+        <tr>
+            <td><b><i>FOR/AA/PSD/021</i></b></td>
+        </tr>
+    </table>
 
     <script type="text/php">
         if (isset($pdf)) {
