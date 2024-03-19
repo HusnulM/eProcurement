@@ -214,10 +214,10 @@
         </tr>
         <tr>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
-                <b><u><i>{{ $disetjui->nama }}</i></u></b>
+                <b><u><i>{{ $disetjui->nama ?? '' }}</i></u></b>
             </th>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
-                <b><u><i>{{ $diktahui->nama }}</i></u></b>
+                <b><u><i>{{ $diktahui->nama ?? '' }}</i></u></b>
             </th>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
                 <b><u><i>{{ getUserNameByID($prhdr->createdby) }}</i></u></b>
