@@ -30,6 +30,7 @@
                                 <th>Nama Project</th>
                                 <th>Nilai Project</th>
                                 <th>Project Manager</th>
+                                <th>Manager Lapangan</th>
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
@@ -72,7 +73,22 @@
                     </div>
                     <div class="col-lg-12 col-md-12">
                         <label for="projectManager">Project Manager</label>
-                        <input type="text" name="projectManager" class="form-control" required>
+                        {{-- <input type="text" name="projectManager" class="form-control" required> --}}
+                        <select name="projectManager" class="form-control" required>
+                            <option value=""></option>
+                            @foreach ($approver as $key => $row )
+                            <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="managerLapangan">Manager Lapangan</label>
+                        <select name="managerLapangan" class="form-control" required>
+                            <option value=""></option>
+                            @foreach ($approver as $key => $row )
+                            <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
             </div>
@@ -113,7 +129,21 @@
                     </div>
                     <div class="col-lg-12 col-md-12">
                         <label for="projectManager">Project Manager</label>
-                        <input type="text" name="projectManager" id="projectManager" class="form-control" required>
+                        <select name="projectManager" class="form-control" required>
+                            <option value=""></option>
+                            @foreach ($approver as $key => $row )
+                            <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <label for="managerLapangan">Manager Lapangan</label>
+                        <select name="managerLapangan" class="form-control" required>
+                            <option value=""></option>
+                            @foreach ($approver as $key => $row )
+                            <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
             </div>
@@ -155,6 +185,7 @@
                 {data: "nama_project", className: 'uid'},
                 {data: "nilai_project", className: 'uid'},
                 {data: "project_manager", className: 'uid'},
+                {data: "manager_lapangan", className: 'uid'},
                 {"defaultContent":
                     `<button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> DELETE</button>
                     <button class='btn btn-primary btn-sm button-edit'> <i class='fa fa-edit'></i> EDIT</button>

@@ -214,10 +214,10 @@
         </tr>
         <tr>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
-                <b><u><i>{{ $disetjui->nama ?? '' }}</i></u></b>
+                <b><u><i>{{ $proyek->project_manager ?? '' }}</i></u></b>
             </th>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
-                <b><u><i>{{ $diktahui->nama ?? '' }}</i></u></b>
+                <b><u><i>{{ $proyek->manager_lapangan ?? '' }}</i></u></b>
             </th>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
                 <b><u><i>{{ getUserNameByID($prhdr->createdby) }}</i></u></b>
@@ -225,10 +225,12 @@
         </tr>
         <tr>
             <th style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
-                <i>{{ $disetjui->jabatan }}</i>
+                {{-- <i>{{ $disetjui->jabatan }}</i> --}}
+                <i>Manager Proyek</i>
             </th>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
-                <i>{{ $diktahui->jabatan }}</i>
+                {{-- <i>{{ $diktahui->jabatan }}</i> --}}
+                <i>Manager Lapangan</i>
             </th>
             <th  style="text-align:center; width:100px; font-size:10px; font-weight:normal;">
                 <i>{{ getUserJabatan() ?? null }}</i>

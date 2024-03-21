@@ -110,29 +110,6 @@ class PrintDocumentController extends Controller
                     ->where('prnum', $prhdr->prnum)
                     ->get();
 
-        // $approval = DB::table('t_pr_approval')
-        //             ->where('prnum', $prhdr->prnum)
-        //             ->where('approval_status', 'A')
-        //             ->orderBy('approver_level', 'DESC')
-        //             ->first();
-        // if($approval){
-        //     $approveSign = DB::table('users')->where('id', $approval->approver)->first();
-        // }else{
-        //     $approveSign = null;
-        // }
-
-        // $creatorSign = DB::table('users')->where('email', $prhdr->createdby)->first();
-
-        // return view('transaksi.pr.printpr',
-        //     [
-        //         'prhdr'       => $prhdr,
-        //         'pritem'      => $prdtl,
-        //         'project'     => $proyek->nama_project,
-        //         'approval'    => $approval,
-        //         'approveSign' => $approveSign,
-        //         'creatorSign' => $creatorSign
-        //     ]);
-
         $pdf = PDF::loadview('transaksi.pr.printpr',
             [
                 'prhdr'       => $prhdr,
@@ -140,7 +117,8 @@ class PrintDocumentController extends Controller
                 'dtlGroup'    => $dtlGroup,
                 'project'     => $proyek->nama_project,
                 'disetjui'      => $disetjui,
-                'diktahui'      => $diktahui
+                'diktahui'      => $diktahui,
+                'proyek' => $proyek
             ]);
         // $pdf->setOptions(['isPhpEnabled' => true]);
         $pdf->set_option("enable_php", true);

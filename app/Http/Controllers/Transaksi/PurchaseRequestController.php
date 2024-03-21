@@ -201,8 +201,8 @@ class PurchaseRequestController extends Controller
                 'idproject'         => $req['project'],
                 'requestby'         => $req['requestor'],
                 'remark'            => $req['remark'],
-                'disetujui'         => $req['disetujui'],
-                'diketahui'         => $req['diketahui'],
+                // 'disetujui'         => $req['disetujui'],
+                // 'diketahui'         => $req['diketahui'],
                 'createdon'         => getLocalDatabaseDateTime(),
                 'createdby'         => Auth::user()->username
             ]);
@@ -364,8 +364,8 @@ class PurchaseRequestController extends Controller
                 'requestby'         => $req['requestor'],
                 'remark'            => $req['remark'],
                 'idproject'         => $req['project'],
-                'disetujui'         => $req['disetujui'],
-                'diketahui'         => $req['diketahui'],
+                // 'disetujui'         => $req['disetujui'],
+                // 'diketahui'         => $req['diketahui'],
                 'changedon'         => getLocalDatabaseDateTime(),
                 'changedby'         => Auth::user()->username
             ]);

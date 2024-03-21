@@ -12,7 +12,8 @@ use Excel;
 class ProjectController extends Controller
 {
     public function index(){
-        return view('master.project.index');
+        $approver = DB::table('t_master_approval')->get();
+        return view('master.project.index', ['approver' => $approver]);
     }
 
     public function save(Request $req){
@@ -22,6 +23,7 @@ class ProjectController extends Controller
             $namaProject    = $req['namaProyek'];
             $nilaiProject   = $req['nilaiProyek'];
             $projectManager = $req['projectManager'];
+            $managerLapangan = $req['managerLapangan'];
 
             $insertData = array();
             $data = array(
@@ -29,6 +31,7 @@ class ProjectController extends Controller
                 'nama_project'    => $namaProject,
                 'nilai_project'   => $nilaiProject,
                 'project_manager' => $projectManager,
+                'manager_lapangan' => $managerLapangan,
                 'createdon'       => getLocalDatabaseDateTime(),
                 'createdby'       => Auth::user()->email ?? Auth::user()->username
             );
@@ -52,11 +55,13 @@ class ProjectController extends Controller
             $namaProject    = $req['namaProyek'];
             $nilaiProject   = $req['nilaiProyek'];
             $projectManager = $req['projectManager'];
+            $managerLapangan = $req['managerLapangan'];
 
             DB::table('t_projects')->where('id', $idProject)->update([
                 'nama_project'    => $namaProject,
                 'nilai_project'   => $nilaiProject,
                 'project_manager' => $projectManager,
+                'manager_lapangan' => $managerLapangan,
             ]);
 
             DB::commit();

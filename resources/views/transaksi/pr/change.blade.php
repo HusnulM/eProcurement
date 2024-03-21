@@ -98,7 +98,7 @@
                                             <input type="file" class="form-control" name="efile[]" multiple="multiple">
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
+                                    {{-- <div class="col-lg-12">
                                         <div class="form-group">
                                             <select name="disetujui" class="form-control">
                                                 <option value="{{ $disetjui->id ?? '' }}">{{ $disetjui->nama ?? 'Pilih' }} - {{ $disetjui->jabatan ?? 'Satu' }}</option>
@@ -118,7 +118,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="col-lg-10 col-md-12">
