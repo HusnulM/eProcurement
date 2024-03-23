@@ -111,6 +111,20 @@
             border: 1px solid #000;
             padding: 3px;
         }
+
+        .tblSubDtl{
+            border: 0px solid black;
+            border-collapse: collapse;
+            border-spacing: 0px;
+            padding-top: 0;
+            width: 100%;
+        }
+
+        .tblSubDtl td, .tblheader th {
+            border: none #000;
+            padding: 0px;
+        }
+
     </style>
 </head>
 <body>
@@ -143,13 +157,21 @@
             </td>
         </tr>
     </table>
+
     <table class="tblheader">
         <tr>
-            <td rowspan="2" style="width:300px; text-align:left; font-family: Arial, Helvetica, sans-serif; font-size:12px;">
-                TO : {{ $pohdr->vendor_name }} <br>
-                {{ $pohdr->vendor_address }} <br>
-                Tlp : {{ $vendor->vendor_telp }} <br>
-                Up  : {{ $vendor->contact_person }}
+            <td rowspan="2" style="width:300px; text-align:left; font-family: Arial, Helvetica, sans-serif; font-size:12px; border:0px !important;">
+                <table class="tblSubDtl">
+                    <tr>
+                        <td style="width: 50px; vertical-align:top;" ><b>TO :</b></td>
+                        <td>
+                            {{ $pohdr->vendor_name }} <br>
+                            {{ $pohdr->vendor_address }} <br>
+                            Tlp : {{ $vendor->vendor_telp }} <br>
+                            Up  : {{ $vendor->contact_person }}
+                        </td>
+                    </tr>
+                </table>
             </td>
             <td style="text-align:left; font-family: Arial, Helvetica, sans-serif; font-size:12px;">
                 <?php $ppn = $totalPrice * ($pohdr->ppn / 100) ?>
@@ -158,6 +180,83 @@
         </tr>
         <tr style="font-family: Arial, Helvetica, sans-serif; font-size:12px;">
             <td rowspan="">PAYMENT TERMS   7 Days After Receive Invoice</td>
+        </tr>
+    </table>
+
+    <table class="tblheader">
+        <tr>
+            <td rowspan="3" style="width:300px; text-align:left; font-family: Arial, Helvetica, sans-serif; font-size:12px; border:0px !important;">
+                <b>DELIVERY TO :</b> <br>
+                {{ $pohdr->vendor_name }} <br>
+                {{ $pohdr->vendor_address }} <br>
+                Tlp : {{ $vendor->vendor_telp }} <br>
+                Up  : {{ $vendor->contact_person }}
+            </td>
+            <td style="text-align:left; font-family: Arial, Helvetica, sans-serif; font-size:12px;">
+                <table class="tblSubDtl">
+                    <tr>
+                        <td style="width: 130px;" >RETENTION</td>
+                        <td style="width: 10px;">:</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td colspan="" >AGREED LIQUIDATED</td>
+                        <td>:</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td colspan="" >DAMAGES</td>
+                        <td>:</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr style="font-family: Arial, Helvetica, sans-serif; font-size:12px;">
+            <td>
+                <table class="tblSubDtl">
+                    <tr>
+                        <td style="width: 130px;" >DELIVERY TERMS</td>
+                        <td style="width: 10px;">:</td>
+                        <td>Indent 2 Hari</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr style="font-family: Arial, Helvetica, sans-serif; font-size:12px;">
+            <td>
+                <table class="tblSubDtl">
+                    <tr>
+                        <td style="width: 130px;" >DELIVERY DATE</td>
+                        <td style="width: 10px;">:</td>
+                        <td>Indent 2 Hari</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table class="tblheader">
+        <tr>
+            <td style="width:300px; text-align:left; font-family: Arial, Helvetica, sans-serif; font-size:12px;">
+                <b>CLIENT : </b> PT. PHM
+            </td>
+            <td>
+                <table class="tblSubDtl" style="width:300px; text-align:left; font-family: Arial, Helvetica, sans-serif; font-size:12px;">
+                    <tr>
+                        <td style="width: 130px;" >INSPECTION</td>
+                        <td style="width: 10px;">:</td>
+                        <td>No / Certifacate</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:300px; text-align:left; font-family: Arial, Helvetica, sans-serif; font-size:12px;">
+                <b>QUOTATION REF : </b> Quo Tanggal 24 Jan 24
+            </td>
+            <td style="text-align:center; font-family: Arial, Helvetica, sans-serif; font-size:12px;">
+                THIS ORDER MUST BE ACKNOWLEDGED
+            </td>
         </tr>
     </table>
     <table id="items" style="width: 100%;">
