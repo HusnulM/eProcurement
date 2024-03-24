@@ -223,6 +223,7 @@ class PurchaseOrderController extends Controller
                     'solar_pbbkb'       => $req['solarpbbkb'],
                     'solar_oat'         => $req['solaroat'],
                     'solar_ppn_oat'     => $req['ppnoat'],
+                    'dlv_terms'         => $req['dlvterms'],
                     'createdon'         => getLocalDatabaseDateTime(),
                     'createdby'         => Auth::user()->username
                 ]);
@@ -449,6 +450,7 @@ class PurchaseOrderController extends Controller
                     'solar_pbbkb'       => $req['solarpbbkb'],
                     'solar_oat'         => $req['solaroat'],
                     'solar_ppn_oat'     => $req['ppnoat'],
+                    'dlv_terms'         => $req['dlvterms'],
                     'changedon'         => getLocalDatabaseDateTime(),
                     'changedby'         => Auth::user()->username
                 ]);
@@ -463,6 +465,7 @@ class PurchaseOrderController extends Controller
                     'currency'          => $req['currency'],
                     'tf_top'            => $req['termofpayment'] ?? null,
                     'is_posolar'        => $req['poSolarInd'],
+                    'dlv_terms'         => $req['dlvterms'],
                     'solar_pbbkb'       => 0,
                     'solar_oat'         => 0,
                     'solar_ppn_oat'     => 0,

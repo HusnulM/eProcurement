@@ -152,12 +152,15 @@ class PrintDocumentController extends Controller
                     ->where('ponum', $pohdr->ponum)
                     ->sum('totalprice');
             // dd($totalPrice);
+            $proyek   = DB::table('t_projects')->where('id', $podtl[0]->idproject)->first();
+
             $pdf = PDF::loadview('transaksi.po.formpo',
             [
                 'pohdr'          => $pohdr,
                 'poitem'         => $podtl,
                 'vendor'         => $vendor,
-                'totalPrice'     => $totalPrice
+                'totalPrice'     => $totalPrice,
+                'proyek'         => $proyek
             ]);
             // $pdf->setOptions(['isPhpEnabled' => true]);
             $pdf->set_option("enable_php", true);

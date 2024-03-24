@@ -214,6 +214,10 @@
                                                                 <label for="top">Term of Payment</label>
                                                                 <input type="text" class="form-control" name="termofpayment" value="{{ $pohdr->tf_top }}">
                                                             </div>
+                                                            <div class="col-lg-12">
+                                                                <label for="top">Delivery Term</label>
+                                                                <input type="text" class="form-control" name="dlvterms" value="{{ $pohdr->dlv_terms }}">
+                                                            </div>
                                                             <hr>
                                                             <div class="col-lg-4 col-md-12 mb-2 mt-2">
                                                                 <label for="PPn">PPN</label>
