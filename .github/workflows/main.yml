@@ -12,5 +12,5 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.FTV_HOST }}
-        username: ${{ secrets.FTV_USER }}
+        username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTV_PASS }}
