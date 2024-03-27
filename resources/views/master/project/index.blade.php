@@ -34,7 +34,6 @@
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
-coba
                             </tbody>
                         </table>
                     </div>
