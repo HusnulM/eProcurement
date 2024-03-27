@@ -30,7 +30,7 @@
                                 <th>Nama Project</th>
                                 <th>Nilai Project</th>
                                 <th>Project Manager</th>
-                                <th>Manager Lapangan</th>
+                                <th>Manager Lapanga n Update</th>
                                 <th style="text-align:center;"></th>
                             </thead>
                             <tbody>
