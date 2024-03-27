@@ -20,6 +20,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/budgetlist',   'Transaksi\BudgetingController@budgetLists')->middleware('checkAuth:transaction/budgeting');
     });
 
+    Route::group(['prefix' => '/quotation'], function () {
+        Route::get('/',             'Transaksi\QuotationController@index')->middleware('checkAuth:quotation');
+        Route::post('/save',        'Transaksi\BudgetingController@save')->middleware('checkAuth:quotation');
+        Route::get('/list',         'Transaksi\BudgetingController@list')->middleware('checkAuth:quotation');
+        Route::get('/budgetlist',   'Transaksi\BudgetingController@budgetLists')->middleware('checkAuth:quotation');
+    });
 
     Route::group(['prefix' => '/proc/pr'], function () {
         Route::get('/',                'Transaksi\PurchaseRequestController@index')->middleware('checkAuth:proc/pr');
