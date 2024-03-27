@@ -73,22 +73,23 @@
                     </div>
                     <div class="col-lg-12 col-md-12">
                         <label for="projectManager">Project Manager</label>
-                        {{-- <input type="text" name="projectManager" class="form-control" required> --}}
-                        <select name="projectManager" class="form-control" required>
+                        <input type="text" name="projectManager" class="form-control" required>
+                        {{-- <select name="projectManager" class="form-control" required>
                             <option value=""></option>
                             @foreach ($approver as $key => $row )
                             <option value="{{ $row->nama }}">{{ $row->nama }}</option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                     <div class="col-lg-12 col-md-12">
                         <label for="managerLapangan">Manager Lapangan</label>
-                        <select name="managerLapangan" class="form-control" required>
+                        <input type="text" name="managerLapangan" class="form-control" required>
+                        {{-- <select name="managerLapangan" class="form-control" required>
                             <option value=""></option>
                             @foreach ($approver as $key => $row )
                             <option value="{{ $row->nama }}">{{ $row->nama }}</option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                 </div>
             </div>
@@ -129,21 +130,23 @@
                     </div>
                     <div class="col-lg-12 col-md-12">
                         <label for="projectManager">Project Manager</label>
-                        <select name="projectManager" class="form-control" required>
+                        <input type="text" name="projectManager" id="projectManager" class="form-control" required>
+                        {{-- <select name="projectManager" class="form-control" required>
                             <option value=""></option>
                             @foreach ($approver as $key => $row )
                             <option value="{{ $row->nama }}">{{ $row->nama }}</option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                     <div class="col-lg-12 col-md-12">
                         <label for="managerLapangan">Manager Lapangan</label>
-                        <select name="managerLapangan" class="form-control" required>
+                        <input type="text" name="managerLapangan" id="managerLapangan" class="form-control" required>
+                        {{-- <select name="managerLapangan" class="form-control" required>
                             <option value=""></option>
                             @foreach ($approver as $key => $row )
                             <option value="{{ $row->nama }}">{{ $row->nama }}</option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                 </div>
             </div>
@@ -212,6 +215,7 @@
             $('#namaProyek').val(selected_data.nama_project);
             $('#nilaiProyek').val(selected_data.nilai_project);
             $('#projectManager').val(selected_data.project_manager);
+            $('#managerLapangan').val(selected_data.manager_lapangan);
             $('#idProject').val(selected_data.id);
             $('#modal-edit-project').modal('show');
         });
