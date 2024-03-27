@@ -13,4 +13,4 @@ jobs:
       with:
         server: ${{ secrets.FTV_HOST }}
         username: ${{ secrets.FTP_USER }}
-        password: ${{ secrets.FTV_PASS }}
+        password: ${{ secrets.FTP_PASS }}
