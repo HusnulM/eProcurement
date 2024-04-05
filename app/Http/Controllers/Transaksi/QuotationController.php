@@ -16,4 +16,11 @@ class QuotationController extends Controller
         $doctyp = getAuthorizedPOType('PR', 'ALLOW_PRTYPE');
         return view('transaksi.quotation.index', ['proyek' => $proyek, 'doctyp' => $doctyp]);
     }
+
+    public function create($prID)
+    {
+        $proyek = getAuthorizedProject();
+        $prdata = DB::table('v_pr01')->where('id', $prID)->get();
+        return view('transaksi.quotation.create', ['proyek' => $proyek, 'prdata' => $prdata]);
+    }
 }

@@ -22,6 +22,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => '/quotation'], function () {
         Route::get('/',             'Transaksi\QuotationController@index')->middleware('checkAuth:quotation');
+        Route::get('/create/{p1}',  'Transaksi\QuotationController@create')->middleware('checkAuth:quotation');
         Route::post('/save',        'Transaksi\BudgetingController@save')->middleware('checkAuth:quotation');
         Route::get('/list',         'Transaksi\BudgetingController@list')->middleware('checkAuth:quotation');
         Route::get('/budgetlist',   'Transaksi\BudgetingController@budgetLists')->middleware('checkAuth:quotation');

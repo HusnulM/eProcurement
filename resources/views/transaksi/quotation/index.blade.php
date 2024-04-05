@@ -177,40 +177,11 @@
                 ]
             });
 
-            // <button class='btn btn-danger btn-sm button-delete'> <i class='fa fa-trash'></i> Delete</button>
-
-            $('#tbl-budget-list tbody').on( 'click', '.button-print', function () {
-                var table = $('#tbl-budget-list').DataTable();
-                selected_data = [];
-                selected_data = table.row($(this).closest('tr')).data();
-                // window.location = base_url+"/proc/pr/print";
-                // if(selected_data.doctype === "Corporate Procedure"){
-                    window.open(
-                        base_url+"/proc/pr/print/"+selected_data.id,
-                        '_blank' // <- This is what makes it open in a new window.
-                    );
-                // }
-            });
-
-            // $('#tbl-budget-list tbody').on( 'click', '.button-delete', function () {
-            //     var table = $('#tbl-budget-list').DataTable();
-            //     selected_data = [];
-            //     selected_data = table.row($(this).closest('tr')).data();
-            //     window.location = "/proc/pr/delete/"+selected_data.id;
-            // });
-
             $('#tbl-budget-list tbody').on( 'click', '.button-detail', function () {
                 var table = $('#tbl-budget-list').DataTable();
                 selected_data = [];
                 selected_data = table.row($(this).closest('tr')).data();
-                window.location = "/proc/pr/list/detail/"+selected_data.id;
-            });
-
-            $('#tbl-budget-list tbody').on( 'click', '.button-change', function () {
-                var table = $('#tbl-budget-list').DataTable();
-                selected_data = [];
-                selected_data = table.row($(this).closest('tr')).data();
-                window.location = "/proc/pr/list/change/"+selected_data.id;
+                window.location = "/quotation/create/"+selected_data.id;
             });
         }
 
